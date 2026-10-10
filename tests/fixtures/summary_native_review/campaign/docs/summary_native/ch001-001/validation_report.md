@@ -1,0 +1,3000 @@
+# Validation report
+
+- Summaries directory: summaries
+- Range: 1–1
+- Files scanned: 1
+- Files in range: 1
+- Gaps: none
+- Duplicate threshold: 0.88
+
+## In range
+
+### summaries/001-fixture.md
+
+L3  unknown-section  found "Prepared review evidence"  — unrecognised `##` section; preserved in other_sections.md
+
+## Outside range — not blocking
+
+(none)
+
+## Possible duplicates — fix in the summaries
+
+- possible-duplicate  — npc: 'Candidate 10A' ~ 'Candidate 1A' (similarity 0.96); fix the summaries or rule it in canon.yaml
+  - 'Candidate 10A': summaries/001-fixture.md:107
+  - 'Candidate 1A': summaries/001-fixture.md:39
+- possible-duplicate  — npc: 'Candidate 10B' ~ 'Candidate 1A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 10B': summaries/001-fixture.md:111
+  - 'Candidate 1A': summaries/001-fixture.md:39
+- possible-duplicate  — npc: 'Candidate 11A' ~ 'Candidate 1A' (similarity 0.96); fix the summaries or rule it in canon.yaml
+  - 'Candidate 11A': summaries/001-fixture.md:115
+  - 'Candidate 1A': summaries/001-fixture.md:39
+- possible-duplicate  — npc: 'Candidate 11B' ~ 'Candidate 1A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 11B': summaries/001-fixture.md:119
+  - 'Candidate 1A': summaries/001-fixture.md:39
+- possible-duplicate  — npc: 'Candidate 12A' ~ 'Candidate 1A' (similarity 0.96); fix the summaries or rule it in canon.yaml
+  - 'Candidate 12A': summaries/001-fixture.md:123
+  - 'Candidate 1A': summaries/001-fixture.md:39
+- possible-duplicate  — npc: 'Candidate 13A' ~ 'Candidate 1A' (similarity 0.96); fix the summaries or rule it in canon.yaml
+  - 'Candidate 13A': summaries/001-fixture.md:127
+  - 'Candidate 1A': summaries/001-fixture.md:39
+- possible-duplicate  — npc: 'Candidate 13B' ~ 'Candidate 1A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 13B': summaries/001-fixture.md:131
+  - 'Candidate 1A': summaries/001-fixture.md:39
+- possible-duplicate  — npc: 'Candidate 14A' ~ 'Candidate 1A' (similarity 0.96); fix the summaries or rule it in canon.yaml
+  - 'Candidate 14A': summaries/001-fixture.md:135
+  - 'Candidate 1A': summaries/001-fixture.md:39
+- possible-duplicate  — npc: 'Candidate 14B' ~ 'Candidate 1A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 14B': summaries/001-fixture.md:139
+  - 'Candidate 1A': summaries/001-fixture.md:39
+- possible-duplicate  — npc: 'Candidate 15A' ~ 'Candidate 1A' (similarity 0.96); fix the summaries or rule it in canon.yaml
+  - 'Candidate 15A': summaries/001-fixture.md:143
+  - 'Candidate 1A': summaries/001-fixture.md:39
+- possible-duplicate  — npc: 'Candidate 15B' ~ 'Candidate 1A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 15B': summaries/001-fixture.md:147
+  - 'Candidate 1A': summaries/001-fixture.md:39
+- possible-duplicate  — npc: 'Candidate 16A' ~ 'Candidate 1A' (similarity 0.96); fix the summaries or rule it in canon.yaml
+  - 'Candidate 16A': summaries/001-fixture.md:151
+  - 'Candidate 1A': summaries/001-fixture.md:39
+- possible-duplicate  — npc: 'Candidate 16B' ~ 'Candidate 1A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 16B': summaries/001-fixture.md:155
+  - 'Candidate 1A': summaries/001-fixture.md:39
+- possible-duplicate  — npc: 'Candidate 17A' ~ 'Candidate 1A' (similarity 0.96); fix the summaries or rule it in canon.yaml
+  - 'Candidate 17A': summaries/001-fixture.md:159
+  - 'Candidate 1A': summaries/001-fixture.md:39
+- possible-duplicate  — npc: 'Candidate 17B' ~ 'Candidate 1A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 17B': summaries/001-fixture.md:163
+  - 'Candidate 1A': summaries/001-fixture.md:39
+- possible-duplicate  — npc: 'Candidate 18A' ~ 'Candidate 1A' (similarity 0.96); fix the summaries or rule it in canon.yaml
+  - 'Candidate 18A': summaries/001-fixture.md:167
+  - 'Candidate 1A': summaries/001-fixture.md:39
+- possible-duplicate  — npc: 'Candidate 18B' ~ 'Candidate 1A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 18B': summaries/001-fixture.md:171
+  - 'Candidate 1A': summaries/001-fixture.md:39
+- possible-duplicate  — npc: 'Candidate 19A' ~ 'Candidate 1A' (similarity 0.96); fix the summaries or rule it in canon.yaml
+  - 'Candidate 19A': summaries/001-fixture.md:175
+  - 'Candidate 1A': summaries/001-fixture.md:39
+- possible-duplicate  — npc: 'Candidate 19B' ~ 'Candidate 1A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 19B': summaries/001-fixture.md:179
+  - 'Candidate 1A': summaries/001-fixture.md:39
+- possible-duplicate  — npc: 'Candidate 1A' ~ 'Candidate 1B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 1A': summaries/001-fixture.md:39
+  - 'Candidate 1B': summaries/001-fixture.md:43
+- possible-duplicate  — npc: 'Candidate 1A' ~ 'Candidate 20A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 1A': summaries/001-fixture.md:39
+  - 'Candidate 20A': summaries/001-fixture.md:183
+- possible-duplicate  — npc: 'Candidate 1A' ~ 'Candidate 21A' (similarity 0.96); fix the summaries or rule it in canon.yaml
+  - 'Candidate 1A': summaries/001-fixture.md:39
+  - 'Candidate 21A': summaries/001-fixture.md:187
+- possible-duplicate  — npc: 'Candidate 1A' ~ 'Candidate 21B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 1A': summaries/001-fixture.md:39
+  - 'Candidate 21B': summaries/001-fixture.md:191
+- possible-duplicate  — npc: 'Candidate 1A' ~ 'Candidate 22A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 1A': summaries/001-fixture.md:39
+  - 'Candidate 22A': summaries/001-fixture.md:195
+- possible-duplicate  — npc: 'Candidate 1A' ~ 'Candidate 23A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 1A': summaries/001-fixture.md:39
+  - 'Candidate 23A': summaries/001-fixture.md:203
+- possible-duplicate  — npc: 'Candidate 1A' ~ 'Candidate 24A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 1A': summaries/001-fixture.md:39
+  - 'Candidate 24A': summaries/001-fixture.md:211
+- possible-duplicate  — npc: 'Candidate 1A' ~ 'Candidate 25A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 1A': summaries/001-fixture.md:39
+  - 'Candidate 25A': summaries/001-fixture.md:219
+- possible-duplicate  — npc: 'Candidate 1A' ~ 'Candidate 26A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 1A': summaries/001-fixture.md:39
+  - 'Candidate 26A': summaries/001-fixture.md:227
+- possible-duplicate  — npc: 'Candidate 1A' ~ 'Candidate 27A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 1A': summaries/001-fixture.md:39
+  - 'Candidate 27A': summaries/001-fixture.md:235
+- possible-duplicate  — npc: 'Candidate 1A' ~ 'Candidate 28A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 1A': summaries/001-fixture.md:39
+  - 'Candidate 28A': summaries/001-fixture.md:243
+- possible-duplicate  — npc: 'Candidate 1A' ~ 'Candidate 29A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 1A': summaries/001-fixture.md:39
+  - 'Candidate 29A': summaries/001-fixture.md:247
+- possible-duplicate  — npc: 'Candidate 1A' ~ 'Candidate 2A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 1A': summaries/001-fixture.md:39
+  - 'Candidate 2A': summaries/001-fixture.md:47
+- possible-duplicate  — npc: 'Candidate 1A' ~ 'Candidate 30A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 1A': summaries/001-fixture.md:39
+  - 'Candidate 30A': summaries/001-fixture.md:255
+- possible-duplicate  — npc: 'Candidate 1A' ~ 'Candidate 31A' (similarity 0.96); fix the summaries or rule it in canon.yaml
+  - 'Candidate 1A': summaries/001-fixture.md:39
+  - 'Candidate 31A': summaries/001-fixture.md:263
+- possible-duplicate  — npc: 'Candidate 1A' ~ 'Candidate 31B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 1A': summaries/001-fixture.md:39
+  - 'Candidate 31B': summaries/001-fixture.md:267
+- possible-duplicate  — npc: 'Candidate 1A' ~ 'Candidate 32A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 1A': summaries/001-fixture.md:39
+  - 'Candidate 32A': summaries/001-fixture.md:271
+- possible-duplicate  — npc: 'Candidate 1A' ~ 'Candidate 33A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 1A': summaries/001-fixture.md:39
+  - 'Candidate 33A': summaries/001-fixture.md:279
+- possible-duplicate  — npc: 'Candidate 1A' ~ 'Candidate 34A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 1A': summaries/001-fixture.md:39
+  - 'Candidate 34A': summaries/001-fixture.md:287
+- possible-duplicate  — npc: 'Candidate 1A' ~ 'Candidate 35A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 1A': summaries/001-fixture.md:39
+  - 'Candidate 35A': summaries/001-fixture.md:295
+- possible-duplicate  — npc: 'Candidate 1A' ~ 'Candidate 36A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 1A': summaries/001-fixture.md:39
+  - 'Candidate 36A': summaries/001-fixture.md:303
+- possible-duplicate  — npc: 'Candidate 1A' ~ 'Candidate 37A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 1A': summaries/001-fixture.md:39
+  - 'Candidate 37A': summaries/001-fixture.md:307
+- possible-duplicate  — npc: 'Candidate 1A' ~ 'Candidate 38A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 1A': summaries/001-fixture.md:39
+  - 'Candidate 38A': summaries/001-fixture.md:315
+- possible-duplicate  — npc: 'Candidate 1A' ~ 'Candidate 3A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 1A': summaries/001-fixture.md:39
+  - 'Candidate 3A': summaries/001-fixture.md:55
+- possible-duplicate  — npc: 'Candidate 1A' ~ 'Candidate 5A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 1A': summaries/001-fixture.md:39
+  - 'Candidate 5A': summaries/001-fixture.md:67
+- possible-duplicate  — npc: 'Candidate 1A' ~ 'Candidate 6A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 1A': summaries/001-fixture.md:39
+  - 'Candidate 6A': summaries/001-fixture.md:75
+- possible-duplicate  — npc: 'Candidate 1A' ~ 'Candidate 7A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 1A': summaries/001-fixture.md:39
+  - 'Candidate 7A': summaries/001-fixture.md:83
+- possible-duplicate  — npc: 'Candidate 1A' ~ 'Candidate 8A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 1A': summaries/001-fixture.md:39
+  - 'Candidate 8A': summaries/001-fixture.md:91
+- possible-duplicate  — npc: 'Candidate 1A' ~ 'Candidate 9A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 1A': summaries/001-fixture.md:39
+  - 'Candidate 9A': summaries/001-fixture.md:99
+- possible-duplicate  — npc: 'Candidate 10A' ~ 'Candidate 1B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 10A': summaries/001-fixture.md:107
+  - 'Candidate 1B': summaries/001-fixture.md:43
+- possible-duplicate  — npc: 'Candidate 10B' ~ 'Candidate 1B' (similarity 0.96); fix the summaries or rule it in canon.yaml
+  - 'Candidate 10B': summaries/001-fixture.md:111
+  - 'Candidate 1B': summaries/001-fixture.md:43
+- possible-duplicate  — npc: 'Candidate 11A' ~ 'Candidate 1B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 11A': summaries/001-fixture.md:115
+  - 'Candidate 1B': summaries/001-fixture.md:43
+- possible-duplicate  — npc: 'Candidate 11B' ~ 'Candidate 1B' (similarity 0.96); fix the summaries or rule it in canon.yaml
+  - 'Candidate 11B': summaries/001-fixture.md:119
+  - 'Candidate 1B': summaries/001-fixture.md:43
+- possible-duplicate  — npc: 'Candidate 12A' ~ 'Candidate 1B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 12A': summaries/001-fixture.md:123
+  - 'Candidate 1B': summaries/001-fixture.md:43
+- possible-duplicate  — npc: 'Candidate 13A' ~ 'Candidate 1B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 13A': summaries/001-fixture.md:127
+  - 'Candidate 1B': summaries/001-fixture.md:43
+- possible-duplicate  — npc: 'Candidate 13B' ~ 'Candidate 1B' (similarity 0.96); fix the summaries or rule it in canon.yaml
+  - 'Candidate 13B': summaries/001-fixture.md:131
+  - 'Candidate 1B': summaries/001-fixture.md:43
+- possible-duplicate  — npc: 'Candidate 14A' ~ 'Candidate 1B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 14A': summaries/001-fixture.md:135
+  - 'Candidate 1B': summaries/001-fixture.md:43
+- possible-duplicate  — npc: 'Candidate 14B' ~ 'Candidate 1B' (similarity 0.96); fix the summaries or rule it in canon.yaml
+  - 'Candidate 14B': summaries/001-fixture.md:139
+  - 'Candidate 1B': summaries/001-fixture.md:43
+- possible-duplicate  — npc: 'Candidate 15A' ~ 'Candidate 1B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 15A': summaries/001-fixture.md:143
+  - 'Candidate 1B': summaries/001-fixture.md:43
+- possible-duplicate  — npc: 'Candidate 15B' ~ 'Candidate 1B' (similarity 0.96); fix the summaries or rule it in canon.yaml
+  - 'Candidate 15B': summaries/001-fixture.md:147
+  - 'Candidate 1B': summaries/001-fixture.md:43
+- possible-duplicate  — npc: 'Candidate 16A' ~ 'Candidate 1B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 16A': summaries/001-fixture.md:151
+  - 'Candidate 1B': summaries/001-fixture.md:43
+- possible-duplicate  — npc: 'Candidate 16B' ~ 'Candidate 1B' (similarity 0.96); fix the summaries or rule it in canon.yaml
+  - 'Candidate 16B': summaries/001-fixture.md:155
+  - 'Candidate 1B': summaries/001-fixture.md:43
+- possible-duplicate  — npc: 'Candidate 17A' ~ 'Candidate 1B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 17A': summaries/001-fixture.md:159
+  - 'Candidate 1B': summaries/001-fixture.md:43
+- possible-duplicate  — npc: 'Candidate 17B' ~ 'Candidate 1B' (similarity 0.96); fix the summaries or rule it in canon.yaml
+  - 'Candidate 17B': summaries/001-fixture.md:163
+  - 'Candidate 1B': summaries/001-fixture.md:43
+- possible-duplicate  — npc: 'Candidate 18A' ~ 'Candidate 1B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 18A': summaries/001-fixture.md:167
+  - 'Candidate 1B': summaries/001-fixture.md:43
+- possible-duplicate  — npc: 'Candidate 18B' ~ 'Candidate 1B' (similarity 0.96); fix the summaries or rule it in canon.yaml
+  - 'Candidate 18B': summaries/001-fixture.md:171
+  - 'Candidate 1B': summaries/001-fixture.md:43
+- possible-duplicate  — npc: 'Candidate 19A' ~ 'Candidate 1B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 19A': summaries/001-fixture.md:175
+  - 'Candidate 1B': summaries/001-fixture.md:43
+- possible-duplicate  — npc: 'Candidate 19B' ~ 'Candidate 1B' (similarity 0.96); fix the summaries or rule it in canon.yaml
+  - 'Candidate 19B': summaries/001-fixture.md:179
+  - 'Candidate 1B': summaries/001-fixture.md:43
+- possible-duplicate  — npc: 'Candidate 1B' ~ 'Candidate 21A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 1B': summaries/001-fixture.md:43
+  - 'Candidate 21A': summaries/001-fixture.md:187
+- possible-duplicate  — npc: 'Candidate 1B' ~ 'Candidate 21B' (similarity 0.96); fix the summaries or rule it in canon.yaml
+  - 'Candidate 1B': summaries/001-fixture.md:43
+  - 'Candidate 21B': summaries/001-fixture.md:191
+- possible-duplicate  — npc: 'Candidate 1B' ~ 'Candidate 22B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 1B': summaries/001-fixture.md:43
+  - 'Candidate 22B': summaries/001-fixture.md:199
+- possible-duplicate  — npc: 'Candidate 1B' ~ 'Candidate 23B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 1B': summaries/001-fixture.md:43
+  - 'Candidate 23B': summaries/001-fixture.md:207
+- possible-duplicate  — npc: 'Candidate 1B' ~ 'Candidate 24B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 1B': summaries/001-fixture.md:43
+  - 'Candidate 24B': summaries/001-fixture.md:215
+- possible-duplicate  — npc: 'Candidate 1B' ~ 'Candidate 25B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 1B': summaries/001-fixture.md:43
+  - 'Candidate 25B': summaries/001-fixture.md:223
+- possible-duplicate  — npc: 'Candidate 1B' ~ 'Candidate 26B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 1B': summaries/001-fixture.md:43
+  - 'Candidate 26B': summaries/001-fixture.md:231
+- possible-duplicate  — npc: 'Candidate 1B' ~ 'Candidate 27B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 1B': summaries/001-fixture.md:43
+  - 'Candidate 27B': summaries/001-fixture.md:239
+- possible-duplicate  — npc: 'Candidate 1B' ~ 'Candidate 29B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 1B': summaries/001-fixture.md:43
+  - 'Candidate 29B': summaries/001-fixture.md:251
+- possible-duplicate  — npc: 'Candidate 1B' ~ 'Candidate 2B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 1B': summaries/001-fixture.md:43
+  - 'Candidate 2B': summaries/001-fixture.md:51
+- possible-duplicate  — npc: 'Candidate 1B' ~ 'Candidate 30B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 1B': summaries/001-fixture.md:43
+  - 'Candidate 30B': summaries/001-fixture.md:259
+- possible-duplicate  — npc: 'Candidate 1B' ~ 'Candidate 31A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 1B': summaries/001-fixture.md:43
+  - 'Candidate 31A': summaries/001-fixture.md:263
+- possible-duplicate  — npc: 'Candidate 1B' ~ 'Candidate 31B' (similarity 0.96); fix the summaries or rule it in canon.yaml
+  - 'Candidate 1B': summaries/001-fixture.md:43
+  - 'Candidate 31B': summaries/001-fixture.md:267
+- possible-duplicate  — npc: 'Candidate 1B' ~ 'Candidate 32B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 1B': summaries/001-fixture.md:43
+  - 'Candidate 32B': summaries/001-fixture.md:275
+- possible-duplicate  — npc: 'Candidate 1B' ~ 'Candidate 33B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 1B': summaries/001-fixture.md:43
+  - 'Candidate 33B': summaries/001-fixture.md:283
+- possible-duplicate  — npc: 'Candidate 1B' ~ 'Candidate 34B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 1B': summaries/001-fixture.md:43
+  - 'Candidate 34B': summaries/001-fixture.md:291
+- possible-duplicate  — npc: 'Candidate 1B' ~ 'Candidate 35B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 1B': summaries/001-fixture.md:43
+  - 'Candidate 35B': summaries/001-fixture.md:299
+- possible-duplicate  — npc: 'Candidate 1B' ~ 'Candidate 37B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 1B': summaries/001-fixture.md:43
+  - 'Candidate 37B': summaries/001-fixture.md:311
+- possible-duplicate  — npc: 'Candidate 1B' ~ 'Candidate 38B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 1B': summaries/001-fixture.md:43
+  - 'Candidate 38B': summaries/001-fixture.md:319
+- possible-duplicate  — npc: 'Candidate 1B' ~ 'Candidate 3B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 1B': summaries/001-fixture.md:43
+  - 'Candidate 3B': summaries/001-fixture.md:59
+- possible-duplicate  — npc: 'Candidate 1B' ~ 'Candidate 4B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 1B': summaries/001-fixture.md:43
+  - 'Candidate 4B': summaries/001-fixture.md:63
+- possible-duplicate  — npc: 'Candidate 1B' ~ 'Candidate 5B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 1B': summaries/001-fixture.md:43
+  - 'Candidate 5B': summaries/001-fixture.md:71
+- possible-duplicate  — npc: 'Candidate 1B' ~ 'Candidate 6B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 1B': summaries/001-fixture.md:43
+  - 'Candidate 6B': summaries/001-fixture.md:79
+- possible-duplicate  — npc: 'Candidate 1B' ~ 'Candidate 7B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 1B': summaries/001-fixture.md:43
+  - 'Candidate 7B': summaries/001-fixture.md:87
+- possible-duplicate  — npc: 'Candidate 1B' ~ 'Candidate 8B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 1B': summaries/001-fixture.md:43
+  - 'Candidate 8B': summaries/001-fixture.md:95
+- possible-duplicate  — npc: 'Candidate 1B' ~ 'Candidate 9B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 1B': summaries/001-fixture.md:43
+  - 'Candidate 9B': summaries/001-fixture.md:103
+- possible-duplicate  — npc: 'Candidate 10A' ~ 'Candidate 2A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 10A': summaries/001-fixture.md:107
+  - 'Candidate 2A': summaries/001-fixture.md:47
+- possible-duplicate  — npc: 'Candidate 11A' ~ 'Candidate 2A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 11A': summaries/001-fixture.md:115
+  - 'Candidate 2A': summaries/001-fixture.md:47
+- possible-duplicate  — npc: 'Candidate 12A' ~ 'Candidate 2A' (similarity 0.96); fix the summaries or rule it in canon.yaml
+  - 'Candidate 12A': summaries/001-fixture.md:123
+  - 'Candidate 2A': summaries/001-fixture.md:47
+- possible-duplicate  — npc: 'Candidate 13A' ~ 'Candidate 2A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 13A': summaries/001-fixture.md:127
+  - 'Candidate 2A': summaries/001-fixture.md:47
+- possible-duplicate  — npc: 'Candidate 14A' ~ 'Candidate 2A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 14A': summaries/001-fixture.md:135
+  - 'Candidate 2A': summaries/001-fixture.md:47
+- possible-duplicate  — npc: 'Candidate 15A' ~ 'Candidate 2A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 15A': summaries/001-fixture.md:143
+  - 'Candidate 2A': summaries/001-fixture.md:47
+- possible-duplicate  — npc: 'Candidate 16A' ~ 'Candidate 2A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 16A': summaries/001-fixture.md:151
+  - 'Candidate 2A': summaries/001-fixture.md:47
+- possible-duplicate  — npc: 'Candidate 17A' ~ 'Candidate 2A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 17A': summaries/001-fixture.md:159
+  - 'Candidate 2A': summaries/001-fixture.md:47
+- possible-duplicate  — npc: 'Candidate 18A' ~ 'Candidate 2A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 18A': summaries/001-fixture.md:167
+  - 'Candidate 2A': summaries/001-fixture.md:47
+- possible-duplicate  — npc: 'Candidate 19A' ~ 'Candidate 2A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 19A': summaries/001-fixture.md:175
+  - 'Candidate 2A': summaries/001-fixture.md:47
+- possible-duplicate  — npc: 'Candidate 20A' ~ 'Candidate 2A' (similarity 0.96); fix the summaries or rule it in canon.yaml
+  - 'Candidate 20A': summaries/001-fixture.md:183
+  - 'Candidate 2A': summaries/001-fixture.md:47
+- possible-duplicate  — npc: 'Candidate 21A' ~ 'Candidate 2A' (similarity 0.96); fix the summaries or rule it in canon.yaml
+  - 'Candidate 21A': summaries/001-fixture.md:187
+  - 'Candidate 2A': summaries/001-fixture.md:47
+- possible-duplicate  — npc: 'Candidate 21B' ~ 'Candidate 2A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 21B': summaries/001-fixture.md:191
+  - 'Candidate 2A': summaries/001-fixture.md:47
+- possible-duplicate  — npc: 'Candidate 22A' ~ 'Candidate 2A' (similarity 0.96); fix the summaries or rule it in canon.yaml
+  - 'Candidate 22A': summaries/001-fixture.md:195
+  - 'Candidate 2A': summaries/001-fixture.md:47
+- possible-duplicate  — npc: 'Candidate 22B' ~ 'Candidate 2A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 22B': summaries/001-fixture.md:199
+  - 'Candidate 2A': summaries/001-fixture.md:47
+- possible-duplicate  — npc: 'Candidate 23A' ~ 'Candidate 2A' (similarity 0.96); fix the summaries or rule it in canon.yaml
+  - 'Candidate 23A': summaries/001-fixture.md:203
+  - 'Candidate 2A': summaries/001-fixture.md:47
+- possible-duplicate  — npc: 'Candidate 23B' ~ 'Candidate 2A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 23B': summaries/001-fixture.md:207
+  - 'Candidate 2A': summaries/001-fixture.md:47
+- possible-duplicate  — npc: 'Candidate 24A' ~ 'Candidate 2A' (similarity 0.96); fix the summaries or rule it in canon.yaml
+  - 'Candidate 24A': summaries/001-fixture.md:211
+  - 'Candidate 2A': summaries/001-fixture.md:47
+- possible-duplicate  — npc: 'Candidate 24B' ~ 'Candidate 2A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 24B': summaries/001-fixture.md:215
+  - 'Candidate 2A': summaries/001-fixture.md:47
+- possible-duplicate  — npc: 'Candidate 25A' ~ 'Candidate 2A' (similarity 0.96); fix the summaries or rule it in canon.yaml
+  - 'Candidate 25A': summaries/001-fixture.md:219
+  - 'Candidate 2A': summaries/001-fixture.md:47
+- possible-duplicate  — npc: 'Candidate 25B' ~ 'Candidate 2A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 25B': summaries/001-fixture.md:223
+  - 'Candidate 2A': summaries/001-fixture.md:47
+- possible-duplicate  — npc: 'Candidate 26A' ~ 'Candidate 2A' (similarity 0.96); fix the summaries or rule it in canon.yaml
+  - 'Candidate 26A': summaries/001-fixture.md:227
+  - 'Candidate 2A': summaries/001-fixture.md:47
+- possible-duplicate  — npc: 'Candidate 26B' ~ 'Candidate 2A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 26B': summaries/001-fixture.md:231
+  - 'Candidate 2A': summaries/001-fixture.md:47
+- possible-duplicate  — npc: 'Candidate 27A' ~ 'Candidate 2A' (similarity 0.96); fix the summaries or rule it in canon.yaml
+  - 'Candidate 27A': summaries/001-fixture.md:235
+  - 'Candidate 2A': summaries/001-fixture.md:47
+- possible-duplicate  — npc: 'Candidate 27B' ~ 'Candidate 2A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 27B': summaries/001-fixture.md:239
+  - 'Candidate 2A': summaries/001-fixture.md:47
+- possible-duplicate  — npc: 'Candidate 28A' ~ 'Candidate 2A' (similarity 0.96); fix the summaries or rule it in canon.yaml
+  - 'Candidate 28A': summaries/001-fixture.md:243
+  - 'Candidate 2A': summaries/001-fixture.md:47
+- possible-duplicate  — npc: 'Candidate 29A' ~ 'Candidate 2A' (similarity 0.96); fix the summaries or rule it in canon.yaml
+  - 'Candidate 29A': summaries/001-fixture.md:247
+  - 'Candidate 2A': summaries/001-fixture.md:47
+- possible-duplicate  — npc: 'Candidate 29B' ~ 'Candidate 2A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 29B': summaries/001-fixture.md:251
+  - 'Candidate 2A': summaries/001-fixture.md:47
+- possible-duplicate  — npc: 'Candidate 2A' ~ 'Candidate 2B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 2A': summaries/001-fixture.md:47
+  - 'Candidate 2B': summaries/001-fixture.md:51
+- possible-duplicate  — npc: 'Candidate 2A' ~ 'Candidate 30A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 2A': summaries/001-fixture.md:47
+  - 'Candidate 30A': summaries/001-fixture.md:255
+- possible-duplicate  — npc: 'Candidate 2A' ~ 'Candidate 31A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 2A': summaries/001-fixture.md:47
+  - 'Candidate 31A': summaries/001-fixture.md:263
+- possible-duplicate  — npc: 'Candidate 2A' ~ 'Candidate 32A' (similarity 0.96); fix the summaries or rule it in canon.yaml
+  - 'Candidate 2A': summaries/001-fixture.md:47
+  - 'Candidate 32A': summaries/001-fixture.md:271
+- possible-duplicate  — npc: 'Candidate 2A' ~ 'Candidate 32B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 2A': summaries/001-fixture.md:47
+  - 'Candidate 32B': summaries/001-fixture.md:275
+- possible-duplicate  — npc: 'Candidate 2A' ~ 'Candidate 33A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 2A': summaries/001-fixture.md:47
+  - 'Candidate 33A': summaries/001-fixture.md:279
+- possible-duplicate  — npc: 'Candidate 2A' ~ 'Candidate 34A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 2A': summaries/001-fixture.md:47
+  - 'Candidate 34A': summaries/001-fixture.md:287
+- possible-duplicate  — npc: 'Candidate 2A' ~ 'Candidate 35A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 2A': summaries/001-fixture.md:47
+  - 'Candidate 35A': summaries/001-fixture.md:295
+- possible-duplicate  — npc: 'Candidate 2A' ~ 'Candidate 36A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 2A': summaries/001-fixture.md:47
+  - 'Candidate 36A': summaries/001-fixture.md:303
+- possible-duplicate  — npc: 'Candidate 2A' ~ 'Candidate 37A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 2A': summaries/001-fixture.md:47
+  - 'Candidate 37A': summaries/001-fixture.md:307
+- possible-duplicate  — npc: 'Candidate 2A' ~ 'Candidate 38A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 2A': summaries/001-fixture.md:47
+  - 'Candidate 38A': summaries/001-fixture.md:315
+- possible-duplicate  — npc: 'Candidate 2A' ~ 'Candidate 3A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 2A': summaries/001-fixture.md:47
+  - 'Candidate 3A': summaries/001-fixture.md:55
+- possible-duplicate  — npc: 'Candidate 2A' ~ 'Candidate 5A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 2A': summaries/001-fixture.md:47
+  - 'Candidate 5A': summaries/001-fixture.md:67
+- possible-duplicate  — npc: 'Candidate 2A' ~ 'Candidate 6A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 2A': summaries/001-fixture.md:47
+  - 'Candidate 6A': summaries/001-fixture.md:75
+- possible-duplicate  — npc: 'Candidate 2A' ~ 'Candidate 7A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 2A': summaries/001-fixture.md:47
+  - 'Candidate 7A': summaries/001-fixture.md:83
+- possible-duplicate  — npc: 'Candidate 2A' ~ 'Candidate 8A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 2A': summaries/001-fixture.md:47
+  - 'Candidate 8A': summaries/001-fixture.md:91
+- possible-duplicate  — npc: 'Candidate 2A' ~ 'Candidate 9A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 2A': summaries/001-fixture.md:47
+  - 'Candidate 9A': summaries/001-fixture.md:99
+- possible-duplicate  — npc: 'Candidate 10B' ~ 'Candidate 2B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 10B': summaries/001-fixture.md:111
+  - 'Candidate 2B': summaries/001-fixture.md:51
+- possible-duplicate  — npc: 'Candidate 11B' ~ 'Candidate 2B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 11B': summaries/001-fixture.md:119
+  - 'Candidate 2B': summaries/001-fixture.md:51
+- possible-duplicate  — npc: 'Candidate 12A' ~ 'Candidate 2B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 12A': summaries/001-fixture.md:123
+  - 'Candidate 2B': summaries/001-fixture.md:51
+- possible-duplicate  — npc: 'Candidate 13B' ~ 'Candidate 2B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 13B': summaries/001-fixture.md:131
+  - 'Candidate 2B': summaries/001-fixture.md:51
+- possible-duplicate  — npc: 'Candidate 14B' ~ 'Candidate 2B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 14B': summaries/001-fixture.md:139
+  - 'Candidate 2B': summaries/001-fixture.md:51
+- possible-duplicate  — npc: 'Candidate 15B' ~ 'Candidate 2B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 15B': summaries/001-fixture.md:147
+  - 'Candidate 2B': summaries/001-fixture.md:51
+- possible-duplicate  — npc: 'Candidate 16B' ~ 'Candidate 2B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 16B': summaries/001-fixture.md:155
+  - 'Candidate 2B': summaries/001-fixture.md:51
+- possible-duplicate  — npc: 'Candidate 17B' ~ 'Candidate 2B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 17B': summaries/001-fixture.md:163
+  - 'Candidate 2B': summaries/001-fixture.md:51
+- possible-duplicate  — npc: 'Candidate 18B' ~ 'Candidate 2B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 18B': summaries/001-fixture.md:171
+  - 'Candidate 2B': summaries/001-fixture.md:51
+- possible-duplicate  — npc: 'Candidate 19B' ~ 'Candidate 2B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 19B': summaries/001-fixture.md:179
+  - 'Candidate 2B': summaries/001-fixture.md:51
+- possible-duplicate  — npc: 'Candidate 20A' ~ 'Candidate 2B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 20A': summaries/001-fixture.md:183
+  - 'Candidate 2B': summaries/001-fixture.md:51
+- possible-duplicate  — npc: 'Candidate 21A' ~ 'Candidate 2B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 21A': summaries/001-fixture.md:187
+  - 'Candidate 2B': summaries/001-fixture.md:51
+- possible-duplicate  — npc: 'Candidate 21B' ~ 'Candidate 2B' (similarity 0.96); fix the summaries or rule it in canon.yaml
+  - 'Candidate 21B': summaries/001-fixture.md:191
+  - 'Candidate 2B': summaries/001-fixture.md:51
+- possible-duplicate  — npc: 'Candidate 22A' ~ 'Candidate 2B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 22A': summaries/001-fixture.md:195
+  - 'Candidate 2B': summaries/001-fixture.md:51
+- possible-duplicate  — npc: 'Candidate 22B' ~ 'Candidate 2B' (similarity 0.96); fix the summaries or rule it in canon.yaml
+  - 'Candidate 22B': summaries/001-fixture.md:199
+  - 'Candidate 2B': summaries/001-fixture.md:51
+- possible-duplicate  — npc: 'Candidate 23A' ~ 'Candidate 2B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 23A': summaries/001-fixture.md:203
+  - 'Candidate 2B': summaries/001-fixture.md:51
+- possible-duplicate  — npc: 'Candidate 23B' ~ 'Candidate 2B' (similarity 0.96); fix the summaries or rule it in canon.yaml
+  - 'Candidate 23B': summaries/001-fixture.md:207
+  - 'Candidate 2B': summaries/001-fixture.md:51
+- possible-duplicate  — npc: 'Candidate 24A' ~ 'Candidate 2B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 24A': summaries/001-fixture.md:211
+  - 'Candidate 2B': summaries/001-fixture.md:51
+- possible-duplicate  — npc: 'Candidate 24B' ~ 'Candidate 2B' (similarity 0.96); fix the summaries or rule it in canon.yaml
+  - 'Candidate 24B': summaries/001-fixture.md:215
+  - 'Candidate 2B': summaries/001-fixture.md:51
+- possible-duplicate  — npc: 'Candidate 25A' ~ 'Candidate 2B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 25A': summaries/001-fixture.md:219
+  - 'Candidate 2B': summaries/001-fixture.md:51
+- possible-duplicate  — npc: 'Candidate 25B' ~ 'Candidate 2B' (similarity 0.96); fix the summaries or rule it in canon.yaml
+  - 'Candidate 25B': summaries/001-fixture.md:223
+  - 'Candidate 2B': summaries/001-fixture.md:51
+- possible-duplicate  — npc: 'Candidate 26A' ~ 'Candidate 2B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 26A': summaries/001-fixture.md:227
+  - 'Candidate 2B': summaries/001-fixture.md:51
+- possible-duplicate  — npc: 'Candidate 26B' ~ 'Candidate 2B' (similarity 0.96); fix the summaries or rule it in canon.yaml
+  - 'Candidate 26B': summaries/001-fixture.md:231
+  - 'Candidate 2B': summaries/001-fixture.md:51
+- possible-duplicate  — npc: 'Candidate 27A' ~ 'Candidate 2B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 27A': summaries/001-fixture.md:235
+  - 'Candidate 2B': summaries/001-fixture.md:51
+- possible-duplicate  — npc: 'Candidate 27B' ~ 'Candidate 2B' (similarity 0.96); fix the summaries or rule it in canon.yaml
+  - 'Candidate 27B': summaries/001-fixture.md:239
+  - 'Candidate 2B': summaries/001-fixture.md:51
+- possible-duplicate  — npc: 'Candidate 28A' ~ 'Candidate 2B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 28A': summaries/001-fixture.md:243
+  - 'Candidate 2B': summaries/001-fixture.md:51
+- possible-duplicate  — npc: 'Candidate 29A' ~ 'Candidate 2B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 29A': summaries/001-fixture.md:247
+  - 'Candidate 2B': summaries/001-fixture.md:51
+- possible-duplicate  — npc: 'Candidate 29B' ~ 'Candidate 2B' (similarity 0.96); fix the summaries or rule it in canon.yaml
+  - 'Candidate 29B': summaries/001-fixture.md:251
+  - 'Candidate 2B': summaries/001-fixture.md:51
+- possible-duplicate  — npc: 'Candidate 2B' ~ 'Candidate 30B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 2B': summaries/001-fixture.md:51
+  - 'Candidate 30B': summaries/001-fixture.md:259
+- possible-duplicate  — npc: 'Candidate 2B' ~ 'Candidate 31B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 2B': summaries/001-fixture.md:51
+  - 'Candidate 31B': summaries/001-fixture.md:267
+- possible-duplicate  — npc: 'Candidate 2B' ~ 'Candidate 32A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 2B': summaries/001-fixture.md:51
+  - 'Candidate 32A': summaries/001-fixture.md:271
+- possible-duplicate  — npc: 'Candidate 2B' ~ 'Candidate 32B' (similarity 0.96); fix the summaries or rule it in canon.yaml
+  - 'Candidate 2B': summaries/001-fixture.md:51
+  - 'Candidate 32B': summaries/001-fixture.md:275
+- possible-duplicate  — npc: 'Candidate 2B' ~ 'Candidate 33B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 2B': summaries/001-fixture.md:51
+  - 'Candidate 33B': summaries/001-fixture.md:283
+- possible-duplicate  — npc: 'Candidate 2B' ~ 'Candidate 34B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 2B': summaries/001-fixture.md:51
+  - 'Candidate 34B': summaries/001-fixture.md:291
+- possible-duplicate  — npc: 'Candidate 2B' ~ 'Candidate 35B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 2B': summaries/001-fixture.md:51
+  - 'Candidate 35B': summaries/001-fixture.md:299
+- possible-duplicate  — npc: 'Candidate 2B' ~ 'Candidate 37B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 2B': summaries/001-fixture.md:51
+  - 'Candidate 37B': summaries/001-fixture.md:311
+- possible-duplicate  — npc: 'Candidate 2B' ~ 'Candidate 38B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 2B': summaries/001-fixture.md:51
+  - 'Candidate 38B': summaries/001-fixture.md:319
+- possible-duplicate  — npc: 'Candidate 2B' ~ 'Candidate 3B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 2B': summaries/001-fixture.md:51
+  - 'Candidate 3B': summaries/001-fixture.md:59
+- possible-duplicate  — npc: 'Candidate 2B' ~ 'Candidate 4B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 2B': summaries/001-fixture.md:51
+  - 'Candidate 4B': summaries/001-fixture.md:63
+- possible-duplicate  — npc: 'Candidate 2B' ~ 'Candidate 5B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 2B': summaries/001-fixture.md:51
+  - 'Candidate 5B': summaries/001-fixture.md:71
+- possible-duplicate  — npc: 'Candidate 2B' ~ 'Candidate 6B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 2B': summaries/001-fixture.md:51
+  - 'Candidate 6B': summaries/001-fixture.md:79
+- possible-duplicate  — npc: 'Candidate 2B' ~ 'Candidate 7B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 2B': summaries/001-fixture.md:51
+  - 'Candidate 7B': summaries/001-fixture.md:87
+- possible-duplicate  — npc: 'Candidate 2B' ~ 'Candidate 8B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 2B': summaries/001-fixture.md:51
+  - 'Candidate 8B': summaries/001-fixture.md:95
+- possible-duplicate  — npc: 'Candidate 2B' ~ 'Candidate 9B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 2B': summaries/001-fixture.md:51
+  - 'Candidate 9B': summaries/001-fixture.md:103
+- possible-duplicate  — npc: 'Candidate 10A' ~ 'Candidate 3A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 10A': summaries/001-fixture.md:107
+  - 'Candidate 3A': summaries/001-fixture.md:55
+- possible-duplicate  — npc: 'Candidate 11A' ~ 'Candidate 3A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 11A': summaries/001-fixture.md:115
+  - 'Candidate 3A': summaries/001-fixture.md:55
+- possible-duplicate  — npc: 'Candidate 12A' ~ 'Candidate 3A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 12A': summaries/001-fixture.md:123
+  - 'Candidate 3A': summaries/001-fixture.md:55
+- possible-duplicate  — npc: 'Candidate 13A' ~ 'Candidate 3A' (similarity 0.96); fix the summaries or rule it in canon.yaml
+  - 'Candidate 13A': summaries/001-fixture.md:127
+  - 'Candidate 3A': summaries/001-fixture.md:55
+- possible-duplicate  — npc: 'Candidate 13B' ~ 'Candidate 3A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 13B': summaries/001-fixture.md:131
+  - 'Candidate 3A': summaries/001-fixture.md:55
+- possible-duplicate  — npc: 'Candidate 14A' ~ 'Candidate 3A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 14A': summaries/001-fixture.md:135
+  - 'Candidate 3A': summaries/001-fixture.md:55
+- possible-duplicate  — npc: 'Candidate 15A' ~ 'Candidate 3A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 15A': summaries/001-fixture.md:143
+  - 'Candidate 3A': summaries/001-fixture.md:55
+- possible-duplicate  — npc: 'Candidate 16A' ~ 'Candidate 3A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 16A': summaries/001-fixture.md:151
+  - 'Candidate 3A': summaries/001-fixture.md:55
+- possible-duplicate  — npc: 'Candidate 17A' ~ 'Candidate 3A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 17A': summaries/001-fixture.md:159
+  - 'Candidate 3A': summaries/001-fixture.md:55
+- possible-duplicate  — npc: 'Candidate 18A' ~ 'Candidate 3A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 18A': summaries/001-fixture.md:167
+  - 'Candidate 3A': summaries/001-fixture.md:55
+- possible-duplicate  — npc: 'Candidate 19A' ~ 'Candidate 3A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 19A': summaries/001-fixture.md:175
+  - 'Candidate 3A': summaries/001-fixture.md:55
+- possible-duplicate  — npc: 'Candidate 20A' ~ 'Candidate 3A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 20A': summaries/001-fixture.md:183
+  - 'Candidate 3A': summaries/001-fixture.md:55
+- possible-duplicate  — npc: 'Candidate 21A' ~ 'Candidate 3A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 21A': summaries/001-fixture.md:187
+  - 'Candidate 3A': summaries/001-fixture.md:55
+- possible-duplicate  — npc: 'Candidate 22A' ~ 'Candidate 3A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 22A': summaries/001-fixture.md:195
+  - 'Candidate 3A': summaries/001-fixture.md:55
+- possible-duplicate  — npc: 'Candidate 23A' ~ 'Candidate 3A' (similarity 0.96); fix the summaries or rule it in canon.yaml
+  - 'Candidate 23A': summaries/001-fixture.md:203
+  - 'Candidate 3A': summaries/001-fixture.md:55
+- possible-duplicate  — npc: 'Candidate 23B' ~ 'Candidate 3A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 23B': summaries/001-fixture.md:207
+  - 'Candidate 3A': summaries/001-fixture.md:55
+- possible-duplicate  — npc: 'Candidate 24A' ~ 'Candidate 3A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 24A': summaries/001-fixture.md:211
+  - 'Candidate 3A': summaries/001-fixture.md:55
+- possible-duplicate  — npc: 'Candidate 25A' ~ 'Candidate 3A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 25A': summaries/001-fixture.md:219
+  - 'Candidate 3A': summaries/001-fixture.md:55
+- possible-duplicate  — npc: 'Candidate 26A' ~ 'Candidate 3A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 26A': summaries/001-fixture.md:227
+  - 'Candidate 3A': summaries/001-fixture.md:55
+- possible-duplicate  — npc: 'Candidate 27A' ~ 'Candidate 3A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 27A': summaries/001-fixture.md:235
+  - 'Candidate 3A': summaries/001-fixture.md:55
+- possible-duplicate  — npc: 'Candidate 28A' ~ 'Candidate 3A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 28A': summaries/001-fixture.md:243
+  - 'Candidate 3A': summaries/001-fixture.md:55
+- possible-duplicate  — npc: 'Candidate 29A' ~ 'Candidate 3A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 29A': summaries/001-fixture.md:247
+  - 'Candidate 3A': summaries/001-fixture.md:55
+- possible-duplicate  — npc: 'Candidate 30A' ~ 'Candidate 3A' (similarity 0.96); fix the summaries or rule it in canon.yaml
+  - 'Candidate 30A': summaries/001-fixture.md:255
+  - 'Candidate 3A': summaries/001-fixture.md:55
+- possible-duplicate  — npc: 'Candidate 30B' ~ 'Candidate 3A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 30B': summaries/001-fixture.md:259
+  - 'Candidate 3A': summaries/001-fixture.md:55
+- possible-duplicate  — npc: 'Candidate 31A' ~ 'Candidate 3A' (similarity 0.96); fix the summaries or rule it in canon.yaml
+  - 'Candidate 31A': summaries/001-fixture.md:263
+  - 'Candidate 3A': summaries/001-fixture.md:55
+- possible-duplicate  — npc: 'Candidate 31B' ~ 'Candidate 3A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 31B': summaries/001-fixture.md:267
+  - 'Candidate 3A': summaries/001-fixture.md:55
+- possible-duplicate  — npc: 'Candidate 32A' ~ 'Candidate 3A' (similarity 0.96); fix the summaries or rule it in canon.yaml
+  - 'Candidate 32A': summaries/001-fixture.md:271
+  - 'Candidate 3A': summaries/001-fixture.md:55
+- possible-duplicate  — npc: 'Candidate 32B' ~ 'Candidate 3A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 32B': summaries/001-fixture.md:275
+  - 'Candidate 3A': summaries/001-fixture.md:55
+- possible-duplicate  — npc: 'Candidate 33A' ~ 'Candidate 3A' (similarity 0.96); fix the summaries or rule it in canon.yaml
+  - 'Candidate 33A': summaries/001-fixture.md:279
+  - 'Candidate 3A': summaries/001-fixture.md:55
+- possible-duplicate  — npc: 'Candidate 33B' ~ 'Candidate 3A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 33B': summaries/001-fixture.md:283
+  - 'Candidate 3A': summaries/001-fixture.md:55
+- possible-duplicate  — npc: 'Candidate 34A' ~ 'Candidate 3A' (similarity 0.96); fix the summaries or rule it in canon.yaml
+  - 'Candidate 34A': summaries/001-fixture.md:287
+  - 'Candidate 3A': summaries/001-fixture.md:55
+- possible-duplicate  — npc: 'Candidate 34B' ~ 'Candidate 3A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 34B': summaries/001-fixture.md:291
+  - 'Candidate 3A': summaries/001-fixture.md:55
+- possible-duplicate  — npc: 'Candidate 35A' ~ 'Candidate 3A' (similarity 0.96); fix the summaries or rule it in canon.yaml
+  - 'Candidate 35A': summaries/001-fixture.md:295
+  - 'Candidate 3A': summaries/001-fixture.md:55
+- possible-duplicate  — npc: 'Candidate 35B' ~ 'Candidate 3A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 35B': summaries/001-fixture.md:299
+  - 'Candidate 3A': summaries/001-fixture.md:55
+- possible-duplicate  — npc: 'Candidate 36A' ~ 'Candidate 3A' (similarity 0.96); fix the summaries or rule it in canon.yaml
+  - 'Candidate 36A': summaries/001-fixture.md:303
+  - 'Candidate 3A': summaries/001-fixture.md:55
+- possible-duplicate  — npc: 'Candidate 37A' ~ 'Candidate 3A' (similarity 0.96); fix the summaries or rule it in canon.yaml
+  - 'Candidate 37A': summaries/001-fixture.md:307
+  - 'Candidate 3A': summaries/001-fixture.md:55
+- possible-duplicate  — npc: 'Candidate 37B' ~ 'Candidate 3A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 37B': summaries/001-fixture.md:311
+  - 'Candidate 3A': summaries/001-fixture.md:55
+- possible-duplicate  — npc: 'Candidate 38A' ~ 'Candidate 3A' (similarity 0.96); fix the summaries or rule it in canon.yaml
+  - 'Candidate 38A': summaries/001-fixture.md:315
+  - 'Candidate 3A': summaries/001-fixture.md:55
+- possible-duplicate  — npc: 'Candidate 38B' ~ 'Candidate 3A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 38B': summaries/001-fixture.md:319
+  - 'Candidate 3A': summaries/001-fixture.md:55
+- possible-duplicate  — npc: 'Candidate 3A' ~ 'Candidate 3B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 3A': summaries/001-fixture.md:55
+  - 'Candidate 3B': summaries/001-fixture.md:59
+- possible-duplicate  — npc: 'Candidate 3A' ~ 'Candidate 5A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 3A': summaries/001-fixture.md:55
+  - 'Candidate 5A': summaries/001-fixture.md:67
+- possible-duplicate  — npc: 'Candidate 3A' ~ 'Candidate 6A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 3A': summaries/001-fixture.md:55
+  - 'Candidate 6A': summaries/001-fixture.md:75
+- possible-duplicate  — npc: 'Candidate 3A' ~ 'Candidate 7A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 3A': summaries/001-fixture.md:55
+  - 'Candidate 7A': summaries/001-fixture.md:83
+- possible-duplicate  — npc: 'Candidate 3A' ~ 'Candidate 8A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 3A': summaries/001-fixture.md:55
+  - 'Candidate 8A': summaries/001-fixture.md:91
+- possible-duplicate  — npc: 'Candidate 3A' ~ 'Candidate 9A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 3A': summaries/001-fixture.md:55
+  - 'Candidate 9A': summaries/001-fixture.md:99
+- possible-duplicate  — npc: 'Candidate 10B' ~ 'Candidate 3B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 10B': summaries/001-fixture.md:111
+  - 'Candidate 3B': summaries/001-fixture.md:59
+- possible-duplicate  — npc: 'Candidate 11B' ~ 'Candidate 3B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 11B': summaries/001-fixture.md:119
+  - 'Candidate 3B': summaries/001-fixture.md:59
+- possible-duplicate  — npc: 'Candidate 13A' ~ 'Candidate 3B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 13A': summaries/001-fixture.md:127
+  - 'Candidate 3B': summaries/001-fixture.md:59
+- possible-duplicate  — npc: 'Candidate 13B' ~ 'Candidate 3B' (similarity 0.96); fix the summaries or rule it in canon.yaml
+  - 'Candidate 13B': summaries/001-fixture.md:131
+  - 'Candidate 3B': summaries/001-fixture.md:59
+- possible-duplicate  — npc: 'Candidate 14B' ~ 'Candidate 3B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 14B': summaries/001-fixture.md:139
+  - 'Candidate 3B': summaries/001-fixture.md:59
+- possible-duplicate  — npc: 'Candidate 15B' ~ 'Candidate 3B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 15B': summaries/001-fixture.md:147
+  - 'Candidate 3B': summaries/001-fixture.md:59
+- possible-duplicate  — npc: 'Candidate 16B' ~ 'Candidate 3B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 16B': summaries/001-fixture.md:155
+  - 'Candidate 3B': summaries/001-fixture.md:59
+- possible-duplicate  — npc: 'Candidate 17B' ~ 'Candidate 3B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 17B': summaries/001-fixture.md:163
+  - 'Candidate 3B': summaries/001-fixture.md:59
+- possible-duplicate  — npc: 'Candidate 18B' ~ 'Candidate 3B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 18B': summaries/001-fixture.md:171
+  - 'Candidate 3B': summaries/001-fixture.md:59
+- possible-duplicate  — npc: 'Candidate 19B' ~ 'Candidate 3B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 19B': summaries/001-fixture.md:179
+  - 'Candidate 3B': summaries/001-fixture.md:59
+- possible-duplicate  — npc: 'Candidate 21B' ~ 'Candidate 3B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 21B': summaries/001-fixture.md:191
+  - 'Candidate 3B': summaries/001-fixture.md:59
+- possible-duplicate  — npc: 'Candidate 22B' ~ 'Candidate 3B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 22B': summaries/001-fixture.md:199
+  - 'Candidate 3B': summaries/001-fixture.md:59
+- possible-duplicate  — npc: 'Candidate 23A' ~ 'Candidate 3B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 23A': summaries/001-fixture.md:203
+  - 'Candidate 3B': summaries/001-fixture.md:59
+- possible-duplicate  — npc: 'Candidate 23B' ~ 'Candidate 3B' (similarity 0.96); fix the summaries or rule it in canon.yaml
+  - 'Candidate 23B': summaries/001-fixture.md:207
+  - 'Candidate 3B': summaries/001-fixture.md:59
+- possible-duplicate  — npc: 'Candidate 24B' ~ 'Candidate 3B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 24B': summaries/001-fixture.md:215
+  - 'Candidate 3B': summaries/001-fixture.md:59
+- possible-duplicate  — npc: 'Candidate 25B' ~ 'Candidate 3B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 25B': summaries/001-fixture.md:223
+  - 'Candidate 3B': summaries/001-fixture.md:59
+- possible-duplicate  — npc: 'Candidate 26B' ~ 'Candidate 3B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 26B': summaries/001-fixture.md:231
+  - 'Candidate 3B': summaries/001-fixture.md:59
+- possible-duplicate  — npc: 'Candidate 27B' ~ 'Candidate 3B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 27B': summaries/001-fixture.md:239
+  - 'Candidate 3B': summaries/001-fixture.md:59
+- possible-duplicate  — npc: 'Candidate 29B' ~ 'Candidate 3B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 29B': summaries/001-fixture.md:251
+  - 'Candidate 3B': summaries/001-fixture.md:59
+- possible-duplicate  — npc: 'Candidate 30A' ~ 'Candidate 3B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 30A': summaries/001-fixture.md:255
+  - 'Candidate 3B': summaries/001-fixture.md:59
+- possible-duplicate  — npc: 'Candidate 30B' ~ 'Candidate 3B' (similarity 0.96); fix the summaries or rule it in canon.yaml
+  - 'Candidate 30B': summaries/001-fixture.md:259
+  - 'Candidate 3B': summaries/001-fixture.md:59
+- possible-duplicate  — npc: 'Candidate 31A' ~ 'Candidate 3B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 31A': summaries/001-fixture.md:263
+  - 'Candidate 3B': summaries/001-fixture.md:59
+- possible-duplicate  — npc: 'Candidate 31B' ~ 'Candidate 3B' (similarity 0.96); fix the summaries or rule it in canon.yaml
+  - 'Candidate 31B': summaries/001-fixture.md:267
+  - 'Candidate 3B': summaries/001-fixture.md:59
+- possible-duplicate  — npc: 'Candidate 32A' ~ 'Candidate 3B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 32A': summaries/001-fixture.md:271
+  - 'Candidate 3B': summaries/001-fixture.md:59
+- possible-duplicate  — npc: 'Candidate 32B' ~ 'Candidate 3B' (similarity 0.96); fix the summaries or rule it in canon.yaml
+  - 'Candidate 32B': summaries/001-fixture.md:275
+  - 'Candidate 3B': summaries/001-fixture.md:59
+- possible-duplicate  — npc: 'Candidate 33A' ~ 'Candidate 3B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 33A': summaries/001-fixture.md:279
+  - 'Candidate 3B': summaries/001-fixture.md:59
+- possible-duplicate  — npc: 'Candidate 33B' ~ 'Candidate 3B' (similarity 0.96); fix the summaries or rule it in canon.yaml
+  - 'Candidate 33B': summaries/001-fixture.md:283
+  - 'Candidate 3B': summaries/001-fixture.md:59
+- possible-duplicate  — npc: 'Candidate 34A' ~ 'Candidate 3B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 34A': summaries/001-fixture.md:287
+  - 'Candidate 3B': summaries/001-fixture.md:59
+- possible-duplicate  — npc: 'Candidate 34B' ~ 'Candidate 3B' (similarity 0.96); fix the summaries or rule it in canon.yaml
+  - 'Candidate 34B': summaries/001-fixture.md:291
+  - 'Candidate 3B': summaries/001-fixture.md:59
+- possible-duplicate  — npc: 'Candidate 35A' ~ 'Candidate 3B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 35A': summaries/001-fixture.md:295
+  - 'Candidate 3B': summaries/001-fixture.md:59
+- possible-duplicate  — npc: 'Candidate 35B' ~ 'Candidate 3B' (similarity 0.96); fix the summaries or rule it in canon.yaml
+  - 'Candidate 35B': summaries/001-fixture.md:299
+  - 'Candidate 3B': summaries/001-fixture.md:59
+- possible-duplicate  — npc: 'Candidate 36A' ~ 'Candidate 3B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 36A': summaries/001-fixture.md:303
+  - 'Candidate 3B': summaries/001-fixture.md:59
+- possible-duplicate  — npc: 'Candidate 37A' ~ 'Candidate 3B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 37A': summaries/001-fixture.md:307
+  - 'Candidate 3B': summaries/001-fixture.md:59
+- possible-duplicate  — npc: 'Candidate 37B' ~ 'Candidate 3B' (similarity 0.96); fix the summaries or rule it in canon.yaml
+  - 'Candidate 37B': summaries/001-fixture.md:311
+  - 'Candidate 3B': summaries/001-fixture.md:59
+- possible-duplicate  — npc: 'Candidate 38A' ~ 'Candidate 3B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 38A': summaries/001-fixture.md:315
+  - 'Candidate 3B': summaries/001-fixture.md:59
+- possible-duplicate  — npc: 'Candidate 38B' ~ 'Candidate 3B' (similarity 0.96); fix the summaries or rule it in canon.yaml
+  - 'Candidate 38B': summaries/001-fixture.md:319
+  - 'Candidate 3B': summaries/001-fixture.md:59
+- possible-duplicate  — npc: 'Candidate 3B' ~ 'Candidate 4B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 3B': summaries/001-fixture.md:59
+  - 'Candidate 4B': summaries/001-fixture.md:63
+- possible-duplicate  — npc: 'Candidate 3B' ~ 'Candidate 5B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 3B': summaries/001-fixture.md:59
+  - 'Candidate 5B': summaries/001-fixture.md:71
+- possible-duplicate  — npc: 'Candidate 3B' ~ 'Candidate 6B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 3B': summaries/001-fixture.md:59
+  - 'Candidate 6B': summaries/001-fixture.md:79
+- possible-duplicate  — npc: 'Candidate 3B' ~ 'Candidate 7B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 3B': summaries/001-fixture.md:59
+  - 'Candidate 7B': summaries/001-fixture.md:87
+- possible-duplicate  — npc: 'Candidate 3B' ~ 'Candidate 8B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 3B': summaries/001-fixture.md:59
+  - 'Candidate 8B': summaries/001-fixture.md:95
+- possible-duplicate  — npc: 'Candidate 3B' ~ 'Candidate 9B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 3B': summaries/001-fixture.md:59
+  - 'Candidate 9B': summaries/001-fixture.md:103
+- possible-duplicate  — npc: 'Candidate 10B' ~ 'Candidate 4B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 10B': summaries/001-fixture.md:111
+  - 'Candidate 4B': summaries/001-fixture.md:63
+- possible-duplicate  — npc: 'Candidate 11B' ~ 'Candidate 4B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 11B': summaries/001-fixture.md:119
+  - 'Candidate 4B': summaries/001-fixture.md:63
+- possible-duplicate  — npc: 'Candidate 13B' ~ 'Candidate 4B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 13B': summaries/001-fixture.md:131
+  - 'Candidate 4B': summaries/001-fixture.md:63
+- possible-duplicate  — npc: 'Candidate 14A' ~ 'Candidate 4B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 14A': summaries/001-fixture.md:135
+  - 'Candidate 4B': summaries/001-fixture.md:63
+- possible-duplicate  — npc: 'Candidate 14B' ~ 'Candidate 4B' (similarity 0.96); fix the summaries or rule it in canon.yaml
+  - 'Candidate 14B': summaries/001-fixture.md:139
+  - 'Candidate 4B': summaries/001-fixture.md:63
+- possible-duplicate  — npc: 'Candidate 15B' ~ 'Candidate 4B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 15B': summaries/001-fixture.md:147
+  - 'Candidate 4B': summaries/001-fixture.md:63
+- possible-duplicate  — npc: 'Candidate 16B' ~ 'Candidate 4B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 16B': summaries/001-fixture.md:155
+  - 'Candidate 4B': summaries/001-fixture.md:63
+- possible-duplicate  — npc: 'Candidate 17B' ~ 'Candidate 4B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 17B': summaries/001-fixture.md:163
+  - 'Candidate 4B': summaries/001-fixture.md:63
+- possible-duplicate  — npc: 'Candidate 18B' ~ 'Candidate 4B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 18B': summaries/001-fixture.md:171
+  - 'Candidate 4B': summaries/001-fixture.md:63
+- possible-duplicate  — npc: 'Candidate 19B' ~ 'Candidate 4B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 19B': summaries/001-fixture.md:179
+  - 'Candidate 4B': summaries/001-fixture.md:63
+- possible-duplicate  — npc: 'Candidate 21B' ~ 'Candidate 4B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 21B': summaries/001-fixture.md:191
+  - 'Candidate 4B': summaries/001-fixture.md:63
+- possible-duplicate  — npc: 'Candidate 22B' ~ 'Candidate 4B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 22B': summaries/001-fixture.md:199
+  - 'Candidate 4B': summaries/001-fixture.md:63
+- possible-duplicate  — npc: 'Candidate 23B' ~ 'Candidate 4B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 23B': summaries/001-fixture.md:207
+  - 'Candidate 4B': summaries/001-fixture.md:63
+- possible-duplicate  — npc: 'Candidate 24A' ~ 'Candidate 4B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 24A': summaries/001-fixture.md:211
+  - 'Candidate 4B': summaries/001-fixture.md:63
+- possible-duplicate  — npc: 'Candidate 24B' ~ 'Candidate 4B' (similarity 0.96); fix the summaries or rule it in canon.yaml
+  - 'Candidate 24B': summaries/001-fixture.md:215
+  - 'Candidate 4B': summaries/001-fixture.md:63
+- possible-duplicate  — npc: 'Candidate 25B' ~ 'Candidate 4B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 25B': summaries/001-fixture.md:223
+  - 'Candidate 4B': summaries/001-fixture.md:63
+- possible-duplicate  — npc: 'Candidate 26B' ~ 'Candidate 4B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 26B': summaries/001-fixture.md:231
+  - 'Candidate 4B': summaries/001-fixture.md:63
+- possible-duplicate  — npc: 'Candidate 27B' ~ 'Candidate 4B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 27B': summaries/001-fixture.md:239
+  - 'Candidate 4B': summaries/001-fixture.md:63
+- possible-duplicate  — npc: 'Candidate 29B' ~ 'Candidate 4B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 29B': summaries/001-fixture.md:251
+  - 'Candidate 4B': summaries/001-fixture.md:63
+- possible-duplicate  — npc: 'Candidate 30B' ~ 'Candidate 4B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 30B': summaries/001-fixture.md:259
+  - 'Candidate 4B': summaries/001-fixture.md:63
+- possible-duplicate  — npc: 'Candidate 31B' ~ 'Candidate 4B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 31B': summaries/001-fixture.md:267
+  - 'Candidate 4B': summaries/001-fixture.md:63
+- possible-duplicate  — npc: 'Candidate 32B' ~ 'Candidate 4B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 32B': summaries/001-fixture.md:275
+  - 'Candidate 4B': summaries/001-fixture.md:63
+- possible-duplicate  — npc: 'Candidate 33B' ~ 'Candidate 4B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 33B': summaries/001-fixture.md:283
+  - 'Candidate 4B': summaries/001-fixture.md:63
+- possible-duplicate  — npc: 'Candidate 34A' ~ 'Candidate 4B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 34A': summaries/001-fixture.md:287
+  - 'Candidate 4B': summaries/001-fixture.md:63
+- possible-duplicate  — npc: 'Candidate 34B' ~ 'Candidate 4B' (similarity 0.96); fix the summaries or rule it in canon.yaml
+  - 'Candidate 34B': summaries/001-fixture.md:291
+  - 'Candidate 4B': summaries/001-fixture.md:63
+- possible-duplicate  — npc: 'Candidate 35B' ~ 'Candidate 4B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 35B': summaries/001-fixture.md:299
+  - 'Candidate 4B': summaries/001-fixture.md:63
+- possible-duplicate  — npc: 'Candidate 37B' ~ 'Candidate 4B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 37B': summaries/001-fixture.md:311
+  - 'Candidate 4B': summaries/001-fixture.md:63
+- possible-duplicate  — npc: 'Candidate 38B' ~ 'Candidate 4B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 38B': summaries/001-fixture.md:319
+  - 'Candidate 4B': summaries/001-fixture.md:63
+- possible-duplicate  — npc: 'Candidate 4B' ~ 'Candidate 5B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 4B': summaries/001-fixture.md:63
+  - 'Candidate 5B': summaries/001-fixture.md:71
+- possible-duplicate  — npc: 'Candidate 4B' ~ 'Candidate 6B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 4B': summaries/001-fixture.md:63
+  - 'Candidate 6B': summaries/001-fixture.md:79
+- possible-duplicate  — npc: 'Candidate 4B' ~ 'Candidate 7B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 4B': summaries/001-fixture.md:63
+  - 'Candidate 7B': summaries/001-fixture.md:87
+- possible-duplicate  — npc: 'Candidate 4B' ~ 'Candidate 8B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 4B': summaries/001-fixture.md:63
+  - 'Candidate 8B': summaries/001-fixture.md:95
+- possible-duplicate  — npc: 'Candidate 4B' ~ 'Candidate 9B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 4B': summaries/001-fixture.md:63
+  - 'Candidate 9B': summaries/001-fixture.md:103
+- possible-duplicate  — npc: 'Candidate 10A' ~ 'Candidate 5A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 10A': summaries/001-fixture.md:107
+  - 'Candidate 5A': summaries/001-fixture.md:67
+- possible-duplicate  — npc: 'Candidate 11A' ~ 'Candidate 5A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 11A': summaries/001-fixture.md:115
+  - 'Candidate 5A': summaries/001-fixture.md:67
+- possible-duplicate  — npc: 'Candidate 12A' ~ 'Candidate 5A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 12A': summaries/001-fixture.md:123
+  - 'Candidate 5A': summaries/001-fixture.md:67
+- possible-duplicate  — npc: 'Candidate 13A' ~ 'Candidate 5A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 13A': summaries/001-fixture.md:127
+  - 'Candidate 5A': summaries/001-fixture.md:67
+- possible-duplicate  — npc: 'Candidate 14A' ~ 'Candidate 5A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 14A': summaries/001-fixture.md:135
+  - 'Candidate 5A': summaries/001-fixture.md:67
+- possible-duplicate  — npc: 'Candidate 15A' ~ 'Candidate 5A' (similarity 0.96); fix the summaries or rule it in canon.yaml
+  - 'Candidate 15A': summaries/001-fixture.md:143
+  - 'Candidate 5A': summaries/001-fixture.md:67
+- possible-duplicate  — npc: 'Candidate 15B' ~ 'Candidate 5A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 15B': summaries/001-fixture.md:147
+  - 'Candidate 5A': summaries/001-fixture.md:67
+- possible-duplicate  — npc: 'Candidate 16A' ~ 'Candidate 5A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 16A': summaries/001-fixture.md:151
+  - 'Candidate 5A': summaries/001-fixture.md:67
+- possible-duplicate  — npc: 'Candidate 17A' ~ 'Candidate 5A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 17A': summaries/001-fixture.md:159
+  - 'Candidate 5A': summaries/001-fixture.md:67
+- possible-duplicate  — npc: 'Candidate 18A' ~ 'Candidate 5A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 18A': summaries/001-fixture.md:167
+  - 'Candidate 5A': summaries/001-fixture.md:67
+- possible-duplicate  — npc: 'Candidate 19A' ~ 'Candidate 5A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 19A': summaries/001-fixture.md:175
+  - 'Candidate 5A': summaries/001-fixture.md:67
+- possible-duplicate  — npc: 'Candidate 20A' ~ 'Candidate 5A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 20A': summaries/001-fixture.md:183
+  - 'Candidate 5A': summaries/001-fixture.md:67
+- possible-duplicate  — npc: 'Candidate 21A' ~ 'Candidate 5A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 21A': summaries/001-fixture.md:187
+  - 'Candidate 5A': summaries/001-fixture.md:67
+- possible-duplicate  — npc: 'Candidate 22A' ~ 'Candidate 5A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 22A': summaries/001-fixture.md:195
+  - 'Candidate 5A': summaries/001-fixture.md:67
+- possible-duplicate  — npc: 'Candidate 23A' ~ 'Candidate 5A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 23A': summaries/001-fixture.md:203
+  - 'Candidate 5A': summaries/001-fixture.md:67
+- possible-duplicate  — npc: 'Candidate 24A' ~ 'Candidate 5A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 24A': summaries/001-fixture.md:211
+  - 'Candidate 5A': summaries/001-fixture.md:67
+- possible-duplicate  — npc: 'Candidate 25A' ~ 'Candidate 5A' (similarity 0.96); fix the summaries or rule it in canon.yaml
+  - 'Candidate 25A': summaries/001-fixture.md:219
+  - 'Candidate 5A': summaries/001-fixture.md:67
+- possible-duplicate  — npc: 'Candidate 25B' ~ 'Candidate 5A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 25B': summaries/001-fixture.md:223
+  - 'Candidate 5A': summaries/001-fixture.md:67
+- possible-duplicate  — npc: 'Candidate 26A' ~ 'Candidate 5A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 26A': summaries/001-fixture.md:227
+  - 'Candidate 5A': summaries/001-fixture.md:67
+- possible-duplicate  — npc: 'Candidate 27A' ~ 'Candidate 5A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 27A': summaries/001-fixture.md:235
+  - 'Candidate 5A': summaries/001-fixture.md:67
+- possible-duplicate  — npc: 'Candidate 28A' ~ 'Candidate 5A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 28A': summaries/001-fixture.md:243
+  - 'Candidate 5A': summaries/001-fixture.md:67
+- possible-duplicate  — npc: 'Candidate 29A' ~ 'Candidate 5A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 29A': summaries/001-fixture.md:247
+  - 'Candidate 5A': summaries/001-fixture.md:67
+- possible-duplicate  — npc: 'Candidate 30A' ~ 'Candidate 5A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 30A': summaries/001-fixture.md:255
+  - 'Candidate 5A': summaries/001-fixture.md:67
+- possible-duplicate  — npc: 'Candidate 31A' ~ 'Candidate 5A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 31A': summaries/001-fixture.md:263
+  - 'Candidate 5A': summaries/001-fixture.md:67
+- possible-duplicate  — npc: 'Candidate 32A' ~ 'Candidate 5A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 32A': summaries/001-fixture.md:271
+  - 'Candidate 5A': summaries/001-fixture.md:67
+- possible-duplicate  — npc: 'Candidate 33A' ~ 'Candidate 5A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 33A': summaries/001-fixture.md:279
+  - 'Candidate 5A': summaries/001-fixture.md:67
+- possible-duplicate  — npc: 'Candidate 34A' ~ 'Candidate 5A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 34A': summaries/001-fixture.md:287
+  - 'Candidate 5A': summaries/001-fixture.md:67
+- possible-duplicate  — npc: 'Candidate 35A' ~ 'Candidate 5A' (similarity 0.96); fix the summaries or rule it in canon.yaml
+  - 'Candidate 35A': summaries/001-fixture.md:295
+  - 'Candidate 5A': summaries/001-fixture.md:67
+- possible-duplicate  — npc: 'Candidate 35B' ~ 'Candidate 5A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 35B': summaries/001-fixture.md:299
+  - 'Candidate 5A': summaries/001-fixture.md:67
+- possible-duplicate  — npc: 'Candidate 36A' ~ 'Candidate 5A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 36A': summaries/001-fixture.md:303
+  - 'Candidate 5A': summaries/001-fixture.md:67
+- possible-duplicate  — npc: 'Candidate 37A' ~ 'Candidate 5A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 37A': summaries/001-fixture.md:307
+  - 'Candidate 5A': summaries/001-fixture.md:67
+- possible-duplicate  — npc: 'Candidate 38A' ~ 'Candidate 5A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 38A': summaries/001-fixture.md:315
+  - 'Candidate 5A': summaries/001-fixture.md:67
+- possible-duplicate  — npc: 'Candidate 5A' ~ 'Candidate 6A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 5A': summaries/001-fixture.md:67
+  - 'Candidate 6A': summaries/001-fixture.md:75
+- possible-duplicate  — npc: 'Candidate 5A' ~ 'Candidate 7A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 5A': summaries/001-fixture.md:67
+  - 'Candidate 7A': summaries/001-fixture.md:83
+- possible-duplicate  — npc: 'Candidate 5A' ~ 'Candidate 8A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 5A': summaries/001-fixture.md:67
+  - 'Candidate 8A': summaries/001-fixture.md:91
+- possible-duplicate  — npc: 'Candidate 5A' ~ 'Candidate 9A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 5A': summaries/001-fixture.md:67
+  - 'Candidate 9A': summaries/001-fixture.md:99
+- possible-duplicate  — npc: 'Candidate 10B' ~ 'Candidate 5B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 10B': summaries/001-fixture.md:111
+  - 'Candidate 5B': summaries/001-fixture.md:71
+- possible-duplicate  — npc: 'Candidate 11B' ~ 'Candidate 5B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 11B': summaries/001-fixture.md:119
+  - 'Candidate 5B': summaries/001-fixture.md:71
+- possible-duplicate  — npc: 'Candidate 13B' ~ 'Candidate 5B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 13B': summaries/001-fixture.md:131
+  - 'Candidate 5B': summaries/001-fixture.md:71
+- possible-duplicate  — npc: 'Candidate 14B' ~ 'Candidate 5B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 14B': summaries/001-fixture.md:139
+  - 'Candidate 5B': summaries/001-fixture.md:71
+- possible-duplicate  — npc: 'Candidate 15A' ~ 'Candidate 5B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 15A': summaries/001-fixture.md:143
+  - 'Candidate 5B': summaries/001-fixture.md:71
+- possible-duplicate  — npc: 'Candidate 15B' ~ 'Candidate 5B' (similarity 0.96); fix the summaries or rule it in canon.yaml
+  - 'Candidate 15B': summaries/001-fixture.md:147
+  - 'Candidate 5B': summaries/001-fixture.md:71
+- possible-duplicate  — npc: 'Candidate 16B' ~ 'Candidate 5B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 16B': summaries/001-fixture.md:155
+  - 'Candidate 5B': summaries/001-fixture.md:71
+- possible-duplicate  — npc: 'Candidate 17B' ~ 'Candidate 5B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 17B': summaries/001-fixture.md:163
+  - 'Candidate 5B': summaries/001-fixture.md:71
+- possible-duplicate  — npc: 'Candidate 18B' ~ 'Candidate 5B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 18B': summaries/001-fixture.md:171
+  - 'Candidate 5B': summaries/001-fixture.md:71
+- possible-duplicate  — npc: 'Candidate 19B' ~ 'Candidate 5B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 19B': summaries/001-fixture.md:179
+  - 'Candidate 5B': summaries/001-fixture.md:71
+- possible-duplicate  — npc: 'Candidate 21B' ~ 'Candidate 5B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 21B': summaries/001-fixture.md:191
+  - 'Candidate 5B': summaries/001-fixture.md:71
+- possible-duplicate  — npc: 'Candidate 22B' ~ 'Candidate 5B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 22B': summaries/001-fixture.md:199
+  - 'Candidate 5B': summaries/001-fixture.md:71
+- possible-duplicate  — npc: 'Candidate 23B' ~ 'Candidate 5B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 23B': summaries/001-fixture.md:207
+  - 'Candidate 5B': summaries/001-fixture.md:71
+- possible-duplicate  — npc: 'Candidate 24B' ~ 'Candidate 5B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 24B': summaries/001-fixture.md:215
+  - 'Candidate 5B': summaries/001-fixture.md:71
+- possible-duplicate  — npc: 'Candidate 25A' ~ 'Candidate 5B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 25A': summaries/001-fixture.md:219
+  - 'Candidate 5B': summaries/001-fixture.md:71
+- possible-duplicate  — npc: 'Candidate 25B' ~ 'Candidate 5B' (similarity 0.96); fix the summaries or rule it in canon.yaml
+  - 'Candidate 25B': summaries/001-fixture.md:223
+  - 'Candidate 5B': summaries/001-fixture.md:71
+- possible-duplicate  — npc: 'Candidate 26B' ~ 'Candidate 5B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 26B': summaries/001-fixture.md:231
+  - 'Candidate 5B': summaries/001-fixture.md:71
+- possible-duplicate  — npc: 'Candidate 27B' ~ 'Candidate 5B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 27B': summaries/001-fixture.md:239
+  - 'Candidate 5B': summaries/001-fixture.md:71
+- possible-duplicate  — npc: 'Candidate 29B' ~ 'Candidate 5B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 29B': summaries/001-fixture.md:251
+  - 'Candidate 5B': summaries/001-fixture.md:71
+- possible-duplicate  — npc: 'Candidate 30B' ~ 'Candidate 5B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 30B': summaries/001-fixture.md:259
+  - 'Candidate 5B': summaries/001-fixture.md:71
+- possible-duplicate  — npc: 'Candidate 31B' ~ 'Candidate 5B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 31B': summaries/001-fixture.md:267
+  - 'Candidate 5B': summaries/001-fixture.md:71
+- possible-duplicate  — npc: 'Candidate 32B' ~ 'Candidate 5B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 32B': summaries/001-fixture.md:275
+  - 'Candidate 5B': summaries/001-fixture.md:71
+- possible-duplicate  — npc: 'Candidate 33B' ~ 'Candidate 5B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 33B': summaries/001-fixture.md:283
+  - 'Candidate 5B': summaries/001-fixture.md:71
+- possible-duplicate  — npc: 'Candidate 34B' ~ 'Candidate 5B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 34B': summaries/001-fixture.md:291
+  - 'Candidate 5B': summaries/001-fixture.md:71
+- possible-duplicate  — npc: 'Candidate 35A' ~ 'Candidate 5B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 35A': summaries/001-fixture.md:295
+  - 'Candidate 5B': summaries/001-fixture.md:71
+- possible-duplicate  — npc: 'Candidate 35B' ~ 'Candidate 5B' (similarity 0.96); fix the summaries or rule it in canon.yaml
+  - 'Candidate 35B': summaries/001-fixture.md:299
+  - 'Candidate 5B': summaries/001-fixture.md:71
+- possible-duplicate  — npc: 'Candidate 37B' ~ 'Candidate 5B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 37B': summaries/001-fixture.md:311
+  - 'Candidate 5B': summaries/001-fixture.md:71
+- possible-duplicate  — npc: 'Candidate 38B' ~ 'Candidate 5B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 38B': summaries/001-fixture.md:319
+  - 'Candidate 5B': summaries/001-fixture.md:71
+- possible-duplicate  — npc: 'Candidate 5B' ~ 'Candidate 6B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 5B': summaries/001-fixture.md:71
+  - 'Candidate 6B': summaries/001-fixture.md:79
+- possible-duplicate  — npc: 'Candidate 5B' ~ 'Candidate 7B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 5B': summaries/001-fixture.md:71
+  - 'Candidate 7B': summaries/001-fixture.md:87
+- possible-duplicate  — npc: 'Candidate 5B' ~ 'Candidate 8B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 5B': summaries/001-fixture.md:71
+  - 'Candidate 8B': summaries/001-fixture.md:95
+- possible-duplicate  — npc: 'Candidate 5B' ~ 'Candidate 9B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 5B': summaries/001-fixture.md:71
+  - 'Candidate 9B': summaries/001-fixture.md:103
+- possible-duplicate  — npc: 'Candidate 10A' ~ 'Candidate 6A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 10A': summaries/001-fixture.md:107
+  - 'Candidate 6A': summaries/001-fixture.md:75
+- possible-duplicate  — npc: 'Candidate 11A' ~ 'Candidate 6A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 11A': summaries/001-fixture.md:115
+  - 'Candidate 6A': summaries/001-fixture.md:75
+- possible-duplicate  — npc: 'Candidate 12A' ~ 'Candidate 6A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 12A': summaries/001-fixture.md:123
+  - 'Candidate 6A': summaries/001-fixture.md:75
+- possible-duplicate  — npc: 'Candidate 13A' ~ 'Candidate 6A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 13A': summaries/001-fixture.md:127
+  - 'Candidate 6A': summaries/001-fixture.md:75
+- possible-duplicate  — npc: 'Candidate 14A' ~ 'Candidate 6A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 14A': summaries/001-fixture.md:135
+  - 'Candidate 6A': summaries/001-fixture.md:75
+- possible-duplicate  — npc: 'Candidate 15A' ~ 'Candidate 6A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 15A': summaries/001-fixture.md:143
+  - 'Candidate 6A': summaries/001-fixture.md:75
+- possible-duplicate  — npc: 'Candidate 16A' ~ 'Candidate 6A' (similarity 0.96); fix the summaries or rule it in canon.yaml
+  - 'Candidate 16A': summaries/001-fixture.md:151
+  - 'Candidate 6A': summaries/001-fixture.md:75
+- possible-duplicate  — npc: 'Candidate 16B' ~ 'Candidate 6A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 16B': summaries/001-fixture.md:155
+  - 'Candidate 6A': summaries/001-fixture.md:75
+- possible-duplicate  — npc: 'Candidate 17A' ~ 'Candidate 6A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 17A': summaries/001-fixture.md:159
+  - 'Candidate 6A': summaries/001-fixture.md:75
+- possible-duplicate  — npc: 'Candidate 18A' ~ 'Candidate 6A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 18A': summaries/001-fixture.md:167
+  - 'Candidate 6A': summaries/001-fixture.md:75
+- possible-duplicate  — npc: 'Candidate 19A' ~ 'Candidate 6A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 19A': summaries/001-fixture.md:175
+  - 'Candidate 6A': summaries/001-fixture.md:75
+- possible-duplicate  — npc: 'Candidate 20A' ~ 'Candidate 6A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 20A': summaries/001-fixture.md:183
+  - 'Candidate 6A': summaries/001-fixture.md:75
+- possible-duplicate  — npc: 'Candidate 21A' ~ 'Candidate 6A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 21A': summaries/001-fixture.md:187
+  - 'Candidate 6A': summaries/001-fixture.md:75
+- possible-duplicate  — npc: 'Candidate 22A' ~ 'Candidate 6A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 22A': summaries/001-fixture.md:195
+  - 'Candidate 6A': summaries/001-fixture.md:75
+- possible-duplicate  — npc: 'Candidate 23A' ~ 'Candidate 6A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 23A': summaries/001-fixture.md:203
+  - 'Candidate 6A': summaries/001-fixture.md:75
+- possible-duplicate  — npc: 'Candidate 24A' ~ 'Candidate 6A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 24A': summaries/001-fixture.md:211
+  - 'Candidate 6A': summaries/001-fixture.md:75
+- possible-duplicate  — npc: 'Candidate 25A' ~ 'Candidate 6A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 25A': summaries/001-fixture.md:219
+  - 'Candidate 6A': summaries/001-fixture.md:75
+- possible-duplicate  — npc: 'Candidate 26A' ~ 'Candidate 6A' (similarity 0.96); fix the summaries or rule it in canon.yaml
+  - 'Candidate 26A': summaries/001-fixture.md:227
+  - 'Candidate 6A': summaries/001-fixture.md:75
+- possible-duplicate  — npc: 'Candidate 26B' ~ 'Candidate 6A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 26B': summaries/001-fixture.md:231
+  - 'Candidate 6A': summaries/001-fixture.md:75
+- possible-duplicate  — npc: 'Candidate 27A' ~ 'Candidate 6A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 27A': summaries/001-fixture.md:235
+  - 'Candidate 6A': summaries/001-fixture.md:75
+- possible-duplicate  — npc: 'Candidate 28A' ~ 'Candidate 6A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 28A': summaries/001-fixture.md:243
+  - 'Candidate 6A': summaries/001-fixture.md:75
+- possible-duplicate  — npc: 'Candidate 29A' ~ 'Candidate 6A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 29A': summaries/001-fixture.md:247
+  - 'Candidate 6A': summaries/001-fixture.md:75
+- possible-duplicate  — npc: 'Candidate 30A' ~ 'Candidate 6A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 30A': summaries/001-fixture.md:255
+  - 'Candidate 6A': summaries/001-fixture.md:75
+- possible-duplicate  — npc: 'Candidate 31A' ~ 'Candidate 6A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 31A': summaries/001-fixture.md:263
+  - 'Candidate 6A': summaries/001-fixture.md:75
+- possible-duplicate  — npc: 'Candidate 32A' ~ 'Candidate 6A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 32A': summaries/001-fixture.md:271
+  - 'Candidate 6A': summaries/001-fixture.md:75
+- possible-duplicate  — npc: 'Candidate 33A' ~ 'Candidate 6A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 33A': summaries/001-fixture.md:279
+  - 'Candidate 6A': summaries/001-fixture.md:75
+- possible-duplicate  — npc: 'Candidate 34A' ~ 'Candidate 6A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 34A': summaries/001-fixture.md:287
+  - 'Candidate 6A': summaries/001-fixture.md:75
+- possible-duplicate  — npc: 'Candidate 35A' ~ 'Candidate 6A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 35A': summaries/001-fixture.md:295
+  - 'Candidate 6A': summaries/001-fixture.md:75
+- possible-duplicate  — npc: 'Candidate 36A' ~ 'Candidate 6A' (similarity 0.96); fix the summaries or rule it in canon.yaml
+  - 'Candidate 36A': summaries/001-fixture.md:303
+  - 'Candidate 6A': summaries/001-fixture.md:75
+- possible-duplicate  — npc: 'Candidate 37A' ~ 'Candidate 6A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 37A': summaries/001-fixture.md:307
+  - 'Candidate 6A': summaries/001-fixture.md:75
+- possible-duplicate  — npc: 'Candidate 38A' ~ 'Candidate 6A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 38A': summaries/001-fixture.md:315
+  - 'Candidate 6A': summaries/001-fixture.md:75
+- possible-duplicate  — npc: 'Candidate 6A' ~ 'Candidate 7A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 6A': summaries/001-fixture.md:75
+  - 'Candidate 7A': summaries/001-fixture.md:83
+- possible-duplicate  — npc: 'Candidate 6A' ~ 'Candidate 8A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 6A': summaries/001-fixture.md:75
+  - 'Candidate 8A': summaries/001-fixture.md:91
+- possible-duplicate  — npc: 'Candidate 6A' ~ 'Candidate 9A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 6A': summaries/001-fixture.md:75
+  - 'Candidate 9A': summaries/001-fixture.md:99
+- possible-duplicate  — npc: 'Candidate 10B' ~ 'Candidate 6B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 10B': summaries/001-fixture.md:111
+  - 'Candidate 6B': summaries/001-fixture.md:79
+- possible-duplicate  — npc: 'Candidate 11B' ~ 'Candidate 6B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 11B': summaries/001-fixture.md:119
+  - 'Candidate 6B': summaries/001-fixture.md:79
+- possible-duplicate  — npc: 'Candidate 13B' ~ 'Candidate 6B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 13B': summaries/001-fixture.md:131
+  - 'Candidate 6B': summaries/001-fixture.md:79
+- possible-duplicate  — npc: 'Candidate 14B' ~ 'Candidate 6B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 14B': summaries/001-fixture.md:139
+  - 'Candidate 6B': summaries/001-fixture.md:79
+- possible-duplicate  — npc: 'Candidate 15B' ~ 'Candidate 6B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 15B': summaries/001-fixture.md:147
+  - 'Candidate 6B': summaries/001-fixture.md:79
+- possible-duplicate  — npc: 'Candidate 16A' ~ 'Candidate 6B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 16A': summaries/001-fixture.md:151
+  - 'Candidate 6B': summaries/001-fixture.md:79
+- possible-duplicate  — npc: 'Candidate 16B' ~ 'Candidate 6B' (similarity 0.96); fix the summaries or rule it in canon.yaml
+  - 'Candidate 16B': summaries/001-fixture.md:155
+  - 'Candidate 6B': summaries/001-fixture.md:79
+- possible-duplicate  — npc: 'Candidate 17B' ~ 'Candidate 6B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 17B': summaries/001-fixture.md:163
+  - 'Candidate 6B': summaries/001-fixture.md:79
+- possible-duplicate  — npc: 'Candidate 18B' ~ 'Candidate 6B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 18B': summaries/001-fixture.md:171
+  - 'Candidate 6B': summaries/001-fixture.md:79
+- possible-duplicate  — npc: 'Candidate 19B' ~ 'Candidate 6B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 19B': summaries/001-fixture.md:179
+  - 'Candidate 6B': summaries/001-fixture.md:79
+- possible-duplicate  — npc: 'Candidate 21B' ~ 'Candidate 6B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 21B': summaries/001-fixture.md:191
+  - 'Candidate 6B': summaries/001-fixture.md:79
+- possible-duplicate  — npc: 'Candidate 22B' ~ 'Candidate 6B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 22B': summaries/001-fixture.md:199
+  - 'Candidate 6B': summaries/001-fixture.md:79
+- possible-duplicate  — npc: 'Candidate 23B' ~ 'Candidate 6B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 23B': summaries/001-fixture.md:207
+  - 'Candidate 6B': summaries/001-fixture.md:79
+- possible-duplicate  — npc: 'Candidate 24B' ~ 'Candidate 6B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 24B': summaries/001-fixture.md:215
+  - 'Candidate 6B': summaries/001-fixture.md:79
+- possible-duplicate  — npc: 'Candidate 25B' ~ 'Candidate 6B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 25B': summaries/001-fixture.md:223
+  - 'Candidate 6B': summaries/001-fixture.md:79
+- possible-duplicate  — npc: 'Candidate 26A' ~ 'Candidate 6B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 26A': summaries/001-fixture.md:227
+  - 'Candidate 6B': summaries/001-fixture.md:79
+- possible-duplicate  — npc: 'Candidate 26B' ~ 'Candidate 6B' (similarity 0.96); fix the summaries or rule it in canon.yaml
+  - 'Candidate 26B': summaries/001-fixture.md:231
+  - 'Candidate 6B': summaries/001-fixture.md:79
+- possible-duplicate  — npc: 'Candidate 27B' ~ 'Candidate 6B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 27B': summaries/001-fixture.md:239
+  - 'Candidate 6B': summaries/001-fixture.md:79
+- possible-duplicate  — npc: 'Candidate 29B' ~ 'Candidate 6B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 29B': summaries/001-fixture.md:251
+  - 'Candidate 6B': summaries/001-fixture.md:79
+- possible-duplicate  — npc: 'Candidate 30B' ~ 'Candidate 6B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 30B': summaries/001-fixture.md:259
+  - 'Candidate 6B': summaries/001-fixture.md:79
+- possible-duplicate  — npc: 'Candidate 31B' ~ 'Candidate 6B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 31B': summaries/001-fixture.md:267
+  - 'Candidate 6B': summaries/001-fixture.md:79
+- possible-duplicate  — npc: 'Candidate 32B' ~ 'Candidate 6B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 32B': summaries/001-fixture.md:275
+  - 'Candidate 6B': summaries/001-fixture.md:79
+- possible-duplicate  — npc: 'Candidate 33B' ~ 'Candidate 6B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 33B': summaries/001-fixture.md:283
+  - 'Candidate 6B': summaries/001-fixture.md:79
+- possible-duplicate  — npc: 'Candidate 34B' ~ 'Candidate 6B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 34B': summaries/001-fixture.md:291
+  - 'Candidate 6B': summaries/001-fixture.md:79
+- possible-duplicate  — npc: 'Candidate 35B' ~ 'Candidate 6B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 35B': summaries/001-fixture.md:299
+  - 'Candidate 6B': summaries/001-fixture.md:79
+- possible-duplicate  — npc: 'Candidate 36A' ~ 'Candidate 6B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 36A': summaries/001-fixture.md:303
+  - 'Candidate 6B': summaries/001-fixture.md:79
+- possible-duplicate  — npc: 'Candidate 37B' ~ 'Candidate 6B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 37B': summaries/001-fixture.md:311
+  - 'Candidate 6B': summaries/001-fixture.md:79
+- possible-duplicate  — npc: 'Candidate 38B' ~ 'Candidate 6B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 38B': summaries/001-fixture.md:319
+  - 'Candidate 6B': summaries/001-fixture.md:79
+- possible-duplicate  — npc: 'Candidate 6B' ~ 'Candidate 7B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 6B': summaries/001-fixture.md:79
+  - 'Candidate 7B': summaries/001-fixture.md:87
+- possible-duplicate  — npc: 'Candidate 6B' ~ 'Candidate 8B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 6B': summaries/001-fixture.md:79
+  - 'Candidate 8B': summaries/001-fixture.md:95
+- possible-duplicate  — npc: 'Candidate 6B' ~ 'Candidate 9B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 6B': summaries/001-fixture.md:79
+  - 'Candidate 9B': summaries/001-fixture.md:103
+- possible-duplicate  — npc: 'Candidate 10A' ~ 'Candidate 7A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 10A': summaries/001-fixture.md:107
+  - 'Candidate 7A': summaries/001-fixture.md:83
+- possible-duplicate  — npc: 'Candidate 11A' ~ 'Candidate 7A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 11A': summaries/001-fixture.md:115
+  - 'Candidate 7A': summaries/001-fixture.md:83
+- possible-duplicate  — npc: 'Candidate 12A' ~ 'Candidate 7A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 12A': summaries/001-fixture.md:123
+  - 'Candidate 7A': summaries/001-fixture.md:83
+- possible-duplicate  — npc: 'Candidate 13A' ~ 'Candidate 7A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 13A': summaries/001-fixture.md:127
+  - 'Candidate 7A': summaries/001-fixture.md:83
+- possible-duplicate  — npc: 'Candidate 14A' ~ 'Candidate 7A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 14A': summaries/001-fixture.md:135
+  - 'Candidate 7A': summaries/001-fixture.md:83
+- possible-duplicate  — npc: 'Candidate 15A' ~ 'Candidate 7A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 15A': summaries/001-fixture.md:143
+  - 'Candidate 7A': summaries/001-fixture.md:83
+- possible-duplicate  — npc: 'Candidate 16A' ~ 'Candidate 7A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 16A': summaries/001-fixture.md:151
+  - 'Candidate 7A': summaries/001-fixture.md:83
+- possible-duplicate  — npc: 'Candidate 17A' ~ 'Candidate 7A' (similarity 0.96); fix the summaries or rule it in canon.yaml
+  - 'Candidate 17A': summaries/001-fixture.md:159
+  - 'Candidate 7A': summaries/001-fixture.md:83
+- possible-duplicate  — npc: 'Candidate 17B' ~ 'Candidate 7A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 17B': summaries/001-fixture.md:163
+  - 'Candidate 7A': summaries/001-fixture.md:83
+- possible-duplicate  — npc: 'Candidate 18A' ~ 'Candidate 7A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 18A': summaries/001-fixture.md:167
+  - 'Candidate 7A': summaries/001-fixture.md:83
+- possible-duplicate  — npc: 'Candidate 19A' ~ 'Candidate 7A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 19A': summaries/001-fixture.md:175
+  - 'Candidate 7A': summaries/001-fixture.md:83
+- possible-duplicate  — npc: 'Candidate 20A' ~ 'Candidate 7A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 20A': summaries/001-fixture.md:183
+  - 'Candidate 7A': summaries/001-fixture.md:83
+- possible-duplicate  — npc: 'Candidate 21A' ~ 'Candidate 7A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 21A': summaries/001-fixture.md:187
+  - 'Candidate 7A': summaries/001-fixture.md:83
+- possible-duplicate  — npc: 'Candidate 22A' ~ 'Candidate 7A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 22A': summaries/001-fixture.md:195
+  - 'Candidate 7A': summaries/001-fixture.md:83
+- possible-duplicate  — npc: 'Candidate 23A' ~ 'Candidate 7A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 23A': summaries/001-fixture.md:203
+  - 'Candidate 7A': summaries/001-fixture.md:83
+- possible-duplicate  — npc: 'Candidate 24A' ~ 'Candidate 7A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 24A': summaries/001-fixture.md:211
+  - 'Candidate 7A': summaries/001-fixture.md:83
+- possible-duplicate  — npc: 'Candidate 25A' ~ 'Candidate 7A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 25A': summaries/001-fixture.md:219
+  - 'Candidate 7A': summaries/001-fixture.md:83
+- possible-duplicate  — npc: 'Candidate 26A' ~ 'Candidate 7A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 26A': summaries/001-fixture.md:227
+  - 'Candidate 7A': summaries/001-fixture.md:83
+- possible-duplicate  — npc: 'Candidate 27A' ~ 'Candidate 7A' (similarity 0.96); fix the summaries or rule it in canon.yaml
+  - 'Candidate 27A': summaries/001-fixture.md:235
+  - 'Candidate 7A': summaries/001-fixture.md:83
+- possible-duplicate  — npc: 'Candidate 27B' ~ 'Candidate 7A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 27B': summaries/001-fixture.md:239
+  - 'Candidate 7A': summaries/001-fixture.md:83
+- possible-duplicate  — npc: 'Candidate 28A' ~ 'Candidate 7A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 28A': summaries/001-fixture.md:243
+  - 'Candidate 7A': summaries/001-fixture.md:83
+- possible-duplicate  — npc: 'Candidate 29A' ~ 'Candidate 7A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 29A': summaries/001-fixture.md:247
+  - 'Candidate 7A': summaries/001-fixture.md:83
+- possible-duplicate  — npc: 'Candidate 30A' ~ 'Candidate 7A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 30A': summaries/001-fixture.md:255
+  - 'Candidate 7A': summaries/001-fixture.md:83
+- possible-duplicate  — npc: 'Candidate 31A' ~ 'Candidate 7A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 31A': summaries/001-fixture.md:263
+  - 'Candidate 7A': summaries/001-fixture.md:83
+- possible-duplicate  — npc: 'Candidate 32A' ~ 'Candidate 7A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 32A': summaries/001-fixture.md:271
+  - 'Candidate 7A': summaries/001-fixture.md:83
+- possible-duplicate  — npc: 'Candidate 33A' ~ 'Candidate 7A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 33A': summaries/001-fixture.md:279
+  - 'Candidate 7A': summaries/001-fixture.md:83
+- possible-duplicate  — npc: 'Candidate 34A' ~ 'Candidate 7A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 34A': summaries/001-fixture.md:287
+  - 'Candidate 7A': summaries/001-fixture.md:83
+- possible-duplicate  — npc: 'Candidate 35A' ~ 'Candidate 7A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 35A': summaries/001-fixture.md:295
+  - 'Candidate 7A': summaries/001-fixture.md:83
+- possible-duplicate  — npc: 'Candidate 36A' ~ 'Candidate 7A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 36A': summaries/001-fixture.md:303
+  - 'Candidate 7A': summaries/001-fixture.md:83
+- possible-duplicate  — npc: 'Candidate 37A' ~ 'Candidate 7A' (similarity 0.96); fix the summaries or rule it in canon.yaml
+  - 'Candidate 37A': summaries/001-fixture.md:307
+  - 'Candidate 7A': summaries/001-fixture.md:83
+- possible-duplicate  — npc: 'Candidate 37B' ~ 'Candidate 7A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 37B': summaries/001-fixture.md:311
+  - 'Candidate 7A': summaries/001-fixture.md:83
+- possible-duplicate  — npc: 'Candidate 38A' ~ 'Candidate 7A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 38A': summaries/001-fixture.md:315
+  - 'Candidate 7A': summaries/001-fixture.md:83
+- possible-duplicate  — npc: 'Candidate 7A' ~ 'Candidate 7B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 7A': summaries/001-fixture.md:83
+  - 'Candidate 7B': summaries/001-fixture.md:87
+- possible-duplicate  — npc: 'Candidate 7A' ~ 'Candidate 8A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 7A': summaries/001-fixture.md:83
+  - 'Candidate 8A': summaries/001-fixture.md:91
+- possible-duplicate  — npc: 'Candidate 7A' ~ 'Candidate 9A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 7A': summaries/001-fixture.md:83
+  - 'Candidate 9A': summaries/001-fixture.md:99
+- possible-duplicate  — npc: 'Candidate 10B' ~ 'Candidate 7B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 10B': summaries/001-fixture.md:111
+  - 'Candidate 7B': summaries/001-fixture.md:87
+- possible-duplicate  — npc: 'Candidate 11B' ~ 'Candidate 7B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 11B': summaries/001-fixture.md:119
+  - 'Candidate 7B': summaries/001-fixture.md:87
+- possible-duplicate  — npc: 'Candidate 13B' ~ 'Candidate 7B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 13B': summaries/001-fixture.md:131
+  - 'Candidate 7B': summaries/001-fixture.md:87
+- possible-duplicate  — npc: 'Candidate 14B' ~ 'Candidate 7B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 14B': summaries/001-fixture.md:139
+  - 'Candidate 7B': summaries/001-fixture.md:87
+- possible-duplicate  — npc: 'Candidate 15B' ~ 'Candidate 7B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 15B': summaries/001-fixture.md:147
+  - 'Candidate 7B': summaries/001-fixture.md:87
+- possible-duplicate  — npc: 'Candidate 16B' ~ 'Candidate 7B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 16B': summaries/001-fixture.md:155
+  - 'Candidate 7B': summaries/001-fixture.md:87
+- possible-duplicate  — npc: 'Candidate 17A' ~ 'Candidate 7B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 17A': summaries/001-fixture.md:159
+  - 'Candidate 7B': summaries/001-fixture.md:87
+- possible-duplicate  — npc: 'Candidate 17B' ~ 'Candidate 7B' (similarity 0.96); fix the summaries or rule it in canon.yaml
+  - 'Candidate 17B': summaries/001-fixture.md:163
+  - 'Candidate 7B': summaries/001-fixture.md:87
+- possible-duplicate  — npc: 'Candidate 18B' ~ 'Candidate 7B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 18B': summaries/001-fixture.md:171
+  - 'Candidate 7B': summaries/001-fixture.md:87
+- possible-duplicate  — npc: 'Candidate 19B' ~ 'Candidate 7B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 19B': summaries/001-fixture.md:179
+  - 'Candidate 7B': summaries/001-fixture.md:87
+- possible-duplicate  — npc: 'Candidate 21B' ~ 'Candidate 7B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 21B': summaries/001-fixture.md:191
+  - 'Candidate 7B': summaries/001-fixture.md:87
+- possible-duplicate  — npc: 'Candidate 22B' ~ 'Candidate 7B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 22B': summaries/001-fixture.md:199
+  - 'Candidate 7B': summaries/001-fixture.md:87
+- possible-duplicate  — npc: 'Candidate 23B' ~ 'Candidate 7B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 23B': summaries/001-fixture.md:207
+  - 'Candidate 7B': summaries/001-fixture.md:87
+- possible-duplicate  — npc: 'Candidate 24B' ~ 'Candidate 7B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 24B': summaries/001-fixture.md:215
+  - 'Candidate 7B': summaries/001-fixture.md:87
+- possible-duplicate  — npc: 'Candidate 25B' ~ 'Candidate 7B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 25B': summaries/001-fixture.md:223
+  - 'Candidate 7B': summaries/001-fixture.md:87
+- possible-duplicate  — npc: 'Candidate 26B' ~ 'Candidate 7B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 26B': summaries/001-fixture.md:231
+  - 'Candidate 7B': summaries/001-fixture.md:87
+- possible-duplicate  — npc: 'Candidate 27A' ~ 'Candidate 7B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 27A': summaries/001-fixture.md:235
+  - 'Candidate 7B': summaries/001-fixture.md:87
+- possible-duplicate  — npc: 'Candidate 27B' ~ 'Candidate 7B' (similarity 0.96); fix the summaries or rule it in canon.yaml
+  - 'Candidate 27B': summaries/001-fixture.md:239
+  - 'Candidate 7B': summaries/001-fixture.md:87
+- possible-duplicate  — npc: 'Candidate 29B' ~ 'Candidate 7B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 29B': summaries/001-fixture.md:251
+  - 'Candidate 7B': summaries/001-fixture.md:87
+- possible-duplicate  — npc: 'Candidate 30B' ~ 'Candidate 7B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 30B': summaries/001-fixture.md:259
+  - 'Candidate 7B': summaries/001-fixture.md:87
+- possible-duplicate  — npc: 'Candidate 31B' ~ 'Candidate 7B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 31B': summaries/001-fixture.md:267
+  - 'Candidate 7B': summaries/001-fixture.md:87
+- possible-duplicate  — npc: 'Candidate 32B' ~ 'Candidate 7B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 32B': summaries/001-fixture.md:275
+  - 'Candidate 7B': summaries/001-fixture.md:87
+- possible-duplicate  — npc: 'Candidate 33B' ~ 'Candidate 7B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 33B': summaries/001-fixture.md:283
+  - 'Candidate 7B': summaries/001-fixture.md:87
+- possible-duplicate  — npc: 'Candidate 34B' ~ 'Candidate 7B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 34B': summaries/001-fixture.md:291
+  - 'Candidate 7B': summaries/001-fixture.md:87
+- possible-duplicate  — npc: 'Candidate 35B' ~ 'Candidate 7B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 35B': summaries/001-fixture.md:299
+  - 'Candidate 7B': summaries/001-fixture.md:87
+- possible-duplicate  — npc: 'Candidate 37A' ~ 'Candidate 7B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 37A': summaries/001-fixture.md:307
+  - 'Candidate 7B': summaries/001-fixture.md:87
+- possible-duplicate  — npc: 'Candidate 37B' ~ 'Candidate 7B' (similarity 0.96); fix the summaries or rule it in canon.yaml
+  - 'Candidate 37B': summaries/001-fixture.md:311
+  - 'Candidate 7B': summaries/001-fixture.md:87
+- possible-duplicate  — npc: 'Candidate 38B' ~ 'Candidate 7B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 38B': summaries/001-fixture.md:319
+  - 'Candidate 7B': summaries/001-fixture.md:87
+- possible-duplicate  — npc: 'Candidate 7B' ~ 'Candidate 8B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 7B': summaries/001-fixture.md:87
+  - 'Candidate 8B': summaries/001-fixture.md:95
+- possible-duplicate  — npc: 'Candidate 7B' ~ 'Candidate 9B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 7B': summaries/001-fixture.md:87
+  - 'Candidate 9B': summaries/001-fixture.md:103
+- possible-duplicate  — npc: 'Candidate 10A' ~ 'Candidate 8A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 10A': summaries/001-fixture.md:107
+  - 'Candidate 8A': summaries/001-fixture.md:91
+- possible-duplicate  — npc: 'Candidate 11A' ~ 'Candidate 8A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 11A': summaries/001-fixture.md:115
+  - 'Candidate 8A': summaries/001-fixture.md:91
+- possible-duplicate  — npc: 'Candidate 12A' ~ 'Candidate 8A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 12A': summaries/001-fixture.md:123
+  - 'Candidate 8A': summaries/001-fixture.md:91
+- possible-duplicate  — npc: 'Candidate 13A' ~ 'Candidate 8A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 13A': summaries/001-fixture.md:127
+  - 'Candidate 8A': summaries/001-fixture.md:91
+- possible-duplicate  — npc: 'Candidate 14A' ~ 'Candidate 8A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 14A': summaries/001-fixture.md:135
+  - 'Candidate 8A': summaries/001-fixture.md:91
+- possible-duplicate  — npc: 'Candidate 15A' ~ 'Candidate 8A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 15A': summaries/001-fixture.md:143
+  - 'Candidate 8A': summaries/001-fixture.md:91
+- possible-duplicate  — npc: 'Candidate 16A' ~ 'Candidate 8A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 16A': summaries/001-fixture.md:151
+  - 'Candidate 8A': summaries/001-fixture.md:91
+- possible-duplicate  — npc: 'Candidate 17A' ~ 'Candidate 8A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 17A': summaries/001-fixture.md:159
+  - 'Candidate 8A': summaries/001-fixture.md:91
+- possible-duplicate  — npc: 'Candidate 18A' ~ 'Candidate 8A' (similarity 0.96); fix the summaries or rule it in canon.yaml
+  - 'Candidate 18A': summaries/001-fixture.md:167
+  - 'Candidate 8A': summaries/001-fixture.md:91
+- possible-duplicate  — npc: 'Candidate 18B' ~ 'Candidate 8A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 18B': summaries/001-fixture.md:171
+  - 'Candidate 8A': summaries/001-fixture.md:91
+- possible-duplicate  — npc: 'Candidate 19A' ~ 'Candidate 8A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 19A': summaries/001-fixture.md:175
+  - 'Candidate 8A': summaries/001-fixture.md:91
+- possible-duplicate  — npc: 'Candidate 20A' ~ 'Candidate 8A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 20A': summaries/001-fixture.md:183
+  - 'Candidate 8A': summaries/001-fixture.md:91
+- possible-duplicate  — npc: 'Candidate 21A' ~ 'Candidate 8A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 21A': summaries/001-fixture.md:187
+  - 'Candidate 8A': summaries/001-fixture.md:91
+- possible-duplicate  — npc: 'Candidate 22A' ~ 'Candidate 8A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 22A': summaries/001-fixture.md:195
+  - 'Candidate 8A': summaries/001-fixture.md:91
+- possible-duplicate  — npc: 'Candidate 23A' ~ 'Candidate 8A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 23A': summaries/001-fixture.md:203
+  - 'Candidate 8A': summaries/001-fixture.md:91
+- possible-duplicate  — npc: 'Candidate 24A' ~ 'Candidate 8A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 24A': summaries/001-fixture.md:211
+  - 'Candidate 8A': summaries/001-fixture.md:91
+- possible-duplicate  — npc: 'Candidate 25A' ~ 'Candidate 8A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 25A': summaries/001-fixture.md:219
+  - 'Candidate 8A': summaries/001-fixture.md:91
+- possible-duplicate  — npc: 'Candidate 26A' ~ 'Candidate 8A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 26A': summaries/001-fixture.md:227
+  - 'Candidate 8A': summaries/001-fixture.md:91
+- possible-duplicate  — npc: 'Candidate 27A' ~ 'Candidate 8A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 27A': summaries/001-fixture.md:235
+  - 'Candidate 8A': summaries/001-fixture.md:91
+- possible-duplicate  — npc: 'Candidate 28A' ~ 'Candidate 8A' (similarity 0.96); fix the summaries or rule it in canon.yaml
+  - 'Candidate 28A': summaries/001-fixture.md:243
+  - 'Candidate 8A': summaries/001-fixture.md:91
+- possible-duplicate  — npc: 'Candidate 29A' ~ 'Candidate 8A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 29A': summaries/001-fixture.md:247
+  - 'Candidate 8A': summaries/001-fixture.md:91
+- possible-duplicate  — npc: 'Candidate 30A' ~ 'Candidate 8A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 30A': summaries/001-fixture.md:255
+  - 'Candidate 8A': summaries/001-fixture.md:91
+- possible-duplicate  — npc: 'Candidate 31A' ~ 'Candidate 8A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 31A': summaries/001-fixture.md:263
+  - 'Candidate 8A': summaries/001-fixture.md:91
+- possible-duplicate  — npc: 'Candidate 32A' ~ 'Candidate 8A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 32A': summaries/001-fixture.md:271
+  - 'Candidate 8A': summaries/001-fixture.md:91
+- possible-duplicate  — npc: 'Candidate 33A' ~ 'Candidate 8A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 33A': summaries/001-fixture.md:279
+  - 'Candidate 8A': summaries/001-fixture.md:91
+- possible-duplicate  — npc: 'Candidate 34A' ~ 'Candidate 8A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 34A': summaries/001-fixture.md:287
+  - 'Candidate 8A': summaries/001-fixture.md:91
+- possible-duplicate  — npc: 'Candidate 35A' ~ 'Candidate 8A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 35A': summaries/001-fixture.md:295
+  - 'Candidate 8A': summaries/001-fixture.md:91
+- possible-duplicate  — npc: 'Candidate 36A' ~ 'Candidate 8A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 36A': summaries/001-fixture.md:303
+  - 'Candidate 8A': summaries/001-fixture.md:91
+- possible-duplicate  — npc: 'Candidate 37A' ~ 'Candidate 8A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 37A': summaries/001-fixture.md:307
+  - 'Candidate 8A': summaries/001-fixture.md:91
+- possible-duplicate  — npc: 'Candidate 38A' ~ 'Candidate 8A' (similarity 0.96); fix the summaries or rule it in canon.yaml
+  - 'Candidate 38A': summaries/001-fixture.md:315
+  - 'Candidate 8A': summaries/001-fixture.md:91
+- possible-duplicate  — npc: 'Candidate 38B' ~ 'Candidate 8A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 38B': summaries/001-fixture.md:319
+  - 'Candidate 8A': summaries/001-fixture.md:91
+- possible-duplicate  — npc: 'Candidate 8A' ~ 'Candidate 8B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 8A': summaries/001-fixture.md:91
+  - 'Candidate 8B': summaries/001-fixture.md:95
+- possible-duplicate  — npc: 'Candidate 8A' ~ 'Candidate 9A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 8A': summaries/001-fixture.md:91
+  - 'Candidate 9A': summaries/001-fixture.md:99
+- possible-duplicate  — npc: 'Candidate 10B' ~ 'Candidate 8B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 10B': summaries/001-fixture.md:111
+  - 'Candidate 8B': summaries/001-fixture.md:95
+- possible-duplicate  — npc: 'Candidate 11B' ~ 'Candidate 8B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 11B': summaries/001-fixture.md:119
+  - 'Candidate 8B': summaries/001-fixture.md:95
+- possible-duplicate  — npc: 'Candidate 13B' ~ 'Candidate 8B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 13B': summaries/001-fixture.md:131
+  - 'Candidate 8B': summaries/001-fixture.md:95
+- possible-duplicate  — npc: 'Candidate 14B' ~ 'Candidate 8B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 14B': summaries/001-fixture.md:139
+  - 'Candidate 8B': summaries/001-fixture.md:95
+- possible-duplicate  — npc: 'Candidate 15B' ~ 'Candidate 8B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 15B': summaries/001-fixture.md:147
+  - 'Candidate 8B': summaries/001-fixture.md:95
+- possible-duplicate  — npc: 'Candidate 16B' ~ 'Candidate 8B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 16B': summaries/001-fixture.md:155
+  - 'Candidate 8B': summaries/001-fixture.md:95
+- possible-duplicate  — npc: 'Candidate 17B' ~ 'Candidate 8B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 17B': summaries/001-fixture.md:163
+  - 'Candidate 8B': summaries/001-fixture.md:95
+- possible-duplicate  — npc: 'Candidate 18A' ~ 'Candidate 8B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 18A': summaries/001-fixture.md:167
+  - 'Candidate 8B': summaries/001-fixture.md:95
+- possible-duplicate  — npc: 'Candidate 18B' ~ 'Candidate 8B' (similarity 0.96); fix the summaries or rule it in canon.yaml
+  - 'Candidate 18B': summaries/001-fixture.md:171
+  - 'Candidate 8B': summaries/001-fixture.md:95
+- possible-duplicate  — npc: 'Candidate 19B' ~ 'Candidate 8B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 19B': summaries/001-fixture.md:179
+  - 'Candidate 8B': summaries/001-fixture.md:95
+- possible-duplicate  — npc: 'Candidate 21B' ~ 'Candidate 8B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 21B': summaries/001-fixture.md:191
+  - 'Candidate 8B': summaries/001-fixture.md:95
+- possible-duplicate  — npc: 'Candidate 22B' ~ 'Candidate 8B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 22B': summaries/001-fixture.md:199
+  - 'Candidate 8B': summaries/001-fixture.md:95
+- possible-duplicate  — npc: 'Candidate 23B' ~ 'Candidate 8B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 23B': summaries/001-fixture.md:207
+  - 'Candidate 8B': summaries/001-fixture.md:95
+- possible-duplicate  — npc: 'Candidate 24B' ~ 'Candidate 8B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 24B': summaries/001-fixture.md:215
+  - 'Candidate 8B': summaries/001-fixture.md:95
+- possible-duplicate  — npc: 'Candidate 25B' ~ 'Candidate 8B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 25B': summaries/001-fixture.md:223
+  - 'Candidate 8B': summaries/001-fixture.md:95
+- possible-duplicate  — npc: 'Candidate 26B' ~ 'Candidate 8B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 26B': summaries/001-fixture.md:231
+  - 'Candidate 8B': summaries/001-fixture.md:95
+- possible-duplicate  — npc: 'Candidate 27B' ~ 'Candidate 8B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 27B': summaries/001-fixture.md:239
+  - 'Candidate 8B': summaries/001-fixture.md:95
+- possible-duplicate  — npc: 'Candidate 28A' ~ 'Candidate 8B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 28A': summaries/001-fixture.md:243
+  - 'Candidate 8B': summaries/001-fixture.md:95
+- possible-duplicate  — npc: 'Candidate 29B' ~ 'Candidate 8B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 29B': summaries/001-fixture.md:251
+  - 'Candidate 8B': summaries/001-fixture.md:95
+- possible-duplicate  — npc: 'Candidate 30B' ~ 'Candidate 8B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 30B': summaries/001-fixture.md:259
+  - 'Candidate 8B': summaries/001-fixture.md:95
+- possible-duplicate  — npc: 'Candidate 31B' ~ 'Candidate 8B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 31B': summaries/001-fixture.md:267
+  - 'Candidate 8B': summaries/001-fixture.md:95
+- possible-duplicate  — npc: 'Candidate 32B' ~ 'Candidate 8B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 32B': summaries/001-fixture.md:275
+  - 'Candidate 8B': summaries/001-fixture.md:95
+- possible-duplicate  — npc: 'Candidate 33B' ~ 'Candidate 8B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 33B': summaries/001-fixture.md:283
+  - 'Candidate 8B': summaries/001-fixture.md:95
+- possible-duplicate  — npc: 'Candidate 34B' ~ 'Candidate 8B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 34B': summaries/001-fixture.md:291
+  - 'Candidate 8B': summaries/001-fixture.md:95
+- possible-duplicate  — npc: 'Candidate 35B' ~ 'Candidate 8B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 35B': summaries/001-fixture.md:299
+  - 'Candidate 8B': summaries/001-fixture.md:95
+- possible-duplicate  — npc: 'Candidate 37B' ~ 'Candidate 8B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 37B': summaries/001-fixture.md:311
+  - 'Candidate 8B': summaries/001-fixture.md:95
+- possible-duplicate  — npc: 'Candidate 38A' ~ 'Candidate 8B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 38A': summaries/001-fixture.md:315
+  - 'Candidate 8B': summaries/001-fixture.md:95
+- possible-duplicate  — npc: 'Candidate 38B' ~ 'Candidate 8B' (similarity 0.96); fix the summaries or rule it in canon.yaml
+  - 'Candidate 38B': summaries/001-fixture.md:319
+  - 'Candidate 8B': summaries/001-fixture.md:95
+- possible-duplicate  — npc: 'Candidate 8B' ~ 'Candidate 9B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 8B': summaries/001-fixture.md:95
+  - 'Candidate 9B': summaries/001-fixture.md:103
+- possible-duplicate  — npc: 'Candidate 10A' ~ 'Candidate 9A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 10A': summaries/001-fixture.md:107
+  - 'Candidate 9A': summaries/001-fixture.md:99
+- possible-duplicate  — npc: 'Candidate 11A' ~ 'Candidate 9A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 11A': summaries/001-fixture.md:115
+  - 'Candidate 9A': summaries/001-fixture.md:99
+- possible-duplicate  — npc: 'Candidate 12A' ~ 'Candidate 9A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 12A': summaries/001-fixture.md:123
+  - 'Candidate 9A': summaries/001-fixture.md:99
+- possible-duplicate  — npc: 'Candidate 13A' ~ 'Candidate 9A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 13A': summaries/001-fixture.md:127
+  - 'Candidate 9A': summaries/001-fixture.md:99
+- possible-duplicate  — npc: 'Candidate 14A' ~ 'Candidate 9A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 14A': summaries/001-fixture.md:135
+  - 'Candidate 9A': summaries/001-fixture.md:99
+- possible-duplicate  — npc: 'Candidate 15A' ~ 'Candidate 9A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 15A': summaries/001-fixture.md:143
+  - 'Candidate 9A': summaries/001-fixture.md:99
+- possible-duplicate  — npc: 'Candidate 16A' ~ 'Candidate 9A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 16A': summaries/001-fixture.md:151
+  - 'Candidate 9A': summaries/001-fixture.md:99
+- possible-duplicate  — npc: 'Candidate 17A' ~ 'Candidate 9A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 17A': summaries/001-fixture.md:159
+  - 'Candidate 9A': summaries/001-fixture.md:99
+- possible-duplicate  — npc: 'Candidate 18A' ~ 'Candidate 9A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 18A': summaries/001-fixture.md:167
+  - 'Candidate 9A': summaries/001-fixture.md:99
+- possible-duplicate  — npc: 'Candidate 19A' ~ 'Candidate 9A' (similarity 0.96); fix the summaries or rule it in canon.yaml
+  - 'Candidate 19A': summaries/001-fixture.md:175
+  - 'Candidate 9A': summaries/001-fixture.md:99
+- possible-duplicate  — npc: 'Candidate 19B' ~ 'Candidate 9A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 19B': summaries/001-fixture.md:179
+  - 'Candidate 9A': summaries/001-fixture.md:99
+- possible-duplicate  — npc: 'Candidate 20A' ~ 'Candidate 9A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 20A': summaries/001-fixture.md:183
+  - 'Candidate 9A': summaries/001-fixture.md:99
+- possible-duplicate  — npc: 'Candidate 21A' ~ 'Candidate 9A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 21A': summaries/001-fixture.md:187
+  - 'Candidate 9A': summaries/001-fixture.md:99
+- possible-duplicate  — npc: 'Candidate 22A' ~ 'Candidate 9A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 22A': summaries/001-fixture.md:195
+  - 'Candidate 9A': summaries/001-fixture.md:99
+- possible-duplicate  — npc: 'Candidate 23A' ~ 'Candidate 9A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 23A': summaries/001-fixture.md:203
+  - 'Candidate 9A': summaries/001-fixture.md:99
+- possible-duplicate  — npc: 'Candidate 24A' ~ 'Candidate 9A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 24A': summaries/001-fixture.md:211
+  - 'Candidate 9A': summaries/001-fixture.md:99
+- possible-duplicate  — npc: 'Candidate 25A' ~ 'Candidate 9A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 25A': summaries/001-fixture.md:219
+  - 'Candidate 9A': summaries/001-fixture.md:99
+- possible-duplicate  — npc: 'Candidate 26A' ~ 'Candidate 9A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 26A': summaries/001-fixture.md:227
+  - 'Candidate 9A': summaries/001-fixture.md:99
+- possible-duplicate  — npc: 'Candidate 27A' ~ 'Candidate 9A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 27A': summaries/001-fixture.md:235
+  - 'Candidate 9A': summaries/001-fixture.md:99
+- possible-duplicate  — npc: 'Candidate 28A' ~ 'Candidate 9A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 28A': summaries/001-fixture.md:243
+  - 'Candidate 9A': summaries/001-fixture.md:99
+- possible-duplicate  — npc: 'Candidate 29A' ~ 'Candidate 9A' (similarity 0.96); fix the summaries or rule it in canon.yaml
+  - 'Candidate 29A': summaries/001-fixture.md:247
+  - 'Candidate 9A': summaries/001-fixture.md:99
+- possible-duplicate  — npc: 'Candidate 29B' ~ 'Candidate 9A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 29B': summaries/001-fixture.md:251
+  - 'Candidate 9A': summaries/001-fixture.md:99
+- possible-duplicate  — npc: 'Candidate 30A' ~ 'Candidate 9A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 30A': summaries/001-fixture.md:255
+  - 'Candidate 9A': summaries/001-fixture.md:99
+- possible-duplicate  — npc: 'Candidate 31A' ~ 'Candidate 9A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 31A': summaries/001-fixture.md:263
+  - 'Candidate 9A': summaries/001-fixture.md:99
+- possible-duplicate  — npc: 'Candidate 32A' ~ 'Candidate 9A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 32A': summaries/001-fixture.md:271
+  - 'Candidate 9A': summaries/001-fixture.md:99
+- possible-duplicate  — npc: 'Candidate 33A' ~ 'Candidate 9A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 33A': summaries/001-fixture.md:279
+  - 'Candidate 9A': summaries/001-fixture.md:99
+- possible-duplicate  — npc: 'Candidate 34A' ~ 'Candidate 9A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 34A': summaries/001-fixture.md:287
+  - 'Candidate 9A': summaries/001-fixture.md:99
+- possible-duplicate  — npc: 'Candidate 35A' ~ 'Candidate 9A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 35A': summaries/001-fixture.md:295
+  - 'Candidate 9A': summaries/001-fixture.md:99
+- possible-duplicate  — npc: 'Candidate 36A' ~ 'Candidate 9A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 36A': summaries/001-fixture.md:303
+  - 'Candidate 9A': summaries/001-fixture.md:99
+- possible-duplicate  — npc: 'Candidate 37A' ~ 'Candidate 9A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 37A': summaries/001-fixture.md:307
+  - 'Candidate 9A': summaries/001-fixture.md:99
+- possible-duplicate  — npc: 'Candidate 38A' ~ 'Candidate 9A' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 38A': summaries/001-fixture.md:315
+  - 'Candidate 9A': summaries/001-fixture.md:99
+- possible-duplicate  — npc: 'Candidate 9A' ~ 'Candidate 9B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 9A': summaries/001-fixture.md:99
+  - 'Candidate 9B': summaries/001-fixture.md:103
+- possible-duplicate  — npc: 'Candidate 10B' ~ 'Candidate 9B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 10B': summaries/001-fixture.md:111
+  - 'Candidate 9B': summaries/001-fixture.md:103
+- possible-duplicate  — npc: 'Candidate 11B' ~ 'Candidate 9B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 11B': summaries/001-fixture.md:119
+  - 'Candidate 9B': summaries/001-fixture.md:103
+- possible-duplicate  — npc: 'Candidate 13B' ~ 'Candidate 9B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 13B': summaries/001-fixture.md:131
+  - 'Candidate 9B': summaries/001-fixture.md:103
+- possible-duplicate  — npc: 'Candidate 14B' ~ 'Candidate 9B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 14B': summaries/001-fixture.md:139
+  - 'Candidate 9B': summaries/001-fixture.md:103
+- possible-duplicate  — npc: 'Candidate 15B' ~ 'Candidate 9B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 15B': summaries/001-fixture.md:147
+  - 'Candidate 9B': summaries/001-fixture.md:103
+- possible-duplicate  — npc: 'Candidate 16B' ~ 'Candidate 9B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 16B': summaries/001-fixture.md:155
+  - 'Candidate 9B': summaries/001-fixture.md:103
+- possible-duplicate  — npc: 'Candidate 17B' ~ 'Candidate 9B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 17B': summaries/001-fixture.md:163
+  - 'Candidate 9B': summaries/001-fixture.md:103
+- possible-duplicate  — npc: 'Candidate 18B' ~ 'Candidate 9B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 18B': summaries/001-fixture.md:171
+  - 'Candidate 9B': summaries/001-fixture.md:103
+- possible-duplicate  — npc: 'Candidate 19A' ~ 'Candidate 9B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 19A': summaries/001-fixture.md:175
+  - 'Candidate 9B': summaries/001-fixture.md:103
+- possible-duplicate  — npc: 'Candidate 19B' ~ 'Candidate 9B' (similarity 0.96); fix the summaries or rule it in canon.yaml
+  - 'Candidate 19B': summaries/001-fixture.md:179
+  - 'Candidate 9B': summaries/001-fixture.md:103
+- possible-duplicate  — npc: 'Candidate 21B' ~ 'Candidate 9B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 21B': summaries/001-fixture.md:191
+  - 'Candidate 9B': summaries/001-fixture.md:103
+- possible-duplicate  — npc: 'Candidate 22B' ~ 'Candidate 9B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 22B': summaries/001-fixture.md:199
+  - 'Candidate 9B': summaries/001-fixture.md:103
+- possible-duplicate  — npc: 'Candidate 23B' ~ 'Candidate 9B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 23B': summaries/001-fixture.md:207
+  - 'Candidate 9B': summaries/001-fixture.md:103
+- possible-duplicate  — npc: 'Candidate 24B' ~ 'Candidate 9B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 24B': summaries/001-fixture.md:215
+  - 'Candidate 9B': summaries/001-fixture.md:103
+- possible-duplicate  — npc: 'Candidate 25B' ~ 'Candidate 9B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 25B': summaries/001-fixture.md:223
+  - 'Candidate 9B': summaries/001-fixture.md:103
+- possible-duplicate  — npc: 'Candidate 26B' ~ 'Candidate 9B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 26B': summaries/001-fixture.md:231
+  - 'Candidate 9B': summaries/001-fixture.md:103
+- possible-duplicate  — npc: 'Candidate 27B' ~ 'Candidate 9B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 27B': summaries/001-fixture.md:239
+  - 'Candidate 9B': summaries/001-fixture.md:103
+- possible-duplicate  — npc: 'Candidate 29A' ~ 'Candidate 9B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 29A': summaries/001-fixture.md:247
+  - 'Candidate 9B': summaries/001-fixture.md:103
+- possible-duplicate  — npc: 'Candidate 29B' ~ 'Candidate 9B' (similarity 0.96); fix the summaries or rule it in canon.yaml
+  - 'Candidate 29B': summaries/001-fixture.md:251
+  - 'Candidate 9B': summaries/001-fixture.md:103
+- possible-duplicate  — npc: 'Candidate 30B' ~ 'Candidate 9B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 30B': summaries/001-fixture.md:259
+  - 'Candidate 9B': summaries/001-fixture.md:103
+- possible-duplicate  — npc: 'Candidate 31B' ~ 'Candidate 9B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 31B': summaries/001-fixture.md:267
+  - 'Candidate 9B': summaries/001-fixture.md:103
+- possible-duplicate  — npc: 'Candidate 32B' ~ 'Candidate 9B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 32B': summaries/001-fixture.md:275
+  - 'Candidate 9B': summaries/001-fixture.md:103
+- possible-duplicate  — npc: 'Candidate 33B' ~ 'Candidate 9B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 33B': summaries/001-fixture.md:283
+  - 'Candidate 9B': summaries/001-fixture.md:103
+- possible-duplicate  — npc: 'Candidate 34B' ~ 'Candidate 9B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 34B': summaries/001-fixture.md:291
+  - 'Candidate 9B': summaries/001-fixture.md:103
+- possible-duplicate  — npc: 'Candidate 35B' ~ 'Candidate 9B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 35B': summaries/001-fixture.md:299
+  - 'Candidate 9B': summaries/001-fixture.md:103
+- possible-duplicate  — npc: 'Candidate 37B' ~ 'Candidate 9B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 37B': summaries/001-fixture.md:311
+  - 'Candidate 9B': summaries/001-fixture.md:103
+- possible-duplicate  — npc: 'Candidate 38B' ~ 'Candidate 9B' (similarity 0.88); fix the summaries or rule it in canon.yaml
+  - 'Candidate 38B': summaries/001-fixture.md:319
+  - 'Candidate 9B': summaries/001-fixture.md:103
+- possible-duplicate  — npc: 'Candidate 10A' ~ 'Candidate 10B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 10A': summaries/001-fixture.md:107
+  - 'Candidate 10B': summaries/001-fixture.md:111
+- possible-duplicate  — npc: 'Candidate 10A' ~ 'Candidate 11A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 10A': summaries/001-fixture.md:107
+  - 'Candidate 11A': summaries/001-fixture.md:115
+- possible-duplicate  — npc: 'Candidate 10A' ~ 'Candidate 12A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 10A': summaries/001-fixture.md:107
+  - 'Candidate 12A': summaries/001-fixture.md:123
+- possible-duplicate  — npc: 'Candidate 10A' ~ 'Candidate 13A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 10A': summaries/001-fixture.md:107
+  - 'Candidate 13A': summaries/001-fixture.md:127
+- possible-duplicate  — npc: 'Candidate 10A' ~ 'Candidate 14A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 10A': summaries/001-fixture.md:107
+  - 'Candidate 14A': summaries/001-fixture.md:135
+- possible-duplicate  — npc: 'Candidate 10A' ~ 'Candidate 15A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 10A': summaries/001-fixture.md:107
+  - 'Candidate 15A': summaries/001-fixture.md:143
+- possible-duplicate  — npc: 'Candidate 10A' ~ 'Candidate 16A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 10A': summaries/001-fixture.md:107
+  - 'Candidate 16A': summaries/001-fixture.md:151
+- possible-duplicate  — npc: 'Candidate 10A' ~ 'Candidate 17A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 10A': summaries/001-fixture.md:107
+  - 'Candidate 17A': summaries/001-fixture.md:159
+- possible-duplicate  — npc: 'Candidate 10A' ~ 'Candidate 18A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 10A': summaries/001-fixture.md:107
+  - 'Candidate 18A': summaries/001-fixture.md:167
+- possible-duplicate  — npc: 'Candidate 10A' ~ 'Candidate 19A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 10A': summaries/001-fixture.md:107
+  - 'Candidate 19A': summaries/001-fixture.md:175
+- possible-duplicate  — npc: 'Candidate 10A' ~ 'Candidate 20A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 10A': summaries/001-fixture.md:107
+  - 'Candidate 20A': summaries/001-fixture.md:183
+- possible-duplicate  — npc: 'Candidate 10A' ~ 'Candidate 21A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 10A': summaries/001-fixture.md:107
+  - 'Candidate 21A': summaries/001-fixture.md:187
+- possible-duplicate  — npc: 'Candidate 10A' ~ 'Candidate 30A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 10A': summaries/001-fixture.md:107
+  - 'Candidate 30A': summaries/001-fixture.md:255
+- possible-duplicate  — npc: 'Candidate 10A' ~ 'Candidate 31A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 10A': summaries/001-fixture.md:107
+  - 'Candidate 31A': summaries/001-fixture.md:263
+- possible-duplicate  — npc: 'Candidate 10B' ~ 'Candidate 11B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 10B': summaries/001-fixture.md:111
+  - 'Candidate 11B': summaries/001-fixture.md:119
+- possible-duplicate  — npc: 'Candidate 10B' ~ 'Candidate 13B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 10B': summaries/001-fixture.md:111
+  - 'Candidate 13B': summaries/001-fixture.md:131
+- possible-duplicate  — npc: 'Candidate 10B' ~ 'Candidate 14B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 10B': summaries/001-fixture.md:111
+  - 'Candidate 14B': summaries/001-fixture.md:139
+- possible-duplicate  — npc: 'Candidate 10B' ~ 'Candidate 15B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 10B': summaries/001-fixture.md:111
+  - 'Candidate 15B': summaries/001-fixture.md:147
+- possible-duplicate  — npc: 'Candidate 10B' ~ 'Candidate 16B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 10B': summaries/001-fixture.md:111
+  - 'Candidate 16B': summaries/001-fixture.md:155
+- possible-duplicate  — npc: 'Candidate 10B' ~ 'Candidate 17B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 10B': summaries/001-fixture.md:111
+  - 'Candidate 17B': summaries/001-fixture.md:163
+- possible-duplicate  — npc: 'Candidate 10B' ~ 'Candidate 18B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 10B': summaries/001-fixture.md:111
+  - 'Candidate 18B': summaries/001-fixture.md:171
+- possible-duplicate  — npc: 'Candidate 10B' ~ 'Candidate 19B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 10B': summaries/001-fixture.md:111
+  - 'Candidate 19B': summaries/001-fixture.md:179
+- possible-duplicate  — npc: 'Candidate 10B' ~ 'Candidate 21B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 10B': summaries/001-fixture.md:111
+  - 'Candidate 21B': summaries/001-fixture.md:191
+- possible-duplicate  — npc: 'Candidate 10B' ~ 'Candidate 30B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 10B': summaries/001-fixture.md:111
+  - 'Candidate 30B': summaries/001-fixture.md:259
+- possible-duplicate  — npc: 'Candidate 10B' ~ 'Candidate 31B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 10B': summaries/001-fixture.md:111
+  - 'Candidate 31B': summaries/001-fixture.md:267
+- possible-duplicate  — npc: 'Candidate 11A' ~ 'Candidate 11B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 11A': summaries/001-fixture.md:115
+  - 'Candidate 11B': summaries/001-fixture.md:119
+- possible-duplicate  — npc: 'Candidate 11A' ~ 'Candidate 12A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 11A': summaries/001-fixture.md:115
+  - 'Candidate 12A': summaries/001-fixture.md:123
+- possible-duplicate  — npc: 'Candidate 11A' ~ 'Candidate 13A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 11A': summaries/001-fixture.md:115
+  - 'Candidate 13A': summaries/001-fixture.md:127
+- possible-duplicate  — npc: 'Candidate 11A' ~ 'Candidate 14A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 11A': summaries/001-fixture.md:115
+  - 'Candidate 14A': summaries/001-fixture.md:135
+- possible-duplicate  — npc: 'Candidate 11A' ~ 'Candidate 15A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 11A': summaries/001-fixture.md:115
+  - 'Candidate 15A': summaries/001-fixture.md:143
+- possible-duplicate  — npc: 'Candidate 11A' ~ 'Candidate 16A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 11A': summaries/001-fixture.md:115
+  - 'Candidate 16A': summaries/001-fixture.md:151
+- possible-duplicate  — npc: 'Candidate 11A' ~ 'Candidate 17A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 11A': summaries/001-fixture.md:115
+  - 'Candidate 17A': summaries/001-fixture.md:159
+- possible-duplicate  — npc: 'Candidate 11A' ~ 'Candidate 18A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 11A': summaries/001-fixture.md:115
+  - 'Candidate 18A': summaries/001-fixture.md:167
+- possible-duplicate  — npc: 'Candidate 11A' ~ 'Candidate 19A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 11A': summaries/001-fixture.md:115
+  - 'Candidate 19A': summaries/001-fixture.md:175
+- possible-duplicate  — npc: 'Candidate 11A' ~ 'Candidate 21A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 11A': summaries/001-fixture.md:115
+  - 'Candidate 21A': summaries/001-fixture.md:187
+- possible-duplicate  — npc: 'Candidate 11A' ~ 'Candidate 31A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 11A': summaries/001-fixture.md:115
+  - 'Candidate 31A': summaries/001-fixture.md:263
+- possible-duplicate  — npc: 'Candidate 11B' ~ 'Candidate 13B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 11B': summaries/001-fixture.md:119
+  - 'Candidate 13B': summaries/001-fixture.md:131
+- possible-duplicate  — npc: 'Candidate 11B' ~ 'Candidate 14B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 11B': summaries/001-fixture.md:119
+  - 'Candidate 14B': summaries/001-fixture.md:139
+- possible-duplicate  — npc: 'Candidate 11B' ~ 'Candidate 15B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 11B': summaries/001-fixture.md:119
+  - 'Candidate 15B': summaries/001-fixture.md:147
+- possible-duplicate  — npc: 'Candidate 11B' ~ 'Candidate 16B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 11B': summaries/001-fixture.md:119
+  - 'Candidate 16B': summaries/001-fixture.md:155
+- possible-duplicate  — npc: 'Candidate 11B' ~ 'Candidate 17B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 11B': summaries/001-fixture.md:119
+  - 'Candidate 17B': summaries/001-fixture.md:163
+- possible-duplicate  — npc: 'Candidate 11B' ~ 'Candidate 18B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 11B': summaries/001-fixture.md:119
+  - 'Candidate 18B': summaries/001-fixture.md:171
+- possible-duplicate  — npc: 'Candidate 11B' ~ 'Candidate 19B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 11B': summaries/001-fixture.md:119
+  - 'Candidate 19B': summaries/001-fixture.md:179
+- possible-duplicate  — npc: 'Candidate 11B' ~ 'Candidate 21B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 11B': summaries/001-fixture.md:119
+  - 'Candidate 21B': summaries/001-fixture.md:191
+- possible-duplicate  — npc: 'Candidate 11B' ~ 'Candidate 31B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 11B': summaries/001-fixture.md:119
+  - 'Candidate 31B': summaries/001-fixture.md:267
+- possible-duplicate  — npc: 'Candidate 12A' ~ 'Candidate 13A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 12A': summaries/001-fixture.md:123
+  - 'Candidate 13A': summaries/001-fixture.md:127
+- possible-duplicate  — npc: 'Candidate 12A' ~ 'Candidate 14A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 12A': summaries/001-fixture.md:123
+  - 'Candidate 14A': summaries/001-fixture.md:135
+- possible-duplicate  — npc: 'Candidate 12A' ~ 'Candidate 15A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 12A': summaries/001-fixture.md:123
+  - 'Candidate 15A': summaries/001-fixture.md:143
+- possible-duplicate  — npc: 'Candidate 12A' ~ 'Candidate 16A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 12A': summaries/001-fixture.md:123
+  - 'Candidate 16A': summaries/001-fixture.md:151
+- possible-duplicate  — npc: 'Candidate 12A' ~ 'Candidate 17A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 12A': summaries/001-fixture.md:123
+  - 'Candidate 17A': summaries/001-fixture.md:159
+- possible-duplicate  — npc: 'Candidate 12A' ~ 'Candidate 18A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 12A': summaries/001-fixture.md:123
+  - 'Candidate 18A': summaries/001-fixture.md:167
+- possible-duplicate  — npc: 'Candidate 12A' ~ 'Candidate 19A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 12A': summaries/001-fixture.md:123
+  - 'Candidate 19A': summaries/001-fixture.md:175
+- possible-duplicate  — npc: 'Candidate 12A' ~ 'Candidate 20A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 12A': summaries/001-fixture.md:123
+  - 'Candidate 20A': summaries/001-fixture.md:183
+- possible-duplicate  — npc: 'Candidate 12A' ~ 'Candidate 21A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 12A': summaries/001-fixture.md:123
+  - 'Candidate 21A': summaries/001-fixture.md:187
+- possible-duplicate  — npc: 'Candidate 12A' ~ 'Candidate 22A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 12A': summaries/001-fixture.md:123
+  - 'Candidate 22A': summaries/001-fixture.md:195
+- possible-duplicate  — npc: 'Candidate 12A' ~ 'Candidate 23A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 12A': summaries/001-fixture.md:123
+  - 'Candidate 23A': summaries/001-fixture.md:203
+- possible-duplicate  — npc: 'Candidate 12A' ~ 'Candidate 24A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 12A': summaries/001-fixture.md:123
+  - 'Candidate 24A': summaries/001-fixture.md:211
+- possible-duplicate  — npc: 'Candidate 12A' ~ 'Candidate 25A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 12A': summaries/001-fixture.md:123
+  - 'Candidate 25A': summaries/001-fixture.md:219
+- possible-duplicate  — npc: 'Candidate 12A' ~ 'Candidate 26A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 12A': summaries/001-fixture.md:123
+  - 'Candidate 26A': summaries/001-fixture.md:227
+- possible-duplicate  — npc: 'Candidate 12A' ~ 'Candidate 27A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 12A': summaries/001-fixture.md:123
+  - 'Candidate 27A': summaries/001-fixture.md:235
+- possible-duplicate  — npc: 'Candidate 12A' ~ 'Candidate 28A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 12A': summaries/001-fixture.md:123
+  - 'Candidate 28A': summaries/001-fixture.md:243
+- possible-duplicate  — npc: 'Candidate 12A' ~ 'Candidate 29A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 12A': summaries/001-fixture.md:123
+  - 'Candidate 29A': summaries/001-fixture.md:247
+- possible-duplicate  — npc: 'Candidate 12A' ~ 'Candidate 31A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 12A': summaries/001-fixture.md:123
+  - 'Candidate 31A': summaries/001-fixture.md:263
+- possible-duplicate  — npc: 'Candidate 12A' ~ 'Candidate 32A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 12A': summaries/001-fixture.md:123
+  - 'Candidate 32A': summaries/001-fixture.md:271
+- possible-duplicate  — npc: 'Candidate 13A' ~ 'Candidate 14A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 13A': summaries/001-fixture.md:127
+  - 'Candidate 14A': summaries/001-fixture.md:135
+- possible-duplicate  — npc: 'Candidate 13A' ~ 'Candidate 15A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 13A': summaries/001-fixture.md:127
+  - 'Candidate 15A': summaries/001-fixture.md:143
+- possible-duplicate  — npc: 'Candidate 13A' ~ 'Candidate 16A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 13A': summaries/001-fixture.md:127
+  - 'Candidate 16A': summaries/001-fixture.md:151
+- possible-duplicate  — npc: 'Candidate 13A' ~ 'Candidate 17A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 13A': summaries/001-fixture.md:127
+  - 'Candidate 17A': summaries/001-fixture.md:159
+- possible-duplicate  — npc: 'Candidate 13A' ~ 'Candidate 18A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 13A': summaries/001-fixture.md:127
+  - 'Candidate 18A': summaries/001-fixture.md:167
+- possible-duplicate  — npc: 'Candidate 13A' ~ 'Candidate 19A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 13A': summaries/001-fixture.md:127
+  - 'Candidate 19A': summaries/001-fixture.md:175
+- possible-duplicate  — npc: 'Candidate 13A' ~ 'Candidate 21A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 13A': summaries/001-fixture.md:127
+  - 'Candidate 21A': summaries/001-fixture.md:187
+- possible-duplicate  — npc: 'Candidate 13A' ~ 'Candidate 23A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 13A': summaries/001-fixture.md:127
+  - 'Candidate 23A': summaries/001-fixture.md:203
+- possible-duplicate  — npc: 'Candidate 13A' ~ 'Candidate 30A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 13A': summaries/001-fixture.md:127
+  - 'Candidate 30A': summaries/001-fixture.md:255
+- possible-duplicate  — npc: 'Candidate 13A' ~ 'Candidate 31A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 13A': summaries/001-fixture.md:127
+  - 'Candidate 31A': summaries/001-fixture.md:263
+- possible-duplicate  — npc: 'Candidate 13A' ~ 'Candidate 32A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 13A': summaries/001-fixture.md:127
+  - 'Candidate 32A': summaries/001-fixture.md:271
+- possible-duplicate  — npc: 'Candidate 13A' ~ 'Candidate 33A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 13A': summaries/001-fixture.md:127
+  - 'Candidate 33A': summaries/001-fixture.md:279
+- possible-duplicate  — npc: 'Candidate 13A' ~ 'Candidate 34A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 13A': summaries/001-fixture.md:127
+  - 'Candidate 34A': summaries/001-fixture.md:287
+- possible-duplicate  — npc: 'Candidate 13A' ~ 'Candidate 35A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 13A': summaries/001-fixture.md:127
+  - 'Candidate 35A': summaries/001-fixture.md:295
+- possible-duplicate  — npc: 'Candidate 13A' ~ 'Candidate 36A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 13A': summaries/001-fixture.md:127
+  - 'Candidate 36A': summaries/001-fixture.md:303
+- possible-duplicate  — npc: 'Candidate 13A' ~ 'Candidate 37A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 13A': summaries/001-fixture.md:127
+  - 'Candidate 37A': summaries/001-fixture.md:307
+- possible-duplicate  — npc: 'Candidate 13A' ~ 'Candidate 38A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 13A': summaries/001-fixture.md:127
+  - 'Candidate 38A': summaries/001-fixture.md:315
+- possible-duplicate  — npc: 'Candidate 13B' ~ 'Candidate 14B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 13B': summaries/001-fixture.md:131
+  - 'Candidate 14B': summaries/001-fixture.md:139
+- possible-duplicate  — npc: 'Candidate 13B' ~ 'Candidate 15B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 13B': summaries/001-fixture.md:131
+  - 'Candidate 15B': summaries/001-fixture.md:147
+- possible-duplicate  — npc: 'Candidate 13B' ~ 'Candidate 16B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 13B': summaries/001-fixture.md:131
+  - 'Candidate 16B': summaries/001-fixture.md:155
+- possible-duplicate  — npc: 'Candidate 13B' ~ 'Candidate 17B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 13B': summaries/001-fixture.md:131
+  - 'Candidate 17B': summaries/001-fixture.md:163
+- possible-duplicate  — npc: 'Candidate 13B' ~ 'Candidate 18B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 13B': summaries/001-fixture.md:131
+  - 'Candidate 18B': summaries/001-fixture.md:171
+- possible-duplicate  — npc: 'Candidate 13B' ~ 'Candidate 19B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 13B': summaries/001-fixture.md:131
+  - 'Candidate 19B': summaries/001-fixture.md:179
+- possible-duplicate  — npc: 'Candidate 13B' ~ 'Candidate 21B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 13B': summaries/001-fixture.md:131
+  - 'Candidate 21B': summaries/001-fixture.md:191
+- possible-duplicate  — npc: 'Candidate 13B' ~ 'Candidate 23B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 13B': summaries/001-fixture.md:131
+  - 'Candidate 23B': summaries/001-fixture.md:207
+- possible-duplicate  — npc: 'Candidate 13B' ~ 'Candidate 30B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 13B': summaries/001-fixture.md:131
+  - 'Candidate 30B': summaries/001-fixture.md:259
+- possible-duplicate  — npc: 'Candidate 13B' ~ 'Candidate 31B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 13B': summaries/001-fixture.md:131
+  - 'Candidate 31B': summaries/001-fixture.md:267
+- possible-duplicate  — npc: 'Candidate 13B' ~ 'Candidate 32B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 13B': summaries/001-fixture.md:131
+  - 'Candidate 32B': summaries/001-fixture.md:275
+- possible-duplicate  — npc: 'Candidate 13B' ~ 'Candidate 33B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 13B': summaries/001-fixture.md:131
+  - 'Candidate 33B': summaries/001-fixture.md:283
+- possible-duplicate  — npc: 'Candidate 13B' ~ 'Candidate 34B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 13B': summaries/001-fixture.md:131
+  - 'Candidate 34B': summaries/001-fixture.md:291
+- possible-duplicate  — npc: 'Candidate 13B' ~ 'Candidate 35B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 13B': summaries/001-fixture.md:131
+  - 'Candidate 35B': summaries/001-fixture.md:299
+- possible-duplicate  — npc: 'Candidate 13B' ~ 'Candidate 37B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 13B': summaries/001-fixture.md:131
+  - 'Candidate 37B': summaries/001-fixture.md:311
+- possible-duplicate  — npc: 'Candidate 13B' ~ 'Candidate 38B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 13B': summaries/001-fixture.md:131
+  - 'Candidate 38B': summaries/001-fixture.md:319
+- possible-duplicate  — npc: 'Candidate 14A' ~ 'Candidate 15A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 14A': summaries/001-fixture.md:135
+  - 'Candidate 15A': summaries/001-fixture.md:143
+- possible-duplicate  — npc: 'Candidate 14A' ~ 'Candidate 16A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 14A': summaries/001-fixture.md:135
+  - 'Candidate 16A': summaries/001-fixture.md:151
+- possible-duplicate  — npc: 'Candidate 14A' ~ 'Candidate 17A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 14A': summaries/001-fixture.md:135
+  - 'Candidate 17A': summaries/001-fixture.md:159
+- possible-duplicate  — npc: 'Candidate 14A' ~ 'Candidate 18A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 14A': summaries/001-fixture.md:135
+  - 'Candidate 18A': summaries/001-fixture.md:167
+- possible-duplicate  — npc: 'Candidate 14A' ~ 'Candidate 19A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 14A': summaries/001-fixture.md:135
+  - 'Candidate 19A': summaries/001-fixture.md:175
+- possible-duplicate  — npc: 'Candidate 14A' ~ 'Candidate 21A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 14A': summaries/001-fixture.md:135
+  - 'Candidate 21A': summaries/001-fixture.md:187
+- possible-duplicate  — npc: 'Candidate 14A' ~ 'Candidate 24A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 14A': summaries/001-fixture.md:135
+  - 'Candidate 24A': summaries/001-fixture.md:211
+- possible-duplicate  — npc: 'Candidate 14A' ~ 'Candidate 31A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 14A': summaries/001-fixture.md:135
+  - 'Candidate 31A': summaries/001-fixture.md:263
+- possible-duplicate  — npc: 'Candidate 14A' ~ 'Candidate 34A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 14A': summaries/001-fixture.md:135
+  - 'Candidate 34A': summaries/001-fixture.md:287
+- possible-duplicate  — npc: 'Candidate 14B' ~ 'Candidate 15B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 14B': summaries/001-fixture.md:139
+  - 'Candidate 15B': summaries/001-fixture.md:147
+- possible-duplicate  — npc: 'Candidate 14B' ~ 'Candidate 16B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 14B': summaries/001-fixture.md:139
+  - 'Candidate 16B': summaries/001-fixture.md:155
+- possible-duplicate  — npc: 'Candidate 14B' ~ 'Candidate 17B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 14B': summaries/001-fixture.md:139
+  - 'Candidate 17B': summaries/001-fixture.md:163
+- possible-duplicate  — npc: 'Candidate 14B' ~ 'Candidate 18B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 14B': summaries/001-fixture.md:139
+  - 'Candidate 18B': summaries/001-fixture.md:171
+- possible-duplicate  — npc: 'Candidate 14B' ~ 'Candidate 19B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 14B': summaries/001-fixture.md:139
+  - 'Candidate 19B': summaries/001-fixture.md:179
+- possible-duplicate  — npc: 'Candidate 14B' ~ 'Candidate 21B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 14B': summaries/001-fixture.md:139
+  - 'Candidate 21B': summaries/001-fixture.md:191
+- possible-duplicate  — npc: 'Candidate 14B' ~ 'Candidate 24B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 14B': summaries/001-fixture.md:139
+  - 'Candidate 24B': summaries/001-fixture.md:215
+- possible-duplicate  — npc: 'Candidate 14B' ~ 'Candidate 31B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 14B': summaries/001-fixture.md:139
+  - 'Candidate 31B': summaries/001-fixture.md:267
+- possible-duplicate  — npc: 'Candidate 14B' ~ 'Candidate 34B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 14B': summaries/001-fixture.md:139
+  - 'Candidate 34B': summaries/001-fixture.md:291
+- possible-duplicate  — npc: 'Candidate 15A' ~ 'Candidate 15B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 15A': summaries/001-fixture.md:143
+  - 'Candidate 15B': summaries/001-fixture.md:147
+- possible-duplicate  — npc: 'Candidate 15A' ~ 'Candidate 16A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 15A': summaries/001-fixture.md:143
+  - 'Candidate 16A': summaries/001-fixture.md:151
+- possible-duplicate  — npc: 'Candidate 15A' ~ 'Candidate 17A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 15A': summaries/001-fixture.md:143
+  - 'Candidate 17A': summaries/001-fixture.md:159
+- possible-duplicate  — npc: 'Candidate 15A' ~ 'Candidate 18A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 15A': summaries/001-fixture.md:143
+  - 'Candidate 18A': summaries/001-fixture.md:167
+- possible-duplicate  — npc: 'Candidate 15A' ~ 'Candidate 19A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 15A': summaries/001-fixture.md:143
+  - 'Candidate 19A': summaries/001-fixture.md:175
+- possible-duplicate  — npc: 'Candidate 15A' ~ 'Candidate 21A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 15A': summaries/001-fixture.md:143
+  - 'Candidate 21A': summaries/001-fixture.md:187
+- possible-duplicate  — npc: 'Candidate 15A' ~ 'Candidate 25A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 15A': summaries/001-fixture.md:143
+  - 'Candidate 25A': summaries/001-fixture.md:219
+- possible-duplicate  — npc: 'Candidate 15A' ~ 'Candidate 31A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 15A': summaries/001-fixture.md:143
+  - 'Candidate 31A': summaries/001-fixture.md:263
+- possible-duplicate  — npc: 'Candidate 15A' ~ 'Candidate 35A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 15A': summaries/001-fixture.md:143
+  - 'Candidate 35A': summaries/001-fixture.md:295
+- possible-duplicate  — npc: 'Candidate 15B' ~ 'Candidate 16B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 15B': summaries/001-fixture.md:147
+  - 'Candidate 16B': summaries/001-fixture.md:155
+- possible-duplicate  — npc: 'Candidate 15B' ~ 'Candidate 17B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 15B': summaries/001-fixture.md:147
+  - 'Candidate 17B': summaries/001-fixture.md:163
+- possible-duplicate  — npc: 'Candidate 15B' ~ 'Candidate 18B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 15B': summaries/001-fixture.md:147
+  - 'Candidate 18B': summaries/001-fixture.md:171
+- possible-duplicate  — npc: 'Candidate 15B' ~ 'Candidate 19B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 15B': summaries/001-fixture.md:147
+  - 'Candidate 19B': summaries/001-fixture.md:179
+- possible-duplicate  — npc: 'Candidate 15B' ~ 'Candidate 21B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 15B': summaries/001-fixture.md:147
+  - 'Candidate 21B': summaries/001-fixture.md:191
+- possible-duplicate  — npc: 'Candidate 15B' ~ 'Candidate 25B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 15B': summaries/001-fixture.md:147
+  - 'Candidate 25B': summaries/001-fixture.md:223
+- possible-duplicate  — npc: 'Candidate 15B' ~ 'Candidate 31B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 15B': summaries/001-fixture.md:147
+  - 'Candidate 31B': summaries/001-fixture.md:267
+- possible-duplicate  — npc: 'Candidate 15B' ~ 'Candidate 35B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 15B': summaries/001-fixture.md:147
+  - 'Candidate 35B': summaries/001-fixture.md:299
+- possible-duplicate  — npc: 'Candidate 16A' ~ 'Candidate 16B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 16A': summaries/001-fixture.md:151
+  - 'Candidate 16B': summaries/001-fixture.md:155
+- possible-duplicate  — npc: 'Candidate 16A' ~ 'Candidate 17A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 16A': summaries/001-fixture.md:151
+  - 'Candidate 17A': summaries/001-fixture.md:159
+- possible-duplicate  — npc: 'Candidate 16A' ~ 'Candidate 18A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 16A': summaries/001-fixture.md:151
+  - 'Candidate 18A': summaries/001-fixture.md:167
+- possible-duplicate  — npc: 'Candidate 16A' ~ 'Candidate 19A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 16A': summaries/001-fixture.md:151
+  - 'Candidate 19A': summaries/001-fixture.md:175
+- possible-duplicate  — npc: 'Candidate 16A' ~ 'Candidate 21A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 16A': summaries/001-fixture.md:151
+  - 'Candidate 21A': summaries/001-fixture.md:187
+- possible-duplicate  — npc: 'Candidate 16A' ~ 'Candidate 26A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 16A': summaries/001-fixture.md:151
+  - 'Candidate 26A': summaries/001-fixture.md:227
+- possible-duplicate  — npc: 'Candidate 16A' ~ 'Candidate 31A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 16A': summaries/001-fixture.md:151
+  - 'Candidate 31A': summaries/001-fixture.md:263
+- possible-duplicate  — npc: 'Candidate 16A' ~ 'Candidate 36A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 16A': summaries/001-fixture.md:151
+  - 'Candidate 36A': summaries/001-fixture.md:303
+- possible-duplicate  — npc: 'Candidate 16B' ~ 'Candidate 17B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 16B': summaries/001-fixture.md:155
+  - 'Candidate 17B': summaries/001-fixture.md:163
+- possible-duplicate  — npc: 'Candidate 16B' ~ 'Candidate 18B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 16B': summaries/001-fixture.md:155
+  - 'Candidate 18B': summaries/001-fixture.md:171
+- possible-duplicate  — npc: 'Candidate 16B' ~ 'Candidate 19B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 16B': summaries/001-fixture.md:155
+  - 'Candidate 19B': summaries/001-fixture.md:179
+- possible-duplicate  — npc: 'Candidate 16B' ~ 'Candidate 21B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 16B': summaries/001-fixture.md:155
+  - 'Candidate 21B': summaries/001-fixture.md:191
+- possible-duplicate  — npc: 'Candidate 16B' ~ 'Candidate 26B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 16B': summaries/001-fixture.md:155
+  - 'Candidate 26B': summaries/001-fixture.md:231
+- possible-duplicate  — npc: 'Candidate 16B' ~ 'Candidate 31B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 16B': summaries/001-fixture.md:155
+  - 'Candidate 31B': summaries/001-fixture.md:267
+- possible-duplicate  — npc: 'Candidate 17A' ~ 'Candidate 17B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 17A': summaries/001-fixture.md:159
+  - 'Candidate 17B': summaries/001-fixture.md:163
+- possible-duplicate  — npc: 'Candidate 17A' ~ 'Candidate 18A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 17A': summaries/001-fixture.md:159
+  - 'Candidate 18A': summaries/001-fixture.md:167
+- possible-duplicate  — npc: 'Candidate 17A' ~ 'Candidate 19A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 17A': summaries/001-fixture.md:159
+  - 'Candidate 19A': summaries/001-fixture.md:175
+- possible-duplicate  — npc: 'Candidate 17A' ~ 'Candidate 21A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 17A': summaries/001-fixture.md:159
+  - 'Candidate 21A': summaries/001-fixture.md:187
+- possible-duplicate  — npc: 'Candidate 17A' ~ 'Candidate 27A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 17A': summaries/001-fixture.md:159
+  - 'Candidate 27A': summaries/001-fixture.md:235
+- possible-duplicate  — npc: 'Candidate 17A' ~ 'Candidate 31A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 17A': summaries/001-fixture.md:159
+  - 'Candidate 31A': summaries/001-fixture.md:263
+- possible-duplicate  — npc: 'Candidate 17A' ~ 'Candidate 37A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 17A': summaries/001-fixture.md:159
+  - 'Candidate 37A': summaries/001-fixture.md:307
+- possible-duplicate  — npc: 'Candidate 17B' ~ 'Candidate 18B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 17B': summaries/001-fixture.md:163
+  - 'Candidate 18B': summaries/001-fixture.md:171
+- possible-duplicate  — npc: 'Candidate 17B' ~ 'Candidate 19B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 17B': summaries/001-fixture.md:163
+  - 'Candidate 19B': summaries/001-fixture.md:179
+- possible-duplicate  — npc: 'Candidate 17B' ~ 'Candidate 21B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 17B': summaries/001-fixture.md:163
+  - 'Candidate 21B': summaries/001-fixture.md:191
+- possible-duplicate  — npc: 'Candidate 17B' ~ 'Candidate 27B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 17B': summaries/001-fixture.md:163
+  - 'Candidate 27B': summaries/001-fixture.md:239
+- possible-duplicate  — npc: 'Candidate 17B' ~ 'Candidate 31B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 17B': summaries/001-fixture.md:163
+  - 'Candidate 31B': summaries/001-fixture.md:267
+- possible-duplicate  — npc: 'Candidate 17B' ~ 'Candidate 37B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 17B': summaries/001-fixture.md:163
+  - 'Candidate 37B': summaries/001-fixture.md:311
+- possible-duplicate  — npc: 'Candidate 18A' ~ 'Candidate 18B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 18A': summaries/001-fixture.md:167
+  - 'Candidate 18B': summaries/001-fixture.md:171
+- possible-duplicate  — npc: 'Candidate 18A' ~ 'Candidate 19A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 18A': summaries/001-fixture.md:167
+  - 'Candidate 19A': summaries/001-fixture.md:175
+- possible-duplicate  — npc: 'Candidate 18A' ~ 'Candidate 21A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 18A': summaries/001-fixture.md:167
+  - 'Candidate 21A': summaries/001-fixture.md:187
+- possible-duplicate  — npc: 'Candidate 18A' ~ 'Candidate 28A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 18A': summaries/001-fixture.md:167
+  - 'Candidate 28A': summaries/001-fixture.md:243
+- possible-duplicate  — npc: 'Candidate 18A' ~ 'Candidate 31A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 18A': summaries/001-fixture.md:167
+  - 'Candidate 31A': summaries/001-fixture.md:263
+- possible-duplicate  — npc: 'Candidate 18A' ~ 'Candidate 38A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 18A': summaries/001-fixture.md:167
+  - 'Candidate 38A': summaries/001-fixture.md:315
+- possible-duplicate  — npc: 'Candidate 18B' ~ 'Candidate 19B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 18B': summaries/001-fixture.md:171
+  - 'Candidate 19B': summaries/001-fixture.md:179
+- possible-duplicate  — npc: 'Candidate 18B' ~ 'Candidate 21B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 18B': summaries/001-fixture.md:171
+  - 'Candidate 21B': summaries/001-fixture.md:191
+- possible-duplicate  — npc: 'Candidate 18B' ~ 'Candidate 31B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 18B': summaries/001-fixture.md:171
+  - 'Candidate 31B': summaries/001-fixture.md:267
+- possible-duplicate  — npc: 'Candidate 18B' ~ 'Candidate 38B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 18B': summaries/001-fixture.md:171
+  - 'Candidate 38B': summaries/001-fixture.md:319
+- possible-duplicate  — npc: 'Candidate 19A' ~ 'Candidate 19B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 19A': summaries/001-fixture.md:175
+  - 'Candidate 19B': summaries/001-fixture.md:179
+- possible-duplicate  — npc: 'Candidate 19A' ~ 'Candidate 21A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 19A': summaries/001-fixture.md:175
+  - 'Candidate 21A': summaries/001-fixture.md:187
+- possible-duplicate  — npc: 'Candidate 19A' ~ 'Candidate 29A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 19A': summaries/001-fixture.md:175
+  - 'Candidate 29A': summaries/001-fixture.md:247
+- possible-duplicate  — npc: 'Candidate 19A' ~ 'Candidate 31A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 19A': summaries/001-fixture.md:175
+  - 'Candidate 31A': summaries/001-fixture.md:263
+- possible-duplicate  — npc: 'Candidate 19B' ~ 'Candidate 21B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 19B': summaries/001-fixture.md:179
+  - 'Candidate 21B': summaries/001-fixture.md:191
+- possible-duplicate  — npc: 'Candidate 19B' ~ 'Candidate 29B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 19B': summaries/001-fixture.md:179
+  - 'Candidate 29B': summaries/001-fixture.md:251
+- possible-duplicate  — npc: 'Candidate 19B' ~ 'Candidate 31B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 19B': summaries/001-fixture.md:179
+  - 'Candidate 31B': summaries/001-fixture.md:267
+- possible-duplicate  — npc: 'Candidate 20A' ~ 'Candidate 21A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 20A': summaries/001-fixture.md:183
+  - 'Candidate 21A': summaries/001-fixture.md:187
+- possible-duplicate  — npc: 'Candidate 20A' ~ 'Candidate 22A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 20A': summaries/001-fixture.md:183
+  - 'Candidate 22A': summaries/001-fixture.md:195
+- possible-duplicate  — npc: 'Candidate 20A' ~ 'Candidate 23A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 20A': summaries/001-fixture.md:183
+  - 'Candidate 23A': summaries/001-fixture.md:203
+- possible-duplicate  — npc: 'Candidate 20A' ~ 'Candidate 24A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 20A': summaries/001-fixture.md:183
+  - 'Candidate 24A': summaries/001-fixture.md:211
+- possible-duplicate  — npc: 'Candidate 20A' ~ 'Candidate 25A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 20A': summaries/001-fixture.md:183
+  - 'Candidate 25A': summaries/001-fixture.md:219
+- possible-duplicate  — npc: 'Candidate 20A' ~ 'Candidate 26A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 20A': summaries/001-fixture.md:183
+  - 'Candidate 26A': summaries/001-fixture.md:227
+- possible-duplicate  — npc: 'Candidate 20A' ~ 'Candidate 27A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 20A': summaries/001-fixture.md:183
+  - 'Candidate 27A': summaries/001-fixture.md:235
+- possible-duplicate  — npc: 'Candidate 20A' ~ 'Candidate 28A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 20A': summaries/001-fixture.md:183
+  - 'Candidate 28A': summaries/001-fixture.md:243
+- possible-duplicate  — npc: 'Candidate 20A' ~ 'Candidate 29A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 20A': summaries/001-fixture.md:183
+  - 'Candidate 29A': summaries/001-fixture.md:247
+- possible-duplicate  — npc: 'Candidate 20A' ~ 'Candidate 30A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 20A': summaries/001-fixture.md:183
+  - 'Candidate 30A': summaries/001-fixture.md:255
+- possible-duplicate  — npc: 'Candidate 20A' ~ 'Candidate 32A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 20A': summaries/001-fixture.md:183
+  - 'Candidate 32A': summaries/001-fixture.md:271
+- possible-duplicate  — npc: 'Candidate 21A' ~ 'Candidate 22A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 21A': summaries/001-fixture.md:187
+  - 'Candidate 22A': summaries/001-fixture.md:195
+- possible-duplicate  — npc: 'Candidate 21A' ~ 'Candidate 23A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 21A': summaries/001-fixture.md:187
+  - 'Candidate 23A': summaries/001-fixture.md:203
+- possible-duplicate  — npc: 'Candidate 21A' ~ 'Candidate 24A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 21A': summaries/001-fixture.md:187
+  - 'Candidate 24A': summaries/001-fixture.md:211
+- possible-duplicate  — npc: 'Candidate 21A' ~ 'Candidate 25A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 21A': summaries/001-fixture.md:187
+  - 'Candidate 25A': summaries/001-fixture.md:219
+- possible-duplicate  — npc: 'Candidate 21A' ~ 'Candidate 26A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 21A': summaries/001-fixture.md:187
+  - 'Candidate 26A': summaries/001-fixture.md:227
+- possible-duplicate  — npc: 'Candidate 21A' ~ 'Candidate 27A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 21A': summaries/001-fixture.md:187
+  - 'Candidate 27A': summaries/001-fixture.md:235
+- possible-duplicate  — npc: 'Candidate 21A' ~ 'Candidate 28A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 21A': summaries/001-fixture.md:187
+  - 'Candidate 28A': summaries/001-fixture.md:243
+- possible-duplicate  — npc: 'Candidate 21A' ~ 'Candidate 29A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 21A': summaries/001-fixture.md:187
+  - 'Candidate 29A': summaries/001-fixture.md:247
+- possible-duplicate  — npc: 'Candidate 21A' ~ 'Candidate 31A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 21A': summaries/001-fixture.md:187
+  - 'Candidate 31A': summaries/001-fixture.md:263
+- possible-duplicate  — npc: 'Candidate 21A' ~ 'Candidate 32A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 21A': summaries/001-fixture.md:187
+  - 'Candidate 32A': summaries/001-fixture.md:271
+- possible-duplicate  — npc: 'Candidate 21B' ~ 'Candidate 22B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 21B': summaries/001-fixture.md:191
+  - 'Candidate 22B': summaries/001-fixture.md:199
+- possible-duplicate  — npc: 'Candidate 21B' ~ 'Candidate 23B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 21B': summaries/001-fixture.md:191
+  - 'Candidate 23B': summaries/001-fixture.md:207
+- possible-duplicate  — npc: 'Candidate 21B' ~ 'Candidate 24B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 21B': summaries/001-fixture.md:191
+  - 'Candidate 24B': summaries/001-fixture.md:215
+- possible-duplicate  — npc: 'Candidate 21B' ~ 'Candidate 25B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 21B': summaries/001-fixture.md:191
+  - 'Candidate 25B': summaries/001-fixture.md:223
+- possible-duplicate  — npc: 'Candidate 21B' ~ 'Candidate 26B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 21B': summaries/001-fixture.md:191
+  - 'Candidate 26B': summaries/001-fixture.md:231
+- possible-duplicate  — npc: 'Candidate 21B' ~ 'Candidate 27B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 21B': summaries/001-fixture.md:191
+  - 'Candidate 27B': summaries/001-fixture.md:239
+- possible-duplicate  — npc: 'Candidate 21B' ~ 'Candidate 29B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 21B': summaries/001-fixture.md:191
+  - 'Candidate 29B': summaries/001-fixture.md:251
+- possible-duplicate  — npc: 'Candidate 21B' ~ 'Candidate 31B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 21B': summaries/001-fixture.md:191
+  - 'Candidate 31B': summaries/001-fixture.md:267
+- possible-duplicate  — npc: 'Candidate 21B' ~ 'Candidate 32B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 21B': summaries/001-fixture.md:191
+  - 'Candidate 32B': summaries/001-fixture.md:275
+- possible-duplicate  — npc: 'Candidate 22A' ~ 'Candidate 23A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 22A': summaries/001-fixture.md:195
+  - 'Candidate 23A': summaries/001-fixture.md:203
+- possible-duplicate  — npc: 'Candidate 22A' ~ 'Candidate 24A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 22A': summaries/001-fixture.md:195
+  - 'Candidate 24A': summaries/001-fixture.md:211
+- possible-duplicate  — npc: 'Candidate 22A' ~ 'Candidate 25A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 22A': summaries/001-fixture.md:195
+  - 'Candidate 25A': summaries/001-fixture.md:219
+- possible-duplicate  — npc: 'Candidate 22A' ~ 'Candidate 26A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 22A': summaries/001-fixture.md:195
+  - 'Candidate 26A': summaries/001-fixture.md:227
+- possible-duplicate  — npc: 'Candidate 22A' ~ 'Candidate 27A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 22A': summaries/001-fixture.md:195
+  - 'Candidate 27A': summaries/001-fixture.md:235
+- possible-duplicate  — npc: 'Candidate 22A' ~ 'Candidate 28A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 22A': summaries/001-fixture.md:195
+  - 'Candidate 28A': summaries/001-fixture.md:243
+- possible-duplicate  — npc: 'Candidate 22A' ~ 'Candidate 29A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 22A': summaries/001-fixture.md:195
+  - 'Candidate 29A': summaries/001-fixture.md:247
+- possible-duplicate  — npc: 'Candidate 22A' ~ 'Candidate 32A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 22A': summaries/001-fixture.md:195
+  - 'Candidate 32A': summaries/001-fixture.md:271
+- possible-duplicate  — npc: 'Candidate 22B' ~ 'Candidate 23B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 22B': summaries/001-fixture.md:199
+  - 'Candidate 23B': summaries/001-fixture.md:207
+- possible-duplicate  — npc: 'Candidate 22B' ~ 'Candidate 24B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 22B': summaries/001-fixture.md:199
+  - 'Candidate 24B': summaries/001-fixture.md:215
+- possible-duplicate  — npc: 'Candidate 22B' ~ 'Candidate 25B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 22B': summaries/001-fixture.md:199
+  - 'Candidate 25B': summaries/001-fixture.md:223
+- possible-duplicate  — npc: 'Candidate 22B' ~ 'Candidate 26B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 22B': summaries/001-fixture.md:199
+  - 'Candidate 26B': summaries/001-fixture.md:231
+- possible-duplicate  — npc: 'Candidate 22B' ~ 'Candidate 27B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 22B': summaries/001-fixture.md:199
+  - 'Candidate 27B': summaries/001-fixture.md:239
+- possible-duplicate  — npc: 'Candidate 22B' ~ 'Candidate 29B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 22B': summaries/001-fixture.md:199
+  - 'Candidate 29B': summaries/001-fixture.md:251
+- possible-duplicate  — npc: 'Candidate 22B' ~ 'Candidate 32B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 22B': summaries/001-fixture.md:199
+  - 'Candidate 32B': summaries/001-fixture.md:275
+- possible-duplicate  — npc: 'Candidate 23A' ~ 'Candidate 23B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 23A': summaries/001-fixture.md:203
+  - 'Candidate 23B': summaries/001-fixture.md:207
+- possible-duplicate  — npc: 'Candidate 23A' ~ 'Candidate 24A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 23A': summaries/001-fixture.md:203
+  - 'Candidate 24A': summaries/001-fixture.md:211
+- possible-duplicate  — npc: 'Candidate 23A' ~ 'Candidate 25A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 23A': summaries/001-fixture.md:203
+  - 'Candidate 25A': summaries/001-fixture.md:219
+- possible-duplicate  — npc: 'Candidate 23A' ~ 'Candidate 26A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 23A': summaries/001-fixture.md:203
+  - 'Candidate 26A': summaries/001-fixture.md:227
+- possible-duplicate  — npc: 'Candidate 23A' ~ 'Candidate 27A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 23A': summaries/001-fixture.md:203
+  - 'Candidate 27A': summaries/001-fixture.md:235
+- possible-duplicate  — npc: 'Candidate 23A' ~ 'Candidate 28A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 23A': summaries/001-fixture.md:203
+  - 'Candidate 28A': summaries/001-fixture.md:243
+- possible-duplicate  — npc: 'Candidate 23A' ~ 'Candidate 29A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 23A': summaries/001-fixture.md:203
+  - 'Candidate 29A': summaries/001-fixture.md:247
+- possible-duplicate  — npc: 'Candidate 23A' ~ 'Candidate 30A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 23A': summaries/001-fixture.md:203
+  - 'Candidate 30A': summaries/001-fixture.md:255
+- possible-duplicate  — npc: 'Candidate 23A' ~ 'Candidate 31A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 23A': summaries/001-fixture.md:203
+  - 'Candidate 31A': summaries/001-fixture.md:263
+- possible-duplicate  — npc: 'Candidate 23A' ~ 'Candidate 32A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 23A': summaries/001-fixture.md:203
+  - 'Candidate 32A': summaries/001-fixture.md:271
+- possible-duplicate  — npc: 'Candidate 23A' ~ 'Candidate 33A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 23A': summaries/001-fixture.md:203
+  - 'Candidate 33A': summaries/001-fixture.md:279
+- possible-duplicate  — npc: 'Candidate 23A' ~ 'Candidate 34A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 23A': summaries/001-fixture.md:203
+  - 'Candidate 34A': summaries/001-fixture.md:287
+- possible-duplicate  — npc: 'Candidate 23A' ~ 'Candidate 35A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 23A': summaries/001-fixture.md:203
+  - 'Candidate 35A': summaries/001-fixture.md:295
+- possible-duplicate  — npc: 'Candidate 23A' ~ 'Candidate 36A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 23A': summaries/001-fixture.md:203
+  - 'Candidate 36A': summaries/001-fixture.md:303
+- possible-duplicate  — npc: 'Candidate 23A' ~ 'Candidate 37A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 23A': summaries/001-fixture.md:203
+  - 'Candidate 37A': summaries/001-fixture.md:307
+- possible-duplicate  — npc: 'Candidate 23A' ~ 'Candidate 38A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 23A': summaries/001-fixture.md:203
+  - 'Candidate 38A': summaries/001-fixture.md:315
+- possible-duplicate  — npc: 'Candidate 23B' ~ 'Candidate 24B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 23B': summaries/001-fixture.md:207
+  - 'Candidate 24B': summaries/001-fixture.md:215
+- possible-duplicate  — npc: 'Candidate 23B' ~ 'Candidate 25B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 23B': summaries/001-fixture.md:207
+  - 'Candidate 25B': summaries/001-fixture.md:223
+- possible-duplicate  — npc: 'Candidate 23B' ~ 'Candidate 26B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 23B': summaries/001-fixture.md:207
+  - 'Candidate 26B': summaries/001-fixture.md:231
+- possible-duplicate  — npc: 'Candidate 23B' ~ 'Candidate 27B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 23B': summaries/001-fixture.md:207
+  - 'Candidate 27B': summaries/001-fixture.md:239
+- possible-duplicate  — npc: 'Candidate 23B' ~ 'Candidate 29B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 23B': summaries/001-fixture.md:207
+  - 'Candidate 29B': summaries/001-fixture.md:251
+- possible-duplicate  — npc: 'Candidate 23B' ~ 'Candidate 30B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 23B': summaries/001-fixture.md:207
+  - 'Candidate 30B': summaries/001-fixture.md:259
+- possible-duplicate  — npc: 'Candidate 23B' ~ 'Candidate 31B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 23B': summaries/001-fixture.md:207
+  - 'Candidate 31B': summaries/001-fixture.md:267
+- possible-duplicate  — npc: 'Candidate 23B' ~ 'Candidate 32B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 23B': summaries/001-fixture.md:207
+  - 'Candidate 32B': summaries/001-fixture.md:275
+- possible-duplicate  — npc: 'Candidate 23B' ~ 'Candidate 33B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 23B': summaries/001-fixture.md:207
+  - 'Candidate 33B': summaries/001-fixture.md:283
+- possible-duplicate  — npc: 'Candidate 23B' ~ 'Candidate 34B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 23B': summaries/001-fixture.md:207
+  - 'Candidate 34B': summaries/001-fixture.md:291
+- possible-duplicate  — npc: 'Candidate 23B' ~ 'Candidate 35B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 23B': summaries/001-fixture.md:207
+  - 'Candidate 35B': summaries/001-fixture.md:299
+- possible-duplicate  — npc: 'Candidate 23B' ~ 'Candidate 37B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 23B': summaries/001-fixture.md:207
+  - 'Candidate 37B': summaries/001-fixture.md:311
+- possible-duplicate  — npc: 'Candidate 23B' ~ 'Candidate 38B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 23B': summaries/001-fixture.md:207
+  - 'Candidate 38B': summaries/001-fixture.md:319
+- possible-duplicate  — npc: 'Candidate 24A' ~ 'Candidate 24B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 24A': summaries/001-fixture.md:211
+  - 'Candidate 24B': summaries/001-fixture.md:215
+- possible-duplicate  — npc: 'Candidate 24A' ~ 'Candidate 25A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 24A': summaries/001-fixture.md:211
+  - 'Candidate 25A': summaries/001-fixture.md:219
+- possible-duplicate  — npc: 'Candidate 24A' ~ 'Candidate 26A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 24A': summaries/001-fixture.md:211
+  - 'Candidate 26A': summaries/001-fixture.md:227
+- possible-duplicate  — npc: 'Candidate 24A' ~ 'Candidate 27A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 24A': summaries/001-fixture.md:211
+  - 'Candidate 27A': summaries/001-fixture.md:235
+- possible-duplicate  — npc: 'Candidate 24A' ~ 'Candidate 28A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 24A': summaries/001-fixture.md:211
+  - 'Candidate 28A': summaries/001-fixture.md:243
+- possible-duplicate  — npc: 'Candidate 24A' ~ 'Candidate 29A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 24A': summaries/001-fixture.md:211
+  - 'Candidate 29A': summaries/001-fixture.md:247
+- possible-duplicate  — npc: 'Candidate 24A' ~ 'Candidate 32A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 24A': summaries/001-fixture.md:211
+  - 'Candidate 32A': summaries/001-fixture.md:271
+- possible-duplicate  — npc: 'Candidate 24A' ~ 'Candidate 34A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 24A': summaries/001-fixture.md:211
+  - 'Candidate 34A': summaries/001-fixture.md:287
+- possible-duplicate  — npc: 'Candidate 24B' ~ 'Candidate 25B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 24B': summaries/001-fixture.md:215
+  - 'Candidate 25B': summaries/001-fixture.md:223
+- possible-duplicate  — npc: 'Candidate 24B' ~ 'Candidate 26B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 24B': summaries/001-fixture.md:215
+  - 'Candidate 26B': summaries/001-fixture.md:231
+- possible-duplicate  — npc: 'Candidate 24B' ~ 'Candidate 27B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 24B': summaries/001-fixture.md:215
+  - 'Candidate 27B': summaries/001-fixture.md:239
+- possible-duplicate  — npc: 'Candidate 24B' ~ 'Candidate 29B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 24B': summaries/001-fixture.md:215
+  - 'Candidate 29B': summaries/001-fixture.md:251
+- possible-duplicate  — npc: 'Candidate 24B' ~ 'Candidate 32B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 24B': summaries/001-fixture.md:215
+  - 'Candidate 32B': summaries/001-fixture.md:275
+- possible-duplicate  — npc: 'Candidate 24B' ~ 'Candidate 34B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 24B': summaries/001-fixture.md:215
+  - 'Candidate 34B': summaries/001-fixture.md:291
+- possible-duplicate  — npc: 'Candidate 25A' ~ 'Candidate 25B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 25A': summaries/001-fixture.md:219
+  - 'Candidate 25B': summaries/001-fixture.md:223
+- possible-duplicate  — npc: 'Candidate 25A' ~ 'Candidate 26A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 25A': summaries/001-fixture.md:219
+  - 'Candidate 26A': summaries/001-fixture.md:227
+- possible-duplicate  — npc: 'Candidate 25A' ~ 'Candidate 27A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 25A': summaries/001-fixture.md:219
+  - 'Candidate 27A': summaries/001-fixture.md:235
+- possible-duplicate  — npc: 'Candidate 25A' ~ 'Candidate 28A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 25A': summaries/001-fixture.md:219
+  - 'Candidate 28A': summaries/001-fixture.md:243
+- possible-duplicate  — npc: 'Candidate 25A' ~ 'Candidate 29A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 25A': summaries/001-fixture.md:219
+  - 'Candidate 29A': summaries/001-fixture.md:247
+- possible-duplicate  — npc: 'Candidate 25A' ~ 'Candidate 32A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 25A': summaries/001-fixture.md:219
+  - 'Candidate 32A': summaries/001-fixture.md:271
+- possible-duplicate  — npc: 'Candidate 25A' ~ 'Candidate 35A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 25A': summaries/001-fixture.md:219
+  - 'Candidate 35A': summaries/001-fixture.md:295
+- possible-duplicate  — npc: 'Candidate 25B' ~ 'Candidate 26B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 25B': summaries/001-fixture.md:223
+  - 'Candidate 26B': summaries/001-fixture.md:231
+- possible-duplicate  — npc: 'Candidate 25B' ~ 'Candidate 27B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 25B': summaries/001-fixture.md:223
+  - 'Candidate 27B': summaries/001-fixture.md:239
+- possible-duplicate  — npc: 'Candidate 25B' ~ 'Candidate 29B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 25B': summaries/001-fixture.md:223
+  - 'Candidate 29B': summaries/001-fixture.md:251
+- possible-duplicate  — npc: 'Candidate 25B' ~ 'Candidate 32B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 25B': summaries/001-fixture.md:223
+  - 'Candidate 32B': summaries/001-fixture.md:275
+- possible-duplicate  — npc: 'Candidate 25B' ~ 'Candidate 35B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 25B': summaries/001-fixture.md:223
+  - 'Candidate 35B': summaries/001-fixture.md:299
+- possible-duplicate  — npc: 'Candidate 26A' ~ 'Candidate 26B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 26A': summaries/001-fixture.md:227
+  - 'Candidate 26B': summaries/001-fixture.md:231
+- possible-duplicate  — npc: 'Candidate 26A' ~ 'Candidate 27A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 26A': summaries/001-fixture.md:227
+  - 'Candidate 27A': summaries/001-fixture.md:235
+- possible-duplicate  — npc: 'Candidate 26A' ~ 'Candidate 28A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 26A': summaries/001-fixture.md:227
+  - 'Candidate 28A': summaries/001-fixture.md:243
+- possible-duplicate  — npc: 'Candidate 26A' ~ 'Candidate 29A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 26A': summaries/001-fixture.md:227
+  - 'Candidate 29A': summaries/001-fixture.md:247
+- possible-duplicate  — npc: 'Candidate 26A' ~ 'Candidate 32A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 26A': summaries/001-fixture.md:227
+  - 'Candidate 32A': summaries/001-fixture.md:271
+- possible-duplicate  — npc: 'Candidate 26A' ~ 'Candidate 36A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 26A': summaries/001-fixture.md:227
+  - 'Candidate 36A': summaries/001-fixture.md:303
+- possible-duplicate  — npc: 'Candidate 26B' ~ 'Candidate 27B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 26B': summaries/001-fixture.md:231
+  - 'Candidate 27B': summaries/001-fixture.md:239
+- possible-duplicate  — npc: 'Candidate 26B' ~ 'Candidate 29B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 26B': summaries/001-fixture.md:231
+  - 'Candidate 29B': summaries/001-fixture.md:251
+- possible-duplicate  — npc: 'Candidate 26B' ~ 'Candidate 32B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 26B': summaries/001-fixture.md:231
+  - 'Candidate 32B': summaries/001-fixture.md:275
+- possible-duplicate  — npc: 'Candidate 27A' ~ 'Candidate 27B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 27A': summaries/001-fixture.md:235
+  - 'Candidate 27B': summaries/001-fixture.md:239
+- possible-duplicate  — npc: 'Candidate 27A' ~ 'Candidate 28A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 27A': summaries/001-fixture.md:235
+  - 'Candidate 28A': summaries/001-fixture.md:243
+- possible-duplicate  — npc: 'Candidate 27A' ~ 'Candidate 29A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 27A': summaries/001-fixture.md:235
+  - 'Candidate 29A': summaries/001-fixture.md:247
+- possible-duplicate  — npc: 'Candidate 27A' ~ 'Candidate 32A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 27A': summaries/001-fixture.md:235
+  - 'Candidate 32A': summaries/001-fixture.md:271
+- possible-duplicate  — npc: 'Candidate 27A' ~ 'Candidate 37A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 27A': summaries/001-fixture.md:235
+  - 'Candidate 37A': summaries/001-fixture.md:307
+- possible-duplicate  — npc: 'Candidate 27B' ~ 'Candidate 29B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 27B': summaries/001-fixture.md:239
+  - 'Candidate 29B': summaries/001-fixture.md:251
+- possible-duplicate  — npc: 'Candidate 27B' ~ 'Candidate 32B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 27B': summaries/001-fixture.md:239
+  - 'Candidate 32B': summaries/001-fixture.md:275
+- possible-duplicate  — npc: 'Candidate 27B' ~ 'Candidate 37B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 27B': summaries/001-fixture.md:239
+  - 'Candidate 37B': summaries/001-fixture.md:311
+- possible-duplicate  — npc: 'Candidate 28A' ~ 'Candidate 29A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 28A': summaries/001-fixture.md:243
+  - 'Candidate 29A': summaries/001-fixture.md:247
+- possible-duplicate  — npc: 'Candidate 28A' ~ 'Candidate 32A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 28A': summaries/001-fixture.md:243
+  - 'Candidate 32A': summaries/001-fixture.md:271
+- possible-duplicate  — npc: 'Candidate 28A' ~ 'Candidate 38A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 28A': summaries/001-fixture.md:243
+  - 'Candidate 38A': summaries/001-fixture.md:315
+- possible-duplicate  — npc: 'Candidate 29A' ~ 'Candidate 32A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 29A': summaries/001-fixture.md:247
+  - 'Candidate 32A': summaries/001-fixture.md:271
+- possible-duplicate  — npc: 'Candidate 29B' ~ 'Candidate 32B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 29B': summaries/001-fixture.md:251
+  - 'Candidate 32B': summaries/001-fixture.md:275
+- possible-duplicate  — npc: 'Candidate 30A' ~ 'Candidate 31A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 30A': summaries/001-fixture.md:255
+  - 'Candidate 31A': summaries/001-fixture.md:263
+- possible-duplicate  — npc: 'Candidate 30A' ~ 'Candidate 32A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 30A': summaries/001-fixture.md:255
+  - 'Candidate 32A': summaries/001-fixture.md:271
+- possible-duplicate  — npc: 'Candidate 30A' ~ 'Candidate 33A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 30A': summaries/001-fixture.md:255
+  - 'Candidate 33A': summaries/001-fixture.md:279
+- possible-duplicate  — npc: 'Candidate 30A' ~ 'Candidate 34A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 30A': summaries/001-fixture.md:255
+  - 'Candidate 34A': summaries/001-fixture.md:287
+- possible-duplicate  — npc: 'Candidate 30A' ~ 'Candidate 35A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 30A': summaries/001-fixture.md:255
+  - 'Candidate 35A': summaries/001-fixture.md:295
+- possible-duplicate  — npc: 'Candidate 30A' ~ 'Candidate 36A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 30A': summaries/001-fixture.md:255
+  - 'Candidate 36A': summaries/001-fixture.md:303
+- possible-duplicate  — npc: 'Candidate 30A' ~ 'Candidate 37A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 30A': summaries/001-fixture.md:255
+  - 'Candidate 37A': summaries/001-fixture.md:307
+- possible-duplicate  — npc: 'Candidate 30A' ~ 'Candidate 38A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 30A': summaries/001-fixture.md:255
+  - 'Candidate 38A': summaries/001-fixture.md:315
+- possible-duplicate  — npc: 'Candidate 30B' ~ 'Candidate 31B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 30B': summaries/001-fixture.md:259
+  - 'Candidate 31B': summaries/001-fixture.md:267
+- possible-duplicate  — npc: 'Candidate 30B' ~ 'Candidate 32B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 30B': summaries/001-fixture.md:259
+  - 'Candidate 32B': summaries/001-fixture.md:275
+- possible-duplicate  — npc: 'Candidate 30B' ~ 'Candidate 33B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 30B': summaries/001-fixture.md:259
+  - 'Candidate 33B': summaries/001-fixture.md:283
+- possible-duplicate  — npc: 'Candidate 30B' ~ 'Candidate 34B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 30B': summaries/001-fixture.md:259
+  - 'Candidate 34B': summaries/001-fixture.md:291
+- possible-duplicate  — npc: 'Candidate 30B' ~ 'Candidate 35B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 30B': summaries/001-fixture.md:259
+  - 'Candidate 35B': summaries/001-fixture.md:299
+- possible-duplicate  — npc: 'Candidate 30B' ~ 'Candidate 37B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 30B': summaries/001-fixture.md:259
+  - 'Candidate 37B': summaries/001-fixture.md:311
+- possible-duplicate  — npc: 'Candidate 30B' ~ 'Candidate 38B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 30B': summaries/001-fixture.md:259
+  - 'Candidate 38B': summaries/001-fixture.md:319
+- possible-duplicate  — npc: 'Candidate 31A' ~ 'Candidate 31B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 31A': summaries/001-fixture.md:263
+  - 'Candidate 31B': summaries/001-fixture.md:267
+- possible-duplicate  — npc: 'Candidate 31A' ~ 'Candidate 32A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 31A': summaries/001-fixture.md:263
+  - 'Candidate 32A': summaries/001-fixture.md:271
+- possible-duplicate  — npc: 'Candidate 31A' ~ 'Candidate 33A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 31A': summaries/001-fixture.md:263
+  - 'Candidate 33A': summaries/001-fixture.md:279
+- possible-duplicate  — npc: 'Candidate 31A' ~ 'Candidate 34A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 31A': summaries/001-fixture.md:263
+  - 'Candidate 34A': summaries/001-fixture.md:287
+- possible-duplicate  — npc: 'Candidate 31A' ~ 'Candidate 35A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 31A': summaries/001-fixture.md:263
+  - 'Candidate 35A': summaries/001-fixture.md:295
+- possible-duplicate  — npc: 'Candidate 31A' ~ 'Candidate 36A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 31A': summaries/001-fixture.md:263
+  - 'Candidate 36A': summaries/001-fixture.md:303
+- possible-duplicate  — npc: 'Candidate 31A' ~ 'Candidate 37A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 31A': summaries/001-fixture.md:263
+  - 'Candidate 37A': summaries/001-fixture.md:307
+- possible-duplicate  — npc: 'Candidate 31A' ~ 'Candidate 38A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 31A': summaries/001-fixture.md:263
+  - 'Candidate 38A': summaries/001-fixture.md:315
+- possible-duplicate  — npc: 'Candidate 31B' ~ 'Candidate 32B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 31B': summaries/001-fixture.md:267
+  - 'Candidate 32B': summaries/001-fixture.md:275
+- possible-duplicate  — npc: 'Candidate 31B' ~ 'Candidate 33B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 31B': summaries/001-fixture.md:267
+  - 'Candidate 33B': summaries/001-fixture.md:283
+- possible-duplicate  — npc: 'Candidate 31B' ~ 'Candidate 34B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 31B': summaries/001-fixture.md:267
+  - 'Candidate 34B': summaries/001-fixture.md:291
+- possible-duplicate  — npc: 'Candidate 31B' ~ 'Candidate 35B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 31B': summaries/001-fixture.md:267
+  - 'Candidate 35B': summaries/001-fixture.md:299
+- possible-duplicate  — npc: 'Candidate 31B' ~ 'Candidate 37B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 31B': summaries/001-fixture.md:267
+  - 'Candidate 37B': summaries/001-fixture.md:311
+- possible-duplicate  — npc: 'Candidate 31B' ~ 'Candidate 38B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 31B': summaries/001-fixture.md:267
+  - 'Candidate 38B': summaries/001-fixture.md:319
+- possible-duplicate  — npc: 'Candidate 32A' ~ 'Candidate 32B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 32A': summaries/001-fixture.md:271
+  - 'Candidate 32B': summaries/001-fixture.md:275
+- possible-duplicate  — npc: 'Candidate 32A' ~ 'Candidate 33A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 32A': summaries/001-fixture.md:271
+  - 'Candidate 33A': summaries/001-fixture.md:279
+- possible-duplicate  — npc: 'Candidate 32A' ~ 'Candidate 34A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 32A': summaries/001-fixture.md:271
+  - 'Candidate 34A': summaries/001-fixture.md:287
+- possible-duplicate  — npc: 'Candidate 32A' ~ 'Candidate 35A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 32A': summaries/001-fixture.md:271
+  - 'Candidate 35A': summaries/001-fixture.md:295
+- possible-duplicate  — npc: 'Candidate 32A' ~ 'Candidate 36A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 32A': summaries/001-fixture.md:271
+  - 'Candidate 36A': summaries/001-fixture.md:303
+- possible-duplicate  — npc: 'Candidate 32A' ~ 'Candidate 37A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 32A': summaries/001-fixture.md:271
+  - 'Candidate 37A': summaries/001-fixture.md:307
+- possible-duplicate  — npc: 'Candidate 32A' ~ 'Candidate 38A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 32A': summaries/001-fixture.md:271
+  - 'Candidate 38A': summaries/001-fixture.md:315
+- possible-duplicate  — npc: 'Candidate 32B' ~ 'Candidate 33B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 32B': summaries/001-fixture.md:275
+  - 'Candidate 33B': summaries/001-fixture.md:283
+- possible-duplicate  — npc: 'Candidate 32B' ~ 'Candidate 34B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 32B': summaries/001-fixture.md:275
+  - 'Candidate 34B': summaries/001-fixture.md:291
+- possible-duplicate  — npc: 'Candidate 32B' ~ 'Candidate 35B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 32B': summaries/001-fixture.md:275
+  - 'Candidate 35B': summaries/001-fixture.md:299
+- possible-duplicate  — npc: 'Candidate 32B' ~ 'Candidate 37B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 32B': summaries/001-fixture.md:275
+  - 'Candidate 37B': summaries/001-fixture.md:311
+- possible-duplicate  — npc: 'Candidate 32B' ~ 'Candidate 38B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 32B': summaries/001-fixture.md:275
+  - 'Candidate 38B': summaries/001-fixture.md:319
+- possible-duplicate  — npc: 'Candidate 33A' ~ 'Candidate 33B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 33A': summaries/001-fixture.md:279
+  - 'Candidate 33B': summaries/001-fixture.md:283
+- possible-duplicate  — npc: 'Candidate 33A' ~ 'Candidate 34A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 33A': summaries/001-fixture.md:279
+  - 'Candidate 34A': summaries/001-fixture.md:287
+- possible-duplicate  — npc: 'Candidate 33A' ~ 'Candidate 35A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 33A': summaries/001-fixture.md:279
+  - 'Candidate 35A': summaries/001-fixture.md:295
+- possible-duplicate  — npc: 'Candidate 33A' ~ 'Candidate 36A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 33A': summaries/001-fixture.md:279
+  - 'Candidate 36A': summaries/001-fixture.md:303
+- possible-duplicate  — npc: 'Candidate 33A' ~ 'Candidate 37A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 33A': summaries/001-fixture.md:279
+  - 'Candidate 37A': summaries/001-fixture.md:307
+- possible-duplicate  — npc: 'Candidate 33A' ~ 'Candidate 38A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 33A': summaries/001-fixture.md:279
+  - 'Candidate 38A': summaries/001-fixture.md:315
+- possible-duplicate  — npc: 'Candidate 33B' ~ 'Candidate 34B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 33B': summaries/001-fixture.md:283
+  - 'Candidate 34B': summaries/001-fixture.md:291
+- possible-duplicate  — npc: 'Candidate 33B' ~ 'Candidate 35B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 33B': summaries/001-fixture.md:283
+  - 'Candidate 35B': summaries/001-fixture.md:299
+- possible-duplicate  — npc: 'Candidate 33B' ~ 'Candidate 37B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 33B': summaries/001-fixture.md:283
+  - 'Candidate 37B': summaries/001-fixture.md:311
+- possible-duplicate  — npc: 'Candidate 33B' ~ 'Candidate 38B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 33B': summaries/001-fixture.md:283
+  - 'Candidate 38B': summaries/001-fixture.md:319
+- possible-duplicate  — npc: 'Candidate 34A' ~ 'Candidate 34B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 34A': summaries/001-fixture.md:287
+  - 'Candidate 34B': summaries/001-fixture.md:291
+- possible-duplicate  — npc: 'Candidate 34A' ~ 'Candidate 35A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 34A': summaries/001-fixture.md:287
+  - 'Candidate 35A': summaries/001-fixture.md:295
+- possible-duplicate  — npc: 'Candidate 34A' ~ 'Candidate 36A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 34A': summaries/001-fixture.md:287
+  - 'Candidate 36A': summaries/001-fixture.md:303
+- possible-duplicate  — npc: 'Candidate 34A' ~ 'Candidate 37A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 34A': summaries/001-fixture.md:287
+  - 'Candidate 37A': summaries/001-fixture.md:307
+- possible-duplicate  — npc: 'Candidate 34A' ~ 'Candidate 38A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 34A': summaries/001-fixture.md:287
+  - 'Candidate 38A': summaries/001-fixture.md:315
+- possible-duplicate  — npc: 'Candidate 34B' ~ 'Candidate 35B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 34B': summaries/001-fixture.md:291
+  - 'Candidate 35B': summaries/001-fixture.md:299
+- possible-duplicate  — npc: 'Candidate 34B' ~ 'Candidate 37B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 34B': summaries/001-fixture.md:291
+  - 'Candidate 37B': summaries/001-fixture.md:311
+- possible-duplicate  — npc: 'Candidate 34B' ~ 'Candidate 38B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 34B': summaries/001-fixture.md:291
+  - 'Candidate 38B': summaries/001-fixture.md:319
+- possible-duplicate  — npc: 'Candidate 35A' ~ 'Candidate 35B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 35A': summaries/001-fixture.md:295
+  - 'Candidate 35B': summaries/001-fixture.md:299
+- possible-duplicate  — npc: 'Candidate 35A' ~ 'Candidate 36A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 35A': summaries/001-fixture.md:295
+  - 'Candidate 36A': summaries/001-fixture.md:303
+- possible-duplicate  — npc: 'Candidate 35A' ~ 'Candidate 37A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 35A': summaries/001-fixture.md:295
+  - 'Candidate 37A': summaries/001-fixture.md:307
+- possible-duplicate  — npc: 'Candidate 35A' ~ 'Candidate 38A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 35A': summaries/001-fixture.md:295
+  - 'Candidate 38A': summaries/001-fixture.md:315
+- possible-duplicate  — npc: 'Candidate 35B' ~ 'Candidate 37B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 35B': summaries/001-fixture.md:299
+  - 'Candidate 37B': summaries/001-fixture.md:311
+- possible-duplicate  — npc: 'Candidate 35B' ~ 'Candidate 38B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 35B': summaries/001-fixture.md:299
+  - 'Candidate 38B': summaries/001-fixture.md:319
+- possible-duplicate  — npc: 'Candidate 36A' ~ 'Candidate 37A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 36A': summaries/001-fixture.md:303
+  - 'Candidate 37A': summaries/001-fixture.md:307
+- possible-duplicate  — npc: 'Candidate 36A' ~ 'Candidate 38A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 36A': summaries/001-fixture.md:303
+  - 'Candidate 38A': summaries/001-fixture.md:315
+- possible-duplicate  — npc: 'Candidate 37A' ~ 'Candidate 38A' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 37A': summaries/001-fixture.md:307
+  - 'Candidate 38A': summaries/001-fixture.md:315
+- possible-duplicate  — npc: 'Candidate 37B' ~ 'Candidate 38B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 37B': summaries/001-fixture.md:311
+  - 'Candidate 38B': summaries/001-fixture.md:319
+- possible-duplicate  — location: 'Candidate 12B' ~ 'Candidate 20B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 12B': summaries/001-fixture.md:329
+  - 'Candidate 20B': summaries/001-fixture.md:333
+- possible-duplicate  — location: 'Candidate 12B' ~ 'Candidate 28B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 12B': summaries/001-fixture.md:329
+  - 'Candidate 28B': summaries/001-fixture.md:337
+- possible-duplicate  — location: 'Candidate 20B' ~ 'Candidate 28B' (similarity 0.92); fix the summaries or rule it in canon.yaml
+  - 'Candidate 20B': summaries/001-fixture.md:333
+  - 'Candidate 28B': summaries/001-fixture.md:337
+
+## Summary
+
+- Blocking problems: 0
+- Files failing: 0
+- Non-blocking findings: 992

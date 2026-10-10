@@ -579,8 +579,16 @@ def _load_registry(campaign_dir: Path) -> "Registry | None":
     path = find_registry(Path(campaign_dir))
     if path is None:
         return None
-    key = _stat_key(path)
-    return _registry_cached(key) if key else load_registry(path)
+    root=Path(campaign_dir).resolve()
+    authority=root/"docs"/"authority"
+    if not authority.exists():
+        key = _stat_key(path)
+        return _registry_cached(key) if key else load_registry(path)
+    from pipelines.summary_native.authority_apply import authority_lock, require_no_pending_transaction
+    with authority_lock(root,exclusive=False):
+        require_no_pending_transaction(root)
+        key = _stat_key(path)
+        return _registry_cached(key) if key else load_registry(path)
 
 
 # ── near misses ──────────────────────────────────────────────────────────────

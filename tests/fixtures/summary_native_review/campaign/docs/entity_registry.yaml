@@ -1,0 +1,501 @@
+version: 1
+campaign: review-fixture
+entities:
+- name: Ada Stone
+  type: npc
+  aliases:
+  - Ada
+- name: Aeda Stone
+  type: npc
+- name: Local Guide
+  type: npc
+  scope: chapter-2
+- name: Old Shrine
+  type: location
+- name: Candidate 1A
+  type: npc
+  aliases:
+  - Candidate 1A Alias
+  provenance: supplement
+  source: review acceptance
+- name: Candidate 1B
+  type: npc
+  aliases:
+  - Candidate 1B Alias
+  provenance: supplement
+  source: review acceptance
+- name: Candidate 2A
+  type: npc
+  aliases:
+  - Candidate 2A Alias
+  provenance: supplement
+  source: review acceptance
+- name: Candidate 2B
+  type: npc
+  aliases:
+  - Candidate 2B Alias
+  provenance: supplement
+  source: review acceptance
+- name: Candidate 3A
+  type: npc
+  aliases:
+  - Candidate 3A Alias
+  provenance: supplement
+  source: review acceptance
+- name: Candidate 3B
+  type: npc
+  aliases:
+  - Candidate 3B Alias
+  provenance: supplement
+  source: review acceptance
+  scope: chapter-2
+- name: Candidate 4A
+  type: location
+  aliases:
+  - Candidate 4A Alias
+  provenance: supplement
+  source: review acceptance
+- name: Candidate 4B
+  type: npc
+  aliases:
+  - Candidate 4B Alias
+  provenance: supplement
+  source: review acceptance
+- name: Candidate 5A
+  type: npc
+  aliases:
+  - Candidate 5A Alias
+  provenance: supplement
+  source: review acceptance
+- name: Candidate 5B
+  type: npc
+  aliases:
+  - Candidate 5B Alias
+  provenance: supplement
+  source: review acceptance
+- name: Candidate 6A
+  type: npc
+  aliases:
+  - Candidate 6A Alias
+  provenance: supplement
+  source: review acceptance
+- name: Candidate 6B
+  type: npc
+  aliases:
+  - Candidate 6B Alias
+  provenance: supplement
+  source: review acceptance
+- name: Candidate 7A
+  type: npc
+  aliases:
+  - Candidate 7A Alias
+  provenance: supplement
+  source: review acceptance
+- name: Candidate 7B
+  type: npc
+  aliases:
+  - Candidate 7B Alias
+  provenance: supplement
+  source: review acceptance
+- name: Candidate 8A
+  type: npc
+  aliases:
+  - Candidate 8A Alias
+  provenance: supplement
+  source: review acceptance
+- name: Candidate 8B
+  type: npc
+  aliases:
+  - Candidate 8B Alias
+  provenance: supplement
+  source: review acceptance
+- name: Candidate 9A
+  type: npc
+  aliases:
+  - Candidate 9A Alias
+  provenance: supplement
+  source: review acceptance
+- name: Candidate 9B
+  type: npc
+  aliases:
+  - Candidate 9B Alias
+  provenance: supplement
+  source: review acceptance
+- name: Candidate 10A
+  type: npc
+  aliases:
+  - Candidate 10A Alias
+  provenance: supplement
+  source: review acceptance
+- name: Candidate 10B
+  type: npc
+  aliases:
+  - Candidate 10B Alias
+  provenance: supplement
+  source: review acceptance
+- name: Candidate 11A
+  type: npc
+  aliases:
+  - Candidate 11A Alias
+  provenance: supplement
+  source: review acceptance
+- name: Candidate 11B
+  type: npc
+  aliases:
+  - Candidate 11B Alias
+  provenance: supplement
+  source: review acceptance
+  scope: chapter-2
+- name: Candidate 12A
+  type: npc
+  aliases:
+  - Candidate 12A Alias
+  provenance: supplement
+  source: review acceptance
+- name: Candidate 12B
+  type: location
+  aliases:
+  - Candidate 12B Alias
+  provenance: supplement
+  source: review acceptance
+- name: Candidate 13A
+  type: npc
+  aliases:
+  - Candidate 13A Alias
+  provenance: supplement
+  source: review acceptance
+- name: Candidate 13B
+  type: npc
+  aliases:
+  - Candidate 13B Alias
+  provenance: supplement
+  source: review acceptance
+- name: Candidate 14A
+  type: npc
+  aliases:
+  - Candidate 14A Alias
+  provenance: supplement
+  source: review acceptance
+- name: Candidate 14B
+  type: npc
+  aliases:
+  - Candidate 14B Alias
+  provenance: supplement
+  source: review acceptance
+- name: Candidate 15A
+  type: npc
+  aliases:
+  - Candidate 15A Alias
+  provenance: supplement
+  source: review acceptance
+- name: Candidate 15B
+  type: npc
+  aliases:
+  - Candidate 15B Alias
+  provenance: supplement
+  source: review acceptance
+- name: Candidate 16A
+  type: npc
+  aliases:
+  - Candidate 16A Alias
+  provenance: supplement
+  source: review acceptance
+- name: Candidate 16B
+  type: npc
+  aliases:
+  - Candidate 16B Alias
+  provenance: supplement
+  source: review acceptance
+- name: Candidate 17A
+  type: npc
+  aliases:
+  - Candidate 17A Alias
+  provenance: supplement
+  source: review acceptance
+- name: Candidate 17B
+  type: npc
+  aliases:
+  - Candidate 17B Alias
+  provenance: supplement
+  source: review acceptance
+- name: Candidate 18A
+  type: npc
+  aliases:
+  - Candidate 18A Alias
+  provenance: supplement
+  source: review acceptance
+- name: Candidate 18B
+  type: npc
+  aliases:
+  - Candidate 18B Alias
+  provenance: supplement
+  source: review acceptance
+- name: Candidate 19A
+  type: npc
+  aliases:
+  - Candidate 19A Alias
+  provenance: supplement
+  source: review acceptance
+- name: Candidate 19B
+  type: npc
+  aliases:
+  - Candidate 19B Alias
+  provenance: supplement
+  source: review acceptance
+  scope: chapter-2
+- name: Candidate 20A
+  type: npc
+  aliases:
+  - Candidate 20A Alias
+  provenance: supplement
+  source: review acceptance
+- name: Candidate 20B
+  type: location
+  aliases:
+  - Candidate 20B Alias
+  provenance: supplement
+  source: review acceptance
+- name: Candidate 21A
+  type: npc
+  aliases:
+  - Candidate 21A Alias
+  provenance: supplement
+  source: review acceptance
+- name: Candidate 21B
+  type: npc
+  aliases:
+  - Candidate 21B Alias
+  provenance: supplement
+  source: review acceptance
+- name: Candidate 22A
+  type: npc
+  aliases:
+  - Candidate 22A Alias
+  provenance: supplement
+  source: review acceptance
+- name: Candidate 22B
+  type: npc
+  aliases:
+  - Candidate 22B Alias
+  provenance: supplement
+  source: review acceptance
+- name: Candidate 23A
+  type: npc
+  aliases:
+  - Candidate 23A Alias
+  provenance: supplement
+  source: review acceptance
+- name: Candidate 23B
+  type: npc
+  aliases:
+  - Candidate 23B Alias
+  provenance: supplement
+  source: review acceptance
+- name: Candidate 24A
+  type: npc
+  aliases:
+  - Candidate 24A Alias
+  provenance: supplement
+  source: review acceptance
+- name: Candidate 24B
+  type: npc
+  aliases:
+  - Candidate 24B Alias
+  provenance: supplement
+  source: review acceptance
+- name: Candidate 25A
+  type: npc
+  aliases:
+  - Candidate 25A Alias
+  provenance: supplement
+  source: review acceptance
+- name: Candidate 25B
+  type: npc
+  aliases:
+  - Candidate 25B Alias
+  provenance: supplement
+  source: review acceptance
+- name: Candidate 26A
+  type: npc
+  aliases:
+  - Candidate 26A Alias
+  provenance: supplement
+  source: review acceptance
+- name: Candidate 26B
+  type: npc
+  aliases:
+  - Candidate 26B Alias
+  provenance: supplement
+  source: review acceptance
+- name: Candidate 27A
+  type: npc
+  aliases:
+  - Candidate 27A Alias
+  provenance: supplement
+  source: review acceptance
+- name: Candidate 27B
+  type: npc
+  aliases:
+  - Candidate 27B Alias
+  provenance: supplement
+  source: review acceptance
+  scope: chapter-2
+- name: Candidate 28A
+  type: npc
+  aliases:
+  - Candidate 28A Alias
+  provenance: supplement
+  source: review acceptance
+- name: Candidate 28B
+  type: location
+  aliases:
+  - Candidate 28B Alias
+  provenance: supplement
+  source: review acceptance
+- name: Candidate 29A
+  type: npc
+  aliases:
+  - Candidate 29A Alias
+  provenance: supplement
+  source: review acceptance
+- name: Candidate 29B
+  type: npc
+  aliases:
+  - Candidate 29B Alias
+  provenance: supplement
+  source: review acceptance
+- name: Candidate 30A
+  type: npc
+  aliases:
+  - Candidate 30A Alias
+  provenance: supplement
+  source: review acceptance
+- name: Candidate 30B
+  type: npc
+  aliases:
+  - Candidate 30B Alias
+  provenance: supplement
+  source: review acceptance
+- name: Candidate 31A
+  type: npc
+  aliases:
+  - Candidate 31A Alias
+  provenance: supplement
+  source: review acceptance
+- name: Candidate 31B
+  type: npc
+  aliases:
+  - Candidate 31B Alias
+  provenance: supplement
+  source: review acceptance
+- name: Candidate 32A
+  type: npc
+  aliases:
+  - Candidate 32A Alias
+  provenance: supplement
+  source: review acceptance
+- name: Candidate 32B
+  type: npc
+  aliases:
+  - Candidate 32B Alias
+  provenance: supplement
+  source: review acceptance
+- name: Candidate 33A
+  type: npc
+  aliases:
+  - Candidate 33A Alias
+  provenance: supplement
+  source: review acceptance
+- name: Candidate 33B
+  type: npc
+  aliases:
+  - Candidate 33B Alias
+  provenance: supplement
+  source: review acceptance
+- name: Candidate 34A
+  type: npc
+  aliases:
+  - Candidate 34A Alias
+  provenance: supplement
+  source: review acceptance
+- name: Candidate 34B
+  type: npc
+  aliases:
+  - Candidate 34B Alias
+  provenance: supplement
+  source: review acceptance
+- name: Candidate 35A
+  type: npc
+  aliases:
+  - Candidate 35A Alias
+  provenance: supplement
+  source: review acceptance
+- name: Candidate 35B
+  type: npc
+  aliases:
+  - Candidate 35B Alias
+  provenance: supplement
+  source: review acceptance
+  scope: chapter-2
+- name: Candidate 36A
+  type: npc
+  aliases:
+  - Candidate 36A Alias
+  provenance: supplement
+  source: review acceptance
+- name: Candidate 36B
+  type: location
+  aliases:
+  - Candidate 36B Alias
+  provenance: supplement
+  source: review acceptance
+- name: Candidate 37A
+  type: npc
+  aliases:
+  - Candidate 37A Alias
+  provenance: supplement
+  source: review acceptance
+- name: Candidate 37B
+  type: npc
+  aliases:
+  - Candidate 37B Alias
+  provenance: supplement
+  source: review acceptance
+- name: Candidate 38A
+  type: npc
+  aliases:
+  - Candidate 38A Alias
+  provenance: supplement
+  source: review acceptance
+- name: Candidate 38B
+  type: npc
+  aliases:
+  - Candidate 38B Alias
+  provenance: supplement
+  source: review acceptance
+distinct:
+- - Ada Stone
+  - Guard Ada
+- - Candidate 5A
+  - Candidate 5B
+- - Candidate 13A
+  - Candidate 13B
+- - Candidate 21A
+  - Candidate 21B
+- - Candidate 29A
+  - Candidate 29B
+- - Candidate 37A
+  - Candidate 37B
+rejected_aliases:
+- - Old Shrine
+  - Old Mine
+- - Candidate 6A
+  - Candidate 6B
+- - Candidate 14A
+  - Candidate 14B
+- - Candidate 22A
+  - Candidate 22B
+- - Candidate 30A
+  - Candidate 30B
+- - Candidate 38A
+  - Candidate 38B

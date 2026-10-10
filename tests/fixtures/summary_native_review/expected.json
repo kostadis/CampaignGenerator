@@ -1,0 +1,4 @@
+{
+  "categories": ["unsupported_or_contradicted", "citation_non_entailment", "later_source_supersedes", "knowledge_leak", "missing_source_or_pointer", "typography_presentation", "verifier_transport_protocol"],
+  "identity_refusals": ["scoped_alias", "nonpersistent_entity", "type_mismatch", "distinct_guard", "rejected_alias_guard", "path_collision", "authored_conflict"]
+}

@@ -11,11 +11,187 @@ import json
 import re
 from pathlib import Path
 
+import yaml
+
 from pipelines.summary_native import corpus, npc_forms, npc_link, schema
 from pipelines.summary_native.authority import POLICY_VERSION, SCHEMA_VERSION
 
 
+def _dependency_artifact_sha(root: Path, relative: Path) -> str | None:
+    cursor = Path(root).resolve()
+    for component in relative.parts:
+        cursor = cursor / component
+        if cursor.is_symlink():
+            return None
+    return corpus.sha256_file(cursor) if cursor.is_file() else None
+
+
+def dependency_invalidation(
+    manifest: dict,
+    *,
+    current_registry: dict,
+    current_artifacts: dict[str, str],
+    subject_headings: dict[str, list[tuple[str, str]]] | None = None,
+) -> dict:
+    """Report exact subject closure, falling back globally when proof is absent."""
+    paths = {
+        entry["path"]: entry
+        for entry in manifest.get("artifacts", [])
+        if isinstance(entry, dict) and isinstance(entry.get("path"), str)
+    }
+
+    def global_result() -> dict:
+        authored = sorted(
+            path for path, entry in paths.items() if entry.get("ownership") == "authored"
+        )
+        stale = sorted(set(paths) - set(authored))
+        return {
+            "state": "global",
+            "changed_subjects": [],
+            "stale_paths": stale,
+            "authored_conflicts": authored,
+            "preserved_paths": [],
+        }
+
+    try:
+        corpus.validate_dependency_manifest(manifest)
+    except corpus.CorpusError:
+        return global_result()
+    if manifest.get("precision") != "subject":
+        return global_result()
+    current_normalized = corpus._dependency_registry(current_registry)
+    prior = manifest.get("registry", {})
+    old_known = prior.get("known", {})
+    new_known = current_normalized.get("known", {})
+    global_known_keys = ("version", "campaign", "distinct", "rejected_aliases")
+    if current_normalized.get("opaque") != prior.get("opaque") or any(
+        old_known.get(key) != new_known.get(key) for key in global_known_keys
+    ):
+        return global_result()
+    old_entities = {
+        (entry.get("type"), entry.get("name")): entry
+        for entry in old_known.get("entities", [])
+    }
+    new_entities = {
+        (entry.get("type"), entry.get("name")): entry
+        for entry in new_known.get("entities", [])
+    }
+    changed_keys = {
+        key
+        for key in set(old_entities) | set(new_entities)
+        if old_entities.get(key) != new_entities.get(key)
+    }
+    changed_subject_ids = {
+        f"{kind}:{re.sub(r'[^a-z0-9]+', '-', name.casefold()).strip('-')}"
+        for kind, name in changed_keys
+    }
+
+    def resolved_heading(known: dict, category: str, heading: str) -> str:
+        registry_type = schema.CATEGORY_REGISTRY_TYPE.get(category, category)
+        folded = heading.strip().casefold()
+        for entity in known.get("entities", []):
+            if entity.get("type") != registry_type:
+                continue
+            aliases = entity.get("aliases")
+            forms = [entity.get("name"), *(aliases if isinstance(aliases, list) else [])]
+            if any(isinstance(form, str) and form.strip().casefold() == folded for form in forms):
+                return str(entity.get("name"))
+        return heading.strip()
+
+    # A newly added alias can capture a heading which was not represented by a
+    # registry entity at adoption time.  Comparing only changed canonical keys
+    # misses that edge: Alice changes, while the built artifact is indexed as
+    # ``npc:manshoon``.  Dossiers retain the exact source headings, so compare
+    # their old and new grouping results and add the built subject to closure.
+    for subject, headings in (subject_headings or {}).items():
+        if any(
+            resolved_heading(old_known, category, heading)
+            != resolved_heading(new_known, category, heading)
+            for category, heading in headings
+        ):
+            changed_subject_ids.add(subject)
+
+    changed_subjects = sorted(changed_subject_ids)
+    closure = {
+        path
+        for subject in changed_subjects
+        for path in manifest["reverse_dependencies"].get(subject, [])
+        if path in paths
+    }
+    # A current artifact byte mismatch is stale even if the registry is unchanged.
+    closure.update(
+        path
+        for path, entry in paths.items()
+        if current_artifacts.get(path) != entry.get("sha256")
+    )
+    authored = sorted(
+        path for path in closure if paths[path].get("ownership") == "authored"
+    )
+    stale = sorted(path for path in closure if paths[path].get("ownership") != "authored")
+    preserved = sorted(set(paths) - set(stale) - set(authored))
+    return {
+        "state": "stale" if closure else "current",
+        "changed_subjects": changed_subjects,
+        "stale_paths": stale,
+        "authored_conflicts": authored,
+        "preserved_paths": preserved,
+    }
+
+
+def _dependency_subject_headings(root: Path, manifest: dict) -> dict[str, list[tuple[str, str]]]:
+    """Read exact corpus headings retained in generated dossier frontmatter."""
+    found: dict[str, list[tuple[str, str]]] = {}
+    for entry in manifest.get("artifacts", []):
+        if entry.get("consumer") != "summary_native.build":
+            continue
+        subjects = entry.get("subject_ids") or []
+        if len(subjects) != 1:
+            continue
+        relative = Path(entry["path"])
+        path = Path(root).resolve()
+        unsafe = False
+        for component in relative.parts:
+            path = path / component
+            if path.is_symlink():
+                unsafe = True
+                break
+        if unsafe or path.parent.name != "dossiers" or not path.is_file():
+            continue
+        text = path.read_text(encoding="utf-8")
+        if not text.startswith("---\n"):
+            continue
+        end = text.find("\n---\n", 4)
+        if end < 0:
+            continue
+        metadata = yaml.safe_load(text[4:end]) or {}
+        if not isinstance(metadata, dict):
+            continue
+        category = metadata.get("type")
+        headings = metadata.get("headings") or []
+        if not isinstance(category, str) or not isinstance(headings, list):
+            continue
+        exact = [
+            (category, heading)
+            for heading in headings
+            if isinstance(heading, str) and heading.strip()
+        ]
+        if exact:
+            found.setdefault(subjects[0], []).extend(exact)
+    return found
+
+
 def check_fresh(report, range_dir: Path, root: Path, manifest: dict, registry_path: Path | None) -> str | None:
+    """Read one coherent committed corpus/registry point when authority is enabled."""
+    authority = Path(root) / "docs" / "authority"
+    if not authority.is_dir():
+        return _check_fresh_unlocked(report, range_dir, root, manifest, registry_path)
+    from pipelines.summary_native.authority_apply import authority_lock, require_no_pending_transaction
+    with authority_lock(Path(root), exclusive=False):
+        require_no_pending_transaction(Path(root))
+        return _check_fresh_unlocked(report, range_dir, root, manifest, registry_path)
+
+
+def _check_fresh_unlocked(report, range_dir: Path, root: Path, manifest: dict, registry_path: Path | None) -> str | None:
     """FR-005b: refuse when any in-range file, or the entity registry, differs from the build.
 
     The registry is hashed because it decides how headings group into dossiers, so a
@@ -23,12 +199,61 @@ def check_fresh(report, range_dir: Path, root: Path, manifest: dict, registry_pa
     produce now. canon.yaml is deliberately NOT compared: it holds not-a-duplicate
     rulings that affect validation findings only, never the corpus content.
     """
+    try:
+        live_manifest = json.loads((Path(range_dir) / "manifest.json").read_text(encoding="utf-8"))
+    except (OSError, UnicodeError, ValueError):
+        return "corpus manifest is unreadable — run `summary_native build --force`"
+    if live_manifest != manifest:
+        try:
+            if manifest.get("identity_dependencies") is not None:
+                corpus.validate_dependency_manifest(manifest["identity_dependencies"])
+        except (AttributeError, KeyError, corpus.CorpusError):
+            return "identity dependency metadata is unreadable — run `summary_native build --force`"
+        return "corpus manifest changed during freshness check — retry or run `summary_native build --force`"
+    manifest = live_manifest
     state = corpus.describe_existing(range_dir, report, root)
     if state is None or state.get("state") != "matches":
         return "summaries changed since build — run `summary_native build --force`"
-    built = (manifest.get("canon") or {}).get("registry_sha256")
     now_sha = corpus.sha256_file(registry_path) if registry_path is not None and registry_path.is_file() else None
-    if built != now_sha:
+    dependencies = manifest.get("identity_dependencies")
+    if dependencies is None:
+        built = (manifest.get("canon") or {}).get("registry_sha256")
+        if built != now_sha:
+            return "entity registry changed since build — run `summary_native build --force`"
+        return None
+    try:
+        dependencies = corpus.validate_dependency_manifest(dependencies)
+    except corpus.CorpusError:
+        return "identity dependency metadata is unreadable — run `summary_native build --force`"
+    if dependencies.get("precision") != "subject":
+        built = dependencies.get("registry_sha256")
+        if built != now_sha:
+            return "entity registry changed since build — run `summary_native build --force`"
+        return None
+    try:
+        current_registry = (
+            yaml.safe_load(registry_path.read_text(encoding="utf-8")) or {}
+            if registry_path is not None and registry_path.is_file()
+            else {}
+        )
+        if not isinstance(current_registry, dict):
+            raise ValueError("registry is not a mapping")
+        current_artifacts = {}
+        for entry in dependencies.get("artifacts", []):
+            relative = Path(entry["path"])
+            if relative.is_absolute() or ".." in relative.parts:
+                raise ValueError("dependency path escapes campaign")
+            current_artifacts[entry["path"]] = _dependency_artifact_sha(root, relative)
+        subject_headings = _dependency_subject_headings(root, dependencies)
+    except (KeyError, OSError, UnicodeError, ValueError, yaml.YAMLError):
+        return "identity dependency metadata is unreadable — run `summary_native build --force`"
+    invalidation = dependency_invalidation(
+        dependencies,
+        current_registry=current_registry,
+        current_artifacts=current_artifacts,
+        subject_headings=subject_headings,
+    )
+    if invalidation["state"] != "current":
         return "entity registry changed since build — run `summary_native build --force`"
     return None
 

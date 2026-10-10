@@ -32,11 +32,11 @@ def _ruling(ident: str, replacement: str) -> RulingRecord:
 
 def test_structured_conflict_requires_claim_value_interval_and_projection_overlap():
     left, right = _note("gate-open", "open"), _note("gate-closed", "closed")
-    ledger = AuthorityLedger(version=1, campaign="x", revision=1, records=[left, right])
+    ledger = AuthorityLedger(version=2, campaign="x", revision=1, records=[left, right])
     conflict = detect_conflicts(ledger)
     assert len(conflict) == 1 and conflict[0].basis == "structured_value"
     assert conflict[0].record_ids == frozenset({"gate-open", "gate-closed"})
-    assert not detect_conflicts(AuthorityLedger(version=1, campaign="x", revision=1, records=[left, _note("later", "closed", start=4, end=5)]))
+    assert not detect_conflicts(AuthorityLedger(version=2, campaign="x", revision=1, records=[left, _note("later", "closed", start=4, end=5)]))
     no_projection = _note("other-projection", "closed").model_copy(
         update={"projections": frozenset({Projection.PARTY})}
     )
@@ -44,7 +44,7 @@ def test_structured_conflict_requires_claim_value_interval_and_projection_overla
         update={"claim_key": None, "normalized_value": None}
     )
     assert not detect_conflicts(AuthorityLedger(
-        version=1, campaign="x", revision=1, records=[left, no_projection, no_claim]
+        version=2, campaign="x", revision=1, records=[left, no_projection, no_claim]
     ))
 
 
@@ -54,7 +54,7 @@ def test_equal_overlay_and_exact_anchor_conflict_without_recency_winner():
     anchor_one = _ruling("anchor-one", "The gate was closed.")
     anchor_two = _ruling("anchor-two", "The gate was destroyed.")
     conflicts = detect_conflicts(AuthorityLedger(
-        version=1, campaign="x", revision=1, records=[one, two, anchor_one, anchor_two]
+        version=2, campaign="x", revision=1, records=[one, two, anchor_one, anchor_two]
     ))
     assert {c.basis for c in conflicts} == {"structured_value", "source_anchor"}
     assert all(c.status == "open" for c in conflicts)
@@ -64,7 +64,7 @@ def test_conflict_detection_only_considers_active_or_applied_records():
     active = _note("active", "open")
     retired = _note("retired", "closed").model_copy(update={"status": "retired"})
     assert not detect_conflicts(AuthorityLedger(
-        version=1, campaign="x", revision=1, records=[active, retired]
+        version=2, campaign="x", revision=1, records=[active, retired]
     ))
 
 
@@ -77,4 +77,4 @@ def test_same_public_anchor_with_compatible_evidence_and_distinct_audiences_is_n
         "audience": AudienceGrant(grants={"character:ara"}),
         "source": player.source,
     })
-    assert not detect_conflicts(AuthorityLedger(version=1, campaign="x", revision=1, records=[player, ara]))
+    assert not detect_conflicts(AuthorityLedger(version=2, campaign="x", revision=1, records=[player, ara]))

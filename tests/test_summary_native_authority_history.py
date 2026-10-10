@@ -53,7 +53,7 @@ def test_human_prose_candidate_has_no_machine_verdict_and_can_be_resolved_or_dis
 
 
 def test_human_identified_conflict_is_distinct_from_a_prose_candidate():
-    ledger = AuthorityLedger(version=1, campaign="x", revision=1, records=[_note("one"), _note("two")])
+    ledger = AuthorityLedger(version=2, campaign="x", revision=1, records=[_note("one"), _note("two")])
     updated = record_human_conflict(ledger, conflict_id="gm-identified", record_ids={"one", "two"})
     assert updated.conflicts[0].basis == "human_identified"
     assert ledger.conflicts == []
@@ -62,7 +62,7 @@ def test_human_identified_conflict_is_distinct_from_a_prose_candidate():
 
 
 def test_resolution_is_immutable_and_rejects_a_stale_ledger_revision():
-    ledger = AuthorityLedger(version=1, campaign="x", revision=1, records=[_note("one"), _note("two"), _ruling("resolution", supersedes="one")])
+    ledger = AuthorityLedger(version=2, campaign="x", revision=1, records=[_note("one"), _note("two"), _ruling("resolution", supersedes="one")])
     identified = record_human_conflict(ledger, conflict_id="gm-identified", record_ids={"one", "two"})
     resolved = resolve_conflict(
         identified, "gm-identified", resolution_record="resolution", expected_revision=identified.revision
@@ -80,7 +80,7 @@ def test_resolution_is_immutable_and_rejects_a_stale_ledger_revision():
 
 def test_revising_compared_record_creates_a_new_open_finding_but_unchanged_inputs_keep_disposition():
     resolution = _ruling("resolution", supersedes="one").model_copy(update={"normalized_value": "two"})
-    ledger = AuthorityLedger(version=1, campaign="x", revision=1, records=[_note("one"), _note("two"), resolution])
+    ledger = AuthorityLedger(version=2, campaign="x", revision=1, records=[_note("one"), _note("two"), resolution])
     conflict = detect_conflicts(ledger)[0]
     resolved = resolve_conflict(ledger, conflict.id, resolution_record="resolution", expected_revision=ledger.revision)
     assert [conflict.status for conflict in resolved.conflicts] == ["resolved"]
@@ -88,7 +88,7 @@ def test_revising_compared_record_creates_a_new_open_finding_but_unchanged_input
 
     revised_two = _note("two").model_copy(update={"revision": 2, "normalized_value": "two-revised"})
     revised = AuthorityLedger(
-        version=1, campaign="x", revision=resolved.revision + 1,
+        version=2, campaign="x", revision=resolved.revision + 1,
         records=[_note("one"), revised_two, resolution],
         conflicts=resolved.conflicts,
     )
@@ -104,8 +104,8 @@ def test_supersession_cycles_and_unknown_conflict_resolution_records_are_refused
     first = _note("first", supersedes="second")
     second = _note("second", supersedes="first")
     with pytest.raises(Exception, match="supersession cycle"):
-        AuthorityLedger(version=1, campaign="x", revision=1, records=[first, second])
-    ledger = AuthorityLedger(version=1, campaign="x", revision=1, records=[_note("one"), _note("two")])
+        AuthorityLedger(version=2, campaign="x", revision=1, records=[first, second])
+    ledger = AuthorityLedger(version=2, campaign="x", revision=1, records=[_note("one"), _note("two")])
     identified = record_human_conflict(ledger, conflict_id="gm-identified", record_ids={"one", "two"})
     with pytest.raises(AuthorityError, match="unknown resolution record"):
         resolve_conflict(identified, "gm-identified", resolution_record="gone", expected_revision=identified.revision)

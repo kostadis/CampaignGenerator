@@ -6,10 +6,11 @@ import difflib
 import fcntl
 import json
 import os
+import threading
 import uuid
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Iterator
+from typing import Iterator, Literal
 
 from campaignlib.util import atomic_write_bytes
 from pipelines.summary_native import parse, schema, validate
@@ -19,6 +20,22 @@ from pipelines.summary_native.authority_sources import allowed_summary_path, exa
 
 NONTERMINAL = {"prepared", "writing", "source_written", "ledger_written"}
 _TX_ID_PREFIX = "tx-"
+_LOCK_STATE = threading.local()
+
+
+def _clear_inherited_lock_state() -> None:
+    """A forked child must acquire its own flock, never trust parent TLS."""
+    held = getattr(_LOCK_STATE, "held", {})
+    for _count, _exclusive, fd in held.values():
+        try:
+            os.close(fd)
+        except OSError:
+            pass
+    _LOCK_STATE.held = {}
+
+
+if hasattr(os, "register_at_fork"):
+    os.register_at_fork(after_in_child=_clear_inherited_lock_state)
 
 
 def authority_dir(campaign_dir: Path) -> Path:
@@ -107,15 +124,43 @@ def _journal_dir(campaign_dir: Path) -> Path:
 @contextlib.contextmanager
 def authority_lock(campaign_dir: Path, *, exclusive: bool) -> Iterator[None]:
     """A flock-based campaign lock.  Shared readers get a coherent snapshot."""
-    directory = authority_dir(campaign_dir)
-    directory.mkdir(parents=True, exist_ok=True)
-    fd = os.open(directory / ".lock", os.O_CREAT | os.O_RDWR, 0o600)
+    root = str(Path(campaign_dir).resolve())
+    held = getattr(_LOCK_STATE, "held", None)
+    if held is None:
+        held = _LOCK_STATE.held = {}
+    current = held.get(root)
+    if current is not None:
+        if exclusive and not current[1]:
+            raise AuthorityError("AUTH_LOCK_UPGRADE: cannot acquire an exclusive campaign lock inside a shared lock")
+        held[root] = (current[0] + 1, current[1], current[2])
+        try:
+            yield
+        finally:
+            count, mode, fd = held[root]
+            held[root] = (count - 1, mode, fd)
+        return
+    campaign=Path(root); docs=campaign/"docs"; directory=docs/"authority"
+    for component in (campaign,docs,directory):
+        if component.is_symlink():
+            raise AuthorityError("AUTH_UNSAFE_PATH: authority lock path contains a symlink","AUTH_UNSAFE_PATH")
+    docs.mkdir(exist_ok=True); directory.mkdir(exist_ok=True)
+    directory_fd=os.open(directory,os.O_RDONLY|os.O_DIRECTORY|os.O_NOFOLLOW)
+    try:
+        fd=os.open(".lock",os.O_CREAT|os.O_RDWR|os.O_NOFOLLOW,0o600,dir_fd=directory_fd)
+    except OSError as exc:
+        os.close(directory_fd)
+        raise AuthorityError("AUTH_UNSAFE_PATH: authority lock is not a safe regular file","AUTH_UNSAFE_PATH") from exc
+    os.close(directory_fd)
+    owner_pid = os.getpid()
     try:
         fcntl.flock(fd, fcntl.LOCK_EX if exclusive else fcntl.LOCK_SH)
+        held[root] = (1, exclusive, fd)
         yield
     finally:
-        fcntl.flock(fd, fcntl.LOCK_UN)
-        os.close(fd)
+        if os.getpid() == owner_pid:
+            held.pop(root, None)
+            fcntl.flock(fd, fcntl.LOCK_UN)
+            os.close(fd)
 
 
 def journal_path(campaign_dir: Path, transaction_id: str) -> Path:
@@ -125,7 +170,22 @@ def journal_path(campaign_dir: Path, transaction_id: str) -> Path:
 
 
 def _inside(path: Path, root: Path) -> Path:
-    resolved = Path(path).resolve()
+    root = Path(root).resolve()
+    supplied = Path(path)
+    lexical = supplied if supplied.is_absolute() else root / supplied
+    try:
+        relative = lexical.relative_to(root)
+    except ValueError as exc:
+        raise AuthorityError(f"AUTH_RECOVERY: path outside campaign root: {path}", "AUTH_RECOVERY") from exc
+    cursor = root
+    for part in relative.parts:
+        cursor = cursor / part
+        if cursor.is_symlink():
+            raise AuthorityError(
+                f"AUTH_RECOVERY: symlink transaction target is not allowed: {cursor}",
+                "AUTH_RECOVERY",
+            )
+    resolved = lexical.resolve()
     try:
         resolved.relative_to(root)
     except ValueError as exc:
@@ -143,6 +203,9 @@ def _load_journal(campaign_dir: Path, transaction_id: str) -> dict:
         raise AuthorityError(f"AUTH_RECOVERY: no readable transaction {transaction_id}", "AUTH_RECOVERY") from exc
     if not isinstance(journal, dict) or journal.get("id") != transaction_id or not isinstance(journal.get("targets"), list):
         raise AuthorityError("AUTH_RECOVERY: malformed transaction journal", "AUTH_RECOVERY")
+    version = journal.get("version", 1)
+    if version not in {1, 2}:
+        raise AuthorityError(f"AUTH_RECOVERY: unsupported transaction journal version {version!r}", "AUTH_RECOVERY")
     for target in journal["targets"]:
         if not isinstance(target, dict):
             raise AuthorityError("AUTH_RECOVERY: malformed transaction target", "AUTH_RECOVERY")
@@ -157,6 +220,20 @@ def _load_journal(campaign_dir: Path, transaction_id: str) -> dict:
                 raise AuthorityError(f"AUTH_RECOVERY: invalid {field}", "AUTH_RECOVERY")
         if not isinstance(target.get("before_exists"), bool) or not isinstance(target.get("after_exists"), bool):
             raise AuthorityError("AUTH_RECOVERY: target existence metadata is required", "AUTH_RECOVERY")
+        operation = target.get("operation")
+        if version == 1 and operation is None:
+            operation = "create" if not target["before_exists"] else "replace"
+            target["operation"] = operation
+        if operation not in {"create", "replace", "delete"}:
+            raise AuthorityError("AUTH_RECOVERY: invalid transaction operation", "AUTH_RECOVERY")
+        expected_existence = {
+            "create": (False, True),
+            "replace": (True, True),
+            "delete": (True, False),
+        }[operation]
+        if (target["before_exists"], target["after_exists"]) != expected_existence:
+            raise AuthorityError("AUTH_RECOVERY: transaction operation conflicts with existence metadata", "AUTH_RECOVERY")
+    journal.setdefault("version", version)
     return journal
 
 
@@ -172,9 +249,18 @@ def write_json_immutable(path: Path, data: dict) -> None:
 def pending_transaction(campaign_dir: Path) -> dict | None:
     for path in sorted(_journal_dir(campaign_dir).glob("*.json")) if _journal_dir(campaign_dir).exists() else []:
         try:
+            # Committed journals are immutable audit evidence, not recovery
+            # inputs.  A campaign may be deliberately rebound to a new root;
+            # absolute paths in historical v1/v2 journals must not make that
+            # copied campaign permanently unreadable.
+            summary = json.loads(path.read_text(encoding="utf-8"))
+            if isinstance(summary, dict) and summary.get("state") == "committed":
+                continue
             journal = _load_journal(campaign_dir, path.stem)
         except AuthorityError:
             raise
+        except (OSError, ValueError) as exc:
+            raise AuthorityError(f"AUTH_RECOVERY: unreadable transaction journal {path.stem}", "AUTH_RECOVERY") from exc
         if journal.get("state") in NONTERMINAL or journal.get("state") == "attention_required":
             return journal
     return None
@@ -189,42 +275,113 @@ def require_no_pending_transaction(campaign_dir: Path) -> None:
 
 @dataclass(frozen=True)
 class TransactionTarget:
-    path: str
-    before_sha256: str
-    after_sha256: str
-    before_snapshot: str
-    after_snapshot: str
+    """One explicit v2 filesystem transition.
+
+    ``None`` is an existence state, while ``b""`` is an existing empty file.
+    The older three-tuple API remains accepted for #546 callers and is mapped
+    to create/replace from the observed target state.
+    """
+
+    path: Path
+    operation: Literal["create", "replace", "delete"]
+    before: bytes | None
+    after: bytes | None
+
+    @classmethod
+    def create(cls, path: Path, after: bytes) -> "TransactionTarget":
+        return cls(Path(path), "create", None, after)
+
+    @classmethod
+    def replace(cls, path: Path, before: bytes, after: bytes) -> "TransactionTarget":
+        return cls(Path(path), "replace", before, after)
+
+    @classmethod
+    def delete(cls, path: Path, before: bytes) -> "TransactionTarget":
+        return cls(Path(path), "delete", before, None)
 
 
-def prepare_transaction(campaign_dir: Path, *, proposal_id: str, proposal_sha256: str, targets: list[tuple[Path, bytes, bytes]]) -> dict:
+def prepare_transaction(
+    campaign_dir: Path,
+    *,
+    proposal_id: str,
+    proposal_sha256: str,
+    targets: list[tuple[Path, bytes, bytes] | TransactionTarget],
+) -> dict:
     """Persist exact snapshots and journal while holding the campaign writer lock."""
     with authority_lock(campaign_dir, exclusive=True):
         require_no_pending_transaction(campaign_dir)
         return _prepare_transaction_locked(campaign_dir, proposal_id=proposal_id, proposal_sha256=proposal_sha256, targets=targets)
 
 
-def _prepare_transaction_locked(campaign_dir: Path, *, proposal_id: str, proposal_sha256: str, targets: list[tuple[Path, bytes, bytes]]) -> dict:
+def _prepare_transaction_locked(
+    campaign_dir: Path,
+    *,
+    proposal_id: str,
+    proposal_sha256: str,
+    targets: list[tuple[Path, bytes, bytes] | TransactionTarget],
+) -> dict:
     transaction_id = f"tx-{uuid.uuid4().hex}"
     root = Path(campaign_dir).resolve()
     snapshot_dir = authority_dir(root) / "snapshots" / transaction_id
+    prepared: list[TransactionTarget] = []
+    seen: set[Path] = set()
+    # Check every target before creating a single snapshot.  A later stale or
+    # malformed target must not leave half-prepared evidence that looks like a
+    # recoverable transaction.
+    for supplied in targets:
+        if isinstance(supplied, TransactionTarget):
+            target = supplied
+        else:
+            path, before, after = supplied
+            resolved = _inside(path, root)
+            target = (
+                TransactionTarget.replace(resolved, before, after)
+                if resolved.exists()
+                else TransactionTarget.create(resolved, after)
+            )
+            if not resolved.exists() and before:
+                raise AuthorityError("AUTH_STALE_PROPOSAL: missing target has non-empty before bytes", "AUTH_STALE")
+        resolved = _inside(target.path, root)
+        if resolved in seen:
+            raise AuthorityError("AUTH_VALIDATION: transaction names the same target more than once")
+        seen.add(resolved)
+        target = TransactionTarget(resolved, target.operation, target.before, target.after)
+        if target.operation == "create":
+            if target.before is not None or target.after is None:
+                raise AuthorityError("AUTH_VALIDATION: create requires absent before and present after states")
+            if resolved.exists():
+                raise AuthorityError("AUTH_STALE_PROPOSAL: create target already exists", "AUTH_STALE")
+        elif target.operation == "replace":
+            if target.before is None or target.after is None:
+                raise AuthorityError("AUTH_VALIDATION: replace requires present before and after states")
+            if not resolved.exists() or resolved.read_bytes() != target.before:
+                raise AuthorityError("AUTH_STALE_PROPOSAL: target changed before transaction preparation", "AUTH_STALE")
+        elif target.operation == "delete":
+            if target.before is None or target.after is not None:
+                raise AuthorityError("AUTH_VALIDATION: delete requires present before and absent after states")
+            if not resolved.exists() or resolved.read_bytes() != target.before:
+                raise AuthorityError("AUTH_STALE_PROPOSAL: target changed before transaction preparation", "AUTH_STALE")
+        else:  # pragma: no cover - Literal is enforced for typed callers.
+            raise AuthorityError(f"AUTH_VALIDATION: unsupported transaction operation {target.operation!r}")
+        prepared.append(target)
+
     entries = []
-    for index, (target, before, after) in enumerate(targets):
-        target = _inside(target, root)
-        before_exists = target.exists()
-        if before_exists and target.read_bytes() != before:
-            raise AuthorityError("AUTH_STALE_PROPOSAL: target changed before transaction preparation", "AUTH_STALE")
-        if not before_exists and before:
-            raise AuthorityError("AUTH_STALE_PROPOSAL: missing target has non-empty before bytes", "AUTH_STALE")
+    for index, target in enumerate(prepared):
+        before_exists = target.before is not None
+        after_exists = target.after is not None
+        before = target.before or b""
+        after = target.after or b""
         before_path = snapshot_dir / f"{index:02d}-before.bin"
         after_path = snapshot_dir / f"{index:02d}-after.bin"
         atomic_write_bytes(before_path, before)
         atomic_write_bytes(after_path, after)
         entries.append({
-            "path": str(target.resolve()), "before_sha256": sha256_bytes(before), "after_sha256": sha256_bytes(after),
+            "path": str(target.path), "operation": target.operation,
+            "before_sha256": sha256_bytes(before), "after_sha256": sha256_bytes(after),
             "before_snapshot": str(before_path.relative_to(root)), "after_snapshot": str(after_path.relative_to(root)),
-            "before_exists": before_exists, "after_exists": True,
+            "before_exists": before_exists, "after_exists": after_exists,
         })
-    journal = {"id": transaction_id, "proposal_id": proposal_id, "proposal_sha256": proposal_sha256, "state": "prepared", "targets": entries, "started_at": now_utc(), "updated_at": now_utc()}
+    journal = {"version": 2, "id": transaction_id, "proposal_id": proposal_id, "proposal_sha256": proposal_sha256, "state": "prepared", "targets": entries, "started_at": now_utc(), "updated_at": now_utc()}
     atomic_write_bytes(journal_path(root, transaction_id), (json.dumps(journal, sort_keys=True, indent=2) + "\n").encode())
     return journal
 
@@ -258,6 +415,8 @@ def recover_transaction(campaign_dir: Path, transaction_id: str, *, _already_loc
                 raise AuthorityError("AUTH_RECOVERY: immutable snapshot digest does not match approved journal", "AUTH_RECOVERY")
             if target["after_exists"] and digest == target["after_sha256"]:
                 statuses.append("after")
+            elif not target["after_exists"] and current is None and after_snapshot == b"":
+                statuses.append("after")
             elif target["before_exists"] and digest == target["before_sha256"]:
                 statuses.append("before")
             elif not target["before_exists"] and current is None and before_snapshot == b"":
@@ -272,12 +431,23 @@ def recover_transaction(campaign_dir: Path, transaction_id: str, *, _already_loc
         _save_journal(root, journal)
         for target, state in zip(journal["targets"], statuses):
             if state == "before":
-                approved = _inside(root / target["after_snapshot"], root).read_bytes()
-                atomic_write_bytes(_inside(Path(target["path"]), root), approved)
+                target_path = _inside(Path(target["path"]), root)
+                if target["after_exists"]:
+                    approved = _inside(root / target["after_snapshot"], root).read_bytes()
+                    atomic_write_bytes(target_path, approved)
+                else:
+                    target_path.unlink()
+                    directory_fd = os.open(target_path.parent, os.O_RDONLY)
+                    try:
+                        os.fsync(directory_fd)
+                    finally:
+                        os.close(directory_fd)
         for target in journal["targets"]:
             written = _inside(Path(target["path"]), root)
             actual = sha256_bytes(written.read_bytes()) if written.exists() else None
-            if not target["after_exists"] or actual != target["after_sha256"]:
+            if target["after_exists"] and actual != target["after_sha256"]:
+                raise AuthorityError("AUTH_RECOVERY: target write did not produce approved digest", "AUTH_RECOVERY")
+            if not target["after_exists"] and written.exists():
                 raise AuthorityError("AUTH_RECOVERY: target write did not produce approved digest", "AUTH_RECOVERY")
         journal["state"] = "committed"
         _save_journal(root, journal)

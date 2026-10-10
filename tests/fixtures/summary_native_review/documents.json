@@ -1,0 +1,24 @@
+{
+  "documents": [
+    {
+      "id": "world_state",
+      "path": "docs/summary_native/ch001-001/state/drafts/world_state.md",
+      "expected": "requires_signoff"
+    },
+    {
+      "id": "campaign_state",
+      "path": "docs/summary_native/ch001-001/state/drafts/campaign_state.md",
+      "expected": "requires_signoff"
+    },
+    {
+      "id": "party",
+      "path": "docs/summary_native/ch001-001/state/drafts/party.md",
+      "expected": "requires_signoff"
+    },
+    {
+      "id": "planning",
+      "path": "docs/summary_native/ch001-001/state/drafts/planning.md",
+      "expected": "requires_signoff"
+    }
+  ]
+}

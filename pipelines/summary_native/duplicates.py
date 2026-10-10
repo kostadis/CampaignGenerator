@@ -17,6 +17,8 @@ No model call (guarded by ``tests/test_summary_native_no_llm.py``).
 
 from __future__ import annotations
 
+import hashlib
+import json
 import re
 from dataclasses import dataclass, field
 from difflib import SequenceMatcher
@@ -40,6 +42,106 @@ _QUALIFIER_RE = re.compile(r"\s*\([^()]*\)\s*$")
 
 class RulingsError(Exception):
     """canon.yaml is not a pure ``not_duplicates`` record (CLI exit 2)."""
+
+
+@dataclass(frozen=True)
+class ReviewedDistinctDecision:
+    """One current review-owned distinct ruling, bound to scope and evidence."""
+
+    category: str
+    names: frozenset[str]
+    scope_kind: str
+    scope_value: str | None
+    evidence_digest: str
+    review_id: str
+    item_id: str
+    review_digest: str
+
+    def matches(
+        self,
+        category: str,
+        a: str,
+        b: str,
+        scope: dict[str, str | None],
+        evidence_digest: str,
+    ) -> bool:
+        return (
+            self.category == category
+            and self.names == frozenset({a.casefold(), b.casefold()})
+            and self.scope_kind == scope.get("kind")
+            and self.scope_value == scope.get("value")
+            and self.evidence_digest == evidence_digest
+        )
+
+
+def duplicate_evidence_digest(
+    category: str,
+    a: str,
+    b: str,
+    observations,
+    scope: dict[str, str | None],
+) -> str:
+    """Digest fact-bearing duplicate evidence without display line numbers."""
+
+    evidence = sorted(
+        (
+            {
+                "body": observation.body,
+                "canonical": observation.canonical,
+                "chapter": observation.chapter,
+                "heading": observation.heading,
+                "source_file": observation.source_file,
+                "source_scene_id": observation.source_scene_id,
+            }
+            for observation in observations
+        ),
+        key=lambda value: (
+            value["source_file"],
+            value["chapter"],
+            value["source_scene_id"] or "",
+            value["heading"],
+            value["body"],
+        ),
+    )
+    payload = {
+        "version": 1,
+        "category": category,
+        "pair": sorted((a.casefold(), b.casefold())),
+        "scope": {"kind": scope.get("kind"), "value": scope.get("value")},
+        "evidence": evidence,
+    }
+    encoded = json.dumps(
+        payload, ensure_ascii=False, allow_nan=False, separators=(",", ":"), sort_keys=True
+    ).encode("utf-8")
+    return hashlib.sha256(encoded).hexdigest()
+
+
+def _reviewed_distinct_for_registry(registry) -> tuple[ReviewedDistinctDecision, ...]:
+    """Discover current decisions when a loaded registry identifies its campaign."""
+
+    source = getattr(registry, "source_path", None)
+    if source is None:
+        return ()
+    for candidate in [Path(source).parent, *Path(source).parents]:
+        if not (candidate / "docs" / "reviews" / "campaign.json").is_file():
+            continue
+        try:
+            from pipelines.summary_native.authority import AuthorityError
+            from pipelines.summary_native.review.identity import current_distinct_decisions
+            from pipelines.summary_native.review.store import ReviewStoreError
+
+            return current_distinct_decisions(candidate)
+        except AuthorityError as exc:
+            # A pending journal is a campaign-wide recovery boundary.  Hiding
+            # it here could combine registry and review state from different
+            # committed points.
+            if exc.code in {"AUTH_PENDING_TRANSACTION", "AUTH_RECOVERY"}:
+                raise
+            return ()
+        except (OSError, ReviewStoreError, ValueError):
+            # A decision that cannot be proved current must never suppress a finding.
+            return ()
+    return ()
 
 
 # ── Rulings ────────────────────────────────────────────────────────────────
@@ -201,8 +303,19 @@ def _loc_key(loc: str) -> tuple:
     return f, int(n) if n.isdigit() else 0
 
 
-def find_possible_duplicates(observations, registry, rulings: Rulings, threshold: float) -> list[Finding]:
+def find_possible_duplicates(
+    observations,
+    registry,
+    rulings: Rulings,
+    threshold: float,
+    *,
+    reviewed_distinct: tuple[ReviewedDistinctDecision, ...] | None = None,
+    scope: dict[str, str | None] | None = None,
+) -> list[Finding]:
     """List likely duplicate subjects per category. Never crosses categories."""
+    decision_scope = dict(scope or {"kind": "global", "value": None})
+    if reviewed_distinct is None:
+        reviewed_distinct = _reviewed_distinct_for_registry(registry)
     groups = _registry_apart(registry)
     out: list[Finding] = []
     for category in CATEGORIES:
@@ -244,6 +357,18 @@ def find_possible_duplicates(observations, registry, rulings: Rulings, threshold
             if rulings.rules_out(category, names[a], names[b]):
                 continue
             if _held_apart(names[a], names[b], groups):
+                continue
+            evidence_digest = duplicate_evidence_digest(
+                category,
+                a,
+                b,
+                [*by_subject[a], *by_subject[b]],
+                decision_scope,
+            )
+            if any(
+                decision.matches(category, a, b, decision_scope, evidence_digest)
+                for decision in reviewed_distinct
+            ):
                 continue
             loc_a, loc_b = _locations(by_subject[a]), _locations(by_subject[b])
             first = min(loc_a + loc_b, key=_loc_key)

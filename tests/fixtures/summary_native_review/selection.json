@@ -1,0 +1,5 @@
+{
+  "npc_findings": ["npc-01", "npc-02", "npc-03", "npc-04", "npc-05", "npc-06", "npc-07", "npc-08", "npc-09", "npc-10", "npc-11", "npc-12", "npc-13", "npc-14", "npc-15", "npc-16", "npc-17", "npc-18", "npc-19", "npc-20", "npc-21", "npc-22", "npc-23", "npc-24", "npc-25"],
+  "duplicate_pairs": ["pair-01", "pair-02", "pair-03", "pair-04", "pair-05", "pair-06", "pair-07", "pair-08", "pair-09", "pair-10", "pair-11", "pair-12", "pair-13", "pair-14", "pair-15", "pair-16", "pair-17", "pair-18", "pair-19", "pair-20", "pair-21", "pair-22", "pair-23", "pair-24", "pair-25", "pair-26", "pair-27", "pair-28", "pair-29", "pair-30", "pair-31", "pair-32", "pair-33", "pair-34", "pair-35", "pair-36", "pair-37", "pair-38"],
+  "grounding_documents": ["world_state", "campaign_state", "party", "planning"]
+}

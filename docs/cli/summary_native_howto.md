@@ -422,7 +422,7 @@ campaign root); `summary_native.registry` in `grounding.yaml` overrides that, an
 
 ### Two ways to clear a listing
 
-**1. Fix the summary files (the usual answer).** Correct the spelling at the
+**1. Fix a summary when its facts are wrong.** Correct the spelling at the
 `file:line` shown, re-run `validate`, and the pair disappears. If you had
 already built, `build --force`.
 
@@ -450,9 +450,10 @@ is an empty record.
 `canon.yaml` records *not-a-duplicate* rulings only, because merging is exactly
 the identity decision the tool refuses to take. Any other key — `accepted:`,
 `merge:`, `aliases:` — is refused with `canon.yaml records not-a-duplicate
-rulings only; fix duplicates in the summary files`. The fix for a real
-duplicate is always an edit to the summary. There is no file in which a typo
-can be recorded as an alias.
+rulings only; use the reviewed identity workflow for aliases`. For a real
+duplicate identity, a reviewed global registry merge is sufficient when the
+summaries are factually accurate; their wording stays unchanged. Edit a
+maintained summary only when its facts are wrong.
 
 ### Stale rulings
 

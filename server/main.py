@@ -16,6 +16,7 @@ from server.routers import (
     config_routes, connections, ensemble, grounding, prep,
     scene_editor, setup, planning_routes, party_routes, players_routes,
     projections, integrations, narration_wiki, npc_dossiers, summary_native,
+    review_routes,
 )
 
 app = FastAPI(title="CampaignGenerator")
@@ -60,6 +61,7 @@ app.add_middleware(
 app.include_router(config_routes.router, prefix="/api/config", tags=["config"])
 app.include_router(grounding.router, prefix="/api/grounding", tags=["grounding"])
 app.include_router(summary_native.router, prefix="/api/grounding/summary-native", tags=["grounding"])
+app.include_router(review_routes.router, prefix="/api/reviews", tags=["reviews"])
 app.include_router(npc_dossiers.router, prefix="/api/npc-dossiers", tags=["npc-dossiers"])
 app.include_router(ensemble.router, prefix="/api/ensemble", tags=["ensemble"])
 app.include_router(prep.router, prefix="/api/prep", tags=["prep"])

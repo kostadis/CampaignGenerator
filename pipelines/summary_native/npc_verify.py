@@ -44,6 +44,19 @@ USED_NOT_MEANING = (
 _STATUS_RE = re.compile(r"\b(" + "|".join(STATUS_WORDS) + r")\b", re.IGNORECASE)
 LAST_STATE = "## Last Observed State"
 
+CITATION_CHECK = "citation"
+QUOTE_CHECK = "quote"
+HISTORY_CHECK = "history"
+MANUAL_CHECK = "manual"
+STATUS_CHECK = "status-word"
+CHECK_IDS = (
+    CITATION_CHECK,
+    QUOTE_CHECK,
+    HISTORY_CHECK,
+    MANUAL_CHECK,
+    STATUS_CHECK,
+)
+
 
 @dataclass(frozen=True)
 class CorpusIndex:
@@ -128,44 +141,96 @@ def _strip_frontmatter(text: str) -> str:
     return npc_link.split_frontmatter(text)[1] if text.startswith("---\n") else text
 
 
-def verify(
+@dataclass(frozen=True)
+class VerificationContext:
+    """Parsed immutable inputs shared by independently runnable checks."""
+
+    draft_text: str
+    evidence: npc_check.EvidenceIndex
+    corpus_index: CorpusIndex
+    summaries_text: str
+    manual: tuple[str, ...]
+    lines: tuple[str, ...]
+    sections: dict[str, tuple[int, list[str]]]
+    body_start: int
+
+
+@dataclass
+class ScopedCheckResult:
+    failures: list[Finding] = field(default_factory=list)
+    advisories: list[Finding] = field(default_factory=list)
+    totals: dict = field(default_factory=dict)
+    manual: list[ManualUse] = field(default_factory=list)
+
+
+def build_context(
     draft_text: str,
     evidence_dossier: str,
     corpus_index: CorpusIndex,
     summaries_text: str,
     manual: list[str],
-) -> VerificationResult:
-    """Verify ``draft_text`` (a whole draft file) against its NPC's evidence dossier."""
-    evidence = npc_check.EvidenceIndex.of(npc_check.split_chapters(_strip_frontmatter(evidence_dossier)))
-    lines = draft_text.splitlines()
-    secs = npc_check.parse_sections(draft_text)
-    body_start = next((n for n, ln in enumerate(lines) if ln.startswith("## ")), len(lines))
-    failures: list[Finding] = []
-    advisories: list[Finding] = []
+) -> VerificationContext:
+    """Parse shared inputs without running any verification check."""
 
-    # Citations
+    evidence = npc_check.EvidenceIndex.of(npc_check.split_chapters(_strip_frontmatter(evidence_dossier)))
+    lines = tuple(draft_text.splitlines())
+    sections = npc_check.parse_sections(draft_text)
+    body_start = next((n for n, ln in enumerate(lines) if ln.startswith("## ")), len(lines))
+    return VerificationContext(
+        draft_text=draft_text,
+        evidence=evidence,
+        corpus_index=corpus_index,
+        summaries_text=summaries_text,
+        manual=tuple(manual),
+        lines=lines,
+        sections=sections,
+        body_start=body_start,
+    )
+
+
+def check_citations(context: VerificationContext) -> ScopedCheckResult:
+    """Check only corpus/evidence membership of source citations."""
+
     n_cites = n_valid = 0
-    for n in range(body_start, len(lines)):
-        for bracket, (ch, tgt) in npc_check.citation_parts(lines[n]):
+    failures: list[Finding] = []
+    for n in range(context.body_start, len(context.lines)):
+        for bracket, (ch, tgt) in npc_check.citation_parts(context.lines[n]):
             n_cites += 1
-            if ch < 0 or not npc_check.scene_chapter_ok(ch, tgt) or (ch, tgt) not in corpus_index.targets:
+            if (
+                ch < 0
+                or not npc_check.scene_chapter_ok(ch, tgt)
+                or (ch, tgt) not in context.corpus_index.targets
+            ):
                 failures.append(Finding(INVALID, n + 1, bracket, "not in the in-range corpus"))
-            elif (ch, tgt) not in evidence.targets:
+            elif (ch, tgt) not in context.evidence.targets:
                 failures.append(Finding(OUTSIDE_EVIDENCE, n + 1, bracket, "real, but not in this NPC's evidence"))
             else:
                 n_valid += 1
+    return ScopedCheckResult(
+        failures=failures,
+        totals={"citations": n_cites, "citations_valid": n_valid},
+    )
 
-    # Notable Quotes (blockquotes) and every other double-quoted span
+
+def check_quotes(context: VerificationContext) -> ScopedCheckResult:
+    """Check only notable quotes, inline quoted spans, and attribution placeholders."""
+
+    failures: list[Finding] = []
+    advisories: list[Finding] = []
     by_source: dict[str, int] = {}
     quote_lines: set[int] = set()
     n_quotes = 0
-    first, qlines = secs.get(schema.MAP_SECTIONS[1], (0, []))
+    first, qlines = context.sections.get(schema.MAP_SECTIONS[1], (0, []))
     for q in npc_check.quotes_in(qlines, first):
         n_quotes += 1
-        chk = npc_check.check_quote(q.text, q.attribution, evidence)
+        chk = npc_check.check_quote(q.text, q.attribution, context.evidence)
         loc = q.line + 1
         if chk.status == NOT_FOUND:
-            where = " (verbatim in the summaries, not in this NPC's evidence)" if _in_summaries(q.text, summaries_text) else ""
+            where = (
+                " (verbatim in the summaries, not in this NPC's evidence)"
+                if _in_summaries(q.text, context.summaries_text)
+                else ""
+            )
             failures.append(Finding(NOT_FOUND, loc, q.text, chk.detail + where))
         elif chk.status == CITATION_MISMATCH:
             failures.append(Finding(CITATION_MISMATCH, loc, q.text, chk.detail))
@@ -179,19 +244,32 @@ def verify(
         if ln.lstrip().startswith(">"):
             quote_lines.add(first + off)
     n_spans = 0
-    for n in range(body_start, len(lines)):
+    for n in range(context.body_start, len(context.lines)):
         if n in quote_lines:
             continue
-        for span in npc_check.SPAN_RE.findall(lines[n]):
+        for span in npc_check.SPAN_RE.findall(context.lines[n]):
             n_spans += 1
-            verdict, _ = npc_check.in_evidence(span, evidence)
+            verdict, _ = npc_check.in_evidence(span, context.evidence)
             if verdict is None:
                 failures.append(Finding(NOT_FOUND, n + 1, span, "quoted span not verbatim in this NPC's evidence"))
             elif verdict == TYPOGRAPHY:
                 advisories.append(Finding(TYPOGRAPHY, n + 1, span, "differs only in quote marks or apostrophes"))
+    return ScopedCheckResult(
+        failures=failures,
+        advisories=advisories,
+        totals={
+            "quotes": n_quotes,
+            "quotes_by_source": dict(sorted(by_source.items())),
+            "quoted_spans": n_spans,
+        },
+    )
 
-    # History bullets
-    first, hlines = secs.get(schema.MAP_SECTIONS[0], (0, []))
+
+def check_history(context: VerificationContext) -> ScopedCheckResult:
+    """Check only leaf History bullets for a source or manual pointer."""
+
+    failures: list[Finding] = []
+    first, hlines = context.sections.get(schema.MAP_SECTIONS[0], (0, []))
     bl = npc_check.bullets(hlines, first)
     n_leaf = 0
     for i, b in enumerate(bl):
@@ -201,26 +279,48 @@ def verify(
         n_leaf += 1
         if not (schema.CITATION_RE.search(b.text) or schema.MANUAL_CITATION_RE.search(b.text)):
             failures.append(Finding(UNCITED, b.line + 1, b.text, "no citation"))
+    return ScopedCheckResult(
+        failures=failures,
+        totals={"history_bullets": n_leaf},
+    )
 
-    # Manual edits
-    uses = {n: [] for n in range(1, len(manual) + 1)}
-    for n in range(body_start, len(lines)):
-        for m in schema.MANUAL_CITATION_RE.finditer(lines[n]):
+
+def check_manual(context: VerificationContext) -> ScopedCheckResult:
+    """Check only manual pointer bounds and whether each authored edit was retained."""
+
+    failures: list[Finding] = []
+    uses = {n: [] for n in range(1, len(context.manual) + 1)}
+    for n in range(context.body_start, len(context.lines)):
+        for m in schema.MANUAL_CITATION_RE.finditer(context.lines[n]):
             k = int(m.group(1))
             if k in uses:
-                uses[k].append((n + 1, lines[n].strip()))
+                uses[k].append((n + 1, context.lines[n].strip()))
             else:
-                failures.append(Finding(MANUAL_INVALID, n + 1, m.group(0), f"the authored file has {len(manual)} manual edits"))
+                failures.append(Finding(
+                    MANUAL_INVALID,
+                    n + 1,
+                    m.group(0),
+                    f"the authored file has {len(context.manual)} manual edits",
+                ))
     manual_uses = []
-    for k, text in enumerate(manual, 1):
+    for k, text in enumerate(context.manual, 1):
         manual_uses.append(ManualUse(k, text, tuple(dict.fromkeys(uses[k]))))
         if not uses[k]:
             failures.append(Finding(MANUAL_DROPPED, 0, f"manual edit {k}: {text}", "never cited as [manual %d]" % k))
+    return ScopedCheckResult(
+        failures=failures,
+        totals={"manual_edits": len(context.manual)},
+        manual=manual_uses,
+    )
 
-    # Advisory status words
-    ev_text = evidence.text
-    flo, fl = secs.get(LAST_STATE, (0, []))
-    scopes = [(flo, fl), secs.get(schema.MAP_SECTIONS[0], (0, []))]
+
+def check_status_words(context: VerificationContext) -> ScopedCheckResult:
+    """Check only deterministic status words against the complete evidence text."""
+
+    advisories: list[Finding] = []
+    ev_text = context.evidence.text
+    flo, fl = context.sections.get(LAST_STATE, (0, []))
+    scopes = [(flo, fl), context.sections.get(schema.MAP_SECTIONS[0], (0, []))]
     seen: set[tuple[int, str]] = set()
     for start, sl in scopes:
         for off, ln in enumerate(sl):
@@ -231,6 +331,56 @@ def verify(
                 seen.add((start + off, w))
                 if not re.search(rf"\b{w}\b", ev_text, re.IGNORECASE):
                     advisories.append(Finding(STATUS_UNSUPPORTED, start + off + 1, ln.strip(), f'"{w}" appears nowhere in the evidence'))
+    return ScopedCheckResult(advisories=advisories)
+
+
+def scoped_checkers() -> dict[str, object]:
+    """Return the stable public check-id mapping used by selected reruns."""
+
+    return {
+        CITATION_CHECK: check_citations,
+        QUOTE_CHECK: check_quotes,
+        HISTORY_CHECK: check_history,
+        MANUAL_CHECK: check_manual,
+        STATUS_CHECK: check_status_words,
+    }
+
+
+def verify_scoped(
+    draft_text: str,
+    evidence_dossier: str,
+    corpus_index: CorpusIndex,
+    summaries_text: str,
+    manual: list[str],
+    check_ids,
+) -> VerificationResult:
+    """Run exactly the named deterministic checks over shared parsed inputs."""
+
+    selected = tuple(check_ids)
+    if not selected or len(selected) != len(set(selected)):
+        raise ValueError("verification requires unique explicit check ids")
+    checkers = scoped_checkers()
+    unknown = [check_id for check_id in selected if check_id not in checkers]
+    if unknown:
+        raise ValueError(f"unknown verification check id: {unknown[0]}")
+    context = build_context(
+        draft_text,
+        evidence_dossier,
+        corpus_index,
+        summaries_text,
+        manual,
+    )
+    failures: list[Finding] = []
+    advisories: list[Finding] = []
+    totals: dict = {}
+    manual_uses: list[ManualUse] = []
+    for check_id in selected:
+        result = checkers[check_id](context)
+        failures.extend(result.failures)
+        advisories.extend(result.advisories)
+        totals.update(result.totals)
+        if check_id == MANUAL_CHECK:
+            manual_uses = result.manual
 
     counts = {k: 0 for k in FAIL_CODES}
     for f in failures:
@@ -242,16 +392,27 @@ def verify(
         failures=sorted(failures, key=lambda f: (f.line, f.code, f.text)),
         advisories=sorted(advisories, key=lambda f: (f.line, f.code, f.text)),
         counts=counts,
-        totals={
-            "citations": n_cites,
-            "citations_valid": n_valid,
-            "quotes": n_quotes,
-            "quotes_by_source": dict(sorted(by_source.items())),
-            "quoted_spans": n_spans,
-            "history_bullets": n_leaf,
-            "manual_edits": len(manual),
-        },
+        totals=totals,
         manual=manual_uses,
+    )
+
+
+def verify(
+    draft_text: str,
+    evidence_dossier: str,
+    corpus_index: CorpusIndex,
+    summaries_text: str,
+    manual: list[str],
+) -> VerificationResult:
+    """Run the complete legacy verifier through the scoped check functions."""
+
+    return verify_scoped(
+        draft_text,
+        evidence_dossier,
+        corpus_index,
+        summaries_text,
+        manual,
+        CHECK_IDS,
     )
 
 

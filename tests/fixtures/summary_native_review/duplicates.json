@@ -1,0 +1,346 @@
+{
+  "pairs": [
+    {
+      "id": "pair-01",
+      "a": "Candidate 1A",
+      "b": "Candidate 1B",
+      "type": "npc",
+      "scope": "persistent",
+      "case": "safe_merge",
+      "expected": "applicable"
+    },
+    {
+      "id": "pair-02",
+      "a": "Candidate 2A",
+      "b": "Candidate 2B",
+      "type": "npc",
+      "scope": "chapter-2",
+      "case": "scoped_alias",
+      "expected": "blocked"
+    },
+    {
+      "id": "pair-03",
+      "a": "Candidate 3A",
+      "b": "Candidate 3B",
+      "type": "npc",
+      "scope": "persistent",
+      "case": "nonpersistent_entity",
+      "expected": "blocked"
+    },
+    {
+      "id": "pair-04",
+      "a": "Candidate 4A",
+      "b": "Candidate 4B",
+      "type": "location",
+      "scope": "persistent",
+      "case": "type_mismatch",
+      "expected": "blocked"
+    },
+    {
+      "id": "pair-05",
+      "a": "Candidate 5A",
+      "b": "Candidate 5B",
+      "type": "npc",
+      "scope": "persistent",
+      "case": "distinct_guard",
+      "expected": "blocked"
+    },
+    {
+      "id": "pair-06",
+      "a": "Candidate 6A",
+      "b": "Candidate 6B",
+      "type": "npc",
+      "scope": "persistent",
+      "case": "rejected_alias_guard",
+      "expected": "blocked"
+    },
+    {
+      "id": "pair-07",
+      "a": "Candidate 7A",
+      "b": "Candidate 7B",
+      "type": "npc",
+      "scope": "persistent",
+      "case": "path_collision",
+      "expected": "blocked"
+    },
+    {
+      "id": "pair-08",
+      "a": "Candidate 8A",
+      "b": "Candidate 8B",
+      "type": "npc",
+      "scope": "persistent",
+      "case": "authored_conflict",
+      "expected": "blocked"
+    },
+    {
+      "id": "pair-09",
+      "a": "Candidate 9A",
+      "b": "Candidate 9B",
+      "type": "npc",
+      "scope": "persistent",
+      "case": "safe_merge",
+      "expected": "applicable"
+    },
+    {
+      "id": "pair-10",
+      "a": "Candidate 10A",
+      "b": "Candidate 10B",
+      "type": "npc",
+      "scope": "persistent",
+      "case": "scoped_alias",
+      "expected": "blocked"
+    },
+    {
+      "id": "pair-11",
+      "a": "Candidate 11A",
+      "b": "Candidate 11B",
+      "type": "npc",
+      "scope": "persistent",
+      "case": "nonpersistent_entity",
+      "expected": "blocked"
+    },
+    {
+      "id": "pair-12",
+      "a": "Candidate 12A",
+      "b": "Candidate 12B",
+      "type": "npc",
+      "scope": "persistent",
+      "case": "type_mismatch",
+      "expected": "blocked"
+    },
+    {
+      "id": "pair-13",
+      "a": "Candidate 13A",
+      "b": "Candidate 13B",
+      "type": "npc",
+      "scope": "persistent",
+      "case": "distinct_guard",
+      "expected": "blocked"
+    },
+    {
+      "id": "pair-14",
+      "a": "Candidate 14A",
+      "b": "Candidate 14B",
+      "type": "npc",
+      "scope": "persistent",
+      "case": "rejected_alias_guard",
+      "expected": "blocked"
+    },
+    {
+      "id": "pair-15",
+      "a": "Candidate 15A",
+      "b": "Candidate 15B",
+      "type": "npc",
+      "scope": "persistent",
+      "case": "path_collision",
+      "expected": "blocked"
+    },
+    {
+      "id": "pair-16",
+      "a": "Candidate 16A",
+      "b": "Candidate 16B",
+      "type": "npc",
+      "scope": "persistent",
+      "case": "authored_conflict",
+      "expected": "blocked"
+    },
+    {
+      "id": "pair-17",
+      "a": "Candidate 17A",
+      "b": "Candidate 17B",
+      "type": "npc",
+      "scope": "persistent",
+      "case": "safe_merge",
+      "expected": "applicable"
+    },
+    {
+      "id": "pair-18",
+      "a": "Candidate 18A",
+      "b": "Candidate 18B",
+      "type": "npc",
+      "scope": "persistent",
+      "case": "scoped_alias",
+      "expected": "blocked"
+    },
+    {
+      "id": "pair-19",
+      "a": "Candidate 19A",
+      "b": "Candidate 19B",
+      "type": "npc",
+      "scope": "persistent",
+      "case": "nonpersistent_entity",
+      "expected": "blocked"
+    },
+    {
+      "id": "pair-20",
+      "a": "Candidate 20A",
+      "b": "Candidate 20B",
+      "type": "npc",
+      "scope": "persistent",
+      "case": "type_mismatch",
+      "expected": "blocked"
+    },
+    {
+      "id": "pair-21",
+      "a": "Candidate 21A",
+      "b": "Candidate 21B",
+      "type": "npc",
+      "scope": "persistent",
+      "case": "distinct_guard",
+      "expected": "blocked"
+    },
+    {
+      "id": "pair-22",
+      "a": "Candidate 22A",
+      "b": "Candidate 22B",
+      "type": "npc",
+      "scope": "persistent",
+      "case": "rejected_alias_guard",
+      "expected": "blocked"
+    },
+    {
+      "id": "pair-23",
+      "a": "Candidate 23A",
+      "b": "Candidate 23B",
+      "type": "npc",
+      "scope": "persistent",
+      "case": "path_collision",
+      "expected": "blocked"
+    },
+    {
+      "id": "pair-24",
+      "a": "Candidate 24A",
+      "b": "Candidate 24B",
+      "type": "npc",
+      "scope": "persistent",
+      "case": "authored_conflict",
+      "expected": "blocked"
+    },
+    {
+      "id": "pair-25",
+      "a": "Candidate 25A",
+      "b": "Candidate 25B",
+      "type": "npc",
+      "scope": "persistent",
+      "case": "safe_merge",
+      "expected": "applicable"
+    },
+    {
+      "id": "pair-26",
+      "a": "Candidate 26A",
+      "b": "Candidate 26B",
+      "type": "npc",
+      "scope": "persistent",
+      "case": "scoped_alias",
+      "expected": "blocked"
+    },
+    {
+      "id": "pair-27",
+      "a": "Candidate 27A",
+      "b": "Candidate 27B",
+      "type": "npc",
+      "scope": "persistent",
+      "case": "nonpersistent_entity",
+      "expected": "blocked"
+    },
+    {
+      "id": "pair-28",
+      "a": "Candidate 28A",
+      "b": "Candidate 28B",
+      "type": "npc",
+      "scope": "persistent",
+      "case": "type_mismatch",
+      "expected": "blocked"
+    },
+    {
+      "id": "pair-29",
+      "a": "Candidate 29A",
+      "b": "Candidate 29B",
+      "type": "npc",
+      "scope": "persistent",
+      "case": "distinct_guard",
+      "expected": "blocked"
+    },
+    {
+      "id": "pair-30",
+      "a": "Candidate 30A",
+      "b": "Candidate 30B",
+      "type": "npc",
+      "scope": "persistent",
+      "case": "rejected_alias_guard",
+      "expected": "blocked"
+    },
+    {
+      "id": "pair-31",
+      "a": "Candidate 31A",
+      "b": "Candidate 31B",
+      "type": "npc",
+      "scope": "persistent",
+      "case": "path_collision",
+      "expected": "blocked"
+    },
+    {
+      "id": "pair-32",
+      "a": "Candidate 32A",
+      "b": "Candidate 32B",
+      "type": "npc",
+      "scope": "persistent",
+      "case": "authored_conflict",
+      "expected": "blocked"
+    },
+    {
+      "id": "pair-33",
+      "a": "Candidate 33A",
+      "b": "Candidate 33B",
+      "type": "npc",
+      "scope": "persistent",
+      "case": "safe_merge",
+      "expected": "applicable"
+    },
+    {
+      "id": "pair-34",
+      "a": "Candidate 34A",
+      "b": "Candidate 34B",
+      "type": "npc",
+      "scope": "persistent",
+      "case": "scoped_alias",
+      "expected": "blocked"
+    },
+    {
+      "id": "pair-35",
+      "a": "Candidate 35A",
+      "b": "Candidate 35B",
+      "type": "npc",
+      "scope": "persistent",
+      "case": "nonpersistent_entity",
+      "expected": "blocked"
+    },
+    {
+      "id": "pair-36",
+      "a": "Candidate 36A",
+      "b": "Candidate 36B",
+      "type": "npc",
+      "scope": "persistent",
+      "case": "type_mismatch",
+      "expected": "blocked"
+    },
+    {
+      "id": "pair-37",
+      "a": "Candidate 37A",
+      "b": "Candidate 37B",
+      "type": "npc",
+      "scope": "persistent",
+      "case": "distinct_guard",
+      "expected": "blocked"
+    },
+    {
+      "id": "pair-38",
+      "a": "Candidate 38A",
+      "b": "Candidate 38B",
+      "type": "npc",
+      "scope": "persistent",
+      "case": "rejected_alias_guard",
+      "expected": "blocked"
+    }
+  ]
+}

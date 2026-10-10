@@ -13,16 +13,19 @@ from datetime import datetime, timezone
 from enum import Enum
 from pathlib import Path
 from typing import Annotated, Literal
+from uuid import UUID
 
 import yaml
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 from campaignlib.util import atomic_write_bytes
 
-SCHEMA_VERSION = 1
+SCHEMA_VERSION = 2
+LEGACY_SCHEMA_VERSION = 1
 POLICY_VERSION = 1
 _SLUG = re.compile(r"^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$")
 _SHA = re.compile(r"^[0-9a-f]{64}$")
+_REFERENCE_ID = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]*$")
 DOCUMENT_ANCHOR = "__document__"
 
 
@@ -179,7 +182,73 @@ class NoteRecord(BaseRecord):
         return self
 
 
-AuthorityRecord = Annotated[RulingRecord | NoteRecord, Field(discriminator="kind")]
+class ReviewArtifactRef(StrictModel):
+    """Digest-bound reference to a typed proposal or application receipt."""
+
+    kind: Literal["source_correction", "identity_merge", "document_promotion"]
+    id: str = Field(min_length=1)
+    digest: str
+
+    @model_validator(mode="after")
+    def _digest(self):
+        if not _SHA.fullmatch(self.digest):
+            raise ValueError("review artifact digest must be a lowercase SHA-256")
+        return self
+
+
+class ReviewDecisionRecord(BaseRecord):
+    """Audit-only accepted review decision.
+
+    This record deliberately has no source or replacement fields.  Its
+    presence proves a human decision happened; it cannot contribute prompt
+    evidence, planning precedence, source truth, or conflict resolution.
+    """
+
+    kind: Literal["review_decision"]
+    status: Literal["accepted", "superseded", "withdrawn"]
+    campaign_id: UUID
+    review_id: str = Field(min_length=1)
+    item_id: str = Field(min_length=1)
+    item_revision: int = Field(ge=1)
+    event_id: str = Field(min_length=1)
+    decision_revision: int = Field(ge=1)
+    event_digest: str
+    review_digest: str
+    domain: Literal["npc_finding", "duplicate_identity", "grounding_document"]
+    disposition: Literal[
+        "accept_no_change",
+        "source_correction",
+        "merge",
+        "distinct",
+        "document_signoff",
+    ]
+    proposal: ReviewArtifactRef | None = None
+    receipt: ReviewArtifactRef | None = None
+
+    @model_validator(mode="after")
+    def _review_decision(self):
+        if self.classification is not Classification.RULED:
+            raise ValueError("review_decision classification must be RULED")
+        for name in ("event_digest", "review_digest"):
+            if not _SHA.fullmatch(getattr(self, name)):
+                raise ValueError(f"{name} must be a lowercase SHA-256")
+        if self.receipt is not None and self.proposal is None:
+            raise ValueError("review decision receipt requires its proposal reference")
+        if self.proposal is not None and self.receipt is not None and self.proposal.kind != self.receipt.kind:
+            raise ValueError("review decision proposal and receipt types must match")
+        if self.disposition == "source_correction" and self.proposal is not None and self.proposal.kind != "source_correction":
+            raise ValueError("source_correction disposition requires a source_correction proposal")
+        if self.disposition == "merge" and self.proposal is not None and self.proposal.kind != "identity_merge":
+            raise ValueError("merge disposition requires an identity_merge proposal")
+        if self.disposition == "document_signoff" and self.proposal is not None and self.proposal.kind != "document_promotion":
+            raise ValueError("document_signoff disposition requires a document_promotion proposal")
+        return self
+
+
+AuthorityRecord = Annotated[
+    RulingRecord | NoteRecord | ReviewDecisionRecord,
+    Field(discriminator="kind"),
+]
 
 
 class ConflictFinding(StrictModel):
@@ -217,7 +286,9 @@ class ConflictFinding(StrictModel):
 
 
 class AuthorityLedger(StrictModel):
-    version: Literal[SCHEMA_VERSION]
+    # Version 1 remains decodable only for the one-shot migrator.  ``load_ledger``
+    # rejects it as live state before constructing this model.
+    version: Literal[LEGACY_SCHEMA_VERSION, SCHEMA_VERSION]
     campaign: str = Field(min_length=1)
     revision: int = Field(ge=1)
     records: list[AuthorityRecord] = Field(default_factory=list)
@@ -225,6 +296,8 @@ class AuthorityLedger(StrictModel):
 
     @model_validator(mode="after")
     def _relations(self):
+        if self.version == LEGACY_SCHEMA_VERSION and any(isinstance(record, ReviewDecisionRecord) for record in self.records):
+            raise ValueError("authority ledger version 1 cannot contain review_decision records")
         ids = [r.id for r in self.records]
         if len(ids) != len(set(ids)):
             raise ValueError("duplicate authority record id")
@@ -244,6 +317,8 @@ class AuthorityLedger(StrictModel):
                     or not (prior.projections & record.projections)
                 ):
                     raise ValueError(f"{record.id}: supersedes must name the same overlapping claim")
+                if isinstance(record, ReviewDecisionRecord) != isinstance(prior, ReviewDecisionRecord):
+                    raise ValueError(f"{record.id}: review decisions can supersede only review decisions")
         for record in self.records:
             seen: set[str] = set()
             cursor = record
@@ -256,6 +331,9 @@ class AuthorityLedger(StrictModel):
             unknown = conflict.record_ids - set(by_id)
             if unknown:
                 raise ValueError(f"{conflict.id}: unknown records {sorted(unknown)}")
+            audit_only = [identifier for identifier in conflict.record_ids if isinstance(by_id[identifier], ReviewDecisionRecord)]
+            if audit_only:
+                raise ValueError(f"{conflict.id}: audit-only review decisions cannot be conflict facts")
             if conflict.resolution_record:
                 resolution = by_id.get(conflict.resolution_record)
                 if not isinstance(resolution, RulingRecord):
@@ -273,6 +351,8 @@ def canonicalize(value):
         return value.value
     if isinstance(value, datetime):
         return value.isoformat().replace("+00:00", "Z")
+    if isinstance(value, UUID):
+        return str(value)
     if isinstance(value, BaseModel):
         # Do not call model_dump first: Pydantic turns a frozenset into a list
         # there, losing the fact that its iteration order is non-semantic.
@@ -331,6 +411,12 @@ def load_ledger(campaign_dir: Path, *, required: bool = True, expected_campaign:
         raw = yaml.load(path.read_text(encoding="utf-8"), Loader=_NoDuplicatesLoader)
     except (OSError, yaml.YAMLError) as exc:
         raise AuthorityError(f"invalid authority ledger {path}: {exc}") from exc
+    if isinstance(raw, dict) and raw.get("version") == LEGACY_SCHEMA_VERSION:
+        raise AuthorityError(
+            "authority ledger version 1 requires deliberate migration; run "
+            f"`summary_native review migrate --campaign-dir {campaign_dir} --dry-run --json`",
+            "AUTH_MIGRATION_REQUIRED",
+        )
     try:
         ledger = AuthorityLedger.model_validate(raw)
     except Exception as exc:
@@ -374,6 +460,12 @@ def validate_record_identity(campaign_dir: Path, record: AuthorityRecord) -> Non
     from campaignlib.registry import load_registry as load_entity_registry
     from campaignlib.thread_registry import load_registry as load_thread_registry
 
+    # Review decisions bind their historical subject to immutable review event
+    # and proposal digests.  A merged-away loser must remain readable in audit
+    # history even though it is no longer a current registry canonical name.
+    if isinstance(record, ReviewDecisionRecord):
+        validate_review_decision_references(campaign_dir, record)
+        return
     root = Path(campaign_dir)
     if record.subject.kind == "entity":
         path = root / "docs" / "entity_registry.yaml"
@@ -402,6 +494,189 @@ def validate_record_identity(campaign_dir: Path, record: AuthorityRecord) -> Non
                 raise AuthorityError(f"invalid character identity registry {path}: {exc}") from exc
             if character_id not in characters:
                 raise AuthorityError(f"unknown character identity {character_id!r} in config/players.yaml")
+
+
+def _strict_json(path: Path, *, label: str, campaign_root: Path) -> tuple[dict, bytes]:
+    def no_duplicates(pairs):
+        value = {}
+        for key, item in pairs:
+            if key in value:
+                raise ValueError(f"duplicate JSON key {key!r}")
+            value[key] = item
+        return value
+
+    root = Path(campaign_root).resolve()
+    absolute = Path(path) if Path(path).is_absolute() else root / path
+    try:
+        relative = absolute.relative_to(root)
+    except ValueError as exc:
+        raise AuthorityError(f"invalid immutable review {label}: path escapes campaign root") from exc
+    cursor = root
+    for part in relative.parts:
+        cursor = cursor / part
+        if cursor.is_symlink():
+            raise AuthorityError(f"invalid immutable review {label}: symlink is not allowed")
+    try:
+        if not absolute.resolve().is_relative_to(root):
+            raise AuthorityError(f"invalid immutable review {label}: path escapes campaign root")
+        data = absolute.read_bytes()
+        value = json.loads(data, object_pairs_hook=no_duplicates)
+    except (OSError, ValueError) as exc:
+        raise AuthorityError(f"invalid immutable review {label}: {exc}") from exc
+    if not isinstance(value, dict):
+        raise AuthorityError(f"invalid immutable review {label}: expected one object")
+    return value, data
+
+
+def _review_canonical_bytes(value: dict, *, exclude: frozenset[str] = frozenset()) -> bytes:
+    payload = {key: item for key, item in value.items() if key not in exclude}
+    try:
+        return json.dumps(
+            payload,
+            ensure_ascii=False,
+            allow_nan=False,
+            sort_keys=True,
+            separators=(",", ":"),
+        ).encode("utf-8")
+    except (TypeError, ValueError) as exc:
+        raise AuthorityError(f"invalid immutable review canonical JSON: {exc}") from exc
+
+
+def validate_review_decision_references(campaign_dir: Path, record: ReviewDecisionRecord) -> None:
+    """Validate one audit record through immutable review artifacts.
+
+    The runtime-only model import keeps the authority module importable by the
+    review package while still making the ReviewItem model the single source
+    of truth for strict parsing and semantic-digest validation.
+    """
+    from pipelines.summary_native.review.models import ReviewItem, ReviewModelError, model_from_json
+
+    for label, value in (
+        ("review_id", record.review_id),
+        ("item_id", record.item_id),
+        ("event_id", record.event_id),
+    ):
+        if not _REFERENCE_ID.fullmatch(value):
+            raise AuthorityError(f"invalid review decision {label}")
+    root = Path(campaign_dir).resolve()
+    review_root = root / "docs" / "reviews" / record.review_id
+    manifest, _ = _strict_json(review_root / "manifest.json", label="manifest", campaign_root=root)
+    expected = {
+        "campaign_id": str(record.campaign_id),
+        "review_id": record.review_id,
+    }
+    for field, value in expected.items():
+        if manifest.get(field) != value:
+            raise AuthorityError(f"review decision {field} does not match immutable manifest")
+
+    _, item_bytes = _strict_json(
+        review_root / "items" / record.item_id / f"{record.item_revision}.json",
+        label="item",
+        campaign_root=root,
+    )
+    try:
+        item = model_from_json(ReviewItem, item_bytes)
+    except ReviewModelError as exc:
+        raise AuthorityError(f"invalid immutable review item: {exc}") from exc
+    item_expected = {
+        "campaign_id": record.campaign_id,
+        "review_id": record.review_id,
+        "item_id": record.item_id,
+        "revision": record.item_revision,
+        "review_digest": record.review_digest,
+        "domain": record.domain,
+    }
+    for field, value in item_expected.items():
+        actual = getattr(item, field)
+        if isinstance(actual, Enum):
+            actual = actual.value
+        if actual != value:
+            raise AuthorityError(f"review decision {field} does not match immutable item")
+
+    expected_subject_kind = "entity" if item.subject_ref.kind == "entity" else "topic"
+    if (
+        record.subject.kind != expected_subject_kind
+        or record.subject.id != str(item.subject_ref.subject_id)
+    ):
+        raise AuthorityError("review decision subject does not match immutable item")
+
+    event, _ = _strict_json(
+        review_root / "events" / f"{record.event_id}.json",
+        label="event",
+        campaign_root=root,
+    )
+    if sha256_bytes(_review_canonical_bytes(event)) != record.event_digest:
+        raise AuthorityError("review decision event digest does not match immutable event")
+    event_expected = {
+        **expected,
+        "event_id": record.event_id,
+        "item_id": record.item_id,
+        "item_revision": record.item_revision,
+        "review_digest": record.review_digest,
+        "decision_revision": record.decision_revision,
+        "verdict": "approve",
+        "disposition": record.disposition,
+        "reviewer": record.recorded_by,
+        "recorded_at": canonicalize(record.recorded_at),
+        "authority_record_id": record.id,
+    }
+    for field, value in event_expected.items():
+        if event.get(field) != value:
+            raise AuthorityError(f"review decision {field} does not match immutable event")
+    event_proposal=(event.get("proposal_id"),event.get("proposal_digest"))
+    record_proposal=(None,None) if record.proposal is None else (record.proposal.id,record.proposal.digest)
+    if event_proposal!=record_proposal and not (
+        record.proposal is not None
+        and record.proposal.kind=="document_promotion"
+        and event_proposal==(None,None)
+    ):
+        raise AuthorityError("review decision proposal_id/proposal_digest does not match immutable event")
+
+    for label, reference, directory, id_field, digest_field in (
+        ("proposal", record.proposal, "proposals", "proposal_id", "proposal_digest"),
+        ("receipt", record.receipt, "receipts", "receipt_id", "receipt_digest"),
+    ):
+        if reference is None:
+            continue
+        if not _REFERENCE_ID.fullmatch(reference.id):
+            raise AuthorityError(f"invalid review decision {label} id")
+        artifact, _ = _strict_json(
+            review_root / directory / f"{reference.id}.json",
+            label=label,
+            campaign_root=root,
+        )
+        if artifact.get(id_field) != reference.id:
+            raise AuthorityError(f"review decision {label} id does not match immutable artifact")
+        declared = artifact.get(digest_field)
+        computed = sha256_bytes(_review_canonical_bytes(artifact, exclude=frozenset({digest_field})))
+        if declared != reference.digest or computed != reference.digest:
+            raise AuthorityError(f"review decision {label} digest does not match immutable artifact")
+        if artifact.get("campaign_id") != str(record.campaign_id) or artifact.get("review_id") != record.review_id:
+            raise AuthorityError(f"review decision {label} belongs to another campaign or review")
+        if artifact.get("kind") != reference.kind:
+            raise AuthorityError(f"review decision {label} type does not match immutable artifact")
+        if label == "proposal":
+            bindings = artifact.get("decision_bindings")
+            if not isinstance(bindings, list) or not any(
+                isinstance(binding, dict)
+                and (
+                    (binding.get("event_id") is None and binding.get("decision_revision") == record.decision_revision - 1)
+                    or (binding.get("event_id") == record.event_id and binding.get("decision_revision") == record.decision_revision)
+                )
+                and binding.get("item_id") == record.item_id
+                and binding.get("item_revision") == record.item_revision
+                and binding.get("review_digest") == record.review_digest
+                for binding in bindings
+            ):
+                raise AuthorityError("review decision proposal does not bind the prepared item revision")
+        else:
+            if (
+                artifact.get("proposal_id") != record.proposal.id
+                or artifact.get("proposal_digest") != record.proposal.digest
+                or record.event_id not in artifact.get("decision_event_ids", [])
+                or record.id not in artifact.get("authority_record_ids", [])
+            ):
+                raise AuthorityError("review decision receipt does not bind the event, proposal, and authority record")
 
 
 def validate_audience_target(campaign_dir: Path, audience: str) -> None:
@@ -472,6 +747,8 @@ def _intersection(left: EffectiveInterval, right: EffectiveInterval) -> Effectiv
 
 def _source_identity(record: AuthorityRecord) -> tuple[str, str]:
     """Use the normalized path where a source adapter recorded one."""
+    if isinstance(record, ReviewDecisionRecord):
+        raise AuthorityError("audit-only review decisions have no source identity")
     return (record.source.resolved_path or record.source.path, record.source.anchor)
 
 
@@ -528,6 +805,8 @@ def _detect_automatic_conflicts(ledger: AuthorityLedger) -> list[ConflictFinding
 
 def _establishes_structured_truth(record: AuthorityRecord) -> bool:
     """Limit automatic values to established evidence and applied decisions."""
+    if isinstance(record, ReviewDecisionRecord):
+        return False
     return (
         record.classification in {Classification.CANON, Classification.TABLE, Classification.OVERLAY}
         or isinstance(record, RulingRecord)
@@ -688,6 +967,6 @@ def dismiss_conflict(
 
 def detect_structured_conflicts(records: list[AuthorityRecord]) -> list[tuple[str, str]]:
     """Backward-compatible pair view for older validation callers."""
-    ledger = AuthorityLedger(version=1, campaign="memory", revision=1, records=records)
+    ledger = AuthorityLedger(version=SCHEMA_VERSION, campaign="memory", revision=1, records=records)
     return [tuple(sorted(conflict.record_ids)) for conflict in detect_conflicts(ledger)
             if conflict.basis == "structured_value"]

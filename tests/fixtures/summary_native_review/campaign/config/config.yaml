@@ -1,0 +1,4 @@
+campaign:
+  name: review-fixture
+paths:
+  summaries: summaries

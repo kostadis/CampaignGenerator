@@ -90,6 +90,7 @@ No API calls are made anywhere in this module.
 from __future__ import annotations
 
 import argparse
+import functools
 import itertools
 import json
 import re
@@ -1699,6 +1700,28 @@ def cmd_resolve(args: argparse.Namespace) -> int:
         print(resolve_mod.format_result(r))
     return {"resolved": 0, "ambiguous": 3, "not_canon": 4}[r["status"]]
 
+def _campaign_locked(*, exclusive: bool):
+    """Protect public command callables, including callers that bypass main()."""
+    def decorate(function):
+        @functools.wraps(function)
+        def wrapped(args):
+            from pipelines.summary_native.authority_apply import authority_lock, require_no_pending_transaction
+            root=Path(args.campaign_dir).resolve()
+            with authority_lock(root,exclusive=exclusive):
+                require_no_pending_transaction(root)
+                return function(args)
+        return wrapped
+    return decorate
+
+
+for _name in (
+    "cmd_init", "cmd_add", "cmd_project", "cmd_import_inventory",
+    "cmd_import_dedup", "cmd_import_frontmatter", "cmd_import_alias_decisions",
+    "cmd_mark_distinct", "cmd_mark_rejected", "cmd_alias", "cmd_merge",
+):
+    globals()[_name]=_campaign_locked(exclusive=True)(globals()[_name])
+for _name in ("cmd_check", "cmd_triage_candidates", "cmd_resolve"):
+    globals()[_name]=_campaign_locked(exclusive=False)(globals()[_name])
 
 
 def main(argv: "list[str] | None" = None) -> int:
@@ -1836,7 +1859,19 @@ def main(argv: "list[str] | None" = None) -> int:
     prs.set_defaults(func=cmd_resolve)
 
     args = p.parse_args(argv)
-    return args.func(args)
+    # Registry reads and every legacy writer share the review authority
+    # campaign boundary.  This keeps load/validate/write sequences coherent
+    # with reviewed multi-file transactions without adding nested locks to
+    # the loader library used inside those transactions.
+    from pipelines.summary_native.authority_apply import authority_lock, require_no_pending_transaction
+    writers = {
+        "init", "add", "project", "import-inventory", "import-dedup",
+        "import-frontmatter", "import-alias-decisions", "mark-distinct",
+        "mark-rejected", "alias", "merge",
+    }
+    with authority_lock(Path(args.campaign_dir).resolve(), exclusive=args.cmd in writers):
+        require_no_pending_transaction(Path(args.campaign_dir).resolve())
+        return args.func(args)
 
 
 if __name__ == "__main__":

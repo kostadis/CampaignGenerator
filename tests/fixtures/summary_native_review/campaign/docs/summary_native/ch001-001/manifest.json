@@ -1,0 +1,1864 @@
+{
+  "absent_optional_sections": {
+    "Abilities": [
+      1
+    ],
+    "Items": [
+      1
+    ],
+    "Locations": [],
+    "Memorable Moments": [
+      1
+    ],
+    "NPCs": [],
+    "Session-End State": [
+      1
+    ],
+    "Spells": [
+      1
+    ]
+  },
+  "canon": {
+    "canon_sha256": null,
+    "registry_sha256": "920e9ec0e516a65ea4be3fd700eaa1adcd87e9bc0be379b7745c7a3149f2dd16"
+  },
+  "complete": true,
+  "counts": {
+    "dossiers": 76,
+    "files": 1,
+    "observations": {
+      "ability": 0,
+      "item": 0,
+      "location": 5,
+      "npc": 71,
+      "spell": 0
+    },
+    "scenes": 1
+  },
+  "files": [
+    {
+      "chapter": 1,
+      "path": "summaries/001-fixture.md",
+      "sha256": "17a0535a754c4f8089a824b86008e8660dc173587fc9c7d9188c30c14801f2ff"
+    }
+  ],
+  "identity_dependencies": {
+    "artifacts": [
+      {
+        "consumer": "summary_native.build",
+        "ownership": "generated",
+        "path": "docs/summary_native/ch001-001/chronology.md",
+        "sha256": "19b47cda335f4a5ed160a1f1236a120626873dc9d81c299586847a56c58f8b41",
+        "subject_ids": []
+      },
+      {
+        "consumer": "summary_native.build",
+        "ownership": "generated",
+        "path": "docs/summary_native/ch001-001/dossiers/location_candidate_12b.md",
+        "sha256": "e08ba97c581ec772c946ed81add4d200d94d4fad63b2399d69af02faa218ae46",
+        "subject_ids": [
+          "location:candidate-12b"
+        ]
+      },
+      {
+        "consumer": "summary_native.build",
+        "ownership": "generated",
+        "path": "docs/summary_native/ch001-001/dossiers/location_candidate_20b.md",
+        "sha256": "05945c725c7ebada76db5ab249df2834fcfec48d8bc41406c61c3a08433fafb2",
+        "subject_ids": [
+          "location:candidate-20b"
+        ]
+      },
+      {
+        "consumer": "summary_native.build",
+        "ownership": "generated",
+        "path": "docs/summary_native/ch001-001/dossiers/location_candidate_28b.md",
+        "sha256": "c9f5b8f010cee7eed39563800cb16687527fc4d166dedced90c7687622b8960d",
+        "subject_ids": [
+          "location:candidate-28b"
+        ]
+      },
+      {
+        "consumer": "summary_native.build",
+        "ownership": "generated",
+        "path": "docs/summary_native/ch001-001/dossiers/location_candidate_36b.md",
+        "sha256": "4890b6b5755b041b797e1cd10dfb191204891d9a84b35595f97754f8e8e013d2",
+        "subject_ids": [
+          "location:candidate-36b"
+        ]
+      },
+      {
+        "consumer": "summary_native.build",
+        "ownership": "generated",
+        "path": "docs/summary_native/ch001-001/dossiers/location_candidate_4a.md",
+        "sha256": "5b9633c7de930f2d06204d4e13de7800d6f6a0a8c50e5c45611224686f3c8245",
+        "subject_ids": [
+          "location:candidate-4a"
+        ]
+      },
+      {
+        "consumer": "summary_native.build",
+        "ownership": "generated",
+        "path": "docs/summary_native/ch001-001/dossiers/npc_candidate_10a.md",
+        "sha256": "14aeefef91b6b6e157ec9fb4b3d171c086fc245b5e026f82994476e480fdeb15",
+        "subject_ids": [
+          "npc:candidate-10a"
+        ]
+      },
+      {
+        "consumer": "summary_native.build",
+        "ownership": "generated",
+        "path": "docs/summary_native/ch001-001/dossiers/npc_candidate_10b.md",
+        "sha256": "bd9bee04353310eb66358624495b6105f00f150c6774799d2ac61dc164f96391",
+        "subject_ids": [
+          "npc:candidate-10b"
+        ]
+      },
+      {
+        "consumer": "summary_native.build",
+        "ownership": "generated",
+        "path": "docs/summary_native/ch001-001/dossiers/npc_candidate_11a.md",
+        "sha256": "290f5d4a26140f822612daa119981a51c56870de0f7e2aec906c38ec185ba672",
+        "subject_ids": [
+          "npc:candidate-11a"
+        ]
+      },
+      {
+        "consumer": "summary_native.build",
+        "ownership": "generated",
+        "path": "docs/summary_native/ch001-001/dossiers/npc_candidate_11b.md",
+        "sha256": "270fcd13a1c2d39564e84e912156efef6b6518f5f7268507c4693bb02ffddd83",
+        "subject_ids": [
+          "npc:candidate-11b"
+        ]
+      },
+      {
+        "consumer": "summary_native.build",
+        "ownership": "generated",
+        "path": "docs/summary_native/ch001-001/dossiers/npc_candidate_12a.md",
+        "sha256": "f2fd65dcb72b0a8f5aac84986d60f23b5c48cfa85f7f0a2f672b9f3fdac9eb84",
+        "subject_ids": [
+          "npc:candidate-12a"
+        ]
+      },
+      {
+        "consumer": "summary_native.build",
+        "ownership": "generated",
+        "path": "docs/summary_native/ch001-001/dossiers/npc_candidate_13a.md",
+        "sha256": "414c4275e5353844e903b41f7044d060ac846364674e257bbc447d9d4ee97634",
+        "subject_ids": [
+          "npc:candidate-13a"
+        ]
+      },
+      {
+        "consumer": "summary_native.build",
+        "ownership": "generated",
+        "path": "docs/summary_native/ch001-001/dossiers/npc_candidate_13b.md",
+        "sha256": "75a031aa36474a86fc04ad1822b7504244b738e3975a1724f05f73a0a4802d0e",
+        "subject_ids": [
+          "npc:candidate-13b"
+        ]
+      },
+      {
+        "consumer": "summary_native.build",
+        "ownership": "generated",
+        "path": "docs/summary_native/ch001-001/dossiers/npc_candidate_14a.md",
+        "sha256": "0c0da51a1da8572a428a3f369a12667f047e091f0527e2317e7dc5c2a81dfdbf",
+        "subject_ids": [
+          "npc:candidate-14a"
+        ]
+      },
+      {
+        "consumer": "summary_native.build",
+        "ownership": "generated",
+        "path": "docs/summary_native/ch001-001/dossiers/npc_candidate_14b.md",
+        "sha256": "c29866387c407e6396daf5f52932b9536048af83533717e8b4817da4976fb226",
+        "subject_ids": [
+          "npc:candidate-14b"
+        ]
+      },
+      {
+        "consumer": "summary_native.build",
+        "ownership": "generated",
+        "path": "docs/summary_native/ch001-001/dossiers/npc_candidate_15a.md",
+        "sha256": "a4c2302cd7cffb94ce48faf03cb94b5dc882608ea29f93e23dc18ea0d6ddf08d",
+        "subject_ids": [
+          "npc:candidate-15a"
+        ]
+      },
+      {
+        "consumer": "summary_native.build",
+        "ownership": "generated",
+        "path": "docs/summary_native/ch001-001/dossiers/npc_candidate_15b.md",
+        "sha256": "35f0c778d3f0a926412dedc07f86cfdcf6b4f844241de61f228a0175f26464ca",
+        "subject_ids": [
+          "npc:candidate-15b"
+        ]
+      },
+      {
+        "consumer": "summary_native.build",
+        "ownership": "generated",
+        "path": "docs/summary_native/ch001-001/dossiers/npc_candidate_16a.md",
+        "sha256": "31d2350e77b6759efb3e3bcd8ac57e0f5a803f29e96a63af9a78c60cc1092fda",
+        "subject_ids": [
+          "npc:candidate-16a"
+        ]
+      },
+      {
+        "consumer": "summary_native.build",
+        "ownership": "generated",
+        "path": "docs/summary_native/ch001-001/dossiers/npc_candidate_16b.md",
+        "sha256": "fe219a740ec09bc2ed5911c8fdd5d8cab62dd44f80f665885ab505a965ed7853",
+        "subject_ids": [
+          "npc:candidate-16b"
+        ]
+      },
+      {
+        "consumer": "summary_native.build",
+        "ownership": "generated",
+        "path": "docs/summary_native/ch001-001/dossiers/npc_candidate_17a.md",
+        "sha256": "cf60455a3a9adc94ed685f4f67c25a12ad29991c2e0cbe696e83949e2ffe0c6a",
+        "subject_ids": [
+          "npc:candidate-17a"
+        ]
+      },
+      {
+        "consumer": "summary_native.build",
+        "ownership": "generated",
+        "path": "docs/summary_native/ch001-001/dossiers/npc_candidate_17b.md",
+        "sha256": "271b1a3b44dffed6c7d76fdb0221d3b246aa7b3e10f53bde34aebbf8385f7a10",
+        "subject_ids": [
+          "npc:candidate-17b"
+        ]
+      },
+      {
+        "consumer": "summary_native.build",
+        "ownership": "generated",
+        "path": "docs/summary_native/ch001-001/dossiers/npc_candidate_18a.md",
+        "sha256": "7cd893f6d55b9eb09349abace7162219a67aaed470fe8b4fd88050f0f3a0f34c",
+        "subject_ids": [
+          "npc:candidate-18a"
+        ]
+      },
+      {
+        "consumer": "summary_native.build",
+        "ownership": "generated",
+        "path": "docs/summary_native/ch001-001/dossiers/npc_candidate_18b.md",
+        "sha256": "7c84995b6ccf1e3ca946375b864d8b6f9763f49fb68db98c33fd039ae0968354",
+        "subject_ids": [
+          "npc:candidate-18b"
+        ]
+      },
+      {
+        "consumer": "summary_native.build",
+        "ownership": "generated",
+        "path": "docs/summary_native/ch001-001/dossiers/npc_candidate_19a.md",
+        "sha256": "47e734d9374d9e6fc9a451dd1204c85064c752e6882f6fe1c8863a576c3cc6bb",
+        "subject_ids": [
+          "npc:candidate-19a"
+        ]
+      },
+      {
+        "consumer": "summary_native.build",
+        "ownership": "generated",
+        "path": "docs/summary_native/ch001-001/dossiers/npc_candidate_19b.md",
+        "sha256": "f9761d5500f33a7ed2f7d62b4ea2debf8ef0206146b361d078dbd35f648c5c6d",
+        "subject_ids": [
+          "npc:candidate-19b"
+        ]
+      },
+      {
+        "consumer": "summary_native.build",
+        "ownership": "generated",
+        "path": "docs/summary_native/ch001-001/dossiers/npc_candidate_1a.md",
+        "sha256": "2bce18a84a9375fb7d3b93b5a55645e7edbff31597054cb030e6a6e3c4fe1ee3",
+        "subject_ids": [
+          "npc:candidate-1a"
+        ]
+      },
+      {
+        "consumer": "summary_native.build",
+        "ownership": "generated",
+        "path": "docs/summary_native/ch001-001/dossiers/npc_candidate_1b.md",
+        "sha256": "83c9fc32b40e58d5e7f054469575db7766bbbc41a61328a9ed3cb1523aa49c32",
+        "subject_ids": [
+          "npc:candidate-1b"
+        ]
+      },
+      {
+        "consumer": "summary_native.build",
+        "ownership": "generated",
+        "path": "docs/summary_native/ch001-001/dossiers/npc_candidate_20a.md",
+        "sha256": "d598e19351baa473a72d0bb3ec3e1ab1e4f4289728eb65f8a9c81cd23487da48",
+        "subject_ids": [
+          "npc:candidate-20a"
+        ]
+      },
+      {
+        "consumer": "summary_native.build",
+        "ownership": "generated",
+        "path": "docs/summary_native/ch001-001/dossiers/npc_candidate_21a.md",
+        "sha256": "34607b6e9290c6adab62caf28639bf69c9ed105d34958d229a0ee865d55ad4c9",
+        "subject_ids": [
+          "npc:candidate-21a"
+        ]
+      },
+      {
+        "consumer": "summary_native.build",
+        "ownership": "generated",
+        "path": "docs/summary_native/ch001-001/dossiers/npc_candidate_21b.md",
+        "sha256": "a28a06ea37f99105f0fc71022216e1cfc052c1c6a32eba4aabc2d06b01dda523",
+        "subject_ids": [
+          "npc:candidate-21b"
+        ]
+      },
+      {
+        "consumer": "summary_native.build",
+        "ownership": "generated",
+        "path": "docs/summary_native/ch001-001/dossiers/npc_candidate_22a.md",
+        "sha256": "230a889be553795b49cc8837edc427984212d9a5b9c97c52238d3c3eed1a0538",
+        "subject_ids": [
+          "npc:candidate-22a"
+        ]
+      },
+      {
+        "consumer": "summary_native.build",
+        "ownership": "generated",
+        "path": "docs/summary_native/ch001-001/dossiers/npc_candidate_22b.md",
+        "sha256": "b098ce7122d9772b1a2dedd1ffe92abd952835d2c4c3bae7f390fd19553580c5",
+        "subject_ids": [
+          "npc:candidate-22b"
+        ]
+      },
+      {
+        "consumer": "summary_native.build",
+        "ownership": "generated",
+        "path": "docs/summary_native/ch001-001/dossiers/npc_candidate_23a.md",
+        "sha256": "b852a4a146b60f4da7e8e82b6e2af2ec93a4ff2e2f7c80ccadbb6416daa12abc",
+        "subject_ids": [
+          "npc:candidate-23a"
+        ]
+      },
+      {
+        "consumer": "summary_native.build",
+        "ownership": "generated",
+        "path": "docs/summary_native/ch001-001/dossiers/npc_candidate_23b.md",
+        "sha256": "f58ad9f74e12c2143c6784b2104ab8ca431c922c77118e7b4a6c5d41083af88a",
+        "subject_ids": [
+          "npc:candidate-23b"
+        ]
+      },
+      {
+        "consumer": "summary_native.build",
+        "ownership": "generated",
+        "path": "docs/summary_native/ch001-001/dossiers/npc_candidate_24a.md",
+        "sha256": "a05ffe81f7016e8b72cd47293e7d2e2015d0700d0479421926088bc31ef94677",
+        "subject_ids": [
+          "npc:candidate-24a"
+        ]
+      },
+      {
+        "consumer": "summary_native.build",
+        "ownership": "generated",
+        "path": "docs/summary_native/ch001-001/dossiers/npc_candidate_24b.md",
+        "sha256": "3dbfb67ad9f15b655aa5b914b2296036d3424183fb9400bd35d883ff370bc4cf",
+        "subject_ids": [
+          "npc:candidate-24b"
+        ]
+      },
+      {
+        "consumer": "summary_native.build",
+        "ownership": "generated",
+        "path": "docs/summary_native/ch001-001/dossiers/npc_candidate_25a.md",
+        "sha256": "7665fa83f3cc4762996ad62bc7e3749f80e81d7d30c96599d7cd99cd6cf86a97",
+        "subject_ids": [
+          "npc:candidate-25a"
+        ]
+      },
+      {
+        "consumer": "summary_native.build",
+        "ownership": "generated",
+        "path": "docs/summary_native/ch001-001/dossiers/npc_candidate_25b.md",
+        "sha256": "70d26be56ac2a44e26999ad82de20f0c1f9d4555f5cc922a08aec6337313bb89",
+        "subject_ids": [
+          "npc:candidate-25b"
+        ]
+      },
+      {
+        "consumer": "summary_native.build",
+        "ownership": "generated",
+        "path": "docs/summary_native/ch001-001/dossiers/npc_candidate_26a.md",
+        "sha256": "c4d2777c3258ce3f9424f6531cda65090f5d4bd1af893e6444c813891b6f1ecf",
+        "subject_ids": [
+          "npc:candidate-26a"
+        ]
+      },
+      {
+        "consumer": "summary_native.build",
+        "ownership": "generated",
+        "path": "docs/summary_native/ch001-001/dossiers/npc_candidate_26b.md",
+        "sha256": "0be01f2644ab2917b4f12b6668830111963a1a67265983cb5e666e29b6370051",
+        "subject_ids": [
+          "npc:candidate-26b"
+        ]
+      },
+      {
+        "consumer": "summary_native.build",
+        "ownership": "generated",
+        "path": "docs/summary_native/ch001-001/dossiers/npc_candidate_27a.md",
+        "sha256": "6a0c7bb4e8727fd88709a49e4336a4c1d0093ffec9be40e14648be2f665c1dad",
+        "subject_ids": [
+          "npc:candidate-27a"
+        ]
+      },
+      {
+        "consumer": "summary_native.build",
+        "ownership": "generated",
+        "path": "docs/summary_native/ch001-001/dossiers/npc_candidate_27b.md",
+        "sha256": "db3d2ccac0ba518789145a801e659b1e794e9659421c05cc4b3c0f99a97613bc",
+        "subject_ids": [
+          "npc:candidate-27b"
+        ]
+      },
+      {
+        "consumer": "summary_native.build",
+        "ownership": "generated",
+        "path": "docs/summary_native/ch001-001/dossiers/npc_candidate_28a.md",
+        "sha256": "54bd8257fd5d65ee0fa70e945117f7b0566219283352f41831bc644f1e586bae",
+        "subject_ids": [
+          "npc:candidate-28a"
+        ]
+      },
+      {
+        "consumer": "summary_native.build",
+        "ownership": "generated",
+        "path": "docs/summary_native/ch001-001/dossiers/npc_candidate_29a.md",
+        "sha256": "14bfb2bd95d020c81705f1dba4c0d476f90f108b407bd5ce3b063b674ed31cbf",
+        "subject_ids": [
+          "npc:candidate-29a"
+        ]
+      },
+      {
+        "consumer": "summary_native.build",
+        "ownership": "generated",
+        "path": "docs/summary_native/ch001-001/dossiers/npc_candidate_29b.md",
+        "sha256": "b99c02d3c62d1d5a5ea50bc8234cbdd3dab39105ba021ce54e4a59a303d55f1f",
+        "subject_ids": [
+          "npc:candidate-29b"
+        ]
+      },
+      {
+        "consumer": "summary_native.build",
+        "ownership": "generated",
+        "path": "docs/summary_native/ch001-001/dossiers/npc_candidate_2a.md",
+        "sha256": "bda1329b27f48e133d2b6223e255ee36728f3b30c814bdb09208054199291fdd",
+        "subject_ids": [
+          "npc:candidate-2a"
+        ]
+      },
+      {
+        "consumer": "summary_native.build",
+        "ownership": "generated",
+        "path": "docs/summary_native/ch001-001/dossiers/npc_candidate_2b.md",
+        "sha256": "14989a728ce50eca4a0470ad00473edfa2320d4c3d6c74064ce93eaa0f519033",
+        "subject_ids": [
+          "npc:candidate-2b"
+        ]
+      },
+      {
+        "consumer": "summary_native.build",
+        "ownership": "generated",
+        "path": "docs/summary_native/ch001-001/dossiers/npc_candidate_30a.md",
+        "sha256": "2e31d6da94451f7bb6df51d591d5115e5113af205132a1a857b8e3ebb48fd289",
+        "subject_ids": [
+          "npc:candidate-30a"
+        ]
+      },
+      {
+        "consumer": "summary_native.build",
+        "ownership": "generated",
+        "path": "docs/summary_native/ch001-001/dossiers/npc_candidate_30b.md",
+        "sha256": "6604ea16cb44050f299d77c9750562ae03e157174372a67ee9ca2ea670ea0bf0",
+        "subject_ids": [
+          "npc:candidate-30b"
+        ]
+      },
+      {
+        "consumer": "summary_native.build",
+        "ownership": "generated",
+        "path": "docs/summary_native/ch001-001/dossiers/npc_candidate_31a.md",
+        "sha256": "3e09cdc1fca8b45ef61cce646032520f2731ca6d90437961f84c9173266223f0",
+        "subject_ids": [
+          "npc:candidate-31a"
+        ]
+      },
+      {
+        "consumer": "summary_native.build",
+        "ownership": "generated",
+        "path": "docs/summary_native/ch001-001/dossiers/npc_candidate_31b.md",
+        "sha256": "1c4108e94d086e54998d9171ad93f90998e4c6f78636aebf752cea3c7865d0d6",
+        "subject_ids": [
+          "npc:candidate-31b"
+        ]
+      },
+      {
+        "consumer": "summary_native.build",
+        "ownership": "generated",
+        "path": "docs/summary_native/ch001-001/dossiers/npc_candidate_32a.md",
+        "sha256": "87ed2e77dea2d760ed672ca3ae895642f8aa95fff63386e5a0ea5809d4efbdbf",
+        "subject_ids": [
+          "npc:candidate-32a"
+        ]
+      },
+      {
+        "consumer": "summary_native.build",
+        "ownership": "generated",
+        "path": "docs/summary_native/ch001-001/dossiers/npc_candidate_32b.md",
+        "sha256": "e7b050dc8a6e0bdf18818544a80e174e41da76af4a2699b61920cf4f1d303aa8",
+        "subject_ids": [
+          "npc:candidate-32b"
+        ]
+      },
+      {
+        "consumer": "summary_native.build",
+        "ownership": "generated",
+        "path": "docs/summary_native/ch001-001/dossiers/npc_candidate_33a.md",
+        "sha256": "cd18c382fe6b9bfdea50cd1a1f18b1fd7fb992f757f07bfa255723a66d45c4a1",
+        "subject_ids": [
+          "npc:candidate-33a"
+        ]
+      },
+      {
+        "consumer": "summary_native.build",
+        "ownership": "generated",
+        "path": "docs/summary_native/ch001-001/dossiers/npc_candidate_33b.md",
+        "sha256": "f96136ef3c8e866a3b22eeed560f9a44a6adb182e78692ed2ff75f27a5f5bb36",
+        "subject_ids": [
+          "npc:candidate-33b"
+        ]
+      },
+      {
+        "consumer": "summary_native.build",
+        "ownership": "generated",
+        "path": "docs/summary_native/ch001-001/dossiers/npc_candidate_34a.md",
+        "sha256": "74723cc283184236906f25078f9f66ea3d7cf6cc35eefacc75ab27439db02bd8",
+        "subject_ids": [
+          "npc:candidate-34a"
+        ]
+      },
+      {
+        "consumer": "summary_native.build",
+        "ownership": "generated",
+        "path": "docs/summary_native/ch001-001/dossiers/npc_candidate_34b.md",
+        "sha256": "b10209e7a9ee594536affcd4aa09476fb405d6d131f92b3c171500da3a899d89",
+        "subject_ids": [
+          "npc:candidate-34b"
+        ]
+      },
+      {
+        "consumer": "summary_native.build",
+        "ownership": "generated",
+        "path": "docs/summary_native/ch001-001/dossiers/npc_candidate_35a.md",
+        "sha256": "761793b7a76549705b31017245eb4990978275fa24d6048bb7a7e485a1f440ce",
+        "subject_ids": [
+          "npc:candidate-35a"
+        ]
+      },
+      {
+        "consumer": "summary_native.build",
+        "ownership": "generated",
+        "path": "docs/summary_native/ch001-001/dossiers/npc_candidate_35b.md",
+        "sha256": "e4a7c0e64d9c8a450bbe0ea1102ab8accc3603475fc2e23d2c86a3b0df7eaddb",
+        "subject_ids": [
+          "npc:candidate-35b"
+        ]
+      },
+      {
+        "consumer": "summary_native.build",
+        "ownership": "generated",
+        "path": "docs/summary_native/ch001-001/dossiers/npc_candidate_36a.md",
+        "sha256": "1f828d913005d3c9dcd7a82c5c58bbcab268fc1bf02c5d3f23a180d982d51c2b",
+        "subject_ids": [
+          "npc:candidate-36a"
+        ]
+      },
+      {
+        "consumer": "summary_native.build",
+        "ownership": "generated",
+        "path": "docs/summary_native/ch001-001/dossiers/npc_candidate_37a.md",
+        "sha256": "9d6d309bf3adca9b1593a35a17dab0590b08987f19bc392280828f8d2ec999f6",
+        "subject_ids": [
+          "npc:candidate-37a"
+        ]
+      },
+      {
+        "consumer": "summary_native.build",
+        "ownership": "generated",
+        "path": "docs/summary_native/ch001-001/dossiers/npc_candidate_37b.md",
+        "sha256": "ebf39b197927d2a2a28a854a44faf807e1466c64971db6051289c85ea5968f7a",
+        "subject_ids": [
+          "npc:candidate-37b"
+        ]
+      },
+      {
+        "consumer": "summary_native.build",
+        "ownership": "generated",
+        "path": "docs/summary_native/ch001-001/dossiers/npc_candidate_38a.md",
+        "sha256": "531a07ca3b9ca4dd2af790fb85d46c990ac09a32cfc6c431516c4b4ed103dec8",
+        "subject_ids": [
+          "npc:candidate-38a"
+        ]
+      },
+      {
+        "consumer": "summary_native.build",
+        "ownership": "generated",
+        "path": "docs/summary_native/ch001-001/dossiers/npc_candidate_38b.md",
+        "sha256": "3149d510d2691c4f2bffd0d87150452b0b4bc5d52a3c356e19a91a587eed10c1",
+        "subject_ids": [
+          "npc:candidate-38b"
+        ]
+      },
+      {
+        "consumer": "summary_native.build",
+        "ownership": "generated",
+        "path": "docs/summary_native/ch001-001/dossiers/npc_candidate_3a.md",
+        "sha256": "aa34cdb7c006d6e39197c135b1117e3827aa5d6bf27b3f1586700d0c67f144c4",
+        "subject_ids": [
+          "npc:candidate-3a"
+        ]
+      },
+      {
+        "consumer": "summary_native.build",
+        "ownership": "generated",
+        "path": "docs/summary_native/ch001-001/dossiers/npc_candidate_3b.md",
+        "sha256": "6dc883969886114dadb8e74d8cb4964329cb64a8a5753fec4a64df285dd3b995",
+        "subject_ids": [
+          "npc:candidate-3b"
+        ]
+      },
+      {
+        "consumer": "summary_native.build",
+        "ownership": "generated",
+        "path": "docs/summary_native/ch001-001/dossiers/npc_candidate_4b.md",
+        "sha256": "f6cfd1d9b05b6841f40e2cd2378be57586a3b1c6ca5435e2d7c71ac6e1fa9636",
+        "subject_ids": [
+          "npc:candidate-4b"
+        ]
+      },
+      {
+        "consumer": "summary_native.build",
+        "ownership": "generated",
+        "path": "docs/summary_native/ch001-001/dossiers/npc_candidate_5a.md",
+        "sha256": "dba869b0eb84e81acf2343ba6c546ad425043900798892014111bd4f3654d753",
+        "subject_ids": [
+          "npc:candidate-5a"
+        ]
+      },
+      {
+        "consumer": "summary_native.build",
+        "ownership": "generated",
+        "path": "docs/summary_native/ch001-001/dossiers/npc_candidate_5b.md",
+        "sha256": "8fe4ca34afb0eaaf6b53588a5b1d71871cdf6dc21a7990849cb8dfe0c6372b53",
+        "subject_ids": [
+          "npc:candidate-5b"
+        ]
+      },
+      {
+        "consumer": "summary_native.build",
+        "ownership": "generated",
+        "path": "docs/summary_native/ch001-001/dossiers/npc_candidate_6a.md",
+        "sha256": "bd5fe4859ff65e83b1abffef434cb2c822ab2cea09ee813a296e1f49fb866b15",
+        "subject_ids": [
+          "npc:candidate-6a"
+        ]
+      },
+      {
+        "consumer": "summary_native.build",
+        "ownership": "generated",
+        "path": "docs/summary_native/ch001-001/dossiers/npc_candidate_6b.md",
+        "sha256": "64482473a63bb4ad9a154802c809b0ed95c1ef6f99f5c9dbe66df64bc4d91df3",
+        "subject_ids": [
+          "npc:candidate-6b"
+        ]
+      },
+      {
+        "consumer": "summary_native.build",
+        "ownership": "generated",
+        "path": "docs/summary_native/ch001-001/dossiers/npc_candidate_7a.md",
+        "sha256": "39d4f1ccd67b8834a39638640b4bb002788d896494c9a1a242b6ae508f7479c8",
+        "subject_ids": [
+          "npc:candidate-7a"
+        ]
+      },
+      {
+        "consumer": "summary_native.build",
+        "ownership": "generated",
+        "path": "docs/summary_native/ch001-001/dossiers/npc_candidate_7b.md",
+        "sha256": "efa9666112e631a4dbb61c3187f3799e39cc6a91e7fad1bd0c0fc177cb0145e6",
+        "subject_ids": [
+          "npc:candidate-7b"
+        ]
+      },
+      {
+        "consumer": "summary_native.build",
+        "ownership": "generated",
+        "path": "docs/summary_native/ch001-001/dossiers/npc_candidate_8a.md",
+        "sha256": "96efa9dfe346126e1cb8107f804de2df35ddd456974a3da82769d9585cc5983c",
+        "subject_ids": [
+          "npc:candidate-8a"
+        ]
+      },
+      {
+        "consumer": "summary_native.build",
+        "ownership": "generated",
+        "path": "docs/summary_native/ch001-001/dossiers/npc_candidate_8b.md",
+        "sha256": "ac35336177bcc2f420d6b11908760091c15a81bd006a4019d901f4a2a3c218ff",
+        "subject_ids": [
+          "npc:candidate-8b"
+        ]
+      },
+      {
+        "consumer": "summary_native.build",
+        "ownership": "generated",
+        "path": "docs/summary_native/ch001-001/dossiers/npc_candidate_9a.md",
+        "sha256": "d2b80c002a7a16a26a556a8323a24981f2109664874bd490277c6612a578947e",
+        "subject_ids": [
+          "npc:candidate-9a"
+        ]
+      },
+      {
+        "consumer": "summary_native.build",
+        "ownership": "generated",
+        "path": "docs/summary_native/ch001-001/dossiers/npc_candidate_9b.md",
+        "sha256": "3b4f0fd7cbc2d089adc5c93469059f17b81119367548c1af02dcdc25cd8c6103",
+        "subject_ids": [
+          "npc:candidate-9b"
+        ]
+      },
+      {
+        "consumer": "summary_native.build",
+        "ownership": "generated",
+        "path": "docs/summary_native/ch001-001/memorable_moments.md",
+        "sha256": "d8940b969cf3930a5bb1e5c39fcd2f13670f78fb2c7c838eecf8da22181f4047",
+        "subject_ids": []
+      },
+      {
+        "consumer": "summary_native.build",
+        "ownership": "generated",
+        "path": "docs/summary_native/ch001-001/other_sections.md",
+        "sha256": "f8841578e873d22831c01cc3ac85a15678ebcf31661a2ee39a4f485620b39737",
+        "subject_ids": []
+      },
+      {
+        "consumer": "summary_native.validation",
+        "ownership": "generated",
+        "path": "docs/summary_native/ch001-001/validation_report.json",
+        "sha256": "9ec51dc0872bbb6be3fca7189dfe763449386c1d0f73bd3e71a92512a14c051d",
+        "subject_ids": [
+          "location:candidate-12b",
+          "location:candidate-20b",
+          "location:candidate-28b",
+          "location:candidate-36b",
+          "location:candidate-4a",
+          "npc:candidate-10a",
+          "npc:candidate-10b",
+          "npc:candidate-11a",
+          "npc:candidate-11b",
+          "npc:candidate-12a",
+          "npc:candidate-13a",
+          "npc:candidate-13b",
+          "npc:candidate-14a",
+          "npc:candidate-14b",
+          "npc:candidate-15a",
+          "npc:candidate-15b",
+          "npc:candidate-16a",
+          "npc:candidate-16b",
+          "npc:candidate-17a",
+          "npc:candidate-17b",
+          "npc:candidate-18a",
+          "npc:candidate-18b",
+          "npc:candidate-19a",
+          "npc:candidate-19b",
+          "npc:candidate-1a",
+          "npc:candidate-1b",
+          "npc:candidate-20a",
+          "npc:candidate-21a",
+          "npc:candidate-21b",
+          "npc:candidate-22a",
+          "npc:candidate-22b",
+          "npc:candidate-23a",
+          "npc:candidate-23b",
+          "npc:candidate-24a",
+          "npc:candidate-24b",
+          "npc:candidate-25a",
+          "npc:candidate-25b",
+          "npc:candidate-26a",
+          "npc:candidate-26b",
+          "npc:candidate-27a",
+          "npc:candidate-27b",
+          "npc:candidate-28a",
+          "npc:candidate-29a",
+          "npc:candidate-29b",
+          "npc:candidate-2a",
+          "npc:candidate-2b",
+          "npc:candidate-30a",
+          "npc:candidate-30b",
+          "npc:candidate-31a",
+          "npc:candidate-31b",
+          "npc:candidate-32a",
+          "npc:candidate-32b",
+          "npc:candidate-33a",
+          "npc:candidate-33b",
+          "npc:candidate-34a",
+          "npc:candidate-34b",
+          "npc:candidate-35a",
+          "npc:candidate-35b",
+          "npc:candidate-36a",
+          "npc:candidate-37a",
+          "npc:candidate-37b",
+          "npc:candidate-38a",
+          "npc:candidate-38b",
+          "npc:candidate-3a",
+          "npc:candidate-3b",
+          "npc:candidate-4b",
+          "npc:candidate-5a",
+          "npc:candidate-5b",
+          "npc:candidate-6a",
+          "npc:candidate-6b",
+          "npc:candidate-7a",
+          "npc:candidate-7b",
+          "npc:candidate-8a",
+          "npc:candidate-8b",
+          "npc:candidate-9a",
+          "npc:candidate-9b"
+        ]
+      },
+      {
+        "consumer": "summary_native.validation",
+        "ownership": "generated",
+        "path": "docs/summary_native/ch001-001/validation_report.md",
+        "sha256": "48790fa51d5ba3377100e67aedfa4b3ee32a51f26c5626b752086e9f615d5da6",
+        "subject_ids": [
+          "location:candidate-12b",
+          "location:candidate-20b",
+          "location:candidate-28b",
+          "location:candidate-36b",
+          "location:candidate-4a",
+          "npc:candidate-10a",
+          "npc:candidate-10b",
+          "npc:candidate-11a",
+          "npc:candidate-11b",
+          "npc:candidate-12a",
+          "npc:candidate-13a",
+          "npc:candidate-13b",
+          "npc:candidate-14a",
+          "npc:candidate-14b",
+          "npc:candidate-15a",
+          "npc:candidate-15b",
+          "npc:candidate-16a",
+          "npc:candidate-16b",
+          "npc:candidate-17a",
+          "npc:candidate-17b",
+          "npc:candidate-18a",
+          "npc:candidate-18b",
+          "npc:candidate-19a",
+          "npc:candidate-19b",
+          "npc:candidate-1a",
+          "npc:candidate-1b",
+          "npc:candidate-20a",
+          "npc:candidate-21a",
+          "npc:candidate-21b",
+          "npc:candidate-22a",
+          "npc:candidate-22b",
+          "npc:candidate-23a",
+          "npc:candidate-23b",
+          "npc:candidate-24a",
+          "npc:candidate-24b",
+          "npc:candidate-25a",
+          "npc:candidate-25b",
+          "npc:candidate-26a",
+          "npc:candidate-26b",
+          "npc:candidate-27a",
+          "npc:candidate-27b",
+          "npc:candidate-28a",
+          "npc:candidate-29a",
+          "npc:candidate-29b",
+          "npc:candidate-2a",
+          "npc:candidate-2b",
+          "npc:candidate-30a",
+          "npc:candidate-30b",
+          "npc:candidate-31a",
+          "npc:candidate-31b",
+          "npc:candidate-32a",
+          "npc:candidate-32b",
+          "npc:candidate-33a",
+          "npc:candidate-33b",
+          "npc:candidate-34a",
+          "npc:candidate-34b",
+          "npc:candidate-35a",
+          "npc:candidate-35b",
+          "npc:candidate-36a",
+          "npc:candidate-37a",
+          "npc:candidate-37b",
+          "npc:candidate-38a",
+          "npc:candidate-38b",
+          "npc:candidate-3a",
+          "npc:candidate-3b",
+          "npc:candidate-4b",
+          "npc:candidate-5a",
+          "npc:candidate-5b",
+          "npc:candidate-6a",
+          "npc:candidate-6b",
+          "npc:candidate-7a",
+          "npc:candidate-7b",
+          "npc:candidate-8a",
+          "npc:candidate-8b",
+          "npc:candidate-9a",
+          "npc:candidate-9b"
+        ]
+      },
+      {
+        "consumer": "summary_native.build",
+        "ownership": "source",
+        "path": "summaries/001-fixture.md",
+        "sha256": "17a0535a754c4f8089a824b86008e8660dc173587fc9c7d9188c30c14801f2ff",
+        "subject_ids": []
+      }
+    ],
+    "inventory_complete": true,
+    "precision": "coarse",
+    "registry": null,
+    "registry_sha256": "920e9ec0e516a65ea4be3fd700eaa1adcd87e9bc0be379b7745c7a3149f2dd16",
+    "reverse_dependencies": {
+      "location:candidate-12b": [
+        "docs/summary_native/ch001-001/dossiers/location_candidate_12b.md",
+        "docs/summary_native/ch001-001/validation_report.json",
+        "docs/summary_native/ch001-001/validation_report.md"
+      ],
+      "location:candidate-20b": [
+        "docs/summary_native/ch001-001/dossiers/location_candidate_20b.md",
+        "docs/summary_native/ch001-001/validation_report.json",
+        "docs/summary_native/ch001-001/validation_report.md"
+      ],
+      "location:candidate-28b": [
+        "docs/summary_native/ch001-001/dossiers/location_candidate_28b.md",
+        "docs/summary_native/ch001-001/validation_report.json",
+        "docs/summary_native/ch001-001/validation_report.md"
+      ],
+      "location:candidate-36b": [
+        "docs/summary_native/ch001-001/dossiers/location_candidate_36b.md",
+        "docs/summary_native/ch001-001/validation_report.json",
+        "docs/summary_native/ch001-001/validation_report.md"
+      ],
+      "location:candidate-4a": [
+        "docs/summary_native/ch001-001/dossiers/location_candidate_4a.md",
+        "docs/summary_native/ch001-001/validation_report.json",
+        "docs/summary_native/ch001-001/validation_report.md"
+      ],
+      "npc:candidate-10a": [
+        "docs/summary_native/ch001-001/dossiers/npc_candidate_10a.md",
+        "docs/summary_native/ch001-001/validation_report.json",
+        "docs/summary_native/ch001-001/validation_report.md"
+      ],
+      "npc:candidate-10b": [
+        "docs/summary_native/ch001-001/dossiers/npc_candidate_10b.md",
+        "docs/summary_native/ch001-001/validation_report.json",
+        "docs/summary_native/ch001-001/validation_report.md"
+      ],
+      "npc:candidate-11a": [
+        "docs/summary_native/ch001-001/dossiers/npc_candidate_11a.md",
+        "docs/summary_native/ch001-001/validation_report.json",
+        "docs/summary_native/ch001-001/validation_report.md"
+      ],
+      "npc:candidate-11b": [
+        "docs/summary_native/ch001-001/dossiers/npc_candidate_11b.md",
+        "docs/summary_native/ch001-001/validation_report.json",
+        "docs/summary_native/ch001-001/validation_report.md"
+      ],
+      "npc:candidate-12a": [
+        "docs/summary_native/ch001-001/dossiers/npc_candidate_12a.md",
+        "docs/summary_native/ch001-001/validation_report.json",
+        "docs/summary_native/ch001-001/validation_report.md"
+      ],
+      "npc:candidate-13a": [
+        "docs/summary_native/ch001-001/dossiers/npc_candidate_13a.md",
+        "docs/summary_native/ch001-001/validation_report.json",
+        "docs/summary_native/ch001-001/validation_report.md"
+      ],
+      "npc:candidate-13b": [
+        "docs/summary_native/ch001-001/dossiers/npc_candidate_13b.md",
+        "docs/summary_native/ch001-001/validation_report.json",
+        "docs/summary_native/ch001-001/validation_report.md"
+      ],
+      "npc:candidate-14a": [
+        "docs/summary_native/ch001-001/dossiers/npc_candidate_14a.md",
+        "docs/summary_native/ch001-001/validation_report.json",
+        "docs/summary_native/ch001-001/validation_report.md"
+      ],
+      "npc:candidate-14b": [
+        "docs/summary_native/ch001-001/dossiers/npc_candidate_14b.md",
+        "docs/summary_native/ch001-001/validation_report.json",
+        "docs/summary_native/ch001-001/validation_report.md"
+      ],
+      "npc:candidate-15a": [
+        "docs/summary_native/ch001-001/dossiers/npc_candidate_15a.md",
+        "docs/summary_native/ch001-001/validation_report.json",
+        "docs/summary_native/ch001-001/validation_report.md"
+      ],
+      "npc:candidate-15b": [
+        "docs/summary_native/ch001-001/dossiers/npc_candidate_15b.md",
+        "docs/summary_native/ch001-001/validation_report.json",
+        "docs/summary_native/ch001-001/validation_report.md"
+      ],
+      "npc:candidate-16a": [
+        "docs/summary_native/ch001-001/dossiers/npc_candidate_16a.md",
+        "docs/summary_native/ch001-001/validation_report.json",
+        "docs/summary_native/ch001-001/validation_report.md"
+      ],
+      "npc:candidate-16b": [
+        "docs/summary_native/ch001-001/dossiers/npc_candidate_16b.md",
+        "docs/summary_native/ch001-001/validation_report.json",
+        "docs/summary_native/ch001-001/validation_report.md"
+      ],
+      "npc:candidate-17a": [
+        "docs/summary_native/ch001-001/dossiers/npc_candidate_17a.md",
+        "docs/summary_native/ch001-001/validation_report.json",
+        "docs/summary_native/ch001-001/validation_report.md"
+      ],
+      "npc:candidate-17b": [
+        "docs/summary_native/ch001-001/dossiers/npc_candidate_17b.md",
+        "docs/summary_native/ch001-001/validation_report.json",
+        "docs/summary_native/ch001-001/validation_report.md"
+      ],
+      "npc:candidate-18a": [
+        "docs/summary_native/ch001-001/dossiers/npc_candidate_18a.md",
+        "docs/summary_native/ch001-001/validation_report.json",
+        "docs/summary_native/ch001-001/validation_report.md"
+      ],
+      "npc:candidate-18b": [
+        "docs/summary_native/ch001-001/dossiers/npc_candidate_18b.md",
+        "docs/summary_native/ch001-001/validation_report.json",
+        "docs/summary_native/ch001-001/validation_report.md"
+      ],
+      "npc:candidate-19a": [
+        "docs/summary_native/ch001-001/dossiers/npc_candidate_19a.md",
+        "docs/summary_native/ch001-001/validation_report.json",
+        "docs/summary_native/ch001-001/validation_report.md"
+      ],
+      "npc:candidate-19b": [
+        "docs/summary_native/ch001-001/dossiers/npc_candidate_19b.md",
+        "docs/summary_native/ch001-001/validation_report.json",
+        "docs/summary_native/ch001-001/validation_report.md"
+      ],
+      "npc:candidate-1a": [
+        "docs/summary_native/ch001-001/dossiers/npc_candidate_1a.md",
+        "docs/summary_native/ch001-001/validation_report.json",
+        "docs/summary_native/ch001-001/validation_report.md"
+      ],
+      "npc:candidate-1b": [
+        "docs/summary_native/ch001-001/dossiers/npc_candidate_1b.md",
+        "docs/summary_native/ch001-001/validation_report.json",
+        "docs/summary_native/ch001-001/validation_report.md"
+      ],
+      "npc:candidate-20a": [
+        "docs/summary_native/ch001-001/dossiers/npc_candidate_20a.md",
+        "docs/summary_native/ch001-001/validation_report.json",
+        "docs/summary_native/ch001-001/validation_report.md"
+      ],
+      "npc:candidate-21a": [
+        "docs/summary_native/ch001-001/dossiers/npc_candidate_21a.md",
+        "docs/summary_native/ch001-001/validation_report.json",
+        "docs/summary_native/ch001-001/validation_report.md"
+      ],
+      "npc:candidate-21b": [
+        "docs/summary_native/ch001-001/dossiers/npc_candidate_21b.md",
+        "docs/summary_native/ch001-001/validation_report.json",
+        "docs/summary_native/ch001-001/validation_report.md"
+      ],
+      "npc:candidate-22a": [
+        "docs/summary_native/ch001-001/dossiers/npc_candidate_22a.md",
+        "docs/summary_native/ch001-001/validation_report.json",
+        "docs/summary_native/ch001-001/validation_report.md"
+      ],
+      "npc:candidate-22b": [
+        "docs/summary_native/ch001-001/dossiers/npc_candidate_22b.md",
+        "docs/summary_native/ch001-001/validation_report.json",
+        "docs/summary_native/ch001-001/validation_report.md"
+      ],
+      "npc:candidate-23a": [
+        "docs/summary_native/ch001-001/dossiers/npc_candidate_23a.md",
+        "docs/summary_native/ch001-001/validation_report.json",
+        "docs/summary_native/ch001-001/validation_report.md"
+      ],
+      "npc:candidate-23b": [
+        "docs/summary_native/ch001-001/dossiers/npc_candidate_23b.md",
+        "docs/summary_native/ch001-001/validation_report.json",
+        "docs/summary_native/ch001-001/validation_report.md"
+      ],
+      "npc:candidate-24a": [
+        "docs/summary_native/ch001-001/dossiers/npc_candidate_24a.md",
+        "docs/summary_native/ch001-001/validation_report.json",
+        "docs/summary_native/ch001-001/validation_report.md"
+      ],
+      "npc:candidate-24b": [
+        "docs/summary_native/ch001-001/dossiers/npc_candidate_24b.md",
+        "docs/summary_native/ch001-001/validation_report.json",
+        "docs/summary_native/ch001-001/validation_report.md"
+      ],
+      "npc:candidate-25a": [
+        "docs/summary_native/ch001-001/dossiers/npc_candidate_25a.md",
+        "docs/summary_native/ch001-001/validation_report.json",
+        "docs/summary_native/ch001-001/validation_report.md"
+      ],
+      "npc:candidate-25b": [
+        "docs/summary_native/ch001-001/dossiers/npc_candidate_25b.md",
+        "docs/summary_native/ch001-001/validation_report.json",
+        "docs/summary_native/ch001-001/validation_report.md"
+      ],
+      "npc:candidate-26a": [
+        "docs/summary_native/ch001-001/dossiers/npc_candidate_26a.md",
+        "docs/summary_native/ch001-001/validation_report.json",
+        "docs/summary_native/ch001-001/validation_report.md"
+      ],
+      "npc:candidate-26b": [
+        "docs/summary_native/ch001-001/dossiers/npc_candidate_26b.md",
+        "docs/summary_native/ch001-001/validation_report.json",
+        "docs/summary_native/ch001-001/validation_report.md"
+      ],
+      "npc:candidate-27a": [
+        "docs/summary_native/ch001-001/dossiers/npc_candidate_27a.md",
+        "docs/summary_native/ch001-001/validation_report.json",
+        "docs/summary_native/ch001-001/validation_report.md"
+      ],
+      "npc:candidate-27b": [
+        "docs/summary_native/ch001-001/dossiers/npc_candidate_27b.md",
+        "docs/summary_native/ch001-001/validation_report.json",
+        "docs/summary_native/ch001-001/validation_report.md"
+      ],
+      "npc:candidate-28a": [
+        "docs/summary_native/ch001-001/dossiers/npc_candidate_28a.md",
+        "docs/summary_native/ch001-001/validation_report.json",
+        "docs/summary_native/ch001-001/validation_report.md"
+      ],
+      "npc:candidate-29a": [
+        "docs/summary_native/ch001-001/dossiers/npc_candidate_29a.md",
+        "docs/summary_native/ch001-001/validation_report.json",
+        "docs/summary_native/ch001-001/validation_report.md"
+      ],
+      "npc:candidate-29b": [
+        "docs/summary_native/ch001-001/dossiers/npc_candidate_29b.md",
+        "docs/summary_native/ch001-001/validation_report.json",
+        "docs/summary_native/ch001-001/validation_report.md"
+      ],
+      "npc:candidate-2a": [
+        "docs/summary_native/ch001-001/dossiers/npc_candidate_2a.md",
+        "docs/summary_native/ch001-001/validation_report.json",
+        "docs/summary_native/ch001-001/validation_report.md"
+      ],
+      "npc:candidate-2b": [
+        "docs/summary_native/ch001-001/dossiers/npc_candidate_2b.md",
+        "docs/summary_native/ch001-001/validation_report.json",
+        "docs/summary_native/ch001-001/validation_report.md"
+      ],
+      "npc:candidate-30a": [
+        "docs/summary_native/ch001-001/dossiers/npc_candidate_30a.md",
+        "docs/summary_native/ch001-001/validation_report.json",
+        "docs/summary_native/ch001-001/validation_report.md"
+      ],
+      "npc:candidate-30b": [
+        "docs/summary_native/ch001-001/dossiers/npc_candidate_30b.md",
+        "docs/summary_native/ch001-001/validation_report.json",
+        "docs/summary_native/ch001-001/validation_report.md"
+      ],
+      "npc:candidate-31a": [
+        "docs/summary_native/ch001-001/dossiers/npc_candidate_31a.md",
+        "docs/summary_native/ch001-001/validation_report.json",
+        "docs/summary_native/ch001-001/validation_report.md"
+      ],
+      "npc:candidate-31b": [
+        "docs/summary_native/ch001-001/dossiers/npc_candidate_31b.md",
+        "docs/summary_native/ch001-001/validation_report.json",
+        "docs/summary_native/ch001-001/validation_report.md"
+      ],
+      "npc:candidate-32a": [
+        "docs/summary_native/ch001-001/dossiers/npc_candidate_32a.md",
+        "docs/summary_native/ch001-001/validation_report.json",
+        "docs/summary_native/ch001-001/validation_report.md"
+      ],
+      "npc:candidate-32b": [
+        "docs/summary_native/ch001-001/dossiers/npc_candidate_32b.md",
+        "docs/summary_native/ch001-001/validation_report.json",
+        "docs/summary_native/ch001-001/validation_report.md"
+      ],
+      "npc:candidate-33a": [
+        "docs/summary_native/ch001-001/dossiers/npc_candidate_33a.md",
+        "docs/summary_native/ch001-001/validation_report.json",
+        "docs/summary_native/ch001-001/validation_report.md"
+      ],
+      "npc:candidate-33b": [
+        "docs/summary_native/ch001-001/dossiers/npc_candidate_33b.md",
+        "docs/summary_native/ch001-001/validation_report.json",
+        "docs/summary_native/ch001-001/validation_report.md"
+      ],
+      "npc:candidate-34a": [
+        "docs/summary_native/ch001-001/dossiers/npc_candidate_34a.md",
+        "docs/summary_native/ch001-001/validation_report.json",
+        "docs/summary_native/ch001-001/validation_report.md"
+      ],
+      "npc:candidate-34b": [
+        "docs/summary_native/ch001-001/dossiers/npc_candidate_34b.md",
+        "docs/summary_native/ch001-001/validation_report.json",
+        "docs/summary_native/ch001-001/validation_report.md"
+      ],
+      "npc:candidate-35a": [
+        "docs/summary_native/ch001-001/dossiers/npc_candidate_35a.md",
+        "docs/summary_native/ch001-001/validation_report.json",
+        "docs/summary_native/ch001-001/validation_report.md"
+      ],
+      "npc:candidate-35b": [
+        "docs/summary_native/ch001-001/dossiers/npc_candidate_35b.md",
+        "docs/summary_native/ch001-001/validation_report.json",
+        "docs/summary_native/ch001-001/validation_report.md"
+      ],
+      "npc:candidate-36a": [
+        "docs/summary_native/ch001-001/dossiers/npc_candidate_36a.md",
+        "docs/summary_native/ch001-001/validation_report.json",
+        "docs/summary_native/ch001-001/validation_report.md"
+      ],
+      "npc:candidate-37a": [
+        "docs/summary_native/ch001-001/dossiers/npc_candidate_37a.md",
+        "docs/summary_native/ch001-001/validation_report.json",
+        "docs/summary_native/ch001-001/validation_report.md"
+      ],
+      "npc:candidate-37b": [
+        "docs/summary_native/ch001-001/dossiers/npc_candidate_37b.md",
+        "docs/summary_native/ch001-001/validation_report.json",
+        "docs/summary_native/ch001-001/validation_report.md"
+      ],
+      "npc:candidate-38a": [
+        "docs/summary_native/ch001-001/dossiers/npc_candidate_38a.md",
+        "docs/summary_native/ch001-001/validation_report.json",
+        "docs/summary_native/ch001-001/validation_report.md"
+      ],
+      "npc:candidate-38b": [
+        "docs/summary_native/ch001-001/dossiers/npc_candidate_38b.md",
+        "docs/summary_native/ch001-001/validation_report.json",
+        "docs/summary_native/ch001-001/validation_report.md"
+      ],
+      "npc:candidate-3a": [
+        "docs/summary_native/ch001-001/dossiers/npc_candidate_3a.md",
+        "docs/summary_native/ch001-001/validation_report.json",
+        "docs/summary_native/ch001-001/validation_report.md"
+      ],
+      "npc:candidate-3b": [
+        "docs/summary_native/ch001-001/dossiers/npc_candidate_3b.md",
+        "docs/summary_native/ch001-001/validation_report.json",
+        "docs/summary_native/ch001-001/validation_report.md"
+      ],
+      "npc:candidate-4b": [
+        "docs/summary_native/ch001-001/dossiers/npc_candidate_4b.md",
+        "docs/summary_native/ch001-001/validation_report.json",
+        "docs/summary_native/ch001-001/validation_report.md"
+      ],
+      "npc:candidate-5a": [
+        "docs/summary_native/ch001-001/dossiers/npc_candidate_5a.md",
+        "docs/summary_native/ch001-001/validation_report.json",
+        "docs/summary_native/ch001-001/validation_report.md"
+      ],
+      "npc:candidate-5b": [
+        "docs/summary_native/ch001-001/dossiers/npc_candidate_5b.md",
+        "docs/summary_native/ch001-001/validation_report.json",
+        "docs/summary_native/ch001-001/validation_report.md"
+      ],
+      "npc:candidate-6a": [
+        "docs/summary_native/ch001-001/dossiers/npc_candidate_6a.md",
+        "docs/summary_native/ch001-001/validation_report.json",
+        "docs/summary_native/ch001-001/validation_report.md"
+      ],
+      "npc:candidate-6b": [
+        "docs/summary_native/ch001-001/dossiers/npc_candidate_6b.md",
+        "docs/summary_native/ch001-001/validation_report.json",
+        "docs/summary_native/ch001-001/validation_report.md"
+      ],
+      "npc:candidate-7a": [
+        "docs/summary_native/ch001-001/dossiers/npc_candidate_7a.md",
+        "docs/summary_native/ch001-001/validation_report.json",
+        "docs/summary_native/ch001-001/validation_report.md"
+      ],
+      "npc:candidate-7b": [
+        "docs/summary_native/ch001-001/dossiers/npc_candidate_7b.md",
+        "docs/summary_native/ch001-001/validation_report.json",
+        "docs/summary_native/ch001-001/validation_report.md"
+      ],
+      "npc:candidate-8a": [
+        "docs/summary_native/ch001-001/dossiers/npc_candidate_8a.md",
+        "docs/summary_native/ch001-001/validation_report.json",
+        "docs/summary_native/ch001-001/validation_report.md"
+      ],
+      "npc:candidate-8b": [
+        "docs/summary_native/ch001-001/dossiers/npc_candidate_8b.md",
+        "docs/summary_native/ch001-001/validation_report.json",
+        "docs/summary_native/ch001-001/validation_report.md"
+      ],
+      "npc:candidate-9a": [
+        "docs/summary_native/ch001-001/dossiers/npc_candidate_9a.md",
+        "docs/summary_native/ch001-001/validation_report.json",
+        "docs/summary_native/ch001-001/validation_report.md"
+      ],
+      "npc:candidate-9b": [
+        "docs/summary_native/ch001-001/dossiers/npc_candidate_9b.md",
+        "docs/summary_native/ch001-001/validation_report.json",
+        "docs/summary_native/ch001-001/validation_report.md"
+      ]
+    },
+    "subjects": {
+      "location:candidate-12b": {
+        "paths": [
+          "docs/summary_native/ch001-001/dossiers/location_candidate_12b.md",
+          "docs/summary_native/ch001-001/validation_report.json",
+          "docs/summary_native/ch001-001/validation_report.md"
+        ]
+      },
+      "location:candidate-20b": {
+        "paths": [
+          "docs/summary_native/ch001-001/dossiers/location_candidate_20b.md",
+          "docs/summary_native/ch001-001/validation_report.json",
+          "docs/summary_native/ch001-001/validation_report.md"
+        ]
+      },
+      "location:candidate-28b": {
+        "paths": [
+          "docs/summary_native/ch001-001/dossiers/location_candidate_28b.md",
+          "docs/summary_native/ch001-001/validation_report.json",
+          "docs/summary_native/ch001-001/validation_report.md"
+        ]
+      },
+      "location:candidate-36b": {
+        "paths": [
+          "docs/summary_native/ch001-001/dossiers/location_candidate_36b.md",
+          "docs/summary_native/ch001-001/validation_report.json",
+          "docs/summary_native/ch001-001/validation_report.md"
+        ]
+      },
+      "location:candidate-4a": {
+        "paths": [
+          "docs/summary_native/ch001-001/dossiers/location_candidate_4a.md",
+          "docs/summary_native/ch001-001/validation_report.json",
+          "docs/summary_native/ch001-001/validation_report.md"
+        ]
+      },
+      "npc:candidate-10a": {
+        "paths": [
+          "docs/summary_native/ch001-001/dossiers/npc_candidate_10a.md",
+          "docs/summary_native/ch001-001/validation_report.json",
+          "docs/summary_native/ch001-001/validation_report.md"
+        ]
+      },
+      "npc:candidate-10b": {
+        "paths": [
+          "docs/summary_native/ch001-001/dossiers/npc_candidate_10b.md",
+          "docs/summary_native/ch001-001/validation_report.json",
+          "docs/summary_native/ch001-001/validation_report.md"
+        ]
+      },
+      "npc:candidate-11a": {
+        "paths": [
+          "docs/summary_native/ch001-001/dossiers/npc_candidate_11a.md",
+          "docs/summary_native/ch001-001/validation_report.json",
+          "docs/summary_native/ch001-001/validation_report.md"
+        ]
+      },
+      "npc:candidate-11b": {
+        "paths": [
+          "docs/summary_native/ch001-001/dossiers/npc_candidate_11b.md",
+          "docs/summary_native/ch001-001/validation_report.json",
+          "docs/summary_native/ch001-001/validation_report.md"
+        ]
+      },
+      "npc:candidate-12a": {
+        "paths": [
+          "docs/summary_native/ch001-001/dossiers/npc_candidate_12a.md",
+          "docs/summary_native/ch001-001/validation_report.json",
+          "docs/summary_native/ch001-001/validation_report.md"
+        ]
+      },
+      "npc:candidate-13a": {
+        "paths": [
+          "docs/summary_native/ch001-001/dossiers/npc_candidate_13a.md",
+          "docs/summary_native/ch001-001/validation_report.json",
+          "docs/summary_native/ch001-001/validation_report.md"
+        ]
+      },
+      "npc:candidate-13b": {
+        "paths": [
+          "docs/summary_native/ch001-001/dossiers/npc_candidate_13b.md",
+          "docs/summary_native/ch001-001/validation_report.json",
+          "docs/summary_native/ch001-001/validation_report.md"
+        ]
+      },
+      "npc:candidate-14a": {
+        "paths": [
+          "docs/summary_native/ch001-001/dossiers/npc_candidate_14a.md",
+          "docs/summary_native/ch001-001/validation_report.json",
+          "docs/summary_native/ch001-001/validation_report.md"
+        ]
+      },
+      "npc:candidate-14b": {
+        "paths": [
+          "docs/summary_native/ch001-001/dossiers/npc_candidate_14b.md",
+          "docs/summary_native/ch001-001/validation_report.json",
+          "docs/summary_native/ch001-001/validation_report.md"
+        ]
+      },
+      "npc:candidate-15a": {
+        "paths": [
+          "docs/summary_native/ch001-001/dossiers/npc_candidate_15a.md",
+          "docs/summary_native/ch001-001/validation_report.json",
+          "docs/summary_native/ch001-001/validation_report.md"
+        ]
+      },
+      "npc:candidate-15b": {
+        "paths": [
+          "docs/summary_native/ch001-001/dossiers/npc_candidate_15b.md",
+          "docs/summary_native/ch001-001/validation_report.json",
+          "docs/summary_native/ch001-001/validation_report.md"
+        ]
+      },
+      "npc:candidate-16a": {
+        "paths": [
+          "docs/summary_native/ch001-001/dossiers/npc_candidate_16a.md",
+          "docs/summary_native/ch001-001/validation_report.json",
+          "docs/summary_native/ch001-001/validation_report.md"
+        ]
+      },
+      "npc:candidate-16b": {
+        "paths": [
+          "docs/summary_native/ch001-001/dossiers/npc_candidate_16b.md",
+          "docs/summary_native/ch001-001/validation_report.json",
+          "docs/summary_native/ch001-001/validation_report.md"
+        ]
+      },
+      "npc:candidate-17a": {
+        "paths": [
+          "docs/summary_native/ch001-001/dossiers/npc_candidate_17a.md",
+          "docs/summary_native/ch001-001/validation_report.json",
+          "docs/summary_native/ch001-001/validation_report.md"
+        ]
+      },
+      "npc:candidate-17b": {
+        "paths": [
+          "docs/summary_native/ch001-001/dossiers/npc_candidate_17b.md",
+          "docs/summary_native/ch001-001/validation_report.json",
+          "docs/summary_native/ch001-001/validation_report.md"
+        ]
+      },
+      "npc:candidate-18a": {
+        "paths": [
+          "docs/summary_native/ch001-001/dossiers/npc_candidate_18a.md",
+          "docs/summary_native/ch001-001/validation_report.json",
+          "docs/summary_native/ch001-001/validation_report.md"
+        ]
+      },
+      "npc:candidate-18b": {
+        "paths": [
+          "docs/summary_native/ch001-001/dossiers/npc_candidate_18b.md",
+          "docs/summary_native/ch001-001/validation_report.json",
+          "docs/summary_native/ch001-001/validation_report.md"
+        ]
+      },
+      "npc:candidate-19a": {
+        "paths": [
+          "docs/summary_native/ch001-001/dossiers/npc_candidate_19a.md",
+          "docs/summary_native/ch001-001/validation_report.json",
+          "docs/summary_native/ch001-001/validation_report.md"
+        ]
+      },
+      "npc:candidate-19b": {
+        "paths": [
+          "docs/summary_native/ch001-001/dossiers/npc_candidate_19b.md",
+          "docs/summary_native/ch001-001/validation_report.json",
+          "docs/summary_native/ch001-001/validation_report.md"
+        ]
+      },
+      "npc:candidate-1a": {
+        "paths": [
+          "docs/summary_native/ch001-001/dossiers/npc_candidate_1a.md",
+          "docs/summary_native/ch001-001/validation_report.json",
+          "docs/summary_native/ch001-001/validation_report.md"
+        ]
+      },
+      "npc:candidate-1b": {
+        "paths": [
+          "docs/summary_native/ch001-001/dossiers/npc_candidate_1b.md",
+          "docs/summary_native/ch001-001/validation_report.json",
+          "docs/summary_native/ch001-001/validation_report.md"
+        ]
+      },
+      "npc:candidate-20a": {
+        "paths": [
+          "docs/summary_native/ch001-001/dossiers/npc_candidate_20a.md",
+          "docs/summary_native/ch001-001/validation_report.json",
+          "docs/summary_native/ch001-001/validation_report.md"
+        ]
+      },
+      "npc:candidate-21a": {
+        "paths": [
+          "docs/summary_native/ch001-001/dossiers/npc_candidate_21a.md",
+          "docs/summary_native/ch001-001/validation_report.json",
+          "docs/summary_native/ch001-001/validation_report.md"
+        ]
+      },
+      "npc:candidate-21b": {
+        "paths": [
+          "docs/summary_native/ch001-001/dossiers/npc_candidate_21b.md",
+          "docs/summary_native/ch001-001/validation_report.json",
+          "docs/summary_native/ch001-001/validation_report.md"
+        ]
+      },
+      "npc:candidate-22a": {
+        "paths": [
+          "docs/summary_native/ch001-001/dossiers/npc_candidate_22a.md",
+          "docs/summary_native/ch001-001/validation_report.json",
+          "docs/summary_native/ch001-001/validation_report.md"
+        ]
+      },
+      "npc:candidate-22b": {
+        "paths": [
+          "docs/summary_native/ch001-001/dossiers/npc_candidate_22b.md",
+          "docs/summary_native/ch001-001/validation_report.json",
+          "docs/summary_native/ch001-001/validation_report.md"
+        ]
+      },
+      "npc:candidate-23a": {
+        "paths": [
+          "docs/summary_native/ch001-001/dossiers/npc_candidate_23a.md",
+          "docs/summary_native/ch001-001/validation_report.json",
+          "docs/summary_native/ch001-001/validation_report.md"
+        ]
+      },
+      "npc:candidate-23b": {
+        "paths": [
+          "docs/summary_native/ch001-001/dossiers/npc_candidate_23b.md",
+          "docs/summary_native/ch001-001/validation_report.json",
+          "docs/summary_native/ch001-001/validation_report.md"
+        ]
+      },
+      "npc:candidate-24a": {
+        "paths": [
+          "docs/summary_native/ch001-001/dossiers/npc_candidate_24a.md",
+          "docs/summary_native/ch001-001/validation_report.json",
+          "docs/summary_native/ch001-001/validation_report.md"
+        ]
+      },
+      "npc:candidate-24b": {
+        "paths": [
+          "docs/summary_native/ch001-001/dossiers/npc_candidate_24b.md",
+          "docs/summary_native/ch001-001/validation_report.json",
+          "docs/summary_native/ch001-001/validation_report.md"
+        ]
+      },
+      "npc:candidate-25a": {
+        "paths": [
+          "docs/summary_native/ch001-001/dossiers/npc_candidate_25a.md",
+          "docs/summary_native/ch001-001/validation_report.json",
+          "docs/summary_native/ch001-001/validation_report.md"
+        ]
+      },
+      "npc:candidate-25b": {
+        "paths": [
+          "docs/summary_native/ch001-001/dossiers/npc_candidate_25b.md",
+          "docs/summary_native/ch001-001/validation_report.json",
+          "docs/summary_native/ch001-001/validation_report.md"
+        ]
+      },
+      "npc:candidate-26a": {
+        "paths": [
+          "docs/summary_native/ch001-001/dossiers/npc_candidate_26a.md",
+          "docs/summary_native/ch001-001/validation_report.json",
+          "docs/summary_native/ch001-001/validation_report.md"
+        ]
+      },
+      "npc:candidate-26b": {
+        "paths": [
+          "docs/summary_native/ch001-001/dossiers/npc_candidate_26b.md",
+          "docs/summary_native/ch001-001/validation_report.json",
+          "docs/summary_native/ch001-001/validation_report.md"
+        ]
+      },
+      "npc:candidate-27a": {
+        "paths": [
+          "docs/summary_native/ch001-001/dossiers/npc_candidate_27a.md",
+          "docs/summary_native/ch001-001/validation_report.json",
+          "docs/summary_native/ch001-001/validation_report.md"
+        ]
+      },
+      "npc:candidate-27b": {
+        "paths": [
+          "docs/summary_native/ch001-001/dossiers/npc_candidate_27b.md",
+          "docs/summary_native/ch001-001/validation_report.json",
+          "docs/summary_native/ch001-001/validation_report.md"
+        ]
+      },
+      "npc:candidate-28a": {
+        "paths": [
+          "docs/summary_native/ch001-001/dossiers/npc_candidate_28a.md",
+          "docs/summary_native/ch001-001/validation_report.json",
+          "docs/summary_native/ch001-001/validation_report.md"
+        ]
+      },
+      "npc:candidate-29a": {
+        "paths": [
+          "docs/summary_native/ch001-001/dossiers/npc_candidate_29a.md",
+          "docs/summary_native/ch001-001/validation_report.json",
+          "docs/summary_native/ch001-001/validation_report.md"
+        ]
+      },
+      "npc:candidate-29b": {
+        "paths": [
+          "docs/summary_native/ch001-001/dossiers/npc_candidate_29b.md",
+          "docs/summary_native/ch001-001/validation_report.json",
+          "docs/summary_native/ch001-001/validation_report.md"
+        ]
+      },
+      "npc:candidate-2a": {
+        "paths": [
+          "docs/summary_native/ch001-001/dossiers/npc_candidate_2a.md",
+          "docs/summary_native/ch001-001/validation_report.json",
+          "docs/summary_native/ch001-001/validation_report.md"
+        ]
+      },
+      "npc:candidate-2b": {
+        "paths": [
+          "docs/summary_native/ch001-001/dossiers/npc_candidate_2b.md",
+          "docs/summary_native/ch001-001/validation_report.json",
+          "docs/summary_native/ch001-001/validation_report.md"
+        ]
+      },
+      "npc:candidate-30a": {
+        "paths": [
+          "docs/summary_native/ch001-001/dossiers/npc_candidate_30a.md",
+          "docs/summary_native/ch001-001/validation_report.json",
+          "docs/summary_native/ch001-001/validation_report.md"
+        ]
+      },
+      "npc:candidate-30b": {
+        "paths": [
+          "docs/summary_native/ch001-001/dossiers/npc_candidate_30b.md",
+          "docs/summary_native/ch001-001/validation_report.json",
+          "docs/summary_native/ch001-001/validation_report.md"
+        ]
+      },
+      "npc:candidate-31a": {
+        "paths": [
+          "docs/summary_native/ch001-001/dossiers/npc_candidate_31a.md",
+          "docs/summary_native/ch001-001/validation_report.json",
+          "docs/summary_native/ch001-001/validation_report.md"
+        ]
+      },
+      "npc:candidate-31b": {
+        "paths": [
+          "docs/summary_native/ch001-001/dossiers/npc_candidate_31b.md",
+          "docs/summary_native/ch001-001/validation_report.json",
+          "docs/summary_native/ch001-001/validation_report.md"
+        ]
+      },
+      "npc:candidate-32a": {
+        "paths": [
+          "docs/summary_native/ch001-001/dossiers/npc_candidate_32a.md",
+          "docs/summary_native/ch001-001/validation_report.json",
+          "docs/summary_native/ch001-001/validation_report.md"
+        ]
+      },
+      "npc:candidate-32b": {
+        "paths": [
+          "docs/summary_native/ch001-001/dossiers/npc_candidate_32b.md",
+          "docs/summary_native/ch001-001/validation_report.json",
+          "docs/summary_native/ch001-001/validation_report.md"
+        ]
+      },
+      "npc:candidate-33a": {
+        "paths": [
+          "docs/summary_native/ch001-001/dossiers/npc_candidate_33a.md",
+          "docs/summary_native/ch001-001/validation_report.json",
+          "docs/summary_native/ch001-001/validation_report.md"
+        ]
+      },
+      "npc:candidate-33b": {
+        "paths": [
+          "docs/summary_native/ch001-001/dossiers/npc_candidate_33b.md",
+          "docs/summary_native/ch001-001/validation_report.json",
+          "docs/summary_native/ch001-001/validation_report.md"
+        ]
+      },
+      "npc:candidate-34a": {
+        "paths": [
+          "docs/summary_native/ch001-001/dossiers/npc_candidate_34a.md",
+          "docs/summary_native/ch001-001/validation_report.json",
+          "docs/summary_native/ch001-001/validation_report.md"
+        ]
+      },
+      "npc:candidate-34b": {
+        "paths": [
+          "docs/summary_native/ch001-001/dossiers/npc_candidate_34b.md",
+          "docs/summary_native/ch001-001/validation_report.json",
+          "docs/summary_native/ch001-001/validation_report.md"
+        ]
+      },
+      "npc:candidate-35a": {
+        "paths": [
+          "docs/summary_native/ch001-001/dossiers/npc_candidate_35a.md",
+          "docs/summary_native/ch001-001/validation_report.json",
+          "docs/summary_native/ch001-001/validation_report.md"
+        ]
+      },
+      "npc:candidate-35b": {
+        "paths": [
+          "docs/summary_native/ch001-001/dossiers/npc_candidate_35b.md",
+          "docs/summary_native/ch001-001/validation_report.json",
+          "docs/summary_native/ch001-001/validation_report.md"
+        ]
+      },
+      "npc:candidate-36a": {
+        "paths": [
+          "docs/summary_native/ch001-001/dossiers/npc_candidate_36a.md",
+          "docs/summary_native/ch001-001/validation_report.json",
+          "docs/summary_native/ch001-001/validation_report.md"
+        ]
+      },
+      "npc:candidate-37a": {
+        "paths": [
+          "docs/summary_native/ch001-001/dossiers/npc_candidate_37a.md",
+          "docs/summary_native/ch001-001/validation_report.json",
+          "docs/summary_native/ch001-001/validation_report.md"
+        ]
+      },
+      "npc:candidate-37b": {
+        "paths": [
+          "docs/summary_native/ch001-001/dossiers/npc_candidate_37b.md",
+          "docs/summary_native/ch001-001/validation_report.json",
+          "docs/summary_native/ch001-001/validation_report.md"
+        ]
+      },
+      "npc:candidate-38a": {
+        "paths": [
+          "docs/summary_native/ch001-001/dossiers/npc_candidate_38a.md",
+          "docs/summary_native/ch001-001/validation_report.json",
+          "docs/summary_native/ch001-001/validation_report.md"
+        ]
+      },
+      "npc:candidate-38b": {
+        "paths": [
+          "docs/summary_native/ch001-001/dossiers/npc_candidate_38b.md",
+          "docs/summary_native/ch001-001/validation_report.json",
+          "docs/summary_native/ch001-001/validation_report.md"
+        ]
+      },
+      "npc:candidate-3a": {
+        "paths": [
+          "docs/summary_native/ch001-001/dossiers/npc_candidate_3a.md",
+          "docs/summary_native/ch001-001/validation_report.json",
+          "docs/summary_native/ch001-001/validation_report.md"
+        ]
+      },
+      "npc:candidate-3b": {
+        "paths": [
+          "docs/summary_native/ch001-001/dossiers/npc_candidate_3b.md",
+          "docs/summary_native/ch001-001/validation_report.json",
+          "docs/summary_native/ch001-001/validation_report.md"
+        ]
+      },
+      "npc:candidate-4b": {
+        "paths": [
+          "docs/summary_native/ch001-001/dossiers/npc_candidate_4b.md",
+          "docs/summary_native/ch001-001/validation_report.json",
+          "docs/summary_native/ch001-001/validation_report.md"
+        ]
+      },
+      "npc:candidate-5a": {
+        "paths": [
+          "docs/summary_native/ch001-001/dossiers/npc_candidate_5a.md",
+          "docs/summary_native/ch001-001/validation_report.json",
+          "docs/summary_native/ch001-001/validation_report.md"
+        ]
+      },
+      "npc:candidate-5b": {
+        "paths": [
+          "docs/summary_native/ch001-001/dossiers/npc_candidate_5b.md",
+          "docs/summary_native/ch001-001/validation_report.json",
+          "docs/summary_native/ch001-001/validation_report.md"
+        ]
+      },
+      "npc:candidate-6a": {
+        "paths": [
+          "docs/summary_native/ch001-001/dossiers/npc_candidate_6a.md",
+          "docs/summary_native/ch001-001/validation_report.json",
+          "docs/summary_native/ch001-001/validation_report.md"
+        ]
+      },
+      "npc:candidate-6b": {
+        "paths": [
+          "docs/summary_native/ch001-001/dossiers/npc_candidate_6b.md",
+          "docs/summary_native/ch001-001/validation_report.json",
+          "docs/summary_native/ch001-001/validation_report.md"
+        ]
+      },
+      "npc:candidate-7a": {
+        "paths": [
+          "docs/summary_native/ch001-001/dossiers/npc_candidate_7a.md",
+          "docs/summary_native/ch001-001/validation_report.json",
+          "docs/summary_native/ch001-001/validation_report.md"
+        ]
+      },
+      "npc:candidate-7b": {
+        "paths": [
+          "docs/summary_native/ch001-001/dossiers/npc_candidate_7b.md",
+          "docs/summary_native/ch001-001/validation_report.json",
+          "docs/summary_native/ch001-001/validation_report.md"
+        ]
+      },
+      "npc:candidate-8a": {
+        "paths": [
+          "docs/summary_native/ch001-001/dossiers/npc_candidate_8a.md",
+          "docs/summary_native/ch001-001/validation_report.json",
+          "docs/summary_native/ch001-001/validation_report.md"
+        ]
+      },
+      "npc:candidate-8b": {
+        "paths": [
+          "docs/summary_native/ch001-001/dossiers/npc_candidate_8b.md",
+          "docs/summary_native/ch001-001/validation_report.json",
+          "docs/summary_native/ch001-001/validation_report.md"
+        ]
+      },
+      "npc:candidate-9a": {
+        "paths": [
+          "docs/summary_native/ch001-001/dossiers/npc_candidate_9a.md",
+          "docs/summary_native/ch001-001/validation_report.json",
+          "docs/summary_native/ch001-001/validation_report.md"
+        ]
+      },
+      "npc:candidate-9b": {
+        "paths": [
+          "docs/summary_native/ch001-001/dossiers/npc_candidate_9b.md",
+          "docs/summary_native/ch001-001/validation_report.json",
+          "docs/summary_native/ch001-001/validation_report.md"
+        ]
+      }
+    },
+    "version": 2
+  },
+  "kind": "summary_native",
+  "range": {
+    "gaps": [],
+    "since": 1,
+    "until": 1
+  },
+  "schema": 1,
+  "unknown_sections": [
+    {
+      "chapter": 1,
+      "name": "Prepared review evidence",
+      "path": "summaries/001-fixture.md"
+    }
+  ]
+}

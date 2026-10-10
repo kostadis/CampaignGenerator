@@ -13,7 +13,11 @@ from pathlib import Path
 import pytest
 import yaml
 
+from pipelines.summary_native.authority import AuthorityLedger
+from pipelines.summary_native.authority_apply import initialize_ledger
+from pipelines.summary_native.cli import main
 from pipelines.summary_native import npc_compose, npc_publish, schema
+from pipelines.summary_native.review.store import read_snapshot
 from tests.conftest_npc import sha_tree
 
 RANGE = "ch002-070"
@@ -64,7 +68,11 @@ class World:
         return p
 
     def pub(self, **kw):
-        return npc_publish.publish(self.root, self.rd, now=NOW, **kw)
+        # These legacy tests isolate the pre-existing publication mechanics.
+        # Authority-backed signoff behavior has dedicated production-path tests.
+        return npc_publish.publish(
+            self.root, self.rd, now=NOW, _signoff_checker=lambda _path, _digest: True, **kw
+        )
 
     @property
     def npcs(self):
@@ -204,22 +212,23 @@ def test_source_with_nothing_behind_it_refuses(w):
     assert not r.published and "no hand-built dossier" in r.reason
 
 
-def test_failed_verification_refuses_and_force_publishes_with_fail_forced(w):
+def test_failed_verification_is_a_hard_gate_even_with_force(w):
     w.npc("Jimjar", verdict="fail")
     r = w.pub(names=["Jimjar"])[0]
     assert not r.published and "verification failed" in r.reason and "npc_jimjar.verify.md" in r.reason
     assert not (w.npcs / "jimjar.md").exists()
     r = w.pub(names=["Jimjar"], force=True)[0]
-    assert r.published and r.forced == ("verification failed",)
-    assert "| verify: fail(forced) |" in (w.npcs / "jimjar.md").read_text().split("\n", 1)[0]
+    assert not r.published and "verification failed" in r.reason
+    assert not (w.npcs / "jimjar.md").exists()
 
 
 def test_never_verified_refuses_like_a_failure(w):
     w.npc("Jimjar", verdict=None)
     r = w.pub(names=["Jimjar"])[0]
     assert not r.published and "not verified" in r.reason
-    assert w.pub(names=["Jimjar"], force=True)[0].published
-    assert "| verify: unverified(forced) |" in (w.npcs / "jimjar.md").read_text().split("\n", 1)[0]
+    forced = w.pub(names=["Jimjar"], force=True)[0]
+    assert not forced.published and "not verified" in forced.reason
+    assert not (w.npcs / "jimjar.md").exists()
 
 
 def test_foreign_target_refuses_and_is_untouched(w):
@@ -349,3 +358,105 @@ def test_published_files_do_not_count_as_unmigrated_dossiers(w):
     w.npc("Jimjar")
     w.pub(names=["Jimjar"])
     assert (w.npcs / "jimjar.md").read_text().startswith(PREFIX)
+
+
+# ── Review authority signoff ───────────────────────────────────────────────
+
+def _create_real_review(w, capsys, *, failing=False):
+    draft = w.rd / "draft/npc_jimjar.md"
+    body = "---\nsubject: Jimjar\n---\n\n# Jimjar\n\n## Identity\n"
+    if failing:
+        body += "\nAn unsupported claim. [ch 999 / entry]\n"
+    draft.write_text(draft_text("Jimjar").split("\n", 1)[0] + "\n" + body)
+    authored = w.root / "docs/npcs/authored/jimjar.authored.yaml"
+    npc_compose.compose_gm(draft, authored, w.rd / "gm/npc_jimjar.md", "Jimjar", "npc_jimjar")
+    evidence = w.rd / "evidence/npc_jimjar.md"
+    evidence.parent.mkdir(parents=True, exist_ok=True)
+    evidence.write_text("---\nsubject: Jimjar\nglobal: false\n---\n\n# NPC — Jimjar\n", encoding="utf-8")
+    summary = w.root / "summaries/001/session-summary.md"
+    summary.parent.mkdir(parents=True, exist_ok=True)
+    summary.write_text("# Chapter 1\n", encoding="utf-8")
+    initialize_ledger(w.root, AuthorityLedger(version=2, campaign="npc-signoff", revision=1), actor="test")
+    assert main(["review", "init", "--campaign-dir", str(w.root), "--json"]) == 0
+    capsys.readouterr()
+    selection = w.root / "npc-selection.json"
+    selection.write_text(json.dumps({"dossiers": [{
+        "id": "jimjar", "npc": "Jimjar",
+        "draft_path": str(draft.relative_to(w.root)),
+        "evidence_path": str(evidence.relative_to(w.root)),
+        "summary_paths": [str(summary.relative_to(w.root))],
+        "manual": [],
+    }]}))
+    assert main([
+        "review", "create", "--kind", "npc_verification", "--selection", str(selection),
+        "--campaign-dir", str(w.root), "--json",
+    ]) == 0
+    created = json.loads(capsys.readouterr().out)
+    review_id = created["data"]["review_id"]
+    _manifest, _custody, items = read_snapshot(w.root, review_id)
+    signoff = next(item for item in items if item.proposed_action.action == "signoff_npc_draft")
+    return review_id, signoff, draft
+
+
+def _sign(w, capsys, review_id, item, digest):
+    result = main([
+        "review", "npc", "sign", review_id, "--item", item.item_id,
+        "--draft-sha256", digest, "--expected-decision-revision", "0",
+        "--reviewer", "GM", "--campaign-dir", str(w.root), "--json",
+    ])
+    payload = json.loads(capsys.readouterr().out)
+    return result, payload
+
+
+def test_public_cli_signoff_authorizes_only_the_exact_verified_draft(w, capsys):
+    w.npc("Jimjar")
+    review_id, item, draft = _create_real_review(w, capsys)
+    digest = npc_publish.sha256_text(draft.read_bytes())
+
+    refused = npc_publish.publish(w.root, w.rd, names=["Jimjar"])[0]
+    assert not refused.published and "NPC_DRAFT_SIGNOFF_REQUIRED" in refused.reason
+    code, payload = _sign(w, capsys, review_id, item, digest)
+    assert code == 0 and payload["code"] == "REVIEW_NPC_SIGNED"
+    assert npc_publish.publish(w.root, w.rd, names=["Jimjar"])[0].published
+
+    (w.npcs / "jimjar.md").unlink()
+    evidence = w.rd / "evidence/npc_jimjar.md"
+    evidence_before = evidence.read_bytes()
+    evidence.write_bytes(evidence_before + b"\n")
+    stale_evidence = npc_publish.publish(w.root, w.rd, names=["Jimjar"])[0]
+    assert not stale_evidence.published and "NPC_DRAFT_SIGNOFF_REQUIRED" in stale_evidence.reason
+    evidence.write_bytes(evidence_before)
+
+    draft.write_text(draft.read_text() + "\n", encoding="utf-8")
+    authored = w.root / "docs/npcs/authored/jimjar.authored.yaml"
+    npc_compose.compose_gm(draft, authored, w.rd / "gm/npc_jimjar.md", "Jimjar", "npc_jimjar")
+    stale = npc_publish.publish(w.root, w.rd, names=["Jimjar"])[0]
+    assert not stale.published and "NPC_DRAFT_SIGNOFF_REQUIRED" in stale.reason
+
+
+def test_hard_verification_failure_cannot_be_signed_or_forced(w, capsys):
+    w.npc("Jimjar")
+    review_id, item, draft = _create_real_review(w, capsys, failing=True)
+    digest = npc_publish.sha256_text(draft.read_bytes())
+    code, payload = _sign(w, capsys, review_id, item, digest)
+    assert code == 5 and payload["code"] == "REVIEW_NPC_MECHANICAL_BLOCK"
+
+    # Even a generic semantic approval cannot convert the bound mechanical
+    # failure into a publication pass.
+    decisions = w.root / "decisions.json"
+    decisions.write_text(json.dumps({
+        "version": 1, "request_id": "semantic-override", "review_generation": 1,
+        "reviewer": "GM", "decisions": [{
+            "item_id": item.item_id, "item_revision": item.revision,
+            "review_digest": item.review_digest, "expected_decision_revision": 0,
+            "verdict": "approve", "disposition": "document_signoff",
+            "note": "Approval cannot erase a hard failure.",
+        }],
+    }))
+    assert main([
+        "review", "decide", review_id, "--decisions", str(decisions),
+        "--campaign-dir", str(w.root), "--json",
+    ]) == 0
+    capsys.readouterr()
+    forced = npc_publish.publish(w.root, w.rd, names=["Jimjar"], force=True)[0]
+    assert not forced.published and "NPC_DRAFT_SIGNOFF_REQUIRED" in forced.reason
