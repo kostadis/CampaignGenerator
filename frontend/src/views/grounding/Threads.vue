@@ -925,7 +925,8 @@ const addAlias = (t: Thread) => {
         <label><span>Last chapter</span>
           <input v-model.number="proposeUntil" type="number" min="1" class="field-input" aria-label="Last chapter" /></label>
         <BackendModelPicker v-model:backend="proposeBackend" v-model:model="proposeModel"
-          config-key="summary_native.prose" :stored-backend="storedProse.backend" :stored-model="storedProse.model" />
+          config-key="summary_native.prose" :stored-backend="storedProse.backend" :stored-model="storedProse.model"
+          :show-help="false" />
         <label><span>Effort</span>
           <select v-model="proposeEffort" class="field-input" aria-label="Effort">
             <option value="">Default</option>
@@ -1463,7 +1464,7 @@ h4 { margin: 12px 0 6px; color: var(--text-sub); font-size: 11px; }
   border-radius: 4px;
   background: var(--bg-surface0);
 }
-.grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; --picker-input-font: var(--sans); --picker-input-size: 12px; --picker-gap: 0; }
 .logrow { display: flex; gap: 6px; align-items: center; margin-bottom: 6px; flex-wrap: wrap; }
 .logrow input:not(.narrow) { flex: 1; }
 .excluded { margin-top: 12px; color: var(--text-muted); font-size: 11px; font-style: italic; }
