@@ -527,7 +527,7 @@ test.describe('packaged summary-native review viewer', () => {
 
     await openItem(page, 1)
     await saveCurrent(page, 'approve', 'The excerpt supports this claim.')
-    await expect(page.getByText('Saved')).toBeVisible()
+    await expect(page.locator('#save-state')).toHaveText(/^Saved/)
     await expect(page.getByText('1 of 25 settled')).toBeVisible()
     await page.getByRole('button', { name: 'Back to queue' }).click()
 
@@ -560,7 +560,7 @@ test.describe('packaged summary-native review viewer', () => {
     await expect(page.getByText('0 of 25 settled')).toBeVisible()
 
     await page.getByRole('button', { name: 'Retry save' }).click()
-    await expect(page.getByText('Saved')).toBeVisible()
+    await expect(page.locator('#save-state')).toHaveText(/^Saved/)
     await expect(page.getByText('0 of 25 settled')).toBeVisible()
   })
 
@@ -576,7 +576,7 @@ test.describe('packaged summary-native review viewer', () => {
     await openItem(second, 3)
 
     await saveCurrent(first, 'approve', 'First tab ruling.')
-    await expect(first.getByText('Saved')).toBeVisible()
+    await expect(first.locator('#save-state')).toHaveText(/^Saved/)
     await saveCurrent(second, 'reject', 'Second tab ruling.')
     await expect(second.getByText(/changed in another|newer decision|stale/i)).toBeVisible()
     await expect(second.getByRole('button', { name: 'Reload latest' })).toBeVisible()
@@ -594,7 +594,7 @@ test.describe('packaged summary-native review viewer', () => {
     await openReview(page)
     await openItem(page, 4)
     await saveCurrent(page, 'discuss', 'Need the next chapter before resolving this.')
-    await expect(page.getByText('Saved')).toBeVisible()
+    await expect(page.locator('#save-state')).toHaveText(/^Saved/)
 
     await page.reload()
     await expect(page.getByText('0 of 25 settled')).toBeVisible()
@@ -687,7 +687,7 @@ test.describe('packaged summary-native review viewer', () => {
     expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(320)
 
     await saveCurrent(page, 'approve', 'Signed after reading the exact bounded document.')
-    await expect(page.getByText('Saved')).toBeVisible()
+    await expect(page.locator('#save-state')).toHaveText(/^Saved/)
   })
 
   test('identity approval selects one exact prepared canonical digest', async ({ page, context }) => {
