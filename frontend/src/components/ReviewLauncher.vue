@@ -36,7 +36,7 @@ async function openWholeBundlePromotion(){await router.push('/grounding/summary-
 </script>
 <template>
   <section class="review-launcher" aria-labelledby="review-launcher-title">
-    <h2 id="review-launcher-title">Shared review</h2><p>Create and manage a private review queue. Decisions remain separate from correction and publication actions.</p>
+    <h2 id="review-launcher-title">Review queue</h2><p>Create and manage a private review queue. Decisions remain separate from correction and publication actions.</p>
     <p v-if="props.selected?.length">{{ props.selected.length }} NPC subjects are selected in the dossier view. Save the literal dossier paths in the selection file below before creating the review.</p>
     <label>Selection file <input v-model="selection" placeholder="campaign/selections/npcs.json"></label><label>Review ID <input v-model="reviewId"></label><label>Expected generation <input v-model.number="generation" type="number" min="1"></label>
     <div class="actions">
@@ -57,4 +57,31 @@ async function openWholeBundlePromotion(){await router.push('/grounding/summary-
     <label>Recovery transaction <input v-model="transaction"></label><button :disabled="busy||!transaction" @click="request('/recover','POST',{transaction})">Recover</button><p aria-live="polite">{{ note }}</p><pre v-if="result" aria-label="Review command result">{{ result }}</pre>
   </section>
 </template>
-<style scoped>.review-launcher{border:1px solid var(--border-color,#8886);border-radius:.5rem;margin-block:1rem;padding:1rem}.actions{display:flex;flex-wrap:wrap;gap:.5rem;margin-block:.75rem}label{display:block;margin-block:.5rem}input{min-width:min(28rem,100%)}button{min-height:2.5rem}.capability,pre{overflow-wrap:anywhere}pre{white-space:pre-wrap;max-height:24rem;overflow:auto}fieldset{margin-block:.75rem}</style>
+<style scoped>
+/* Matches the app's page type scale (Summary-native, Claims): 12px headings, 11px labels,
+   11px mono inputs, small neutral buttons. */
+.review-launcher { font-size: 11px; color: var(--text-sub); min-width: 0; max-width: 100%; }
+h2 { font-size: 12px; font-weight: 700; color: var(--text); margin: 0 0 8px; }
+p { margin: 4px 0 8px; color: var(--text-muted); }
+.actions { display: flex; flex-wrap: wrap; gap: 6px; margin-block: 10px; }
+.actions button { margin: 0; }
+fieldset { display: grid; gap: 6px; margin-block: 12px; padding: 10px; min-width: 0; border: 1px solid var(--bg-surface0); border-radius: 4px; }
+legend { padding: 0 4px; font-size: 11px; font-weight: 700; color: var(--text); }
+label { display: block; min-width: 0; margin-bottom: 8px; font-weight: 600; color: var(--text-sub); overflow-wrap: anywhere; }
+label:has(> input[type=checkbox]) { display: flex; align-items: center; gap: 6px; font-weight: 400; }
+input[type=checkbox] { accent-color: var(--mauve); }
+input:not([type=checkbox]), select {
+  display: block; width: min(38rem, 100%); max-width: 100%; box-sizing: border-box; margin-top: 3px;
+  padding: 6px 8px; border: 1px solid var(--bg-surface1); border-radius: 4px; outline: none;
+  background: var(--bg-base); color: var(--text); font-family: var(--mono); font-size: 11px;
+}
+input:focus, select:focus { border-color: var(--mauve); }
+button { margin: 0 6px 8px 0; font-size: 11px; padding: 4px 10px; background: var(--bg-surface0); color: var(--text); justify-self: start; }
+.capability { margin-block: 10px; padding: 8px 10px; border-left: 3px solid var(--mauve); overflow-wrap: anywhere; }
+code { font-family: var(--mono); font-size: 10px; overflow-wrap: anywhere; }
+pre {
+  margin: 8px 0 0; padding: 8px 10px; max-height: 24rem; overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere;
+  border: 1px solid var(--bg-surface0); border-radius: 4px; background: var(--bg-mantle, var(--bg-base));
+  font-family: var(--mono); font-size: 10px; color: var(--text);
+}
+</style>
