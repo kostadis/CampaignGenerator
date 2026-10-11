@@ -433,6 +433,19 @@ Concrete examples already in the codebase:
 python -m pytest tests/
 ```
 
+Frontend (run from `frontend/`; CI runs all three via `.github/workflows/frontend.yml`):
+
+```bash
+npm test             # Vitest component tests (src/**/*.test.ts)
+npm run build        # vue-tsc -b type-checks app + component tests, then vite build
+PLAYWRIGHT_CHROME_EXECUTABLE_PATH=/usr/bin/google-chrome npm run test:e2e   # Playwright (e2e/*.spec.ts)
+```
+
+The env var is needed on the GM's Ubuntu 26.04 machine: Playwright's bundled
+Chromium is not built for it, so without the variable every e2e test fails at
+browser launch ("Executable doesn't exist"). CI on ubuntu-latest uses the
+bundled browser and does not need it.
+
 ## Dependencies
 
 ```bash
