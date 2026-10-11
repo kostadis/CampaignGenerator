@@ -88,6 +88,16 @@ const routes = [
         component: () => import('./views/grounding/SharedReview.vue'),
         meta: { reviewContext: 'grounding' },
       },
+      {
+        path: 'promotion',
+        name: 'grounding-promotion',
+        component: () => import('./views/grounding/GroundingPromote.vue'),
+      },
+      {
+        path: 'authority',
+        name: 'grounding-authority',
+        component: () => import('./views/grounding/GroundingAuthority.vue'),
+      },
     ],
   },
   {

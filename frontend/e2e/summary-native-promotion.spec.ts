@@ -56,7 +56,7 @@ test('promotion preview unpacks the CLI envelope and renders every result class'
     } })
   })
 
-  await page.goto('/grounding/summary-native')
+  await page.goto('/grounding/promotion')
   const panel = page.locator('[data-test="grounding-promotion-preview"]')
   await panel.locator('[data-test="promotion-review"]').fill('promotion-check')
   await panel.locator('[data-test="promotion-report"]').fill('report-1')
@@ -79,7 +79,7 @@ test('freshness is unknown until the server returns explicit source and destinat
     ok: false, code: 'PROMOTION_BLOCKED', message: 'Claims unavailable.',
     data: { selection: { documents: [] }, preview: { eligible: false, gates: [], changes: [] }, destination: null },
   } }))
-  await page.goto('/grounding/summary-native')
+  await page.goto('/grounding/promotion')
   const panel = page.locator('[data-test="grounding-promotion-preview"]')
   await panel.locator('[data-test="promotion-since"]').fill('1')
   await panel.locator('[data-test="promotion-until"]').fill('3')
@@ -115,7 +115,7 @@ test('publication stays bound to the displayed digest and exposes receipt and re
     } } })
   })
 
-  await page.goto('/grounding/summary-native')
+  await page.goto('/grounding/promotion')
   const panel = page.locator('[data-test="grounding-promotion-preview"]')
   await panel.locator('[data-test="promotion-review"]').fill('review-1')
   await panel.locator('[data-test="promotion-report"]').fill('report-1')
@@ -138,7 +138,7 @@ test('unknown commit is recovered by operation id without repeating publication'
   await page.route('**/api/grounding/summary-native/promotion/commit', async route => {commits++;await route.fulfill({status:503,json:{ok:false,code:'PROMOTION_COMMIT_UNKNOWN',message:'Commit transport ended before acknowledgment.',data:{operation_id:'op-unknown',state:'unknown',prior_identity:'old-generation'}}})})
   await page.route('**/api/grounding/summary-native/promotion/status?operation=op-unknown', route => route.fulfill({json:{ok:true,code:'OK',message:'journal found',data:{state:'saved',prior_identity:'old-generation',new_identity:'new-generation'}}}))
   await page.route('**/api/grounding/summary-native/promotion/recover', async route => {expect(route.request().postDataJSON()).toEqual({operation:'op-unknown'});await route.fulfill({json:{ok:true,code:'OK',message:'recovered',data:{state:'committed',prior_identity:'old-generation',new_identity:'new-generation'}}})})
-  await page.goto('/grounding/summary-native')
+  await page.goto('/grounding/promotion')
   const panel=page.locator('[data-test="grounding-promotion-preview"]')
   await panel.locator('[data-test="promotion-review"]').fill('review-1');await panel.locator('[data-test="promotion-report"]').fill('report-1')
   await panel.getByRole('button',{name:'Preview complete bundle'}).click();await panel.locator('[data-test="promotion-request-id"]').fill('request-stable');await panel.locator('[data-test="promotion-commit"]').click()
@@ -159,7 +159,7 @@ for (const width of [320,375]) test(`long manifest and diff stay contained at ${
   await page.setViewportSize({width,height:760});await installSummaryNativeMocks(page)
   const long='nested/'.repeat(18)+'reference-with-a-long-name.md'
   await page.route('**/api/grounding/summary-native/promotion/preview',route=>route.fulfill({json:{ok:false,code:'PROMOTION_BLOCKED',message:'edited live',data:{selection:{references:[{path:long,sha256:'f'.repeat(64)}]},destination:{live_digest:'e'.repeat(64)},preview:{eligible:false,gates:[{gate:'destination',state:'blocked',code:'PROMOTION_EDITED_LIVE',message:'A very long destination explanation '.repeat(12)}],changes:[{path:long,kind:'modify',before_sha256:'a'.repeat(64),after_sha256:'b'.repeat(64),unified_diff:('-long evidence line '.repeat(80))}]}}}}))
-  await page.goto('/grounding/summary-native');const panel=page.locator('[data-test="grounding-promotion-preview"]');await panel.locator('[data-test="promotion-review"]').fill('r');await panel.locator('[data-test="promotion-report"]').fill('p');await panel.getByRole('button',{name:'Preview complete bundle'}).click()
+  await page.goto('/grounding/promotion');const panel=page.locator('[data-test="grounding-promotion-preview"]');await panel.locator('[data-test="promotion-review"]').fill('r');await panel.locator('[data-test="promotion-report"]').fill('p');await panel.getByRole('button',{name:'Preview complete bundle'}).click()
   await expect(panel.getByText(long,{exact:true}).first()).toBeVisible()
   expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(width)
 })

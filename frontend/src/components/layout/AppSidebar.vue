@@ -246,10 +246,12 @@ const navGroups: NavGroup[] = [
         label: 'Summary-native',
         description: 'Parses reviewed session summaries directly — no extraction pass.',
         usesSharedExtraction: false,
-        matchPrefixes: ['/grounding/summary-native', '/grounding/review'],
+        matchPrefixes: ['/grounding/summary-native', '/grounding/promotion', '/grounding/review', '/grounding/authority'],
         items: [
           { label: 'Summary-native', path: '/grounding/summary-native' },
+          { label: 'Claims & promotion', path: '/grounding/promotion' },
           { label: 'Shared review', path: '/grounding/review' },
+          { label: 'Rulings', path: '/grounding/authority' },
         ],
       },
     ],

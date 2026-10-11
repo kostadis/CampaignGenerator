@@ -487,6 +487,8 @@ test('authority correction follows the CLI parity flow in five explicit GM actio
   })
   await page.reload()
 
+  // The ledger lives on its own Rulings page, off the build flow.
+  await page.goto('/grounding/authority')
   const authority = page.locator('[data-test="authority-panel"]')
   await authority.getByRole('button', { name: 'Initialize authority ledger' }).click() // 1
   await expect(authority.getByText('ledger revision 1')).toBeVisible()
@@ -531,6 +533,8 @@ test('authority keeps stale, recovery, withdrawal, retirement, and proposal bind
   })
   await page.reload()
 
+  // The ledger lives on its own Rulings page, off the build flow.
+  await page.goto('/grounding/authority')
   const authority = page.locator('[data-test="authority-panel"]')
   await expect(authority.getByText('recovery required')).toBeVisible()
   await expect(authority.getByText('Stale projections: planning: authority manifest changed; regenerate with --force')).toBeVisible()
@@ -567,6 +571,8 @@ test('authority conflict review invokes the CLI-backed history, dismissal, and h
     await route.fulfill({ contentType: 'text/event-stream', body: sse(JSON.stringify(envelope()), 0) })
   })
   await page.reload()
+  // The ledger lives on its own Rulings page, off the build flow.
+  await page.goto('/grounding/authority')
   const authority = page.locator('[data-test="authority-panel"]')
   await expect(authority.getByText('gate-conflict')).toBeVisible()
   await expect(authority.getByText(/notes\/gate\.md#gate = open/)).toBeVisible()
