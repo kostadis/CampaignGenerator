@@ -5,7 +5,6 @@ import { useConfigStore } from '../../stores/config'
 import { useGroundingRun } from '../../composables/useGroundingRun'
 import PathField from '../../components/shared/PathField.vue'
 import RunPanel from '../../components/shared/RunPanel.vue'
-import ReviewLauncher from '../../components/ReviewLauncher.vue'
 
 // NPC dossiers (spec 032, US5). This page only mechanises `summary_native npc-*`
 // runs with explicit arguments (Principle IX): every file it shows is read-only,
@@ -289,14 +288,16 @@ onMounted(async () => {
 </script>
 
 <template>
-  <ReviewLauncher context="npc" :selected="pickedSubjects" />
   <div class="page">
     <div class="page-header">
       <h2>NPC dossiers</h2>
       <p class="subtitle">
         Per-NPC dossiers built from reviewed session summaries: link the evidence, draft, verify, compose the GM
         edition, then publish. This page runs the <code>summary_native npc-*</code> commands; it shows files
-        read-only and never edits an authored file, a draft or a ruling.
+        read-only and never edits an authored file, a draft or a ruling. The review queue, sign-offs and private
+        reviewer links are on the
+        <RouterLink :to="{ path: '/npcs/review', query: pickedSubjects.length ? { subject: pickedSubjects } : {} }">Shared review</RouterLink>
+        page{{ pickedSubjects.length ? `, which opens with the ${pickedSubjects.length} ticked NPC(s)` : '' }}.
       </p>
     </div>
 
