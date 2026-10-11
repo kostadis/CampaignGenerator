@@ -33,6 +33,7 @@ from campaignlib.constants import config_path
 from campaignlib.grounding_config import DEFAULT_MAX_REPORT_BYTES
 from campaignlib.players_config import PLAYERS_CONFIG_FILENAME
 from campaignlib.projection_config import PROJECTION_CONFIG_FILENAME, load_projection_config
+from campaignlib.selection import BACKENDS
 from pipelines.summary_native import annotate, audit_select, freshness, notes, resolve, schema, thread_attach
 from server.grounding_config_shared import SummaryNativeRun
 from server.platform_config_service import resolve_selection, selection_cli_args
@@ -45,6 +46,23 @@ from server.subprocess_runner import BoundedJSONError, console_script, run_bound
 from server.scheduler_status import project_latest
 
 _ENDPOINT_BACKENDS = frozenset({"dgx"})  # the only backend that takes --endpoints
+
+
+def per_run_service(stored: Any, backend: str | None, urls: list[str] | tuple[str, ...] = ()) -> tuple[Any, str | None]:
+    """The service tier for one run, given a per-run ``backend`` (never persisted) and ``--endpoints``.
+
+    Returns ``(service, request_backend)`` for ``resolve_selection``. A per-run backend that differs from
+    the stored one drops the stored model: that model belongs to the stored backend (a DGX id is
+    meaningless on claude-code), so the pairing rule in ``resolve_selection`` supplies the model instead.
+    An unknown backend is a 400 before anything spawns.
+    """
+    backend = (backend or "").strip() or None
+    if backend is not None and backend not in BACKENDS:
+        raise HTTPException(status_code=400, detail=f"unknown backend {backend!r}; choose one of: {', '.join(BACKENDS)}")
+    model = stored.model if backend in (None, stored.backend) else None
+    if not urls and model == stored.model:
+        return stored, backend
+    return SimpleNamespace(backend=stored.backend, model=model, endpoints=tuple(urls)), backend
 AUTHORITY_JSON_TIMEOUT_SECONDS = 10
 PROMOTION_PREVIEW_TIMEOUT_SECONDS = 30
 PROMOTION_COMMAND_TIMEOUT_SECONDS = 60
@@ -1066,6 +1084,7 @@ async def run_synth(
     dump_only: bool = False,
     force: bool = False,
     model: str | None = None,
+    backend: str | None = None,
     claude_code_effort: str | None = None,
     fallback_npc_lines: bool = False,
     authority_selection: list[str] | None = Query(default=None),
@@ -1143,9 +1162,12 @@ async def run_synth(
     if fallback_npc_lines:  # per run, never from config
         cmd.append("--fallback-npc-lines")
 
-    # The prose step has its own backend/model block (grounding.yaml summary_native.prose).
+    # The prose step has its own backend/model block (grounding.yaml summary_native.prose); a per-run
+    # backend overrides it for this run only.
+    service, backend = per_run_service(run.prose, backend)
     cmd += selection_cli_args(resolve_selection(
-        request, request_model=model, service=run.prose, service_name=f"{_SERVICE_NAME}.prose",
+        request, request_model=model, request_backend=backend, service=service,
+        service_name=f"{_SERVICE_NAME}.prose",
         request_claude_code_effort=(claude_code_effort or "").strip() or None,
     ))
     return _sse_response(cmd)
@@ -1162,6 +1184,7 @@ async def run_extract(
     dump_only: bool = False,
     force: bool = False,
     model: str | None = None,
+    backend: str | None = None,
     endpoints: list[str] | None = Query(default=None),
     parallel: int | None = None,
     resume: str | None = None,
@@ -1170,6 +1193,7 @@ async def run_extract(
     directory = _require_dir(run, summaries_dir)
     lo, hi = _require_range(run, since, until)
     urls = [e.strip() for e in (endpoints or []) if e.strip()]
+    service, backend = per_run_service(run.extract, backend, urls)
     if parallel is not None and parallel < 1:
         raise HTTPException(status_code=400, detail=f"parallel must be at least 1, got {parallel}")
     if resume is not None and (force or dump_only):
@@ -1184,11 +1208,9 @@ async def run_extract(
         cmd.append("--force")
     # Endpoints are machine wiring, never stored in grounding.yaml: a request value rides on top of
     # the stored backend/model and reaches the command as `--endpoints A B` (the CLI's own spelling).
-    service = run.extract
-    if urls:
-        service = SimpleNamespace(backend=run.extract.backend, model=run.extract.model, endpoints=tuple(urls))
     resolved = resolve_selection(
-        request, request_model=model, service=service, service_name=f"{_SERVICE_NAME}.extract",
+        request, request_model=model, request_backend=backend, service=service,
+        service_name=f"{_SERVICE_NAME}.extract",
     )
     if urls and resolved.backend not in _ENDPOINT_BACKENDS:
         raise HTTPException(status_code=400, detail=f"--endpoints applies to --backend dgx only, not {resolved.backend}")
@@ -1212,6 +1234,7 @@ async def run_audit(
     dump_only: bool = False,
     force: bool = False,
     model: str | None = None,
+    backend: str | None = None,
     endpoints: list[str] | None = Query(default=None),
     parallel: int | None = None,
     resume: str | None = None,
@@ -1224,6 +1247,7 @@ async def run_audit(
     lo, hi = _require_range(run, since, until)
     urls = [e.strip() for e in (endpoints or []) if e.strip()]
     files = [t.strip() for t in (track_file or []) if t.strip()]
+    service, backend = per_run_service(run.extract, backend, urls)
     if parallel is not None and parallel < 1:
         raise HTTPException(status_code=400, detail=f"parallel must be at least 1, got {parallel}")
     if resume is not None and (force or dump_only):
@@ -1246,11 +1270,9 @@ async def run_audit(
         cmd.append("--dump-only")
     if force:
         cmd.append("--force")
-    service = run.extract
-    if urls:
-        service = SimpleNamespace(backend=run.extract.backend, model=run.extract.model, endpoints=tuple(urls))
     resolved = resolve_selection(
-        request, request_model=model, service=service, service_name=f"{_SERVICE_NAME}.extract",
+        request, request_model=model, request_backend=backend, service=service,
+        service_name=f"{_SERVICE_NAME}.extract",
     )
     if urls and resolved.backend not in _ENDPOINT_BACKENDS:
         raise HTTPException(status_code=400, detail=f"--endpoints applies to --backend dgx only, not {resolved.backend}")

@@ -38,6 +38,7 @@ import { ref, computed, watch, onMounted, onBeforeUnmount } from 'vue'
 import { apiFetch, apiPost } from '../../api/client'
 import { connectSSE } from '../../api/sse'
 import { useConfigStore } from '../../stores/config'
+import BackendModelPicker from '../../components/shared/BackendModelPicker.vue'
 
 // ── shapes (mirror contracts/cli.md's --json payloads exactly) ────────────
 
@@ -184,6 +185,7 @@ const groupFilter = ref('pending')
 const proposeSince = ref<number | ''>('')
 const proposeUntil = ref<number | ''>('')
 const proposeModel = ref('')
+const proposeBackend = ref('')
 const proposeEffort = ref('')
 const proposeMaxChars = ref<number | ''>('')
 const proposeOutput = ref('')
@@ -198,6 +200,11 @@ const groupNote = ref('')
 const edit = ref<GroupEdit | null>(null)
 
 const config = useConfigStore()
+// The propose step's stored selection (grounding.yaml summary_native.prose), shown by the backend picker.
+const storedProse = computed(() => {
+  const b = (config.groundingConfig?.summary_native?.prose ?? {}) as { backend?: string; model?: string }
+  return { backend: b.backend || '', model: b.model || '' }
+})
 
 // ── loading (FR-023: everything re-derived from disk) ────────────────────
 
@@ -578,6 +585,7 @@ function runPropose(dump: boolean) {
   const q = new URLSearchParams()
   q.set('since', String(proposeSince.value))
   q.set('until', String(proposeUntil.value))
+  if (proposeBackend.value) q.set('backend', proposeBackend.value)
   if (proposeModel.value.trim()) q.set('model', proposeModel.value.trim())
   if (proposeEffort.value) q.set('claude_code_effort', proposeEffort.value)
   if (proposeMaxChars.value !== '') q.set('max_input_chars', String(proposeMaxChars.value))
@@ -916,8 +924,9 @@ const addAlias = (t: Thread) => {
           <input v-model.number="proposeSince" type="number" min="1" class="field-input" aria-label="First chapter" /></label>
         <label><span>Last chapter</span>
           <input v-model.number="proposeUntil" type="number" min="1" class="field-input" aria-label="Last chapter" /></label>
-        <label><span>Model (blank uses grounding.yaml summary_native.prose)</span>
-          <input v-model="proposeModel" class="field-input" spellcheck="false" aria-label="Model" /></label>
+        <BackendModelPicker v-model:backend="proposeBackend" v-model:model="proposeModel"
+          config-key="summary_native.prose" :stored-backend="storedProse.backend" :stored-model="storedProse.model"
+          :show-help="false" />
         <label><span>Effort</span>
           <select v-model="proposeEffort" class="field-input" aria-label="Effort">
             <option value="">Default</option>
@@ -1455,7 +1464,7 @@ h4 { margin: 12px 0 6px; color: var(--text-sub); font-size: 11px; }
   border-radius: 4px;
   background: var(--bg-surface0);
 }
-.grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; --picker-input-font: var(--sans); --picker-input-size: 12px; --picker-gap: 0; }
 .logrow { display: flex; gap: 6px; align-items: center; margin-bottom: 6px; flex-wrap: wrap; }
 .logrow input:not(.narrow) { flex: 1; }
 .excluded { margin-top: 12px; color: var(--text-muted); font-size: 11px; font-style: italic; }

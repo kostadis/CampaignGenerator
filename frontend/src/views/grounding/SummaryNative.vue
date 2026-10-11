@@ -5,6 +5,7 @@ import { useConfigStore } from '../../stores/config'
 import { useGroundingRun } from '../../composables/useGroundingRun'
 import PathField from '../../components/shared/PathField.vue'
 import RunPanel from '../../components/shared/RunPanel.vue'
+import BackendModelPicker from '../../components/shared/BackendModelPicker.vue'
 import GroundingPromotion from '../../components/GroundingPromotion.vue'
 import GroundingClaims from '../../components/GroundingClaims.vue'
 
@@ -80,6 +81,16 @@ const forceExtract = ref(false)
 // same model; blank uses the single endpoint the backend resolves. Workers = in-flight calls per endpoint.
 const extractEndpointsText = ref('')
 const extractParallel = ref<Num>('')
+// Per run, never persisted (BackendModelPicker): blank backend/model use grounding.yaml summary_native.extract.
+const extractBackend = ref('')
+const extractModel = ref('')
+type StoredSelection = { backend: string; model: string }
+function storedBlock(name: 'extract' | 'prose'): StoredSelection {
+  const b = (config.groundingConfig?.summary_native?.[name] ?? {}) as { backend?: string; model?: string }
+  return { backend: b.backend || '', model: b.model || '' }
+}
+const storedExtract = computed(() => storedBlock('extract'))
+const storedProse = computed(() => storedBlock('prose'))
 const extractResume = ref(false)
 const extractResumeId = ref('')
 // Audit (per run, never persisted): track files are prefilled from grounding.yaml campaign_state.track_files and
@@ -90,12 +101,14 @@ const auditMaxTokens = ref<Num>('')
 const auditDumpOnly = ref(false)
 const forceAudit = ref(false)
 const auditModel = ref('')
+const auditBackend = ref('')
 const auditEndpointsText = ref('')
 const auditParallel = ref<Num>('')
 const auditResume = ref(false)
 const auditResumeId = ref('')
 // Prose step (every document): blank uses grounding.yaml summary_native.prose.
 const proseModel = ref('')
+const proseBackend = ref('')
 const proseEffort = ref('')
 const EFFORTS = ['low', 'medium', 'high', 'xhigh', 'max'] as const
 
@@ -518,6 +531,8 @@ const extractParams = computed(() => ({
   max_tokens: num(extractMaxTokens.value),
   dump_only: extractDumpOnly.value,
   force: forceExtract.value,
+  backend: extractBackend.value || undefined,
+  model: extractModel.value.trim() || undefined,
   endpoints: lines(extractEndpointsText.value),
   parallel: num(extractParallel.value),
   ...(extractResume.value ? { resume: extractResumeId.value.trim() } : {}),
@@ -529,13 +544,14 @@ const auditParams = computed(() => ({
   max_tokens: num(auditMaxTokens.value),
   dump_only: auditDumpOnly.value,
   force: forceAudit.value,
+  backend: auditBackend.value || undefined,
   model: auditModel.value.trim() || undefined,
   endpoints: lines(auditEndpointsText.value),
   parallel: num(auditParallel.value),
   ...(auditResume.value ? { resume: auditResumeId.value.trim() } : {}),
 }))
-// The prose step takes its backend and model from grounding.yaml summary_native.prose, so the page does not send
-// the app-wide model for any document.
+// The prose step takes its backend and model from grounding.yaml summary_native.prose unless the picker overrides
+// them for this run; the page never sends the app-wide (sidebar) selection.
 const synthParams = computed(() => ({
   ...baseParams.value,
   // The NPC selection of world_state's Key NPCs and planning's NPC Dossiers (campaign_state has no such section and
@@ -556,6 +572,7 @@ const synthParams = computed(() => ({
   max_tokens: num(maxTokens.value),
   dump_only: dumpOnly.value,
   force: forceSynth.value,
+  backend: proseBackend.value || undefined,
   model: proseModel.value.trim() || undefined,
   claude_code_effort: proseEffort.value || undefined,
 }))
@@ -936,6 +953,10 @@ onMounted(async () => {
             <span class="field-help">Calls in flight at once on each endpoint (<code>--parallel</code>). Blank resolves from the selected model and is recorded with its source.</span>
           </div>
         </div>
+        <div class="num-grid">
+          <BackendModelPicker v-model:backend="extractBackend" v-model:model="extractModel"
+            config-key="summary_native.extract" :stored-backend="storedExtract.backend" :stored-model="storedExtract.model" />
+        </div>
         <div class="field">
           <label class="field-label">Endpoints</label>
           <textarea class="field-textarea" v-model="extractEndpointsText" rows="2"
@@ -1032,11 +1053,11 @@ onMounted(async () => {
             <span class="field-help">Calls in flight at once on each endpoint (<code>--parallel</code>). Blank resolves from the selected model and is recorded with its source.</span>
           </div>
         </div>
-        <div class="field">
-          <label class="field-label">Model</label>
-          <input class="field-input" v-model="auditModel" placeholder="blank uses summary_native.extract.model" />
-          <span class="field-help">The judge runs on the extraction backend.</span>
+        <div class="num-grid">
+          <BackendModelPicker v-model:backend="auditBackend" v-model:model="auditModel"
+            config-key="summary_native.extract" :stored-backend="storedExtract.backend" :stored-model="storedExtract.model" />
         </div>
+        <span class="field-help">The judge defaults to the extraction backend and model.</span>
         <div class="field">
           <label class="field-label">Endpoints</label>
           <textarea class="field-textarea" v-model="auditEndpointsText" rows="2"
@@ -1202,11 +1223,8 @@ onMounted(async () => {
           </div>
         </div>
         <div class="num-grid">
-          <div class="field">
-            <label class="field-label">Prose model</label>
-            <input type="text" class="field-input" v-model="proseModel" />
-            <span class="field-help">Blank uses <code>summary_native.prose.model</code> from grounding.yaml.</span>
-          </div>
+          <BackendModelPicker v-model:backend="proseBackend" v-model:model="proseModel" model-label="Prose model"
+            config-key="summary_native.prose" :stored-backend="storedProse.backend" :stored-model="storedProse.model" />
           <div class="field">
             <label class="field-label">Effort (claude-code)</label>
             <select class="field-input narrow" v-model="proseEffort" aria-label="Prose effort">

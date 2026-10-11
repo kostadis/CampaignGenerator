@@ -461,6 +461,46 @@ def test_extract_stored_config_reaches_the_command(campaign):
     assert _flag(captured["cmd"], "--chunk-chars") == "99"  # a request beats the stored value
 
 
+def test_extract_per_run_backend_overrides_the_stored_one(campaign):
+    _, svc, captured = campaign
+    svc.update_config({"summary_native": {"extract": {"backend": "dgx", "model": "stored-dgx-model"}}})
+    assert _run("/run/extract", {**RANGE, "backend": "claude-code"}) == 200
+    cmd = captured["cmd"]
+    assert _flag(cmd, "--backend") == "claude-code"
+    # the stored model belongs to the stored backend, so it never rides along to another one
+    assert "stored-dgx-model" not in cmd
+
+
+def test_extract_per_run_backend_and_model_reach_the_command(campaign):
+    _, svc, captured = campaign
+    svc.update_config({"summary_native": {"extract": {"backend": "dgx", "model": "stored-dgx-model"}}})
+    assert _run("/run/extract", {**RANGE, "backend": "claude-code", "model": "claude-sonnet-5-5"}) == 200
+    cmd = captured["cmd"]
+    assert _flag(cmd, "--backend") == "claude-code" and _flag(cmd, "--model") == "claude-sonnet-5-5"
+
+
+def test_extract_per_run_backend_equal_to_stored_keeps_the_stored_model(campaign):
+    _, svc, captured = campaign
+    svc.update_config({"summary_native": {"extract": {"backend": "dgx", "model": "stored-dgx-model"}}})
+    assert _run("/run/extract", {**RANGE, "backend": "dgx"}) == 200
+    assert _flag(captured["cmd"], "--model") == "stored-dgx-model"
+
+
+def test_extract_unknown_backend_is_400_before_spawning(campaign):
+    _, _, captured = campaign
+    r = client.get(f"{BASE}/run/extract", params={**RANGE, "backend": "nope"})
+    assert r.status_code == 400 and "unknown backend" in r.json()["detail"]
+    assert "cmd" not in captured
+
+
+def test_extract_endpoints_with_a_per_run_non_dgx_backend_is_400(campaign):
+    _, _, captured = campaign
+    r = client.get(f"{BASE}/run/extract",
+                   params={**RANGE, "backend": "claude-code", "endpoints": ["http://spark:8001/v1"]})
+    assert r.status_code == 400 and "--endpoints" in r.json()["detail"]
+    assert "cmd" not in captured
+
+
 def test_extract_unset_range_or_directory_is_400(campaign):
     _, _, captured = campaign
     r = client.get(f"{BASE}/run/extract", params={"summaries_dir": "docs/summaries"})
@@ -1004,3 +1044,33 @@ def test_scheduler_status_rebuilds_safe_projection_from_record(campaign):
     record.write_text("{bad", encoding="utf-8")
     malformed = client.get(f"{BASE}/status/extract", params={"since": 3, "until": 9}).json()
     assert malformed["present"] is True and malformed["status"] == "error" and malformed["resume_available"] is False
+
+
+def test_audit_per_run_backend_overrides_the_stored_extract_backend(campaign):
+    _, svc, captured = campaign
+    svc.update_config({"summary_native": {"extract": {"backend": "dgx", "model": "stored-dgx-model"}}})
+    assert _run("/run/audit", {**RANGE, "track_file": ["docs/tracking/a.txt"], "backend": "claude-code"}) == 200
+    cmd = captured["cmd"]
+    assert _flag(cmd, "--backend") == "claude-code" and "stored-dgx-model" not in cmd
+
+
+def test_audit_unknown_backend_is_400_before_spawning(campaign):
+    _, _, captured = campaign
+    r = client.get(f"{BASE}/run/audit", params={**RANGE, "track_file": ["a.txt"], "backend": "nope"})
+    assert r.status_code == 400 and "cmd" not in captured
+
+
+def test_synth_per_run_backend_overrides_the_stored_prose_backend(campaign):
+    _, svc, captured = campaign
+    svc.update_config({"summary_native": {"prose": {"backend": "claude-code", "model": "claude-sonnet-5-5"}}})
+    assert _run("/run/synth/world_state", {**RANGE, "backend": "dgx", "model": "qwen-x"}) == 200
+    cmd = captured["cmd"]
+    assert _flag(cmd, "--backend") == "dgx" and _flag(cmd, "--model") == "qwen-x"
+    assert _run("/run/synth/world_state", {**RANGE, "backend": "dgx"}) == 200
+    assert "claude-sonnet-5-5" not in captured["cmd"]  # the stored model stays with the stored backend
+
+
+def test_synth_unknown_backend_is_400(campaign):
+    _, _, captured = campaign
+    r = client.get(f"{BASE}/run/synth/world_state", params={**RANGE, "backend": "nope"})
+    assert r.status_code == 400 and "cmd" not in captured

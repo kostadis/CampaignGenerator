@@ -59,7 +59,7 @@ from campaignlib.selection import ModelSelection
 from server.backend_forwarding import backend_cli_args
 from server.platform_config_service import resolve_selection, selection_cli_args
 from server.projection_config_service import ProjectionConfigService
-from server.routers.summary_native import _base_cmd, _require_dir, _run_config
+from server.routers.summary_native import _base_cmd, _require_dir, _run_config, per_run_service
 from server.subprocess_runner import console_script, stream_subprocess
 
 router = APIRouter()
@@ -482,6 +482,7 @@ async def run_threads_group_propose(
     max_tokens: int | None = None,
     dump_only: bool = False,
     model: str | None = None,
+    backend: str | None = None,
     claude_code_effort: str | None = None,
 ):
     """Stream ``summary_native thread-propose`` (SSE): a model groups the unattached thread notes.
@@ -500,6 +501,7 @@ async def run_threads_group_propose(
         if value is not None and value < 1:
             raise HTTPException(status_code=400, detail=f"{name} must be at least 1, got {value}")
     run = _run_config(request)
+    service, backend = per_run_service(run.prose, backend)
     cmd = _base_cmd("thread-propose", None, _require_dir(run, summaries_dir), since, until)
     if max_input_chars is not None:
         cmd += ["--max-input-chars", str(max_input_chars)]
@@ -508,7 +510,8 @@ async def run_threads_group_propose(
     if dump_only:
         cmd.append("--dump-only")
     cmd += selection_cli_args(resolve_selection(
-        request, request_model=model, service=run.prose, service_name="summary_native.prose",
+        request, request_model=model, request_backend=backend, service=service,
+        service_name="summary_native.prose",
         request_claude_code_effort=(claude_code_effort or "").strip() or None,
     ))
     return _sse_response(cmd)
