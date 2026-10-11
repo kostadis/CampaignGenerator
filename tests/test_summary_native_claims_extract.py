@@ -304,3 +304,49 @@ def test_import_rejects_unselected_chunk_and_model_free_imports_do_not_load_extr
         "assert 'pipelines.summary_native.claims.extract' not in sys.modules"
     )
     subprocess.run([sys.executable, "-c", code], cwd=Path(__file__).parents[1], check=True)
+
+
+# ── Backend/model resolution: flag > summary_native.extract > schema (never an invented default) ──
+
+def _settings(tmp_path, cfg: dict, *flags: str):
+    import argparse
+
+    import yaml as _yaml
+
+    from pipelines.summary_native import schema as _schema
+    from pipelines.summary_native.claims import cli as claims_cli
+
+    config = tmp_path / "grounding.yaml"
+    config.write_text(_yaml.safe_dump(cfg), encoding="utf-8")
+    args = argparse.Namespace(backend=None, model=None, max_tokens=None, chunk_chars=None)
+    for flag, value in zip(flags[::2], flags[1::2]):
+        setattr(args, flag, value)
+    return claims_cli._resolve_extract_settings(config, args), _schema
+
+
+def test_claims_extract_defaults_to_the_summary_native_extract_block(tmp_path):
+    (backend, model, _, _), _ = _settings(
+        tmp_path, {"summary_native": {"extract": {"backend": "dgx", "model": "stored-dgx-model"}}})
+    assert (backend, model) == ("dgx", "stored-dgx-model")
+
+
+def test_claims_extract_with_no_config_uses_the_schema_default_not_openai(tmp_path):
+    (backend, model, _, _), schema = _settings(tmp_path, {})
+    assert backend == schema.DEFAULT_DRAFT_BACKEND and model == schema.DEFAULT_DRAFT_MODEL
+    assert backend != "openai"
+
+
+def test_claims_extract_backend_flag_never_inherits_another_backends_model(tmp_path):
+    (backend, model, _, _), _ = _settings(
+        tmp_path, {"summary_native": {"extract": {"backend": "dgx", "model": "stored-dgx-model"}}},
+        "backend", "claude-code")
+    assert backend == "claude-code" and model != "stored-dgx-model"
+
+
+def test_claims_extract_parser_refuses_an_unknown_backend():
+    import pytest as _pytest
+
+    from pipelines.summary_native.claims import cli as claims_cli
+
+    with _pytest.raises(SystemExit):
+        claims_cli.run(["extract", "--config", "x.yaml", "--selection", "s.json", "--backend", "openai"])
