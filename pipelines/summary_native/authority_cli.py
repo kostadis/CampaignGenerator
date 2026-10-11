@@ -192,7 +192,7 @@ def run(args) -> int:
                         "section_sha256": sha256_bytes(section),
                     })
                 members = [
-                    {"selector_id": member.selector_id, "path": member.authored_path,
+                    {"selector_id": member.selector_id, "path": member.selector_path,
                      "resolved_path": member.resolved_path, "external": member.external,
                      "record_ids": list(member.record_ids), "reason": member.reason,
                      "sha256": member.digest,

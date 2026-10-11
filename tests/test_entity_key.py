@@ -16,7 +16,7 @@ sys.path.insert(0, str(REPO))
 
 from pipelines.ensemble.extract_facts import parse_facts_block  # noqa: E402
 
-AGENTS = REPO / "config" / "agents"
+AGENTS = REPO / "campaignlib" / "resources" / "agents"
 
 
 def test_entity_key_normalised_to_subject():

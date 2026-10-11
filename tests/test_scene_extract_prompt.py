@@ -15,7 +15,7 @@ from pathlib import Path
 
 import pytest
 
-_PROMPT = Path(__file__).resolve().parent.parent / "config" / "agents" / "scene_extract.md"
+_PROMPT = Path(__file__).resolve().parent.parent / "campaignlib" / "resources" / "agents" / "scene_extract.md"
 
 
 @pytest.fixture(scope="module")

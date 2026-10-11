@@ -95,10 +95,12 @@ def git_root(path: Path) -> Path:
     that's where Claude Code looks for it — not necessarily inside the
     campaign directory itself. Walks up from ``path`` looking for a ``.git``
     entry (a directory normally, a file for worktrees — either marks a repo
-    root, so no need to distinguish them here).
+    root). A ``.git`` directory counts only if it holds a ``HEAD``, so a
+    stray empty one (e.g. ``/tmp/.git``) is not mistaken for a repo.
     """
     for candidate in (path, *path.parents):
-        if (candidate / ".git").exists():
+        marker = candidate / ".git"
+        if marker.is_file() or (marker / "HEAD").exists():
             return candidate
     return path
 

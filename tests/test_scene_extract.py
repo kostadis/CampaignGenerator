@@ -1483,8 +1483,8 @@ def test_scene_extract_cli_prints_projected_output_line_with_ceiling_note(monkey
 
 # ── T048: batched prompt must not drift from the per-scene prompt (FR-016) ────
 #
-# `config/agents/scene_extract.md` (per-scene) and
-# `config/agents/scene_extract_batched.md` (batched) are two independent
+# `campaignlib/resources/agents/scene_extract.md` (per-scene) and
+# `campaignlib/resources/agents/scene_extract_batched.md` (batched) are two independent
 # files; nothing enforces that an edit to one propagates to the other. This
 # guards the load-bearing verbatim ground rules specifically — not the whole
 # prompt, which legitimately differs (multi-scene scoping language, the
@@ -1500,8 +1500,8 @@ def test_scene_extract_cli_prints_projected_output_line_with_ceiling_note(monkey
 # text won't be found there and the parametrised id names exactly which rule
 # went missing.
 
-PER_SCENE_PROMPT_PATH = REPO_ROOT / "config" / "agents" / "scene_extract.md"
-BATCHED_PROMPT_PATH = REPO_ROOT / "config" / "agents" / "scene_extract_batched.md"
+PER_SCENE_PROMPT_PATH = REPO_ROOT / "campaignlib" / "resources" / "agents" / "scene_extract.md"
+BATCHED_PROMPT_PATH = REPO_ROOT / "campaignlib" / "resources" / "agents" / "scene_extract_batched.md"
 
 #: (rule_id, anchor) — `anchor` is the distinctive leading phrase of one
 #: "- " bullet in scene_extract.md's GROUND RULES / "THE TRANSCRIPT OWNS ITS
