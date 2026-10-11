@@ -1869,6 +1869,9 @@ def main(argv: "list[str] | None" = None) -> int:
         "import-frontmatter", "import-alias-decisions", "mark-distinct",
         "mark-rejected", "alias", "merge",
     }
+    if args.cmd == "init":
+        # init creates the campaign; the lock lives inside it.
+        Path(args.campaign_dir).mkdir(parents=True, exist_ok=True)
     with authority_lock(Path(args.campaign_dir).resolve(), exclusive=args.cmd in writers):
         require_no_pending_transaction(Path(args.campaign_dir).resolve())
         return args.func(args)

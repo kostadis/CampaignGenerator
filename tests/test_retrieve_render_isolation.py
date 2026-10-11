@@ -61,6 +61,7 @@ ALLOWED_FILES = {
     "pipelines/rlm/dossier_proposer.py",   # slotting only, never calls render
     "campaignlib/api/client.py",  # defines stream_api / call_api themselves
     "server/subprocess_runner.py",  # transport layer for CLIs
+    "campaignlib/subprocess_runner.py",  # transport layer for CLIs (server/ re-exports it)
 }
 
 

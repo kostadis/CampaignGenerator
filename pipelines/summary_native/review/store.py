@@ -453,7 +453,9 @@ def read_review_state(campaign_dir: Path, review_id: str, *, _already_locked: bo
 def _validate_action_decision(item: ReviewItem, *, verdict: str, disposition: str) -> None:
     """Enforce item-specific meaning at every decision ingestion boundary."""
     action = item.proposed_action.action
-    if action == "signoff_document":
+    # An NPC draft sign-off records the same exact-bytes approval as a document
+    # sign-off (review/cli.py npc sign); npc_publish requires that disposition.
+    if action in {"signoff_document", "signoff_npc_draft"}:
         allowed = {
             ("approve", "document_signoff"),
             ("reject", "reject_action"),

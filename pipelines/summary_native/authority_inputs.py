@@ -15,7 +15,7 @@ from pipelines.summary_native.authority_apply import authority_lock, require_no_
 @dataclass(frozen=True)
 class SelectionMember:
     selector_id: str
-    authored_path: str
+    selector_path: str
     resolved_path: str
     external: bool
     record_ids: tuple[str, ...]
@@ -243,7 +243,7 @@ def resolve_selection(campaign_dir: Path, selectors) -> SelectionSnapshot:
             if old:
                 members[resolved] = SelectionMember(
                     selector_id=",".join(sorted({*old.selector_id.split(","), selector.id})),
-                    authored_path=",".join(sorted({*old.authored_path.split(","), authored})),
+                    selector_path=",".join(sorted({*old.selector_path.split(","), authored})),
                     resolved_path=str(resolved), external=old.external,
                     record_ids=tuple(sorted(set(old.record_ids) | set(ids))), digest=old.digest,
                     reason=",".join(sorted({*old.reason.split(","), member.reason})),
@@ -423,7 +423,7 @@ def selected_planning_records(campaign_dir: Path, ledger: AuthorityLedger, selec
             # Do not disclose an omitted file or record id to a non-GM caller.
             if audience != "gm":
                 raise AuthorityError("selected planning authority has no complete support for this audience")
-            raise AuthorityError(f"selected note has no active classified planning record: {member.authored_path}{suffix}")
+            raise AuthorityError(f"selected note has no active classified planning record: {member.selector_path}{suffix}")
         result.extend(matching)
     return sorted({record.id: record for record in result}.values(), key=lambda record: record.id)
 

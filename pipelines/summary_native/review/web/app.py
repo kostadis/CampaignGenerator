@@ -18,7 +18,7 @@ from campaignlib.review_config import ReviewConfig
 from pipelines.summary_native.review.access import authenticate_token
 from pipelines.summary_native.review.models import AccessAction, AccessGrant, parse_json_strict
 from pipelines.summary_native.review.store import ReviewStoreError
-from server.subprocess_runner import BoundedJSONError, console_script, run_bounded_json
+from campaignlib.subprocess_runner import BoundedJSONError, console_script, run_bounded_json
 
 
 _ASSETS = {

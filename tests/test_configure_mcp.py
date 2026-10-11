@@ -9,6 +9,12 @@ sys.path.insert(0, str(ROOT))
 from pipelines.workspace.configure_mcp import build_server_block, configure_campaign, find_campaigns, git_root, main
 
 
+def _git_init(path: Path) -> None:
+    """A minimal repo marker: git_root needs a ``.git`` holding ``HEAD``."""
+    (path / ".git").mkdir(parents=True)
+    (path / ".git" / "HEAD").write_text("ref: refs/heads/main\n")
+
+
 def _make_campaign(dir_path: Path) -> None:
     (dir_path / "config").mkdir(parents=True)
     (dir_path / "config" / "config.yaml").write_text("documents: []\n")
@@ -75,7 +81,7 @@ def test_provenance_server_absent_without_a_workspace_manifest(tmp_path):
 
 def test_provenance_server_gated_on_the_repo_root_manifest(tmp_path):
     repo = tmp_path / "workspace"
-    (repo / ".git").mkdir(parents=True)
+    _git_init(repo)
     (repo / "provenance.yaml").write_text("version: 1\ncampaigns: {}\n")
     campaign = repo / "Phandalin"
     _make_campaign(campaign)
@@ -87,7 +93,7 @@ def test_provenance_server_gated_on_the_repo_root_manifest(tmp_path):
 def test_provenance_server_carries_no_campaign_binding(tmp_path):
     """The absence of a campaign pin IS the feature (research D4)."""
     repo = tmp_path / "workspace"
-    (repo / ".git").mkdir(parents=True)
+    _git_init(repo)
     (repo / "provenance.yaml").write_text("version: 1\ncampaigns: {}\n")
     campaign = repo / "Phandalin"
     _make_campaign(campaign)
@@ -102,7 +108,7 @@ def test_provenance_server_carries_no_campaign_binding(tmp_path):
 def test_a_manifest_beside_the_campaign_does_not_count(tmp_path):
     """The gate is the *workspace* manifest at the repo root, not a stray file."""
     repo = tmp_path / "workspace"
-    (repo / ".git").mkdir(parents=True)
+    _git_init(repo)
     campaign = repo / "Phandalin"
     _make_campaign(campaign)
     (campaign / "provenance.yaml").write_text("version: 1\ncampaigns: {}\n")
@@ -113,7 +119,7 @@ def test_a_manifest_beside_the_campaign_does_not_count(tmp_path):
 def test_two_campaigns_in_one_repo_emit_the_same_provenance_block(tmp_path):
     """Identical entries, so the shared-.mcp.json overwrite note cannot bite here."""
     repo = tmp_path / "workspace"
-    (repo / ".git").mkdir(parents=True)
+    _git_init(repo)
     (repo / "provenance.yaml").write_text("version: 1\ncampaigns: {}\n")
     first, second = repo / "Phandalin", repo / "toee"
     _make_campaign(first)
@@ -129,7 +135,7 @@ def test_two_campaigns_in_one_repo_emit_the_same_provenance_block(tmp_path):
 
 def test_git_root_finds_repo_root_above_a_nested_campaign_dir(tmp_path):
     repo = tmp_path / "workspace"
-    (repo / ".git").mkdir(parents=True)
+    _git_init(repo)
     campaign = repo / "out-of-the-abyss"
     _make_campaign(campaign)
 
@@ -139,7 +145,7 @@ def test_git_root_finds_repo_root_above_a_nested_campaign_dir(tmp_path):
 def test_git_root_returns_campaign_dir_when_it_is_the_repo_root_itself(tmp_path):
     campaign = tmp_path / "Phandalin"
     _make_campaign(campaign)
-    (campaign / ".git").mkdir()
+    _git_init(campaign)
 
     assert git_root(campaign) == campaign
 
@@ -153,7 +159,7 @@ def test_git_root_returns_path_itself_when_not_in_a_repo(tmp_path):
 
 def test_configure_campaign_writes_to_repo_root_not_campaign_dir(tmp_path, capsys):
     repo = tmp_path / "workspace"
-    (repo / ".git").mkdir(parents=True)
+    _git_init(repo)
     campaign = repo / "out-of-the-abyss"
     _make_campaign(campaign)
 
@@ -174,7 +180,7 @@ def test_configure_campaign_writes_to_repo_root_not_campaign_dir(tmp_path, capsy
 
 def test_main_warns_when_two_campaigns_share_a_repo_root(tmp_path, capsys):
     repo = tmp_path / "workspace"
-    (repo / ".git").mkdir(parents=True)
+    _git_init(repo)
     _make_campaign(repo / "out-of-the-abyss")
     _make_campaign(repo / "Phandalin")
 
