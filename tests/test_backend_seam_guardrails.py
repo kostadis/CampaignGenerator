@@ -113,6 +113,9 @@ EXPECTED_REGISTRAR_FILES = frozenset(
         "pipelines/grounding/grounding_sections.py",
         "pipelines/grounding/thread_registry.py",
         "pipelines/summary_native/cli.py",
+        # `summary_native claims` parses its own argv (dispatched from summary_native/cli.py), so its
+        # extract subcommand is a second parser file of the summary_native command, not a 32nd command.
+        "pipelines/summary_native/claims/cli.py",
         "pipelines/ensemble/synthesise_world_state.py",
         "pipelines/ensemble/synthesise_polish.py",
         "pipelines/ensemble/extract_facts.py",
@@ -306,6 +309,31 @@ _CANDIDATE_IDS = [str(p.relative_to(REPO_ROOT)) for p in _CANDIDATE_FILES]
 
 # ── Production inventory (spec 016) ────────────────────────────────────────
 
+# Parser files that belong to another command: a subcommand whose argv the parent CLI hands over whole.
+_SUBCOMMAND_PARSERS: dict[str, str] = {
+    "pipelines/summary_native/claims/cli.py": "summary_native",
+}
+
+
+def _command_name(rel: str) -> str:
+    """The console-script name of an inventory file.
+
+    A file's stem is its command, except a package whose entry point is
+    ``cli.py`` (``pipelines/summary_native/cli.py`` -> ``summary_native``), and a
+    subcommand's own parser file, which belongs to its parent command
+    (``_SUBCOMMAND_PARSERS``).
+    """
+    if rel in _SUBCOMMAND_PARSERS:
+        return _SUBCOMMAND_PARSERS[rel]
+    path = Path(rel)
+    return path.parent.name if path.stem == "cli" else path.stem
+
+
+def _command_count(files: frozenset[str]) -> int:
+    """Commands, not parser files: a subcommand's parser file does not add a surface."""
+    return len({_command_name(rel) for rel in files})
+
+
 def test_production_backend_surface_inventory_is_exact():
     """All and only the 31 production backend surfaces are parser-discovered.
 
@@ -315,11 +343,11 @@ def test_production_backend_surface_inventory_is_exact():
     """
     registrars, hand_written = discover_backend_surfaces()
 
-    assert len(registrars) == 27, sorted(registrars)
+    assert len(registrars) == 28, sorted(registrars)
     assert registrars == EXPECTED_REGISTRAR_FILES
     assert len(hand_written) == 4, sorted(hand_written)
     assert hand_written == EXPECTED_HAND_WRITTEN_FILES
-    assert len(registrars | hand_written) == 31
+    assert _command_count(registrars | hand_written) == 31
 
 
 def test_runtime_dispatcher_inventory_is_exact():
@@ -562,16 +590,6 @@ _UI_REACHABILITY: dict[str, _UIReachability] = {
         ("polish",),
     ),
 }
-
-
-def _command_name(rel: str) -> str:
-    """The console-script name of an inventory file.
-
-    A file's stem is its command, except a package whose entry point is
-    ``cli.py`` (``pipelines/summary_native/cli.py`` -> ``summary_native``).
-    """
-    path = Path(rel)
-    return path.parent.name if path.stem == "cli" else path.stem
 
 
 def _inventory_command_names() -> frozenset[str]:
@@ -974,7 +992,7 @@ def test_batch_flag_only_built_by_selection_cli_args():
 def test_all_31_codex_surfaces_share_reasoning_effort_registration():
     registrars, hand_written = discover_backend_surfaces()
     dispatchers = discover_runtime_dispatchers(registrars, hand_written)
-    assert len(registrars | hand_written) == 31
+    assert _command_count(registrars | hand_written) == 31
     assert len(dispatchers) == 4
 
     for relative_path in sorted(hand_written):
@@ -1001,7 +1019,7 @@ def test_all_31_claude_code_surfaces_share_effort_registration():
     """
     registrars, hand_written = discover_backend_surfaces()
     dispatchers = discover_runtime_dispatchers(registrars, hand_written)
-    assert len(registrars | hand_written) == 31
+    assert _command_count(registrars | hand_written) == 31
     assert len(dispatchers) == 4
 
     for relative_path in sorted(hand_written):
@@ -1017,7 +1035,7 @@ def test_all_31_claude_code_surfaces_share_thinking_registration():
     only a thinking-enabled run can use, so a CLI that accepts effort without
     thinking hands the operator a choice that always fails there."""
     registrars, hand_written = discover_backend_surfaces()
-    assert len(registrars | hand_written) == 31
+    assert _command_count(registrars | hand_written) == 31
     for relative_path in sorted(hand_written):
         tree = _parse(REPO_ROOT / relative_path)
         calls = {_call_func_name(node) for node in _all_calls(tree)}

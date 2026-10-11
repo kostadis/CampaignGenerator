@@ -13,8 +13,11 @@ from pathlib import Path
 
 import yaml
 
+from campaignlib import DEFAULT_MODEL, add_backend_args
+from campaignlib.api.client import resolve_cli_model
 from campaignlib.config import campaign_root_for_config
 from campaignlib.grounding_config import promotion_config_from_summary_native
+from pipelines.summary_native.resolve import resolve_extract
 from pipelines.summary_native.claims.models import CandidateRun, CheckReport, ClaimAnnotation, SourceSelection
 from pipelines.summary_native.claims.packets import assemble_packet, save_packet
 from pipelines.summary_native.claims.imports import import_candidates
@@ -67,7 +70,9 @@ def build_parser() -> argparse.ArgumentParser:
         command.add_argument("--config", required=True); command.add_argument("--selection", required=True)
         command.add_argument("--json", action="store_true")
         if name == "extract":
-            command.add_argument("--backend"); command.add_argument("--model")
+            # The shared registrar: canonical --backend choices plus the Codex/Claude Code effort and thinking
+            # flags. No parser default, so a blank flag falls through to grounding.yaml (see below).
+            add_backend_args(command, default_backend=None); command.add_argument("--model")
             command.add_argument("--max-tokens", type=int); command.add_argument("--chunk-chars", type=int)
             command.add_argument("--force", action="store_true"); command.add_argument("--verbose", action="store_true")
         if name == "import": command.add_argument("--candidates", required=True)
@@ -119,15 +124,18 @@ def _rules(selection: SourceSelection) -> tuple[tuple[str, str], ...]:
     return tuple(tuple(value.rsplit("/", 1)) if "/" in value else (value, "1") for value in selection.rule_versions)
 
 
-def _resolve_extract_settings(config: Path, args) -> tuple[str, str, int, int]:
+def _resolve_extract_settings(config: Path, args) -> tuple[str, str | None, int, int]:
+    """Backend and model: flag > grounding.yaml summary_native.extract > schema, the same chain as
+    ``summary_native extract`` (claims extraction is an extraction step of the same pipeline). The
+    configured model applies only to the backend it was written for, so a ``--backend`` with no
+    ``--model`` gets that backend's own default rather than another backend's id."""
     raw = yaml.safe_load(config.read_text(encoding="utf-8")) or {}
     summary = raw.get("summary_native") if isinstance(raw, dict) else None
     promotion = promotion_config_from_summary_native(summary)
-    selected = raw.get("selection") if isinstance(raw, dict) else None
-    selected = selected if isinstance(selected, dict) else {}
+    settings = resolve_extract(summary if isinstance(summary, dict) else {}, backend=args.backend, model=args.model)
     return (
-        args.backend or selected.get("backend") or "openai",
-        args.model or selected.get("model") or "gpt-4o-mini",
+        settings.backend,
+        settings.model,
         promotion.claim_max_tokens if args.max_tokens is None else args.max_tokens,
         promotion.claim_chunk_chars if args.chunk_chars is None else args.chunk_chars,
     )
@@ -200,6 +208,8 @@ def run(argv: list[str] | None = None) -> int:
             packet = _packet(root, selection)
             if args.command == "extract":
                 args.backend, args.model, args.max_tokens, args.chunk_chars = _resolve_extract_settings(config, args)
+                # No model for a non-stored backend: that backend's own default, exactly as `summary_native extract`.
+                args.model = resolve_cli_model(args, legacy_default=DEFAULT_MODEL).effective_model
                 result_value = extract_candidates(root, selection, packet,
                     selected_chunk_ids=tuple(item.chunk_id for item in selection.chunks), backend=args.backend,
                     model=args.model, prompt_version="claims-v1", rules="claims/1",

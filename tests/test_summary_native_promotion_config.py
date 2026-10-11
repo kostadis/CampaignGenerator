@@ -35,11 +35,14 @@ def test_claim_extractor_uses_config_defaults_and_explicit_overrides(tmp_path) -
     from pipelines.summary_native.claims.cli import _resolve_extract_settings
 
     config = tmp_path / "grounding.yaml"
+    # Backend and model follow summary_native extract (flag > summary_native.extract > schema); the
+    # grounding-wide `selection` block is not a claims default.
     config.write_text(
-        "selection:\n  backend: openrouter\n  model: vendor/configured\n"
-        "summary_native:\n  promotion:\n    claim_max_tokens: 2222\n    claim_chunk_chars: 3333\n"
+        "selection:\n  backend: anthropic\n  model: not-for-claims\n"
+        "summary_native:\n  extract:\n    backend: openrouter\n    model: vendor/configured\n"
+        "  promotion:\n    claim_max_tokens: 2222\n    claim_chunk_chars: 3333\n"
     )
     unset = SimpleNamespace(backend=None, model=None, max_tokens=None, chunk_chars=None)
     assert _resolve_extract_settings(config, unset) == ("openrouter", "vendor/configured", 2222, 3333)
-    explicit = SimpleNamespace(backend="openai", model="flag-model", max_tokens=4444, chunk_chars=5555)
-    assert _resolve_extract_settings(config, explicit) == ("openai", "flag-model", 4444, 5555)
+    explicit = SimpleNamespace(backend="claude-code", model="flag-model", max_tokens=4444, chunk_chars=5555)
+    assert _resolve_extract_settings(config, explicit) == ("claude-code", "flag-model", 4444, 5555)
