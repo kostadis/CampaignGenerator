@@ -753,11 +753,10 @@ onMounted(async () => {
         Drafts are written for review. Claims review and whole-bundle promotion follow the drafts, below; the
         review queue, sign-offs and private reviewer links are on the <RouterLink to="/grounding/review">Shared review</RouterLink> page.
       </p>
+      <p v-if="sharedClaimsSelection" class="subtitle selection-line" data-test="shared-claims-selection">
+        Current server-saved claims selection: <code>{{ sharedClaimsSelection }}</code>
+      </p>
     </div>
-
-    <p v-if="sharedClaimsSelection" class="subtitle" data-test="shared-claims-selection">
-      Current server-saved claims selection: <code>{{ sharedClaimsSelection }}</code>
-    </p>
 
 
     <div class="form-grid">
@@ -854,8 +853,10 @@ onMounted(async () => {
                 </tr>
               </tbody>
             </table>
-            <label class="field-label">Applied resolution ruling file</label>
-            <input class="field-input" v-model="authorityResolutionRecordFile" placeholder="docs/authority/records/gate-resolution.yaml" />
+            <div class="field">
+              <label class="field-label">Applied resolution ruling file</label>
+              <input class="field-input" v-model="authorityResolutionRecordFile" placeholder="docs/authority/records/gate-resolution.yaml" />
+            </div>
             <div class="field">
               <label class="field-label">Record a human finding</label>
               <input class="field-input" v-model="authorityConflictId" placeholder="contradictory-gate-account" />
@@ -1467,5 +1468,18 @@ onMounted(async () => {
 .authority-actions .field { margin-bottom: 0; }
 .authority-actions .btn-neutral { margin: 6px 6px 0 0; }
 .authority-buttons { white-space: nowrap; }
+/* The app's global reset zeroes every margin, so the authority panel spaces its own parts. */
+.selection-line { margin-top: 6px; }
+.selection-line code { font-family: var(--mono); font-size: 11px; }
+.authority > .btn-neutral { margin-top: 6px; }
+.authority .field > .field-input + .field-input { margin-top: 6px; }
+.authority .field > .field-input + .btn-neutral { margin-top: 6px; }
+.authority-approval, .authority-recovery { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; }
+.authority-approval .field-input { width: 100%; }
+.authority-approval .btn-neutral, .authority-recovery .btn-neutral { margin: 0; }
+.authority-conflicts { display: flex; flex-direction: column; gap: 8px; }
+.authority-conflicts h4 { font-size: 11px; font-weight: 700; color: var(--text); }
+.authority-conflicts .field { margin-bottom: 0; }
+.authority-conflicts .drafts { margin-top: 0; }
 .authority-diff, .authority-history { max-height: 260px; overflow: auto; white-space: pre-wrap; padding: 8px; background: var(--bg-base); border: 1px solid var(--bg-surface1); border-radius: 4px; color: var(--text-sub); font: 10px var(--mono); }
 </style>
