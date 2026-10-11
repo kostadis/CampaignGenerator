@@ -1044,3 +1044,33 @@ def test_scheduler_status_rebuilds_safe_projection_from_record(campaign):
     record.write_text("{bad", encoding="utf-8")
     malformed = client.get(f"{BASE}/status/extract", params={"since": 3, "until": 9}).json()
     assert malformed["present"] is True and malformed["status"] == "error" and malformed["resume_available"] is False
+
+
+def test_audit_per_run_backend_overrides_the_stored_extract_backend(campaign):
+    _, svc, captured = campaign
+    svc.update_config({"summary_native": {"extract": {"backend": "dgx", "model": "stored-dgx-model"}}})
+    assert _run("/run/audit", {**RANGE, "track_file": ["docs/tracking/a.txt"], "backend": "claude-code"}) == 200
+    cmd = captured["cmd"]
+    assert _flag(cmd, "--backend") == "claude-code" and "stored-dgx-model" not in cmd
+
+
+def test_audit_unknown_backend_is_400_before_spawning(campaign):
+    _, _, captured = campaign
+    r = client.get(f"{BASE}/run/audit", params={**RANGE, "track_file": ["a.txt"], "backend": "nope"})
+    assert r.status_code == 400 and "cmd" not in captured
+
+
+def test_synth_per_run_backend_overrides_the_stored_prose_backend(campaign):
+    _, svc, captured = campaign
+    svc.update_config({"summary_native": {"prose": {"backend": "claude-code", "model": "claude-sonnet-5-5"}}})
+    assert _run("/run/synth/world_state", {**RANGE, "backend": "dgx", "model": "qwen-x"}) == 200
+    cmd = captured["cmd"]
+    assert _flag(cmd, "--backend") == "dgx" and _flag(cmd, "--model") == "qwen-x"
+    assert _run("/run/synth/world_state", {**RANGE, "backend": "dgx"}) == 200
+    assert "claude-sonnet-5-5" not in captured["cmd"]  # the stored model stays with the stored backend
+
+
+def test_synth_unknown_backend_is_400(campaign):
+    _, _, captured = campaign
+    r = client.get(f"{BASE}/run/synth/world_state", params={**RANGE, "backend": "nope"})
+    assert r.status_code == 400 and "cmd" not in captured

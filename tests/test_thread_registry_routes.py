@@ -469,6 +469,17 @@ def test_group_propose_reads_the_prose_block_of_grounding_yaml(campaign, capture
     assert _flag(captured_sse[0], "--model") == "claude-opus-5-5"
 
 
+def test_group_propose_per_run_backend_overrides_the_prose_block(campaign, captured_sse):
+    from server.grounding_config_service import GroundingConfigService
+
+    GroundingConfigService(campaign / "config").update_config(
+        {"summary_native": {"prose": {"backend": "claude-code", "model": "claude-opus-5-5"}}})
+    assert _sse("/run/group-propose", {**GRANGE, "backend": "dgx"}) == 200
+    cmd = captured_sse[0]
+    assert _flag(cmd, "--backend") == "dgx" and "claude-opus-5-5" not in cmd
+    assert client.get(f"{GROUP_BASE}/run/group-propose", params={**GRANGE, "backend": "nope"}).status_code == 400
+
+
 def test_plan_route_is_the_emit_plan_verb_and_read_only(campaign, fake_cli):
     calls, outcome = fake_cli
     outcome["stdout"] = json.dumps({"id": "x", "title": "X", "members": ["n-1"], "log": []})
