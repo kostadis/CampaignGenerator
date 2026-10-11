@@ -461,6 +461,46 @@ def test_extract_stored_config_reaches_the_command(campaign):
     assert _flag(captured["cmd"], "--chunk-chars") == "99"  # a request beats the stored value
 
 
+def test_extract_per_run_backend_overrides_the_stored_one(campaign):
+    _, svc, captured = campaign
+    svc.update_config({"summary_native": {"extract": {"backend": "dgx", "model": "stored-dgx-model"}}})
+    assert _run("/run/extract", {**RANGE, "backend": "claude-code"}) == 200
+    cmd = captured["cmd"]
+    assert _flag(cmd, "--backend") == "claude-code"
+    # the stored model belongs to the stored backend, so it never rides along to another one
+    assert "stored-dgx-model" not in cmd
+
+
+def test_extract_per_run_backend_and_model_reach_the_command(campaign):
+    _, svc, captured = campaign
+    svc.update_config({"summary_native": {"extract": {"backend": "dgx", "model": "stored-dgx-model"}}})
+    assert _run("/run/extract", {**RANGE, "backend": "claude-code", "model": "claude-sonnet-5-5"}) == 200
+    cmd = captured["cmd"]
+    assert _flag(cmd, "--backend") == "claude-code" and _flag(cmd, "--model") == "claude-sonnet-5-5"
+
+
+def test_extract_per_run_backend_equal_to_stored_keeps_the_stored_model(campaign):
+    _, svc, captured = campaign
+    svc.update_config({"summary_native": {"extract": {"backend": "dgx", "model": "stored-dgx-model"}}})
+    assert _run("/run/extract", {**RANGE, "backend": "dgx"}) == 200
+    assert _flag(captured["cmd"], "--model") == "stored-dgx-model"
+
+
+def test_extract_unknown_backend_is_400_before_spawning(campaign):
+    _, _, captured = campaign
+    r = client.get(f"{BASE}/run/extract", params={**RANGE, "backend": "nope"})
+    assert r.status_code == 400 and "unknown backend" in r.json()["detail"]
+    assert "cmd" not in captured
+
+
+def test_extract_endpoints_with_a_per_run_non_dgx_backend_is_400(campaign):
+    _, _, captured = campaign
+    r = client.get(f"{BASE}/run/extract",
+                   params={**RANGE, "backend": "claude-code", "endpoints": ["http://spark:8001/v1"]})
+    assert r.status_code == 400 and "--endpoints" in r.json()["detail"]
+    assert "cmd" not in captured
+
+
 def test_extract_unset_range_or_directory_is_400(campaign):
     _, _, captured = campaign
     r = client.get(f"{BASE}/run/extract", params={"summaries_dir": "docs/summaries"})

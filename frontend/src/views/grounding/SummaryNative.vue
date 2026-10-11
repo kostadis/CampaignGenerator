@@ -80,6 +80,15 @@ const forceExtract = ref(false)
 // same model; blank uses the single endpoint the backend resolves. Workers = in-flight calls per endpoint.
 const extractEndpointsText = ref('')
 const extractParallel = ref<Num>('')
+// Per run, never persisted: blank backend/model use grounding.yaml summary_native.extract. A backend other than
+// the stored one drops the stored model (it belongs to the stored backend); a blank model then uses that backend's default.
+const EXTRACT_BACKENDS = ['anthropic', 'dgx', 'openrouter', 'claude-code', 'codex-cli'] as const
+const extractBackend = ref('')
+const extractModel = ref('')
+const storedExtract = computed(() => {
+  const e = (config.groundingConfig?.summary_native?.extract ?? {}) as { backend?: string; model?: string }
+  return { backend: e.backend || '', model: e.model || '' }
+})
 const extractResume = ref(false)
 const extractResumeId = ref('')
 // Audit (per run, never persisted): track files are prefilled from grounding.yaml campaign_state.track_files and
@@ -518,6 +527,8 @@ const extractParams = computed(() => ({
   max_tokens: num(extractMaxTokens.value),
   dump_only: extractDumpOnly.value,
   force: forceExtract.value,
+  backend: extractBackend.value || undefined,
+  model: extractModel.value.trim() || undefined,
   endpoints: lines(extractEndpointsText.value),
   parallel: num(extractParallel.value),
   ...(extractResume.value ? { resume: extractResumeId.value.trim() } : {}),
@@ -934,6 +945,22 @@ onMounted(async () => {
             <label class="field-label">Workers per endpoint</label>
             <input type="number" min="1" class="field-input" v-model.number="extractParallel" />
             <span class="field-help">Calls in flight at once on each endpoint (<code>--parallel</code>). Blank resolves from the selected model and is recorded with its source.</span>
+          </div>
+        </div>
+        <div class="num-grid">
+          <div class="field">
+            <label class="field-label">Backend</label>
+            <select class="field-input" v-model="extractBackend" aria-label="Extract backend">
+              <option value="">stored{{ storedExtract.backend ? ` (${storedExtract.backend})` : '' }}</option>
+              <option v-for="b in EXTRACT_BACKENDS" :key="b" :value="b">{{ b }}</option>
+            </select>
+            <span class="field-help">Blank uses <code>summary_native.extract.backend</code> from grounding.yaml. The sidebar backend does not apply here. Not saved.</span>
+          </div>
+          <div class="field">
+            <label class="field-label">Model</label>
+            <input type="text" class="field-input" v-model="extractModel"
+              :placeholder="extractBackend && extractBackend !== storedExtract.backend ? 'that backend\'s default' : (storedExtract.model || 'stored default')" />
+            <span class="field-help">Blank uses the stored model, or the chosen backend's default when it differs from the stored one.</span>
           </div>
         </div>
         <div class="field">

@@ -33,6 +33,7 @@ from campaignlib.constants import config_path
 from campaignlib.grounding_config import DEFAULT_MAX_REPORT_BYTES
 from campaignlib.players_config import PLAYERS_CONFIG_FILENAME
 from campaignlib.projection_config import PROJECTION_CONFIG_FILENAME, load_projection_config
+from campaignlib.selection import BACKENDS
 from pipelines.summary_native import annotate, audit_select, freshness, notes, resolve, schema, thread_attach
 from server.grounding_config_shared import SummaryNativeRun
 from server.platform_config_service import resolve_selection, selection_cli_args
@@ -1162,6 +1163,7 @@ async def run_extract(
     dump_only: bool = False,
     force: bool = False,
     model: str | None = None,
+    backend: str | None = None,
     endpoints: list[str] | None = Query(default=None),
     parallel: int | None = None,
     resume: str | None = None,
@@ -1170,6 +1172,9 @@ async def run_extract(
     directory = _require_dir(run, summaries_dir)
     lo, hi = _require_range(run, since, until)
     urls = [e.strip() for e in (endpoints or []) if e.strip()]
+    backend = (backend or "").strip() or None
+    if backend is not None and backend not in BACKENDS:
+        raise HTTPException(status_code=400, detail=f"unknown backend {backend!r}; choose one of: {', '.join(BACKENDS)}")
     if parallel is not None and parallel < 1:
         raise HTTPException(status_code=400, detail=f"parallel must be at least 1, got {parallel}")
     if resume is not None and (force or dump_only):
@@ -1184,11 +1189,16 @@ async def run_extract(
         cmd.append("--force")
     # Endpoints are machine wiring, never stored in grounding.yaml: a request value rides on top of
     # the stored backend/model and reaches the command as `--endpoints A B` (the CLI's own spelling).
+    # A per-run backend that differs from the stored one drops the stored model: that model belongs to the
+    # stored backend (a DGX id is meaningless on claude-code), so the pairing rule in resolve_selection
+    # supplies the model for the requested backend instead.
+    stored_model = run.extract.model if backend in (None, run.extract.backend) else None
     service = run.extract
-    if urls:
-        service = SimpleNamespace(backend=run.extract.backend, model=run.extract.model, endpoints=tuple(urls))
+    if urls or stored_model != run.extract.model:
+        service = SimpleNamespace(backend=run.extract.backend, model=stored_model, endpoints=tuple(urls))
     resolved = resolve_selection(
-        request, request_model=model, service=service, service_name=f"{_SERVICE_NAME}.extract",
+        request, request_model=model, request_backend=backend, service=service,
+        service_name=f"{_SERVICE_NAME}.extract",
     )
     if urls and resolved.backend not in _ENDPOINT_BACKENDS:
         raise HTTPException(status_code=400, detail=f"--endpoints applies to --backend dgx only, not {resolved.backend}")
