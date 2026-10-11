@@ -283,9 +283,15 @@ onMounted(refreshAuthority)
       <pre v-if="authorityDiff" class="authority-diff" aria-label="Exact proposed source diff">{{ authorityDiff }}</pre>
       <span v-if="authorityProposalArtifacts.length" class="field-help">Proposal artifacts: {{ authorityProposalArtifacts.join(', ') }}</span>
 
-      <div v-if="authoritySelectedId" class="field authority-withdraw">
-        <label class="field-label">Withdrawal reason for {{ authoritySelectedId }}</label>
+      <!-- One reason serves withdraw, retire, dismiss and record-a-finding, so it stays
+           visible with no record selected: conflicts are ruled on without one. -->
+      <div class="field">
+        <label class="field-label">Reason</label>
         <input class="field-input" v-model="authorityReason" placeholder="Reason for requesting a safe reversal" />
+        <span class="field-help">Required to withdraw or retire a record, dismiss a conflict, or record a human finding.</span>
+      </div>
+      <div v-if="authoritySelectedId" class="field authority-withdraw">
+        <label class="field-label">Selected record: {{ authoritySelectedId }}</label>
         <button class="btn-neutral btn-sm" :disabled="authorityBusy || !authorityReason.trim()"
           @click="runAuthority(`records/${encodeURIComponent(authoritySelectedId)}/withdraw`, { reason: authorityReason })">Request withdrawal</button>
         <button class="btn-neutral btn-sm" :disabled="authorityBusy || !authorityReason.trim() || !authorityStatus?.sha256"

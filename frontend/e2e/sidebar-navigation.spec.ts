@@ -106,7 +106,8 @@ const PATHS = [
     id: 'summary-native',
     label: 'Summary-native',
     description: 'Parses reviewed session summaries directly — no extraction pass.',
-    items: ['Summary-native'],
+    // The follow-on pages moved off the build flow (#555, #562) sit under it.
+    items: ['Summary-native', 'Claims & promotion', 'Shared review', 'Rulings'],
   },
 ]
 
@@ -197,13 +198,14 @@ test('NPCs is its own top-level path, outside Grounding', async ({ page }) => {
   const npcs = group(page, 'NPCS')
   await expect(npcs.getByRole('heading', { level: 3 })).toHaveText(['NPC dossiers'])
   const section = npcs.locator('[data-path-id="npcs"]')
-  await expect(section.locator('.nav-item')).toHaveText(['NPC Dossiers'])
+  // Shared review moved off the dossiers page to its own (/npcs/review).
+  await expect(section.locator('.nav-item')).toHaveText(['NPC Dossiers', 'Shared review'])
   await expect(section).toHaveAttribute('data-uses-shared-extraction', 'false')
   // Not a fifth path under GROUNDING DOCS, and not listed there at all.
   const grounding = group(page, 'GROUNDING DOCS')
   await expect(grounding.locator('[data-path-id="npcs"]')).toHaveCount(0)
   await expect(grounding.locator(`[data-nav-path="${NPC_ADDRESS}"]`)).toHaveCount(0)
-  await section.locator('.nav-item').click()
+  await section.locator('.nav-item').first().click()
   await expect(page).toHaveURL(new RegExp(`${escape(NPC_ADDRESS)}$`))
   await expect(page.locator('.page-header h2')).toHaveText('NPC dossiers')
 })
@@ -212,7 +214,9 @@ test('Grounding → Summary-native has no NPC stages', async ({ page }) => {
   await page.goto('/grounding/summary-native')
   await expect(page.locator('.page-header h2')).toHaveText('Summary-native')
   const text = (await page.locator('.page').innerText()).toLowerCase()
-  for (const stage of ['npc-link', 'npc-draft', 'npc-verify', 'npc-compose', 'npc-publish', 'npc dossier']) {
+  // The page may name the published dossiers it renders from (Key NPCs, planning's
+  // NPC Dossiers section) and link to the NPCs page; it must not run the stages.
+  for (const stage of ['npc-link', 'npc-draft', 'npc-verify', 'npc-compose', 'npc-publish']) {
     expect(text, `Summary-native must not offer ${stage}`).not.toContain(stage)
   }
   await expect(page.locator('.page').getByRole('button', { name: /^(Link|Draft|Verify|Compose|Publish)$/ })).toHaveCount(0)
