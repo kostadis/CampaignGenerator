@@ -4,10 +4,14 @@ on:
   push:
     paths:
       - 'frontend/**'
+      # summary-native-review.spec.ts drives the packaged viewer from here.
+      - 'pipelines/summary_native/review/web/**'
       - '.github/workflows/frontend.yml'
   pull_request:
     paths:
       - 'frontend/**'
+      # summary-native-review.spec.ts drives the packaged viewer from here.
+      - 'pipelines/summary_native/review/web/**'
       - '.github/workflows/frontend.yml'
 
 jobs:
@@ -30,3 +34,32 @@ jobs:
       # vue-tsc -b type-checks the app and the component tests, then vite builds.
       - name: Type-check and build
         run: npm run build
+
+  e2e:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - name: Install dependencies
+        run: npm ci
+      # The browser build matches the pinned @playwright/test version.
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+      # Specs mock /api with page.route; the Vite dev server's proxy errors
+      # for unmocked calls (no backend on :8000) are expected noise.
+      - name: Playwright e2e
+        run: npm run test:e2e
+      - name: Upload traces on failure
+        if: failure()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: playwright-traces
+          path: frontend/test-results/
+          retention-days: 7
