@@ -31,8 +31,8 @@ async function requestStream(path:string, payload:object) {
 const rid=()=>encodeURIComponent(reviewId.value.trim())
 function openCapability(){if(capabilityUrl.value) window.open(capabilityUrl.value,'_blank','noopener,noreferrer')}
 const router=useRouter()
-// The promotion panel lives on the Summary-native page, not beside this launcher.
-async function openWholeBundlePromotion(){await router.push('/grounding/summary-native');await nextTick();setTimeout(()=>document.querySelector('[data-test="grounding-promotion-preview"]')?.scrollIntoView({behavior:'smooth',block:'start'}),100)}
+// The promotion panel lives on the Claims & promotion page, not beside this launcher.
+async function openWholeBundlePromotion(){await router.push('/grounding/promotion');await nextTick();setTimeout(()=>document.querySelector('[data-test="grounding-promotion-preview"]')?.scrollIntoView({behavior:'smooth',block:'start'}),100)}
 </script>
 <template>
   <section class="review-launcher" aria-labelledby="review-launcher-title">

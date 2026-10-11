@@ -37,7 +37,7 @@ test('claims panel confirms exact scope and renders blocked CLI-shaped coverage'
       paths:['docs/summary_native/checks/report.json'], report:{outcome:'blocked',findings:[{finding_id:'f-1'}],coverage_limitations:['No reviewed identity for one candidate.']},
     },
   } }))
-  await page.goto('/grounding/summary-native')
+  await page.goto('/grounding/promotion')
   const panel=page.locator('[data-test="grounding-claims"]')
   await panel.getByRole('button',{name:'Load exact source selection'}).click()
   await expect(panel.getByRole('alert')).toContainText('Confirm every required source')
@@ -79,7 +79,7 @@ test('empty discovery materializes explicit chunks and review uses persisted imp
   await page.route('**/api/grounding/summary-native/claims/extract', async route => {extractPayload=route.request().postDataJSON();await route.fulfill({json:{ok:true,code:'OK',message:'extracted',data:{path:'private/runs/run.json'}}})})
   await page.route('**/api/grounding/summary-native/claims/import', route => route.fulfill({json:{ok:true,code:'OK',message:'imported',data:{path:'private/imports/candidates.json'}}}))
   await page.route('**/api/grounding/summary-native/claims/review', async route => {reviewPayload=route.request().postDataJSON();await route.fulfill({json:{ok:true,code:'OK',message:'reviewed',data:{}}})})
-  await page.goto('/grounding/summary-native')
+  await page.goto('/grounding/promotion')
   const panel=page.locator('[data-test="grounding-claims"]')
   await panel.getByRole('button',{name:'Load exact source selection'}).click()
   await panel.getByText('docs/a.md').click()
@@ -110,7 +110,7 @@ test('zero-chunk no-model selection saves while required closure remains intact'
     payload=route.request().postDataJSON()
     await route.fulfill({json:{ok:true,code:'OK',message:'saved',data:{path:'private/zero.json'}}})
   })
-  await page.goto('/grounding/summary-native')
+  await page.goto('/grounding/promotion')
   const panel=page.locator('[data-test="grounding-claims"]')
   await panel.getByRole('button',{name:'Load exact source selection'}).click()
   await panel.getByText('docs/required.md').click()
@@ -129,7 +129,7 @@ test('selection-null diagnostics and panel remain contained at narrow width', as
   await page.route('**/api/grounding/summary-native/claims/select', route => route.fulfill({ json: {
     ok:false, code:'CLAIMS_SOURCE_MISSING', message:'A required GM source is missing.', data:{selection:null},
   } }))
-  await page.goto('/grounding/summary-native')
+  await page.goto('/grounding/promotion')
   const panel=page.locator('[data-test="grounding-claims"]')
   await panel.getByRole('button',{name:'Load exact source selection'}).click()
   await expect(panel.locator('[data-test="claims-selection-null"]')).toBeVisible()

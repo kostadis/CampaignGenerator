@@ -24,8 +24,8 @@ const selected = computed(() => {
       </p>
       <p v-else class="subtitle">
         The review queue for grounding documents: decisions, corrections, identity rulings, exact sign-offs and
-        private reviewer links. Drafts are built on the <RouterLink to="/grounding/summary-native">Summary-native</RouterLink>
-        page, which also holds claims review and whole-bundle promotion.
+        private reviewer links. Drafts are built on <RouterLink to="/grounding/summary-native">Summary-native</RouterLink>;
+        claims review and whole-bundle promotion are on <RouterLink to="/grounding/promotion">Claims &amp; promotion</RouterLink>.
       </p>
     </div>
     <ReviewLauncher :key="context" :context="context" :selected="selected" />
