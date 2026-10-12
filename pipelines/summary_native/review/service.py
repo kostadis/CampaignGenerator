@@ -14,6 +14,7 @@ import time
 from pathlib import Path
 
 from campaignlib.review_config import ReviewConfig, load_campaign_review_config
+from campaignlib.subprocess_runner import spawn_detached
 from pipelines.summary_native.review.store import ReviewStoreError, read_snapshot
 
 
@@ -362,7 +363,7 @@ def start_service(
     existing = _read_handle(root, review_id)
     if existing is not None and _is_live(existing):
         raise ReviewStoreError("REVIEW_SERVICE_RUNNING: a service is already active for this review")
-    process = subprocess.Popen(
+    process = spawn_detached(
         _serve_command(
             root,
             review_id,
@@ -373,11 +374,6 @@ def start_service(
             tls_key=tls_key,
         ),
         cwd=root,
-        stdin=subprocess.DEVNULL,
-        stdout=subprocess.DEVNULL,
-        stderr=subprocess.DEVNULL,
-        start_new_session=True,
-        close_fds=True,
     )
     _OWNED_PROCESSES[(str(root), review_id)] = process
     deadline = time.monotonic() + 10

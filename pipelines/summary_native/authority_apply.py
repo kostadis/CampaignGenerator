@@ -251,8 +251,9 @@ def _load_journal(campaign_dir: Path, transaction_id: str) -> dict:
             raise AuthorityError("AUTH_RECOVERY: target existence metadata is required", "AUTH_RECOVERY")
         operation = target.get("operation")
         if version == 1 and operation is None:
+            # Derived for validation only.  Recovery saves this journal back,
+            # so writing the field would upgrade a v1 journal's shape in place.
             operation = "create" if not target["before_exists"] else "replace"
-            target["operation"] = operation
         if operation not in {"create", "replace", "delete"}:
             raise AuthorityError("AUTH_RECOVERY: invalid transaction operation", "AUTH_RECOVERY")
         expected_existence = {
@@ -262,7 +263,6 @@ def _load_journal(campaign_dir: Path, transaction_id: str) -> dict:
         }[operation]
         if (target["before_exists"], target["after_exists"]) != expected_existence:
             raise AuthorityError("AUTH_RECOVERY: transaction operation conflicts with existence metadata", "AUTH_RECOVERY")
-    journal.setdefault("version", version)
     return journal
 
 
@@ -293,6 +293,24 @@ def pending_transaction(campaign_dir: Path) -> dict | None:
         if journal.get("state") in NONTERMINAL or journal.get("state") == "attention_required":
             return journal
     return None
+
+
+@contextlib.contextmanager
+def campaign_lock_if_enabled(campaign_dir: Path, *, exclusive: bool) -> Iterator[None]:
+    """Take the campaign lock only where authority is already in use.
+
+    A campaign without ``docs/authority`` never opted into reviewed
+    transactions, so there is nothing to coordinate with.  Locking it anyway
+    would create ``docs/authority/.lock`` as a side effect, and that directory
+    is what marks a campaign as review-enabled for every later reader.
+    """
+    root = Path(campaign_dir).resolve()
+    if not (root / "docs" / "authority").is_dir():
+        yield
+        return
+    with authority_lock(root, exclusive=exclusive):
+        require_no_pending_transaction(root)
+        yield
 
 
 def require_no_pending_transaction(campaign_dir: Path) -> None:

@@ -114,3 +114,27 @@ def test_promotion_and_claim_check_modules_have_no_model_call_boundary():
                 func = node.func
                 called = func.id if isinstance(func, ast.Name) else func.attr if isinstance(func, ast.Attribute) else ""
                 assert called not in FORBIDDEN_CALLS, f"{path} calls {called}"
+
+
+def test_review_package_makes_no_model_call():
+    """Review records human decisions; nothing in it may ask a model (spec 036)."""
+    paths = sorted((PKG / "review").rglob("*.py"))
+    assert {"store.py", "cli.py", "identity.py", "app.py"} <= {path.name for path in paths}
+    for path in paths:
+        tree = ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
+        for node in ast.walk(tree):
+            mods = []
+            if isinstance(node, ast.Import):
+                mods = [alias.name for alias in node.names]
+            elif isinstance(node, ast.ImportFrom):
+                mods = [node.module or ""]
+                if node.module == "campaignlib":
+                    mods += [f"campaignlib.{alias.name}" for alias in node.names]
+            for module in mods:
+                assert not any(module == f or module.startswith(f + ".") for f in FORBIDDEN_MODULES), (
+                    f"{path} imports {module}"
+                )
+            if isinstance(node, ast.Call):
+                func = node.func
+                called = func.id if isinstance(func, ast.Name) else func.attr if isinstance(func, ast.Attribute) else ""
+                assert called not in FORBIDDEN_CALLS, f"{path} calls {called}"

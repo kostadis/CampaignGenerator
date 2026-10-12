@@ -1,6 +1,12 @@
 # Migration and Adoption Design
 
-These are planned commands, not an already-installed migration. Implementation must also publish operator instructions under `docs/cli/summary_native_review.md`.
+These commands are installed. Operator instructions are in `docs/cli/summary_native_review.md`.
+
+## Affected workspaces
+
+- Any campaign with a version 1 `docs/authority.yaml` (every campaign that used `summary_native authority` before #547). Authority and review commands refuse there until `review migrate` runs.
+- Any campaign with summary-native range builds whose `manifest.json` has no subject-level `identity_dependencies` (every build made before #547). Only identity merge planning refuses these, naming `review dependencies migrate`; the alternative is `summary_native build --force`.
+- A campaign without `docs/authority/` is not affected. Nothing outside the authority and review commands creates that directory: the entity registry commands and `review migrate --dry-run` leave a campaign without it untouched, because its presence is what marks a campaign as review-enabled for every later reader.
 
 ## State changes
 
@@ -14,6 +20,8 @@ These are planned commands, not an already-installed migration. Implementation m
 ```sh
 summary_native review migrate --campaign-dir /path/to/campaign --dry-run --json
 summary_native review migrate --campaign-dir /path/to/campaign --plan-sha256 <returned-sha> --json
+summary_native review dependencies migrate --campaign-dir /path/to/campaign --dry-run --json
+summary_native review dependencies migrate --campaign-dir /path/to/campaign --plan-sha256 <returned-sha> --json
 summary_native review init --campaign-dir /path/to/campaign --json
 summary_native authority validate --campaign-dir /path/to/campaign --json
 summary_native review list --campaign-dir /path/to/campaign --json
@@ -27,7 +35,7 @@ Manifest adoption may reconstruct dependencies from pinned inputs without models
 
 ## Without migration
 
-A v1 live authority ledger causes new-version authority/review operations to refuse with the exact migration command. Old manifest versions requiring new identity semantics refuse affected merge planning until adopted/rebuilt. The independent v1 entity registry remains readable in its original location. `review init` never upgrades authority as a side effect.
+A v1 live authority ledger causes new-version authority/review operations to refuse with the exact migration command; `review init` and `npc-publish` relay that command rather than reporting a missing sign-off. Old manifest versions requiring new identity semantics refuse affected merge planning until adopted/rebuilt, and the refusal names `review dependencies migrate`. Range freshness checks (`summary_native extract`, `synth` and the rest) keep reading an old manifest through its whole-registry digest: any registry change marks the range stale, which is conservative, so nothing is reported fresh that is not. A pending v1 transaction journal recovers forward in its own shape; recovery does not rewrite it as v2. The independent v1 entity registry remains readable in its original location. `review init` never upgrades authority as a side effect.
 
 ## Verification and recovery
 

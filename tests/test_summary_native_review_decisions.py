@@ -372,7 +372,7 @@ def test_history_and_retraction_preserve_audit_and_withdraw_authority(
         [
             "review", "retract", "npc-review", "--event", event_id,
             "--expected-decision-revision", "1", "--reason", "Evidence needs renewed review",
-            "--campaign-dir", str(root), "--json",
+            "--reviewer", "GM Two", "--campaign-dir", str(root), "--json",
         ],
     )
     assert code == 0 and retracted["data"]["inverse_applied"] is False
@@ -382,9 +382,18 @@ def test_history_and_retraction_preserve_audit_and_withdraw_authority(
     )
     assert code == 0
     assert len(history["data"]["events"]) == 2
-    assert history["data"]["events"][-1]["withdrawal_reason"] == "Evidence needs renewed review"
+    withdrawal = history["data"]["events"][-1]
+    assert withdrawal["withdrawal_reason"] == "Evidence needs renewed review"
+    # The withdrawal is the withdrawer's act; the original decider stays on record separately.
+    assert withdrawal["reviewer"] == "GM Two"
+    assert withdrawal["withdrawn_decision_reviewer"] == history["data"]["events"][0]["reviewer"]
     record = next(record for record in load_ledger(root).records if record.kind == "review_decision")
     assert record.status == "withdrawn"
+    audits = [
+        json.loads(path.read_text(encoding="utf-8"))
+        for path in (root / "docs" / "authority" / "events").glob("event-review-withdraw-*.json")
+    ]
+    assert [audit["actor"] for audit in audits] == ["GM Two"]
 
 
 def test_accepted_decision_and_authority_record_share_one_recoverable_journal(
@@ -435,7 +444,7 @@ def test_export_import_current_mixed_history_is_an_idempotent_noop(
         [
             "review", "retract", "npc-review", "--event", approved_event,
             "--expected-decision-revision", "1", "--reason", "Second reviewer requested reconsideration",
-            "--campaign-dir", str(root), "--json",
+            "--reviewer", "GM Two", "--campaign-dir", str(root), "--json",
         ],
     )[0] == 0
     replacement = _write_batch(

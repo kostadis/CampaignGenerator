@@ -225,14 +225,20 @@ def _current_draft_signoff(root: Path, draft_path: Path, draft_sha256: str) -> b
     authority, and a custody refresh that marks the item stale reopens the gate.
     """
 
-    from pipelines.summary_native.authority import ReviewDecisionRecord, load_ledger
+    from pipelines.summary_native.authority import AuthorityError, ReviewDecisionRecord, load_ledger
     from pipelines.summary_native.review.store import _reject_symlinks, read_review_state, read_snapshot
 
     root = Path(root).resolve()
     try:
         relative = Path(draft_path).resolve().relative_to(root).as_posix()
-        ledger = load_ledger(root)
+        ledger = load_ledger(root, required=False)
+    except AuthorityError:
+        # A ledger that needs migrating (or is invalid) is not "no sign-off":
+        # the caller reports the ledger's own refusal, which names the command.
+        raise
     except (OSError, ValueError):
+        return False
+    if ledger is None:
         return False
     states: dict[str, tuple[tuple, list[dict], set[str], bool]] = {}
     for record in ledger.records:
@@ -333,7 +339,14 @@ def _plan_summary_native(root: Path, npc_range_dir: Path, stem: str, subject: st
             f"{why}; see {report}" if verdict == "fail" else f"{why}; run `summary_native npc-verify`"
         )
         return
-    if not signoff_checker(draft_path, draft_sha256):
+    from pipelines.summary_native.authority import AuthorityError
+
+    try:
+        signed = signoff_checker(draft_path, draft_sha256)
+    except AuthorityError as exc:
+        item.refusal = str(exc)
+        return
+    if not signed:
         item.refusal = (
             "NPC_DRAFT_SIGNOFF_REQUIRED: exact draft approval is missing or stale; "
             "create a real NPC verification review and run `summary_native review npc sign`"

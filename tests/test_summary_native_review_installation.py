@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import json
+import shutil
+import subprocess
 from pathlib import Path
 
 import pytest
@@ -21,14 +23,67 @@ def test_viewer_renders_and_saves_exact_claim_actions() -> None:
     assert 'id="claim-fields"' in html
     for field in ("subject_id", "predicate", "normalized_value", "certainty", "audience"):
         assert field in script
-    for action, disposition in (
-        ("confirm_claim_mapping", "accept_no_change"),
-        ("dismiss_claim_finding", "dismiss"),
-        ("accept_claim_uncertainty", "accept_uncertainty"),
-        ("signoff_document", "document_signoff"),
-    ):
-        assert action in script and disposition in script
+    for action in ("confirm_claim_mapping", "dismiss_claim_finding", "accept_claim_uncertainty", "signoff_document"):
+        assert action in script
     assert "Prepare an exact finding disposition before approval" in script
+
+
+def _viewer_functions() -> str:
+    script = (REPO_ROOT / "pipelines/summary_native/review/web/viewer.js").read_text(encoding="utf-8")
+    def between(start: str, end: str) -> str:
+        begin = script.index(start)
+        return script[begin:script.index(end, begin)]
+    return (
+        between("function approvalDisposition(item)", "\nasync function openItem")
+        + "\n"
+        + between("function request(){", "\nasync function advanceNext")
+    )
+
+
+def _run_viewer(scenario: str) -> object:
+    node = shutil.which("node")
+    if node is None:
+        pytest.skip("node is required to execute the viewer's decision functions")
+    program = (
+        "const $=id=>({value:'note'});\n"
+        + _viewer_functions()
+        + "\n"
+        + scenario
+    )
+    result = subprocess.run([node, "-e", program], capture_output=True, text=True, check=True)
+    return json.loads(result.stdout)
+
+
+def test_viewer_approval_dispositions_are_ones_the_server_accepts() -> None:
+    """The browser and the decision validator must agree on what Approve means."""
+    from types import SimpleNamespace
+
+    from pipelines.summary_native.review.store import _validate_action_decision
+
+    actions = ["confirm_claim_mapping", "dismiss_claim_finding", "accept_claim_uncertainty", "signoff_document"]
+    dispositions = _run_viewer(
+        "const state={review:{kind:'grounding_documents'}};"
+        f"console.log(JSON.stringify({json.dumps(actions)}.map(action=>approvalDisposition({{proposed_action:{{action}}}}))))"
+    )
+    for action, disposition in zip(actions, dispositions):
+        item = SimpleNamespace(proposed_action=SimpleNamespace(
+            action=action, details={"evidence_digest": "e", "rationale_digest": "r"},
+        ))
+        _validate_action_decision(item, verdict="approve", disposition=disposition)
+
+
+def test_viewer_saves_only_the_item_on_screen_unless_it_is_in_the_ticked_batch() -> None:
+    """Ticking A and B then reading C must not record a decision on A and B."""
+    scenario = (
+        "const items=['a','b','c'].map(id=>({item_id:id,revision:1,review_digest:'d',decision_revision:0}));"
+        "const state={review:{kind:'npc_verification',generation:1},items,selected:new Set(['a','b']),"
+        "verdict:'approve',proposal:null,identityDisposition:null,current:{item_id:'c'}};"
+        "const onScreen=request().decisions.map(d=>d.item_id);"
+        "state.current={item_id:'a'};"
+        "const batch=request().decisions.map(d=>d.item_id);"
+        "console.log(JSON.stringify({onScreen,batch}))"
+    )
+    assert _run_viewer(scenario) == {"onScreen": ["c"], "batch": ["a", "b"]}
 
 
 @pytest.fixture(scope="module")

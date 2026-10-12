@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import re
 from pathlib import Path
 
 import pytest
@@ -258,10 +259,13 @@ def test_non_gm_world_synth_uses_complete_snapshot_support(tmp_path: Path, monke
     # The run binds the notes it read, the audience's own: review and promotion compare it with
     # <audience state>/notes/manifest.json.  The GM never extracted here, so the GM digest is None.
     state = audience_state_dir(cs.range_dir(root), audience)
-    run = json.loads(next((state / "runs").glob("*/record.json")).read_text(encoding="utf-8"))
+    # extract writes a run record too, so read the synth run the draft names, not any run.
+    header = (state / "drafts" / "world_state.draft.md").read_text(encoding="utf-8").split("\n", 1)[0]
+    record = re.search(r"record: (runs/[^/\s]+/record\.json)", header).group(1)
+    run = json.loads((state / record).read_text(encoding="utf-8"))
     own = hashlib.sha256((state / "notes" / "manifest.json").read_bytes()).hexdigest()
     assert run["inputs"]["notes_manifest_sha256"] == own
-    assert f"notes manifest sha256: {own}" in (state / "drafts" / "world_state.draft.md").read_text(encoding="utf-8").split("\n", 1)[0]
+    assert f"notes manifest sha256: {own}" in header
 
 
 def test_all_four_non_gm_documents_use_only_complete_classified_support(tmp_path: Path, monkeypatch):

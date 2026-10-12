@@ -23,6 +23,30 @@ Apply accepts only the reviewed preview digest. It refuses a stale or invalid
 authority tip and uses the shared recovery journal. Review operations on an
 unmigrated campaign name the required migration and never perform it silently.
 
+**Which campaigns need this.** Any campaign whose `docs/authority.yaml` is
+version 1, which is every campaign that used `summary_native authority` before
+review existed. Until it is migrated, authority and review commands, `review
+init` and `npc-publish` refuse with the command above. A campaign with no
+`docs/authority/` is unaffected: registry commands and a migration dry run do
+not create that directory.
+
+Range builds made before review have no subject-level identity dependencies.
+Identity merge planning refuses them and names the adoption. Preview it, then
+apply the returned digest:
+
+```sh
+summary_native review dependencies migrate --campaign-dir CAMPAIGN --dry-run --json
+summary_native review dependencies migrate --campaign-dir CAMPAIGN --plan-sha256 SHA --json
+```
+
+`summary_native build --force` on the range does the same by rebuilding it.
+Without either, everything else keeps working: freshness checks read an old
+manifest through its whole-registry digest, so any registry change marks the
+range stale.
+
+Verify with `summary_native authority validate --campaign-dir CAMPAIGN --json`
+(the ledger reports version 2) and `review list` (empty after a fresh init).
+
 ## Create, inspect, and rerun
 
 Selections are explicit JSON files that bound the review and later work.
@@ -30,6 +54,10 @@ Selections are explicit JSON files that bound the review and later work.
 ```sh
 summary_native review create --campaign-dir CAMPAIGN --kind npc_verification \
   --selection selections/npcs.json --json
+summary_native review create --campaign-dir CAMPAIGN --kind grounding_documents \
+  --selection selections/documents.json --json
+summary_native review document create REVIEW --campaign-dir CAMPAIGN \
+  --selection selections/documents.json --json   # add documents to an existing review
 summary_native review list --campaign-dir CAMPAIGN --json
 summary_native review status REVIEW --campaign-dir CAMPAIGN --json
 summary_native review show REVIEW --campaign-dir CAMPAIGN --json
@@ -68,6 +96,15 @@ summary_native review access revoke REVIEW --campaign-dir CAMPAIGN \
 summary_native review service stop REVIEW --campaign-dir CAMPAIGN --json
 ```
 
+`--port` defaults to `port` in `config/review.yaml` (8766), and `--expires-in`
+to `grant_expiry_seconds` (one day). `review serve` takes the same arguments and
+runs the service in the foreground; the app's **Start reviewer** button runs
+`service start`, its background form.
+
+In the browser, Save records the chosen verdict on the item on screen. If that
+item is one of the ticked items, the verdict goes to every ticked item; ticking
+items and then opening a different one never decides the ticked ones.
+
 Expiry and revocation survive restart. The browser cannot apply corrections,
 merge identities, recover journals, migrate authority data, or publish.
 
@@ -75,8 +112,20 @@ merge identities, recover journals, migrate authority data, or publish.
 
 `review export` creates a digest-bound bundle for an explicit selection.
 `review import` validates the whole bundle before mutation and refuses stale or
-foreign history. Reimporting an unchanged current bundle is a no-op. `review
-retract` appends a withdrawal; it does not undo an applied artifact.
+foreign history. A withdrawal in the bundle must carry opaque ids, and every
+imported authority decision record must match a decision event that is already
+local or arrives in the same bundle. Reimporting an unchanged current bundle is
+a no-op.
+
+`review retract` appends a withdrawal; it does not undo an applied artifact.
+`--reviewer` names who is withdrawing. The withdrawal and its audit event record
+that person; the original decider stays on the withdrawal as
+`withdrawn_decision_reviewer`.
+
+```sh
+summary_native review retract REVIEW --event EVENT --expected-decision-revision 1 \
+  --reason 'Evidence needs renewed review' --reviewer GM --campaign-dir CAMPAIGN --json
+```
 
 ## Corrections and exact sign-off
 
@@ -128,6 +177,19 @@ summary_native review identity guard-prepare REVIEW --proposal BLOCKED_PROPOSAL 
 summary_native review identity guard-apply REVIEW --resolution RESOLUTION \
   --resolution-sha256 SHA256 --campaign-dir CAMPAIGN --json
 ```
+
+## The app's Shared review page
+
+The Shared review page (`/grounding/review`, and `/npcs/review` for dossiers)
+is the trusted local face of these commands. It invokes each one through the
+CLI and shows what the CLI said: a refusal arrives with its own code and
+message (for example the transaction id a recovery needs), with HTTP 409 for
+stale state, 423 for a pending transaction, 404 for an unknown item and 422
+for an incompatible disposition. Only a command that dies without answering
+reads as "Review command failed safely". **Record a decision** reads the item
+named under Item ID and saves one decision bound to its current revision, the
+same as `review decide`. A blank port, grant lifetime or page size uses
+`config/review.yaml`.
 
 ## Recovery
 
