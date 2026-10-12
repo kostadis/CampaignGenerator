@@ -7,7 +7,7 @@ import re
 from dataclasses import dataclass
 from pathlib import Path
 
-from pipelines.summary_native.authority import AuthorityError, AuthorityLedger, AuthorityRecord, Classification, DOCUMENT_ANCHOR, EffectiveInterval, NoteRecord, POLICY_VERSION, Projection, RulingRecord, SCHEMA_VERSION, canonicalize, detect_conflicts, ledger_digest, load_ledger, record_metadata_digest, validate_audience_target, validate_record_identity
+from pipelines.summary_native.authority import AuthorityError, AuthorityLedger, AuthorityRecord, Classification, DOCUMENT_ANCHOR, NoteRecord, POLICY_VERSION, Projection, RulingRecord, SCHEMA_VERSION, canonicalize, detect_conflicts, ledger_digest, load_ledger, record_metadata_digest, validate_audience_target, validate_record_identity
 from pipelines.summary_native.authority_apply import authority_lock, require_no_pending_transaction
 
 
@@ -326,15 +326,19 @@ def resolve_anchored_records(ledger: AuthorityLedger, *, audience: str, since: i
 
 
 def _effective_for_range(effective, since: int | None, until: int | None) -> bool:
-    """Whether a record applies to the requested chapter range.
+    """Bounded historical records must overlap the requested chapter range.
 
     Future/open planning records remain current intentional context; chapter
-    ranges only restrict records that declare chapter bounds.  Both follow
-    from ``EffectiveInterval.overlaps``.
+    ranges only restrict records that declare chapter bounds.  This is not
+    ``EffectiveInterval.overlaps``: that asks whether two claims cover the same
+    time, while this asks whether a record feeds a build of these chapters, and
+    a plan for what has not happened yet always feeds planning.
     """
-    if since is None or until is None:
+    if since is None or until is None or effective.horizon is not None:
         return True
-    return EffectiveInterval(from_chapter=since, through_chapter=until).overlaps(effective)
+    start = effective.from_chapter if effective.from_chapter is not None else 0
+    end = effective.through_chapter if effective.through_chapter is not None else float("inf")
+    return start <= until and since <= end
 
 
 _PRECEDENCE = {

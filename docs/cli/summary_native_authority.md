@@ -140,10 +140,18 @@ summary-only planning; setting `notes: []` is an error.
 | `OPEN` | Unresolved material. |
 
 Future plans never become completed history merely by inclusion. Non-overlapping
-chapter intervals can describe legitimate evolution. A `future` or `open` horizon
-has no chapter bounds to compare, so it overlaps every interval: conflict detection,
-`supersedes`, and planning precedence all treat a horizon record and a bounded record
-of the same claim as overlapping.
+chapter intervals can describe legitimate evolution. Conflict detection,
+`supersedes`, and planning precedence share one overlap rule for horizons:
+
+| Record A | Record B | Overlap? |
+|---|---|---|
+| `future` | chapters 1–3 (a range that ends) | No: the range is history, so a plan to change it later is not a contradiction and planning keeps both |
+| `future` | from chapter 5 (no end) | Yes: the range still holds when the plan applies |
+| `future` | `future` | Yes |
+| `open` | anything | Yes: `open` is in effect at every chapter |
+
+A chapter-range build still includes every `future` and `open` record; the overlap
+rule decides only whether two claims contradict each other.
 
 ## Choose an audience
 

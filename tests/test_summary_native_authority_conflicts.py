@@ -80,27 +80,60 @@ def test_same_public_anchor_with_compatible_evidence_and_distinct_audiences_is_n
     assert not detect_conflicts(AuthorityLedger(version=2, campaign="x", revision=1, records=[player, ara]))
 
 
-def _future(ident: str, value: str, classification=Classification.OVERLAY):
+def _horizon(ident: str, value: str, horizon: str = "future", classification=Classification.OVERLAY):
     return _note(ident, value, classification=classification).model_copy(
-        update={"effective": EffectiveInterval(horizon="future")}
+        update={"effective": EffectiveInterval(horizon=horizon)}
     )
 
 
-def test_a_horizon_overlaps_bounded_records_for_conflicts_supersession_and_precedence():
-    """One overlap rule: a future/open horizon has no bounds to compare, so it overlaps."""
-    from pipelines.summary_native.authority_inputs import _effective_for_range, resolve_planning_precedence
+def _from(ident: str, value: str, start: int):
+    """A chapter range with no end: in effect from ``start`` onward."""
+    return _note(ident, value).model_copy(update={"effective": EffectiveInterval(from_chapter=start)})
 
-    bounded, future = _note("gate-open", "open"), _future("gate-plan", "closed")
-    assert bounded.effective.overlaps(future.effective) and future.effective.overlaps(bounded.effective)
-    conflicts = detect_conflicts(AuthorityLedger(version=2, campaign="x", revision=1, records=[bounded, future]))
+
+def _ledger(*records):
+    return AuthorityLedger(version=2, campaign="x", revision=1, records=list(records))
+
+
+def test_a_future_plan_does_not_contradict_history_that_ended():
+    """The gate was open in chapters 1-3; the plan closes it later. Not a conflict, and planning keeps both."""
+    from pipelines.summary_native.authority_inputs import resolve_planning_precedence
+
+    history, plan = _note("gate-open", "open"), _horizon("gate-plan", "closed")
+    assert not history.effective.overlaps(plan.effective)
+    assert not detect_conflicts(_ledger(history, plan))
+    resolved, _ = resolve_planning_precedence([history, plan])
+    assert sorted(r.id for r in resolved) == ["gate-open", "gate-plan"]
+
+
+def test_a_future_plan_contradicts_a_range_that_reaches_the_future():
+    """"Open from chapter 5 on" still holds when the plan applies, so the two are reviewed."""
+    from pipelines.summary_native.authority_inputs import resolve_planning_precedence
+
+    ongoing, plan = _from("gate-open", "open", 5), _horizon("gate-plan", "closed")
+    assert ongoing.effective.overlaps(plan.effective) and plan.effective.overlaps(ongoing.effective)
+    conflicts = detect_conflicts(_ledger(ongoing, plan))
     assert [c.basis for c in conflicts] == ["structured_value"]
-    assert conflicts[0].overlap == bounded.effective  # the bounded side is the precise overlap
-    # Planning precedence drops the lower-precedence overlay for the same reason.
-    resolved, _ = resolve_planning_precedence([bounded, future])
+    assert conflicts[0].overlap == plan.effective  # the future part is where they collide
+    resolved, _ = resolve_planning_precedence([ongoing, plan])
     assert [r.id for r in resolved] == ["gate-open"]
-    # A horizon record may supersede the bounded claim it replaces.
-    successor = future.model_copy(update={"supersedes": "gate-open"})
-    AuthorityLedger(version=2, campaign="x", revision=1, records=[bounded, successor])
-    # Range filtering is unchanged: horizons always apply, bounded records must meet the range.
-    assert _effective_for_range(future.effective, 10, 12)
-    assert _effective_for_range(bounded.effective, 3, 5) and not _effective_for_range(bounded.effective, 4, 5)
+    # A future record may supersede the ongoing claim it replaces.
+    _ledger(ongoing, _horizon("gate-plan", "closed").model_copy(update={"supersedes": "gate-open"}))
+
+
+def test_open_is_in_effect_at_every_chapter_and_two_horizons_overlap():
+    always = _horizon("gate-always", "closed", horizon="open", classification=Classification.CANON)
+    history = _note("gate-open", "open")
+    assert always.effective.overlaps(history.effective)
+    assert [c.overlap for c in detect_conflicts(_ledger(history, always))] == [history.effective]
+    assert _horizon("a", "x").effective.overlaps(_horizon("b", "y").effective)
+    assert _horizon("a", "x").effective.overlaps(always.effective)
+
+
+def test_range_filtering_keeps_every_horizon_record():
+    """Not the overlap rule: a plan always feeds a build, whatever chapters it covers."""
+    from pipelines.summary_native.authority_inputs import _effective_for_range
+
+    assert _effective_for_range(_horizon("plan", "closed").effective, 10, 12)
+    assert _effective_for_range(_note("gate-open", "open").effective, 3, 5)
+    assert not _effective_for_range(_note("gate-open", "open").effective, 4, 5)
