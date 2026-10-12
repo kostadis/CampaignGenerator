@@ -314,9 +314,9 @@ npcs:
     items:
       "039.04": absent        # an exception inside the span
   Sylvira Savikas:
+    default: mentioned        # every candidate no span or item ruling reaches
     items:
       "061.05": present
-      "058.05": mentioned
       "063.05": unsure
 ```
 
@@ -348,7 +348,17 @@ other 14 are chapter 34's summary paragraphs and entries, because the span
 starts inside chapter 34. 104 of the 238 scenes in the span do not name
 Zalthir; most are probably whole-party scenes, but those are the ones to check.
 
-An unknown NPC, any other item id, value or key, a span end that is not a
+**Default.** `default: mentioned` (or `unsure`) rules every candidate that no
+span or item ruling reaches. It is the mirror of a companion's span, added
+after the GM's first pass at Sylvira: most of the 75 passages naming her are
+mentions where she was not there, and marking each one was the burden. With the
+default set, the GM marks only the few she was present for; the page's "Quote or
+headline" filter lists the 4 most likely (061.05, 061.m12, 061.m14, 067.03),
+as a place to start, not a ruling. Precedence is item ruling, then span, then
+default, and the horizon labels what the default ruled.
+
+An unknown NPC, any other item id, value or key, a default other than
+`mentioned` or `unsure`, a span end that is not a
 scene, a span that runs backwards, overlapping spans, or a `follows` name that
 appears nowhere in the summaries are all refused.
 

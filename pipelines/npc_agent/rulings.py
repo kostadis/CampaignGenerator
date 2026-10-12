@@ -14,6 +14,7 @@ Shape (version 2)::
         items:
           "039.04": absent            # an exception inside the span
       Sylvira Savikas:
+        default: mentioned            # every candidate not otherwise ruled
         items:
           "061.05": present
           "058.05": mentioned
@@ -37,6 +38,13 @@ paragraph and memorable moment of a chapter whose scenes are *all* inside it; an
 ``## NPCs`` entry only if it names the NPC. An item ruling always overrides a span.
 Spans of one NPC may not overlap. ``follows`` names the character the NPC stays
 with; it is shown to the GM as a hint at review and changes no ruling.
+
+**Default.** ``default: mentioned`` (or ``unsure``) rules every *candidate* that no
+span or item ruling reaches. It is the mirror of a companion's span: Sylvira is
+present in a handful of the 75 passages that name her and talked about in the
+rest, so the GM marks the few and says once what the others are. It is the GM's
+ruling, applied mechanically, and the horizon labels what it covers. Order of
+precedence: item ruling, then span, then default.
 
 Anything the tool cannot apply is refused, because a ruling it silently ignores
 is a ruling the GM believes was applied.
@@ -65,6 +73,8 @@ VERSION = 2
 #: Where an effective ruling came from.
 FROM_ITEM = "item"
 FROM_SPAN = "span"
+FROM_DEFAULT = "default"
+DEFAULT_VALUES = (MENTIONED, UNSURE)
 
 _SCENE_ID_RE = re.compile(r"^(\d{3})\.(\d{2})$")
 
@@ -89,6 +99,7 @@ class Span:
 class NpcRulings:
     items: dict[str, str] = field(default_factory=dict)
     spans: tuple[Span, ...] = ()
+    default: str | None = None
 
 
 def _key(scene_id: str) -> tuple[int, int]:
@@ -181,9 +192,12 @@ def load_rulings(
             problems.append(f"{subject!r}: not an NPC with a published dossier in this campaign")
             continue
         block = block or {}
-        if not isinstance(block, dict) or set(block) - {"spans", "items"}:
-            problems.append(f"{subject!r}: expected a mapping with 'spans' and/or 'items'")
+        if not isinstance(block, dict) or set(block) - {"spans", "items", "default"}:
+            problems.append(f"{subject!r}: expected a mapping with 'spans', 'items' and/or 'default'")
             continue
+        default = block.get("default")
+        if default is not None and default not in DEFAULT_VALUES:
+            problems.append(f"{subject!r}: default {default!r} is not one of {', '.join(DEFAULT_VALUES)}")
         spans = _spans(subject, block.get("spans"), scene_ids, corpus_text, problems)
         raw_items = block.get("items") or {}
         if not isinstance(raw_items, dict):
@@ -211,7 +225,7 @@ def load_rulings(
                 )
             else:
                 kept[item_id] = value
-        out[subject] = NpcRulings(items=kept, spans=spans)
+        out[subject] = NpcRulings(items=kept, spans=spans, default=default)
     if problems:
         raise RulingError(f"{path}: {len(problems)} problem(s):\n  " + "\n  ".join(problems))
     return out
@@ -220,8 +234,11 @@ def load_rulings(
 def effective(
     npc: NpcRulings, corpus: Corpus, candidate_ids: set[str]
 ) -> dict[str, tuple[str, str]]:
-    """``{item_id: (value, FROM_ITEM | FROM_SPAN)}`` after spans, with item rulings winning."""
+    """``{item_id: (value, source)}``: item rulings win, then spans, then the default."""
     out: dict[str, tuple[str, str]] = {}
+    if npc.default:
+        for item_id in candidate_ids:
+            out[item_id] = (npc.default, FROM_DEFAULT)
     if npc.spans:
         for ch in corpus.chapters:
             scenes = [it for it in ch.items if it.kind == SCENE]

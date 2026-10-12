@@ -16,7 +16,7 @@ from dataclasses import dataclass
 from pipelines.npc_agent.corpus import Item
 from pipelines.npc_agent.dossier import Dossier
 from pipelines.npc_agent.presence import Candidate
-from pipelines.npc_agent.rulings import FROM_SPAN, MENTIONED, PRESENT, UNSURE
+from pipelines.npc_agent.rulings import FROM_DEFAULT, FROM_SPAN, MENTIONED, PRESENT, UNSURE
 
 
 @dataclass(frozen=True)
@@ -31,6 +31,8 @@ class Horizon:
     unruled: tuple[Candidate, ...]
     #: item ids whose ruling came from a span rather than an item ruling
     by_span: frozenset[str]
+    #: item ids ruled only by the NPC's default
+    by_default: frozenset[str]
     #: candidates after ``chapter``. Kept for the caller, never rendered: the
     #: horizon is what an NPC agent will be shown, and a count of later items, or
     #: a first chapter after this one, tells it the future.
@@ -75,6 +77,7 @@ def build_horizon(
         unsure=tuple(by[UNSURE]),
         unruled=tuple(by[None]),
         by_span=frozenset(i for i, (_, src) in rulings.items() if src == FROM_SPAN),
+        by_default=frozenset(i for i, (_, src) in rulings.items() if src == FROM_DEFAULT),
         later=len(every) - len(upto),
     )
 
@@ -131,5 +134,6 @@ def render_horizon(h: Horizon) -> str:
             out.append("_(none)_")
         for c in group:
             label = c.item.title or c.item.text.splitlines()[0][:90]
-            out.append(f"- {_cite(c)} — {c.item.kind}, {_signals(c)} — {label}")
+            how = " (by default)" if c.item.item_id in h.by_default else ""
+            out.append(f"- {_cite(c)}{how} — {c.item.kind}, {_signals(c)} — {label}")
     return "\n".join(out).rstrip() + "\n"

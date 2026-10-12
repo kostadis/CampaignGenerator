@@ -298,7 +298,7 @@ def test_rulings_load_and_empty_means_unruled(camp, tmp_path):
         ('    spans:\n      - {from: "057.01", to: "061.02", follows: Zalthor}\n', "appears nowhere in the summaries"),
         ('    spans:\n      - {from: "057.01", to: "061.01"}\n      - {from: "061.01", to: "063.01"}\n', "overlap"),
         ('    spans:\n      - {from: "057.01", to: "061.01", until: "x"}\n', "unknown key"),
-        ('    "061.02": present\n', "expected a mapping with 'spans' and/or 'items'"),
+        ('    "061.02": present\n', "expected a mapping with 'spans', 'items' and/or 'default'"),
     ],
 )
 def test_rulings_refuse_what_they_cannot_apply(camp, tmp_path, body, needle):
@@ -535,3 +535,35 @@ def test_review_refuses_to_write_into_its_sources(camp, capsys):
     rc = cli.main(["review", "--campaign-dir", str(camp), "--all", "--out", str(camp / "npcs" / "page.html")])
     assert rc == 2
     assert not (camp / "npcs" / "page.html").exists()
+
+
+# ── NPC default ────────────────────────────────────────────────────────────
+
+
+def test_a_default_rules_every_candidate_nothing_else_reaches(camp, tmp_path):
+    # Sylvira: present in a few of the passages naming her, talked about in the rest.
+    r = _load(camp, tmp_path, '    default: mentioned\n    items:\n      "061.02": present\n')
+    eff = _effective(camp, r)
+    assert eff["061.02"] == ("present", rulings.FROM_ITEM)
+    assert eff["057.01"] == ("mentioned", rulings.FROM_DEFAULT)
+    assert "061.01" not in eff  # not a candidate: a default never reaches it
+
+
+def test_a_span_outranks_the_default(camp, tmp_path):
+    r = _load(camp, tmp_path, '    default: mentioned\n    spans:\n      - {from: "061.01", to: "061.02"}\n')
+    eff = _effective(camp, r)
+    assert eff["061.02"] == ("present", rulings.FROM_SPAN)
+    assert eff["057.01"] == ("mentioned", rulings.FROM_DEFAULT)
+
+
+def test_a_default_cannot_be_present(camp, tmp_path):
+    with pytest.raises(rulings.RulingError, match="default 'present' is not one of"):
+        _load(camp, tmp_path, '    default: present\n')
+
+
+def test_the_horizon_labels_what_the_default_ruled(camp, tmp_path):
+    r = _load(camp, tmp_path, '    default: mentioned\n    items:\n      "061.02": present\n')
+    c, _, table, syl = _setup(camp)
+    h = horizon.build_horizon(syl, presence.candidates(c, syl, table), _effective(camp, r), 61, _items(camp))
+    assert h.unruled == ()
+    assert "[ch 057 / 057.01] 057-session-council.md:13 (by default) — scene" in horizon.render_horizon(h)
