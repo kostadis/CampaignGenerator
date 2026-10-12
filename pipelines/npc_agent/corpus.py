@@ -75,6 +75,7 @@ class Chapter:
     source_file: str
     date: str | None
     items: tuple[Item, ...]
+    title: str | None = None  # the file's ``# Chapter N ...`` line, without the ``#``
 
 
 @dataclass(frozen=True)
@@ -202,7 +203,8 @@ def parse_chapter(text: str, name: str) -> tuple[Chapter | None, list[str]]:
     if any(declared) and not all(declared):
         findings.append(f"{name}: some scene headings carry an id and some do not")
     items = _scene_items(pf, ch) + _prose_items(pf, ch) + _moment_items(pf, ch) + _entry_items(pf, ch)
-    return Chapter(chapter=ch, source_file=name, date=pf.date, items=tuple(items)), findings
+    title = pf.first_h1[1:].strip() if pf.first_h1 else None
+    return Chapter(chapter=ch, source_file=name, date=pf.date, items=tuple(items), title=title), findings
 
 
 def load_corpus(summaries_dir: Path) -> Corpus:

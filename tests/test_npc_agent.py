@@ -10,7 +10,7 @@ from pathlib import Path
 
 import pytest
 
-from pipelines.npc_agent import cli, corpus, dossier, horizon, presence, rulings
+from pipelines.npc_agent import cli, corpus, dossier, horizon, presence, review, rulings
 
 CH57 = """# Chapter 57
 
@@ -491,3 +491,47 @@ def test_the_ruling_file_is_never_written(camp, tmp_path):
     cli.main(["horizon", "--campaign-dir", str(camp), "--npc", "Sylvira", "--chapter", "63", "--rulings", str(r),
               "--out", str(tmp_path / "h.md")])
     assert r.read_bytes() == before
+
+
+# ── review page ────────────────────────────────────────────────────────────
+
+
+def test_review_bundle_carries_candidates_and_every_item_of_their_chapters(camp):
+    c, _, table, syl = _setup(camp)
+    data = review.bundle(c, [(syl, presence.candidates(c, syl, table))], "test")
+    assert [ch["n"] for ch in data["chapters"]] == [57, 61, 63]
+    assert data["chapters"][0]["title"] == "Chapter 57"
+    assert "057.02" in data["items"]  # names nobody, but a span may still reach it
+    assert data["npcs"][0]["candidates"]["061.02"] == ["quoted", "headline", "named"]
+    assert data["rulings_version"] == rulings.VERSION
+
+
+def test_review_page_embeds_its_data_safely_and_loads_nothing_but_fonts(camp, tmp_path):
+    import re
+
+    (camp / "summaries" / "063-session-key.md").write_text(CH63 + "\n- A stray </script> in a bullet.\n")
+    out = tmp_path / "page.html"
+    assert cli.main(["review", "--campaign-dir", str(camp), "--npc", "Sylvira", "--out", str(out)]) == 0
+    page = out.read_text()
+    assert review.DATA_SLOT not in page
+    assert page.count("</script>") == 1  # the data cannot close its own script block
+    hosts = set(re.findall(r"https?://([^/\"' ]+)", page))
+    assert hosts <= {"fonts.googleapis.com", "fonts.gstatic.com"}
+
+
+def test_the_file_the_page_saves_is_a_ruling_file(camp, tmp_path):
+    import json
+
+    saved = {"version": 2, "npcs": {"Sylvira Savikas": {
+        "spans": [{"from": "061.01", "to": "063.01", "value": "present", "follows": "Daz"}],
+        "items": {"057.01": "mentioned"}}}}
+    f = tmp_path / "presence.json"
+    f.write_text(json.dumps(saved, indent=2))
+    r = rulings.load_rulings(f, _ids(camp), _corpus(camp))["Sylvira Savikas"]
+    assert r.spans[0].follows == "Daz" and r.items == {"057.01": "mentioned"}
+
+
+def test_review_refuses_to_write_into_its_sources(camp, capsys):
+    rc = cli.main(["review", "--campaign-dir", str(camp), "--all", "--out", str(camp / "npcs" / "page.html")])
+    assert rc == 2
+    assert not (camp / "npcs" / "page.html").exists()

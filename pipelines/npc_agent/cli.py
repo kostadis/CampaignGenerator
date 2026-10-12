@@ -25,7 +25,7 @@ from campaignlib.util import atomic_write_text
 from pipelines.npc_agent import corpus as corpus_mod
 from pipelines.npc_agent import dossier as dossier_mod
 from pipelines.npc_agent import horizon as horizon_mod
-from pipelines.npc_agent import presence, report, rulings
+from pipelines.npc_agent import presence, report, review, rulings
 from pipelines.summary_native import duplicates, npc_forms
 
 CHECK_REPORT = "check_report.md"
@@ -152,6 +152,21 @@ def cmd_horizon(args) -> int:
     return 0
 
 
+def cmd_review(args) -> int:
+    summaries, npcs, corpus, chosen, table = _load(args)
+    out = Path(args.out)
+    _refuse_inside(out, (summaries, npcs))
+    pairs = [(d, presence.candidates(corpus, d, table)) for d in chosen]
+    source = args.source or str(summaries.parent.name)
+    page = review.render_page(review.bundle(corpus, pairs, source))
+    out.parent.mkdir(parents=True, exist_ok=True)
+    atomic_write_text(out, page)
+    for d, cands in pairs:
+        print(f"{d.subject}: {len(cands)} candidate(s)")
+    print(f"wrote {out} ({len(page.encode('utf-8')) // 1024} KiB)")
+    return 0
+
+
 def _common(p: argparse.ArgumentParser) -> None:
     p.add_argument("--campaign-dir", type=Path, default=None,
                    help="campaigns-public/<campaign>, or a campaign root")
@@ -172,6 +187,15 @@ def build_parser() -> argparse.ArgumentParser:
     who.add_argument("--all", action="store_true", help="every NPC with a published dossier")
     c.add_argument("--out-dir", type=Path, required=True)
     c.set_defaults(func=cmd_candidates)
+
+    r = sub.add_parser("review", help="write the presence review page for the GM")
+    _common(r)
+    rwho = r.add_mutually_exclusive_group(required=True)
+    rwho.add_argument("--npc", action="append", help="subject, file stem or name form (repeatable)")
+    rwho.add_argument("--all", action="store_true", help="every NPC with a published dossier")
+    r.add_argument("--out", type=Path, required=True, help="the HTML page to write")
+    r.add_argument("--source", default=None, help="label shown on the page (default: the campaign directory name)")
+    r.set_defaults(func=cmd_review)
 
     h = sub.add_parser("horizon", help="an NPC's knowledge horizon at a chapter")
     _common(h)
