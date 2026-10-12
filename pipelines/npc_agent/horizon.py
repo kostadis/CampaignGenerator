@@ -16,7 +16,7 @@ from dataclasses import dataclass
 from pipelines.npc_agent.corpus import Item
 from pipelines.npc_agent.dossier import Dossier
 from pipelines.npc_agent.presence import Candidate
-from pipelines.npc_agent.rulings import MENTIONED, PRESENT, UNSURE
+from pipelines.npc_agent.rulings import FROM_SPAN, MENTIONED, PRESENT, UNSURE
 
 
 @dataclass(frozen=True)
@@ -29,6 +29,8 @@ class Horizon:
     mentioned: tuple[Candidate, ...]
     unsure: tuple[Candidate, ...]
     unruled: tuple[Candidate, ...]
+    #: item ids whose ruling came from a span rather than an item ruling
+    by_span: frozenset[str]
     #: candidates after ``chapter``. Kept for the caller, never rendered: the
     #: horizon is what an NPC agent will be shown, and a count of later items, or
     #: a first chapter after this one, tells it the future.
@@ -38,18 +40,21 @@ class Horizon:
 def build_horizon(
     dossier: Dossier,
     cands: list[Candidate],
-    rulings: dict[str, str],
+    rulings: dict[str, tuple[str, str]],
     chapter: int,
     items: dict[str, Item] | None = None,
 ) -> Horizon:
-    """``items`` (every corpus item by id, in corpus order) lets a ruling on a scene
-    that does not name the NPC take effect: it enters as a candidate with no signals.
+    """``rulings`` is :func:`rulings.effective`'s output: ``{item_id: (value, source)}``.
+
+    ``items`` (every corpus item by id, in corpus order) lets a ruling on an item
+    that does not name the NPC (a span, or a scene ruled one by one) take effect:
+    it enters as a candidate with no signals. ``absent`` items are left out.
     """
     items = items or {}
     named = {c.item.item_id for c in cands}
     unnamed = [
         Candidate(item=items[i], signals=(), forms_matched=(), match_lines=())
-        for i, v in rulings.items()
+        for i, (v, _) in rulings.items()
         if i not in named and i in items and v in (PRESENT, UNSURE)
     ]
     order = {i: n for n, i in enumerate(items)}
@@ -57,7 +62,8 @@ def build_horizon(
     upto = [c for c in every if c.item.chapter <= chapter]
     by = {PRESENT: [], MENTIONED: [], UNSURE: [], None: []}
     for c in upto:
-        by[rulings.get(c.item.item_id)].append(c)
+        value = rulings.get(c.item.item_id, (None, None))[0]
+        by[value if value in by else None].append(c)
     chapters = [c.item.chapter for c in upto if c.signals]
     return Horizon(
         subject=dossier.subject,
@@ -68,6 +74,7 @@ def build_horizon(
         mentioned=tuple(by[MENTIONED]),
         unsure=tuple(by[UNSURE]),
         unruled=tuple(by[None]),
+        by_span=frozenset(i for i, (_, src) in rulings.items() if src == FROM_SPAN),
         later=len(every) - len(upto),
     )
 
@@ -109,7 +116,9 @@ def render_horizon(h: Horizon) -> str:
     if not h.witnessed:
         out.append("_(none ruled present)_")
     for c in h.witnessed:
-        head = f"### {_cite(c)}" + ("" if c.signals else " — not named in the text")
+        tags = [t for t, on in (("not named in the text", not c.signals),
+                                ("by span", c.item.item_id in h.by_span)) if on]
+        head = f"### {_cite(c)}" + (f" — {', '.join(tags)}" if tags else "")
         out += [head, "", _quote(c.item.text), ""]
 
     for title, group in (

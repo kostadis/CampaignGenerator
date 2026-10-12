@@ -253,23 +253,28 @@ def ruling_template(dossiers_and_cands: list[tuple[Dossier, list[Candidate]]]) -
     """
     out = [
         "# NPC presence rulings — GM-authored. npc_agent reads this file and never writes it.",
-        "# For each item: present | mentioned | unsure. Leave a value empty to keep it unruled.",
-        "#   present    the NPC was in the scene (or, for a chapter-level item, in the event it describes)",
-        "#   mentioned  the item is about the NPC, who was not there",
+        "# items: one value per item; leave a value empty to keep it unruled.",
+        "#   present    the NPC was there (for a chapter-level item: in the event it describes)",
+        "#   mentioned  the item is about the NPC, who was not there (items that name the NPC only)",
         "#   unsure     you looked and cannot tell; kept apart from unruled",
-        "# A scene not listed (it never names the NPC) may still be added as present or unsure:",
-        "# a companion is in many scenes nobody names him in.",
-        "version: 1",
+        "#   absent     an exception inside a span, for a scene that does not name the NPC",
+        "# A scene not listed (it never names the NPC) may still be added as present, unsure or absent.",
+        "# spans: rule a run of scenes at once, e.g. for a companion:",
+        "#   spans:",
+        "#     - {from: \"034.03\", to: \"071.10\", value: present, follows: Zalthir}",
+        "version: 2",
         "npcs:",
     ]
     for d, cands in dossiers_and_cands:
         out.append(f"  {_yaml_str(d.subject)}:")
+        out.append("    spans: []")
         if not cands:
-            out.append("    {}")
+            out.append("    items: {}")
             continue
+        out.append("    items:")
         for c in cands:
             it = c.item
             label = it.title or it.text.splitlines()[0][:70]
             note = f"{it.kind} · {','.join(c.signals)} · {label}".replace("\n", " ")
-            out.append(f"    {_yaml_str(it.item_id)}:   # {note}")
+            out.append(f"      {_yaml_str(it.item_id)}:   # {note}")
     return "\n".join(out) + "\n"
