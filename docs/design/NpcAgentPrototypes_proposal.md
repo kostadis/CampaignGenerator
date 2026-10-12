@@ -151,9 +151,22 @@ The prototypes read the public layout and keep those two levels apart: a
 ### Scope: NPCs with a published dossier
 
 By the GM's ruling, the prototypes run on **NPCs that have a published
-dossier**. Sylvira qualifies. **Ilvara and Vizeran do not** (Ilvara appears in
-10 summaries but has no published dossier; Vizeran appears in none). They stay
-in this document as design cases.
+dossier**. **Ilvara and Vizeran do not** (Ilvara appears in 10 summaries but has
+no published dossier; Vizeran appears in none). They stay in this document as
+design cases. The two worked NPCs are opposites:
+
+| | Sylvira Savikas | Glabbagool |
+|---|---|---|
+| Role | A Candlekeep scholar the party visits | A companion: the sentient gelatinous cube (later a grey ooze) who travels with the party, much of it in the bag of holding |
+| Chapters | 57–71 (named in 9) | 34–71 (named in 33) |
+| Candidates | 75 (19 scenes, 23 prose, 8 moments, 25 entries) | 282 (91 scenes, 92 prose, 48 moments, 51 entries) |
+| Quotes attributed to them | 2 | 17 |
+| Scenes in their span that name them | 19 of 87 | 91 of 240 |
+| The knowledge question | What she was **not** told (her son's death) | Where he **was**, unnamed: in most of the 149 scenes that never mention him |
+
+Sylvira's horizon is mostly about excluding things. Glabbagool's is mostly about
+including scenes nobody names him in, which is why a ruling may mark any scene
+present (see [The ruling file](#the-ruling-file)).
 
 ## A mention is not presence
 
@@ -297,8 +310,22 @@ npcs:
     "063.05": unsure
 ```
 
-Values are `present`, `mentioned` or `unsure`. An unknown NPC, an item id that
-is not a candidate, or any other value is refused.
+Values are `present`, `mentioned` or `unsure`, and the item decides which are
+allowed:
+
+- **A candidate** (an item that names the NPC): any value.
+- **Any other scene in the corpus**: `present` or `unsure` only. This is for
+  companions: Glabbagool is named in only 91 of the 240 scenes of his span, and
+  a horizon limited to those would miss most of what he witnessed. `mentioned`
+  is refused here, because an item that does not name the NPC cannot be about
+  them. In the horizon such a scene is marked "not named in the text".
+
+An unknown NPC, any other item id, or any other value is refused.
+
+Ruling a companion scene by scene is 240 rulings for Glabbagool alone. A span
+ruling ("with the party from 034.03 to 071.10, except …") would cut that to a
+handful. It is not built: whether a companion's presence should be ruled as a
+span with exceptions is the GM's call (see [Open questions](#open-questions)).
 
 ### The horizon
 
@@ -330,5 +357,9 @@ work from.
   a dossier).
 - Whether ruling should be a review artifact (more than a dozen rulings per
   NPC, which the campaign rules say should not be asked one at a time in chat).
+- Whether a companion's presence (Glabbagool) is ruled as a span with
+  exceptions rather than scene by scene, and what "with the party" means when
+  he is in the bag of holding or assigned elsewhere (ch39 sends him to help
+  Uth-Jadger while the party splits).
 - Whether Ilvara should get a published dossier, since she is the only NPC with
   a complete, closed arc to backtest against.

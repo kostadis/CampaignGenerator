@@ -280,7 +280,8 @@ def test_rulings_load_and_empty_means_unruled(camp, tmp_path):
     "body, needle",
     [
         ('version: 1\nnpcs:\n  Sylvira Savikas:\n    "061.02": there\n', "is not one of"),
-        ('version: 1\nnpcs:\n  Sylvira Savikas:\n    "061.01": present\n', "not one of this NPC's candidate items"),
+        ('version: 1\nnpcs:\n  Sylvira Savikas:\n    "057.p02": present\n', "nor a scene in the corpus"),
+        ('version: 1\nnpcs:\n  Sylvira Savikas:\n    "061.01": mentioned\n', "'mentioned' needs an item that names"),
         ('version: 1\nnpcs:\n  Ilvara:\n    "002.01": present\n', "not an NPC with a published dossier"),
         ('version: 2\nnpcs: {}\n', "version must be 1"),
         ('version: 1\nnpcs: {}\nextra: 1\n', "unknown top-level key"),
@@ -290,7 +291,35 @@ def test_rulings_refuse_what_they_cannot_apply(camp, tmp_path, body, needle):
     f = tmp_path / "r.yaml"
     f.write_text(body)
     with pytest.raises(rulings.RulingError, match=needle):
-        rulings.load_rulings(f, _ids(camp))
+        rulings.load_rulings(f, _ids(camp), _scene_ids(camp))
+
+
+def _scene_ids(camp):
+    c = corpus.load_corpus(camp / "summaries")
+    return frozenset(it.item_id for it in c.items() if it.kind == corpus.SCENE)
+
+
+def test_a_companion_may_be_ruled_present_in_a_scene_that_never_names_him(camp, tmp_path):
+    # Glabbagool, in the bag of holding, is named in 91 of the 240 scenes of his span.
+    f = tmp_path / "r.yaml"
+    f.write_text('version: 1\nnpcs:\n  Sylvira Savikas:\n    "061.01": present\n    "061.02": present\n')
+    ruled = rulings.load_rulings(f, _ids(camp), _scene_ids(camp))
+    assert ruled == {"Sylvira Savikas": {"061.01": "present", "061.02": "present"}}
+
+    c, _, table, syl = _setup(camp)
+    items = {it.item_id: it for it in c.items()}
+    h = horizon.build_horizon(syl, presence.candidates(c, syl, table), ruled["Sylvira Savikas"], 61, items)
+    assert [x.item.item_id for x in h.witnessed] == ["061.01", "061.02"]
+    assert h.witnessed[0].signals == ()
+    assert "[ch 061 / 061.01] 061-session-colloquium.md:9 — not named in the text" in horizon.render_horizon(h)
+
+
+def test_an_unnamed_scene_after_the_chapter_stays_hidden(camp, tmp_path):
+    c, _, table, syl = _setup(camp)
+    items = {it.item_id: it for it in c.items()}
+    h = horizon.build_horizon(syl, presence.candidates(c, syl, table), {"061.01": "present"}, 57, items)
+    assert h.witnessed == ()
+    assert "Reunion" not in horizon.render_horizon(h)
 
 
 # ── horizon ────────────────────────────────────────────────────────────────
