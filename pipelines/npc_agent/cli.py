@@ -134,11 +134,13 @@ def cmd_horizon(args) -> int:
         _refuse_inside(Path(args.out), (summaries, npcs))
     d = chosen[0]
     cands = presence.candidates(corpus, d, table)
+    items = {it.item_id: it for it in corpus.items()}
+    scene_ids = frozenset(i for i, it in items.items() if it.kind == corpus_mod.SCENE)
     try:
-        ruled = rulings.load_rulings(args.rulings, {d.subject: {c.item.item_id for c in cands}})
+        ruled = rulings.load_rulings(args.rulings, {d.subject: {c.item.item_id for c in cands}}, scene_ids)
     except rulings.RulingError as e:
         raise Refusal(str(e)) from None
-    h = horizon_mod.build_horizon(d, cands, ruled.get(d.subject, {}), args.chapter)
+    h = horizon_mod.build_horizon(d, cands, ruled.get(d.subject, {}), args.chapter, items)
     text = horizon_mod.render_horizon(h)
     if args.out is None:
         sys.stdout.write(text)

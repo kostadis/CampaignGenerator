@@ -257,6 +257,8 @@ def ruling_template(dossiers_and_cands: list[tuple[Dossier, list[Candidate]]]) -
         "#   present    the NPC was in the scene (or, for a chapter-level item, in the event it describes)",
         "#   mentioned  the item is about the NPC, who was not there",
         "#   unsure     you looked and cannot tell; kept apart from unruled",
+        "# A scene not listed (it never names the NPC) may still be added as present or unsure:",
+        "# a companion is in many scenes nobody names him in.",
         "version: 1",
         "npcs:",
     ]
