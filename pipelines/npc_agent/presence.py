@@ -258,6 +258,8 @@ def ruling_template(dossiers_and_cands: list[tuple[Dossier, list[Candidate]]]) -
         "#   mentioned  the item is about the NPC, who was not there (items that name the NPC only)",
         "#   unsure     you looked and cannot tell; kept apart from unruled",
         "#   absent     an exception inside a span, for a scene that does not name the NPC",
+        "# default: mentioned (or unsure) rules every listed item you leave empty, e.g. for an NPC",
+        "#   who is present in a few passages and talked about in the rest.",
         "# A scene not listed (it never names the NPC) may still be added as present, unsure or absent.",
         "# spans: rule a run of scenes at once, e.g. for a companion:",
         "#   spans:",

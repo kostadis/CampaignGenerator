@@ -145,6 +145,19 @@ details[open] > summary::before { content: "▾ "; }
   </div>
   <div class="filters" id="filters" role="group" aria-label="Show" style="margin-top:10px"></div>
 
+  <section class="spans" aria-labelledby="default-h">
+    <div class="row-top"><h2 id="default-h">Unmarked passages</h2><span class="via">what every passage you leave unmarked counts as, for this NPC</span></div>
+    <div class="actions">
+      <label for="default-v" class="via">Count them as</label>
+      <select id="default-v" class="btn">
+        <option value="">unruled (mark each one)</option>
+        <option value="mentioned">mentioned (not there)</option>
+        <option value="unsure">unsure</option>
+      </select>
+      <span class="via" id="default-note"></span>
+    </div>
+  </section>
+
   <section class="spans" id="spans" aria-labelledby="spans-h">
     <div class="row-top"><h2 id="spans-h">Spans</h2><span class="via">a run of scenes ruled at once; an item ruling below always wins</span></div>
     <div id="span-list"></div>
@@ -177,7 +190,7 @@ const DATA = /*__NPC_AGENT_DATA__*/null;
     kinds: new Set(["scene", "prose", "moment", "entry"]),
     rulings: {},              // stem -> {spans: [], items: {}}
   };
-  DATA.npcs.forEach((n) => { state.rulings[n.stem] = { spans: [], items: {} }; });
+  DATA.npcs.forEach((n) => { state.rulings[n.stem] = { spans: [], items: {}, default: "" }; });
   try {
     const t = localStorage.getItem("presence-ledger-tab");
     const i = DATA.npcs.findIndex((n) => n.stem === t);
@@ -217,6 +230,7 @@ const DATA = /*__NPC_AGENT_DATA__*/null;
 
   function effective(stem) {
     const r = state.rulings[stem], n = DATA.npcs.find((x) => x.stem === stem), out = {};
+    if (r.default) for (const id of Object.keys(n.candidates)) out[id] = { v: r.default, src: "default" };
     const valid = spanProblems(r.spans).length === 0 ? r.spans : [];
     for (const ch of CHAPTERS) {
       const scenes = ch.items.filter((i) => ITEMS[i].k === "scene");
@@ -237,11 +251,11 @@ const DATA = /*__NPC_AGENT_DATA__*/null;
 
   function counts(stem) {
     const n = DATA.npcs.find((x) => x.stem === stem), eff = effective(stem);
-    const c = { total: 0, ruled: 0, present: 0, mentioned: 0, unsure: 0, bySpan: 0 };
+    const c = { total: 0, ruled: 0, present: 0, mentioned: 0, unsure: 0, bySpan: 0, byDefault: 0 };
     for (const id of Object.keys(n.candidates)) {
       c.total++;
       const e = eff[id];
-      if (e) { c.ruled++; if (c[e.v] !== undefined) c[e.v]++; if (e.src === "span") c.bySpan++; }
+      if (e) { c.ruled++; if (c[e.v] !== undefined) c[e.v]++; if (e.src === "span") c.bySpan++; if (e.src === "default") c.byDefault++; }
     }
     c.unnamedPresent = Object.entries(eff).filter(([id, e]) => !n.candidates[id] && ITEMS[id].k === "scene" && e.v === "present").length;
     c.absent = Object.entries(eff).filter(([, e]) => e.v === "absent").length;
@@ -271,7 +285,7 @@ const DATA = /*__NPC_AGENT_DATA__*/null;
       "<span><b>" + c.ruled + "</b> of " + c.total + " passages ruled</span>" +
       '<span class="meter" aria-hidden="true"><i style="width:' + pct + '%"></i></span>' +
       "<span>present " + c.present + " · mentioned " + c.mentioned + " · unsure " + c.unsure +
-      (c.bySpan ? " · " + c.bySpan + " by span" : "") + "</span>" +
+      (c.bySpan ? " · " + c.bySpan + " by span" : "") + (c.byDefault ? " · " + c.byDefault + " by default" : "") + "</span>" +
       (c.unnamedPresent ? "<span>+ " + c.unnamedPresent + " unnamed scenes present</span>" : "") +
       (c.absent ? "<span>" + c.absent + " absent</span>" : "");
   }
@@ -284,12 +298,21 @@ const DATA = /*__NPC_AGENT_DATA__*/null;
   }
 
   function renderFilters() {
-    const f = [["needs", "Needs a ruling"], ["all", "Everything"], ["hint", "Check splits"]];
+    const f = [["needs", "Needs a ruling"], ["likely", "Quote or headline"], ["all", "Everything"], ["hint", "Check splits"]];
     const kinds = ["scene", "prose", "moment", "entry"];
     $("filters").innerHTML =
       f.map(([k, l]) => '<button type="button" class="chip" data-show="' + k + '" aria-pressed="' + (state.show === k) + '">' + l + "</button>").join("") +
       '<span class="label" style="align-self:center;margin-left:6px">Kinds</span>' +
       kinds.map((k) => '<button type="button" class="chip" data-kind="' + k + '" aria-pressed="' + state.kinds.has(k) + '">' + KIND_LABEL[k] + "</button>").join("");
+  }
+
+  function renderDefault() {
+    const r = rul();
+    $("default-v").value = r.default || "";
+    const n = Object.keys(npc().candidates).length;
+    $("default-note").textContent = r.default
+      ? "Applies to every passage below that you have not marked and no span reaches."
+      : n + " passages to mark one by one. For an NPC present in only a few of them, choose mentioned and mark just those.";
   }
 
   function sceneOptions(sel) {
@@ -331,6 +354,7 @@ const DATA = /*__NPC_AGENT_DATA__*/null;
       if (state.show === "needs" && cand && eff[id]) continue;
       if (state.show === "needs" && !cand) continue;
       if (state.show === "hint" && !hintFor(id, eff)) continue;
+      if (state.show === "likely" && !(cand && n.candidates[id].some((g) => g === "quoted" || g === "headline"))) continue;
       ids.push(id);
     }
     return ids;
@@ -348,7 +372,7 @@ const DATA = /*__NPC_AGENT_DATA__*/null;
     return '<div class="row" data-id="' + id + '" data-v="' + v + '">' +
       '<div class="row-main"><div class="row-top"><span class="mono">' + id + '</span><span class="tag">' + KIND_LABEL[it.k] + "</span>" +
       title + sigs + (hint ? '<span class="tag hint">' + esc(hint) + "</span>" : "") + "</div>" +
-      (e && e.src === "span" ? '<span class="via">' + e.v + " by span" + (own ? "" : "; mark it here to override") + "</span>" : "") +
+      (e && e.src !== "item" ? '<span class="via">' + e.v + " by " + e.src + (own ? "" : "; mark it here to override") + "</span>" : "") +
       "<details" + (openIds.has(id) ? " open" : "") + "><summary>" + esc(first.replace(/^[-#>*\s]+/, "").slice(0, 160)) + '</summary><p class="text">' + esc(it.x) + "</p></details></div>" +
       '<div class="answers" role="group" aria-label="Ruling for ' + id + '">' +
       ANSWERS.map((a) => '<button type="button" class="ans" data-a="' + a + '" aria-pressed="' + (own === a) + '"' +
@@ -371,7 +395,7 @@ const DATA = /*__NPC_AGENT_DATA__*/null;
   }
 
   function render() {
-    renderTabs(); renderTally(); renderFilters(); renderSpans(); renderList();
+    renderTabs(); renderTally(); renderFilters(); renderDefault(); renderSpans(); renderList();
     $("source").textContent = DATA.source;
     $("foot").textContent = "Item ids match npc_agent: NNN.SS is a scene, NNN.pK a summary paragraph, NNN.mK a memorable moment, " +
       "NNN.eK an NPC entry. Saved files are ruling file version " + DATA.rulings_version + "; npc_agent horizon --rulings reads them as they stand.";
@@ -390,7 +414,10 @@ const DATA = /*__NPC_AGENT_DATA__*/null;
         if (s.note) o.note = s.note;
         return o;
       });
-      if (spans.length || Object.keys(items).length) npcs[n.subject] = { spans, items };
+      if (spans.length || Object.keys(items).length || r.default) {
+        npcs[n.subject] = { spans, items };
+        if (r.default) npcs[n.subject].default = r.default;
+      }
     }
     return { version: DATA.rulings_version, npcs };
   }
@@ -400,6 +427,7 @@ const DATA = /*__NPC_AGENT_DATA__*/null;
     const out = ["version: " + f.version, "npcs:"];
     for (const [subj, b] of Object.entries(f.npcs)) {
       out.push("  " + q(subj) + ":");
+      if (b.default) out.push("    default: " + b.default);
       out.push(b.spans.length ? "    spans:" : "    spans: []");
       for (const s of b.spans) {
         out.push("      - from: " + q(s.from), "        to: " + q(s.to), "        value: " + s.value);
@@ -419,7 +447,7 @@ const DATA = /*__NPC_AGENT_DATA__*/null;
 
   function bodyFor(stem) {
     const r = state.rulings[stem], n = DATA.npcs.find((x) => x.stem === stem);
-    return { subject: n.subject, rulings_version: DATA.rulings_version, spans: r.spans, items: r.items };
+    return { subject: n.subject, rulings_version: DATA.rulings_version, spans: r.spans, items: r.items, default: r.default || "" };
   }
 
   function saveDraftLocally() {
@@ -456,7 +484,7 @@ const DATA = /*__NPC_AGENT_DATA__*/null;
       const raw = localStorage.getItem("presence-ledger-draft");
       if (raw) {
         const draft = JSON.parse(raw);
-        for (const n of DATA.npcs) if (draft[n.stem]) state.rulings[n.stem] = { spans: draft[n.stem].spans || [], items: draft[n.stem].items || {} };
+        for (const n of DATA.npcs) if (draft[n.stem]) state.rulings[n.stem] = { spans: draft[n.stem].spans || [], items: draft[n.stem].items || {}, default: draft[n.stem].default || "" };
       }
     } catch (e) { /* no draft */ }
     render();
@@ -472,7 +500,7 @@ const DATA = /*__NPC_AGENT_DATA__*/null;
         if (snap.metadata.hasPendingWrites || pending.has(n.stem)) return;
         if (snap.exists) {
           const d = snap.data();
-          state.rulings[n.stem] = { spans: JSON.parse(JSON.stringify(d.spans || [])), items: Object.assign({}, d.items || {}) };
+          state.rulings[n.stem] = { spans: JSON.parse(JSON.stringify(d.spans || [])), items: Object.assign({}, d.items || {}), default: d.default || "" };
         }
         render();
         if (first) { first = false; setStatus(canWrite ? "Saved rulings loaded" : "Read only: you can view these rulings but not change them.", !canWrite); }
@@ -533,6 +561,7 @@ const DATA = /*__NPC_AGENT_DATA__*/null;
   });
 
   document.addEventListener("change", (ev) => {
+    if (ev.target.id === "default-v") { rul().default = ev.target.value; render(); changed(npc().stem); return; }
     const el = ev.target, row = el.closest(".span-row");
     if (!row) return;
     const s = rul().spans[+row.dataset.span];
