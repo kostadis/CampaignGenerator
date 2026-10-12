@@ -78,8 +78,15 @@ class EffectiveInterval(StrictModel):
         return self
 
     def overlaps(self, other: "EffectiveInterval") -> bool:
+        """The one overlap rule for conflicts, supersession, precedence and range filters.
+
+        A ``future`` or ``open`` horizon has no chapter bounds to compare, so
+        it overlaps everything.  Erring toward overlap sends a possible
+        conflict to the GM; erring the other way would let conflict detection
+        miss a pair that planning precedence then silently drops.
+        """
         if self.horizon or other.horizon:
-            return self.horizon == other.horizon
+            return True
         return not ((self.through_chapter is not None and other.from_chapter is not None and self.through_chapter < other.from_chapter) or (other.through_chapter is not None and self.from_chapter is not None and other.through_chapter < self.from_chapter))
 
 
@@ -734,9 +741,11 @@ def _conflict_id(
 
 def _intersection(left: EffectiveInterval, right: EffectiveInterval) -> EffectiveInterval:
     """Return the precise common bounded interval after ``overlaps`` succeeds."""
-    if left.horizon or right.horizon:
-        # ``EffectiveInterval.overlaps`` only admits identical horizons.
+    if left.horizon and right.horizon:
         return left
+    if left.horizon or right.horizon:
+        # A horizon has no bounds; the bounded side is the precise overlap.
+        return right if left.horizon else left
     lower_bounds = [bound for bound in (left.from_chapter, right.from_chapter) if bound is not None]
     upper_bounds = [bound for bound in (left.through_chapter, right.through_chapter) if bound is not None]
     return EffectiveInterval(

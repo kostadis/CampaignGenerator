@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import sys
 import uuid
 from pathlib import Path
@@ -17,35 +18,48 @@ from pipelines.summary_native.authority import (AuthorityError, AuthorityLedger,
                                                 ledger_path, load_ledger, new_ledger,
                                                 record_human_conflict, resolve_conflict, sha256_bytes,
                                                 validate_record_identity)
-from pipelines.summary_native.authority_apply import _write_ledger_event, apply_proposal, authority_dir, authority_lock, create_proposal, initialize_ledger, pending_transaction, recover_transaction, request_withdrawal, validate_ledger_tip
+from pipelines.summary_native.authority_apply import (_write_ledger_event, apply_proposal, authority_dir, authority_lock,
+                                                      create_proposal, initialize_ledger, pending_transaction,
+                                                      recover_transaction, request_withdrawal,
+                                                      require_no_pending_transaction, validate_ledger_tip)
 from pipelines.summary_native.authority_inputs import resolve_anchor_span, resolve_selection, selected_planning_records
 
 EXIT_BY_CODE = {"AUTH_VALIDATION": 2, "AUTH_STALE": 3, "AUTH_RECOVERY": 4, "AUTH_CONFLICT": 5}
 
 
-def _stale_projections(campaign_dir: Path, current_ledger_sha256: str) -> list[dict[str, str]]:
-    """Find derived runs whose recorded authority ledger is no longer current.
+_DRAFT_RECORD = re.compile(r"record: (runs/[^/\s]+/record\.json)")
 
-    This reads run metadata only.  It never opens the draft prose, so status
-    cannot accidentally surface a player-only or GM-only sentence.
+
+def _stale_projections(campaign_dir: Path, current_ledger_sha256: str) -> list[dict[str, str]]:
+    """Find current drafts whose recorded authority ledger is no longer current.
+
+    A draft is ``<state>/drafts/<doc>.draft.md``, where ``<state>`` is the GM
+    state directory or one audience's, and its header names the run that wrote
+    it (``record: runs/<id>/record.json``).  Later runs that were dump-only,
+    failed or incomplete leave the draft alone, so the header, not the newest
+    run, says which inputs the draft on disk was built from.  Only that header
+    line and run metadata are read, never the draft prose, so status cannot
+    accidentally surface a player-only or GM-only sentence.
     """
     stale: list[dict[str, str]] = []
-    for record_path in sorted(Path(campaign_dir).glob("**/state/**/runs/*/record.json")):
+    for draft in sorted(Path(campaign_dir).glob("**/state/**/drafts/*.draft.md")):
+        doc = draft.name[: -len(".draft.md")]
         try:
-            run = json.loads(record_path.read_text(encoding="utf-8"))
-            manifest = (run.get("inputs") or {}).get("authority_manifest")
-            if not isinstance(manifest, dict) or manifest.get("ledger_sha256") == current_ledger_sha256:
-                continue
-            doc = str(run.get("doc") or "unknown")
-            stale.append({
-                "doc": doc,
-                "draft": str(record_path.parent.parent / "drafts" / f"{doc}.draft.md"),
-                "reason": "authority inputs changed since this output",
-            })
+            with draft.open(encoding="utf-8") as handle:
+                header = handle.readline()
+            match = _DRAFT_RECORD.search(header)
+            if match is None:
+                raise ValueError("draft header names no run record")
+            run = json.loads((draft.parent.parent / match.group(1)).read_text(encoding="utf-8"))
+            inputs = run.get("inputs") if isinstance(run, dict) else None
+            manifest = inputs.get("authority_manifest") if isinstance(inputs, dict) else None
         except (OSError, ValueError, TypeError):
-            # An unreadable historical run is never silently treated current.
-            stale.append({"doc": "unknown", "draft": str(record_path),
-                          "reason": "authority freshness could not be verified"})
+            # An unreadable run is never silently treated as current.
+            stale.append({"doc": doc, "draft": str(draft), "reason": "authority freshness could not be verified"})
+            continue
+        if not isinstance(manifest, dict) or manifest.get("ledger_sha256") == current_ledger_sha256:
+            continue
+        stale.append({"doc": doc, "draft": str(draft), "reason": "authority inputs changed since this output"})
     return stale
 
 
@@ -74,6 +88,33 @@ def _validated_ledger_update(ledger: AuthorityLedger, *, records: list, revision
         return AuthorityLedger.model_validate(raw)
     except Exception as exc:
         raise AuthorityError(f"AUTH_VALIDATION: invalid authority record transition: {exc}", "AUTH_VALIDATION") from exc
+
+
+def _require_mutable_ledger(campaign_dir: Path) -> None:
+    """Refuse a ledger-only mutation over unfinished or unrecorded ledger bytes.
+
+    Called under the exclusive lock.  Writing a new tip over a half-finished
+    transaction would make its recovery find unexpected bytes, and writing one
+    over a hand edit would turn that edit into accepted history.
+    """
+    require_no_pending_transaction(campaign_dir)
+    validate_ledger_tip(campaign_dir)
+
+
+def _allow_new_record(record) -> None:
+    """A new record enters at the start of its state machine, never part-way through.
+
+    A ruling reaches ``proposed`` and ``applied`` only through ``propose`` and
+    ``apply``, which rewrite the summary and write the receipt.  Staging one in
+    a later state would skip that source transaction entirely.
+    """
+    if isinstance(record, NoteRecord):
+        if record.status != "active":
+            raise AuthorityError("AUTH_VALIDATION: a new note must be staged as active", "AUTH_VALIDATION")
+    elif record.status != "draft" or record.proposal_id or record.applied_receipt or record.withdrawal_reason:
+        raise AuthorityError(
+            "AUTH_VALIDATION: a new ruling must be staged as a draft with no proposal, receipt or withdrawal; "
+            "use propose and apply to move it on", "AUTH_VALIDATION")
 
 
 def _validate_note_content_digest(campaign_dir: Path, record: NoteRecord) -> None:
@@ -231,13 +272,17 @@ def run(args) -> int:
                 path = stages / f"{stage_id}.json"; path.parent.mkdir(parents=True, exist_ok=True); path.write_text(json.dumps(payload, sort_keys=True, indent=2) + "\n")
                 return _emit(args, ok=True, code="OK", message="record staged for explicit apply", data=payload, artifacts=[str(path)])
             with authority_lock(campaign_dir, exclusive=True):
+                _require_mutable_ledger(campaign_dir)
                 ledger = load_ledger(campaign_dir)
                 # Validate the complete loaded authority graph before creating
                 # a journal whose snapshots would otherwise bless invalid data.
                 ledger = _validated_ledger_update(ledger, records=ledger.records, revision=ledger.revision)
                 if args.expected_ledger_sha256 != ledger_digest(campaign_dir): raise AuthorityError("AUTH_STALE: ledger changed since review", "AUTH_STALE")
                 if args.record_command == "apply":
-                    payload = json.loads((stages / f"{args.stage_id}.json").read_text())
+                    try:
+                        payload = json.loads((stages / f"{args.stage_id}.json").read_text(encoding="utf-8"))
+                    except (OSError, ValueError) as exc:
+                        raise AuthorityError(f"AUTH_STALE: no readable staged record {args.stage_id!r}; stage it again", "AUTH_STALE") from exc
                     if payload.get("sha256") != args.stage_sha256: raise AuthorityError("AUTH_STALE: staged record digest changed", "AUTH_STALE")
                     raw = payload["record"]; model = RulingRecord if raw.get("kind") == "ruling" else NoteRecord
                     record = model.model_validate(raw)
@@ -250,6 +295,7 @@ def run(args) -> int:
                         records = [record if item.id == record.id else item for item in ledger.records]
                         reason = "record-revise"
                     else:
+                        _allow_new_record(record)
                         records = [*ledger.records, record]
                         reason = "record-apply"
                     before = ledger_path(campaign_dir).read_bytes()
@@ -279,6 +325,7 @@ def run(args) -> int:
             return _emit(args, ok=True, code="OK", message="authority ledger initialized", data={"campaign": campaign, "revision": 1, "sha256": digest}, artifacts=[str(ledger_path(campaign_dir))])
         if args.authority_command == "conflict" and args.authority_conflict_command in {"resolve", "dismiss", "identify"}:
             with authority_lock(campaign_dir, exclusive=True):
+                _require_mutable_ledger(campaign_dir)
                 ledger = load_ledger(campaign_dir)
                 if args.expected_ledger_sha256 != ledger_digest(campaign_dir):
                     raise AuthorityError("AUTH_STALE: ledger changed since review", "AUTH_STALE")
@@ -392,6 +439,11 @@ def run(args) -> int:
         raise AuthorityError(f"unsupported authority foundation command {args.authority_command!r}")
     except AuthorityError as exc:
         return _emit(args, ok=False, code=exc.code, message=str(exc))
+    except (ValueError, OSError) as exc:
+        # Pydantic's ValidationError is a ValueError.  The Rulings page reads
+        # only the JSON envelope, so a staged-YAML typo or unreadable file must
+        # arrive there with its reason rather than as a stderr traceback.
+        return _emit(args, ok=False, code="AUTH_VALIDATION", message=f"AUTH_VALIDATION: {exc}")
 
 
 def _resolve_campaign_scope(args) -> tuple[Path, Path | None]:

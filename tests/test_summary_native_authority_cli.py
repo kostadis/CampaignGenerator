@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import hashlib
+from pathlib import Path
 
 import yaml
 
@@ -18,23 +19,57 @@ def test_authority_init_validate_status_json(tmp_path, capsys):
     assert main(["authority", "status", "--campaign-dir", str(tmp_path), "--json"]) == 0
 
 
+def _draft(state: Path, doc: str, run_id: str, ledger_sha256: str) -> Path:
+    """A draft and the run record its header names, as synth lays them out."""
+    run = state / "runs" / run_id
+    run.mkdir(parents=True)
+    (run / "record.json").write_text(json.dumps({
+        "doc": doc, "inputs": {"authority_manifest": {"ledger_sha256": ledger_sha256}},
+    }))
+    draft = state / "drafts" / f"{doc}.draft.md"
+    draft.parent.mkdir(parents=True, exist_ok=True)
+    draft.write_text(f"<!-- summary_native draft | doc: {doc} | record: runs/{run_id}/record.json -->\nGM-only prose\n")
+    return draft
+
+
 def test_authority_status_reports_stale_projection_metadata_only(tmp_path, capsys):
     assert main(["authority", "init", "--campaign-dir", str(tmp_path), "--json"]) == 0
     first = json.loads(capsys.readouterr().out)
-    run = tmp_path / "docs" / "grounding" / "ch001-001" / "state" / "runs" / "run-1"
-    run.mkdir(parents=True)
-    (run / "record.json").write_text(json.dumps({
-        "doc": "planning", "inputs": {"authority_manifest": {"ledger_sha256": first["data"]["sha256"]}},
-    }))
-    # A ledger digest change is enough to stale an existing derived run.
+    state = tmp_path / "docs" / "grounding" / "ch001-001" / "state"
+    draft = _draft(state, "planning", "20261001T000000Z", first["data"]["sha256"])
+    # A ledger digest change is enough to stale an existing derived draft.
     ledger = tmp_path / "docs" / "authority.yaml"
     ledger.write_text(ledger.read_text(encoding="utf-8") + "# changed\n", encoding="utf-8")
     assert main(["authority", "status", "--campaign-dir", str(tmp_path), "--json"]) == 0
-    status = json.loads(capsys.readouterr().out)["data"]
-    assert status["stale_projections"] == [{
-        "doc": "planning", "draft": str(run.parent / "drafts" / "planning.draft.md"),
-        "reason": "authority inputs changed since this output",
+    out = capsys.readouterr().out
+    assert json.loads(out)["data"]["stale_projections"] == [{
+        "doc": "planning", "draft": str(draft), "reason": "authority inputs changed since this output",
     }]
+    assert "GM-only prose" not in out
+
+
+def test_stale_projections_follow_the_run_that_wrote_each_draft(tmp_path, capsys):
+    """Old runs never linger, a later non-writing run never hides a stale draft, and audiences count."""
+    assert main(["authority", "init", "--campaign-dir", str(tmp_path), "--json"]) == 0
+    current = json.loads(capsys.readouterr().out)["data"]["sha256"]
+    state = tmp_path / "docs" / "grounding" / "ch001-002" / "state"
+    # world_state: an old stale run, then a fresh synth whose draft is current -> not listed.
+    old = state / "runs" / "20261001T000000Z"; old.mkdir(parents=True)
+    (old / "record.json").write_text(json.dumps({"doc": "world_state", "inputs": {"authority_manifest": {"ledger_sha256": "old"}}}))
+    _draft(state, "world_state", "20261002T000000Z", current)
+    # planning: the draft is stale; a later dump-only run with the current ledger wrote no draft.
+    stale_planning = _draft(state, "planning", "20261001T000001Z", "old")
+    later = state / "runs" / "20261003T000000Z"; later.mkdir()
+    (later / "record.json").write_text(json.dumps({"doc": "planning", "inputs": {"authority_manifest": {"ledger_sha256": current}}}))
+    # a players-audience draft lives under its own state directory.
+    players = _draft(state / "audiences" / "players", "party", "20261001T000000Z", "old")
+    # a run whose draft was removed is not reported.
+    gone = state / "runs" / "20261004T000000Z"; gone.mkdir()
+    (gone / "record.json").write_text(json.dumps({"doc": "campaign_state", "inputs": {"authority_manifest": {"ledger_sha256": "old"}}}))
+
+    assert main(["authority", "status", "--campaign-dir", str(tmp_path), "--json"]) == 0
+    stale = json.loads(capsys.readouterr().out)["data"]["stale_projections"]
+    assert sorted(item["draft"] for item in stale) == sorted([str(stale_planning), str(players)])
 
 
 def test_authority_apply_requires_digest_flag(tmp_path):
@@ -107,8 +142,9 @@ def test_validate_refuses_manual_ledger_edit_after_staged_note_apply(tmp_path, c
         "--expected-ledger-sha256", init["data"]["sha256"], "--campaign-dir", str(tmp_path), "--json",
     ]) == 0
     capsys.readouterr()
-    event = next((tmp_path / "docs" / "authority" / "events").glob("event-*.json"))
-    assert json.loads(event.read_text())["record_id"] == "west-gate"
+    # The init event shares the directory, and glob order is the filesystem's: pick by reason.
+    events = [json.loads(path.read_text()) for path in (tmp_path / "docs" / "authority" / "events").glob("event-*.json")]
+    assert [event["record_id"] for event in events if event["reason"] == "record-apply"] == ["west-gate"]
     ledger = tmp_path / "docs" / "authority.yaml"
     ledger.write_text(ledger.read_text(encoding="utf-8") + "\n# unrecorded manual edit\n", encoding="utf-8")
     assert main(["authority", "validate", "--campaign-dir", str(tmp_path), "--json"]) == 3
@@ -267,3 +303,74 @@ def test_conflicts_json_resolution_and_history_use_exact_event_references(tmp_pa
     assert main(["authority", "history", "plan", "--campaign-dir", str(tmp_path), "--json"]) == 0
     record_history = json.loads(capsys.readouterr().out)["data"]["events"]
     assert [event["id"] for event in record_history] == ["event-plan"]
+
+
+def _ruling_yaml(path, *, identifier: str = "gate-ruling", status: str = "draft", extra: tuple[str, ...] = ()):
+    path.write_text("\n".join([
+        f"id: {identifier}", "kind: ruling", "revision: 1", "classification: RULED",
+        "subject: {kind: topic, id: gate}", "effective: {from_chapter: 1}",
+        "audience: {grants: [gm]}", "projections: [world_state]", f"status: {status}",
+        "recorded_at: '2026-10-09T00:00:00Z'", "recorded_by: GM",
+        "source: {path: docs/summaries/001.md, anchor: gate}",
+        "rejected_claim: west gate", "replacement_fact: east gate", *extra, "",
+    ]), encoding="utf-8")
+    return path
+
+
+def test_record_apply_refuses_a_new_ruling_staged_past_draft(tmp_path, capsys):
+    """Applied is reached only through propose and apply, which rewrite the summary and write the receipt."""
+    assert main(["authority", "init", "--campaign-dir", str(tmp_path), "--json"]) == 0
+    current = json.loads(capsys.readouterr().out)["data"]["sha256"]
+    ruling = _ruling_yaml(tmp_path / "applied.yaml", status="applied", extra=("proposal_id: made-up", "applied_receipt: made-up"))
+    assert main(["authority", "record", "stage", str(ruling), "--campaign-dir", str(tmp_path), "--json"]) == 0
+    staged = json.loads(capsys.readouterr().out)["data"]
+    assert main(["authority", "record", "apply", staged["id"], "--stage-sha256", staged["sha256"],
+                 "--expected-ledger-sha256", current, "--campaign-dir", str(tmp_path), "--json"]) == 2
+    assert "must be staged as a draft" in json.loads(capsys.readouterr().out)["message"]
+    assert main(["authority", "list", "--campaign-dir", str(tmp_path), "--json"]) == 0
+    assert json.loads(capsys.readouterr().out)["data"]["records"] == []
+
+
+def test_record_and_conflict_mutations_refuse_a_pending_transaction_or_unrecorded_edit(tmp_path, capsys):
+    from pipelines.summary_native.authority_apply import prepare_transaction
+
+    assert main(["authority", "init", "--campaign-dir", str(tmp_path), "--json"]) == 0
+    capsys.readouterr()
+    ruling = _ruling_yaml(tmp_path / "draft.yaml")
+    assert main(["authority", "record", "stage", str(ruling), "--campaign-dir", str(tmp_path), "--json"]) == 0
+    staged = json.loads(capsys.readouterr().out)["data"]
+    apply = lambda: main(["authority", "record", "apply", staged["id"], "--stage-sha256", staged["sha256"],
+                          "--expected-ledger-sha256", ledger_digest(tmp_path), "--campaign-dir", str(tmp_path), "--json"])
+    dismiss = lambda: main(["authority", "conflict", "dismiss", "any-conflict", "--reason", "noise",
+                            "--expected-ledger-sha256", ledger_digest(tmp_path), "--campaign-dir", str(tmp_path), "--json"])
+
+    # A hand edit is not accepted history: no new tip is written over it.
+    ledger = tmp_path / "docs" / "authority.yaml"
+    original = ledger.read_bytes()
+    ledger.write_bytes(original + b"# unrecorded manual edit\n")
+    for command in (apply, dismiss):
+        assert command() == 3
+        assert "mutation-history tip" in json.loads(capsys.readouterr().out)["message"]
+    ledger.write_bytes(original)
+
+    # A half-finished transaction must be recovered before anything else writes.
+    pending = prepare_transaction(tmp_path, proposal_id="p", proposal_sha256="0" * 64,
+                                  targets=[(tmp_path / "notes.txt", b"", b"pending\n")])
+    for command in (apply, dismiss):
+        assert command() == 4
+        assert pending["id"] in json.loads(capsys.readouterr().out)["message"]
+    assert ledger.read_bytes() == original
+
+
+def test_malformed_input_is_reported_in_the_json_envelope_not_a_traceback(tmp_path, capsys):
+    assert main(["authority", "init", "--campaign-dir", str(tmp_path), "--json"]) == 0
+    capsys.readouterr()
+    bad = _ruling_yaml(tmp_path / "bad.yaml", identifier="Gate_Ruling")
+    assert main(["authority", "record", "stage", str(bad), "--campaign-dir", str(tmp_path), "--json"]) == 2
+    payload = json.loads(capsys.readouterr().out)
+    assert payload["ok"] is False and payload["code"] == "AUTH_VALIDATION"
+    assert "stable lowercase slug" in payload["message"]
+
+    assert main(["authority", "record", "apply", "stage-missing", "--stage-sha256", "0" * 64,
+                 "--expected-ledger-sha256", ledger_digest(tmp_path), "--campaign-dir", str(tmp_path), "--json"]) == 3
+    assert "no readable staged record" in json.loads(capsys.readouterr().out)["message"]

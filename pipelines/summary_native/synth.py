@@ -685,12 +685,17 @@ def _planning_authority_prompt(root: Path, records, support=None) -> str:
 
 
 def _stale_future_warnings(records, latest_chapter: int) -> list[str]:
-    """Future notes dated before this range may describe play that has happened."""
+    """Future notes dated before this range may describe play that has happened.
+
+    ``planning_date`` is a chapter (``chapter-12``, ``12``) or a calendar date.
+    Only a chapter can be compared with the range; a date such as
+    ``2026-10-12`` must not be read as chapter 12.
+    """
     warnings: list[str] = []
     for record in records:
         if record.classification.value not in {"PREP", "OVERLAY"} or not record.planning_date:
             continue
-        match = re.search(r"(?:chapter[-:\s]*)?(\d+)$", record.planning_date, re.I)
+        match = re.fullmatch(r"(?:chapter[-:\s]*)?(\d+)", record.planning_date.strip(), re.I)
         if match and int(match.group(1)) <= latest_chapter:
             warnings.append(
                 f"stale future planning authority: {record.id} is dated {record.planning_date} before or at chapter {latest_chapter}"
@@ -1064,7 +1069,9 @@ def run_state_synth(
         "max_tokens": args.max_tokens,
         "inputs": {
             "corpus_manifest_sha256": corpus.sha256_file(range_dir / "manifest.json"),
-            "notes_manifest_sha256": freshness.sha_file(freshness.notes_dir(range_dir) / freshness.NOTES_MANIFEST),
+            # the notes this synth read: a non-GM audience's are its own (review and promotion bind
+            # the draft to <its state dir>/notes/manifest.json)
+            "notes_manifest_sha256": freshness.sha_file(freshness.notes_dir(range_dir, audience) / freshness.NOTES_MANIFEST),
             "registry_sha256": freshness.sha_file(registry_path),
             "players_sha256": freshness.sha_file(players_path),
             "track_files": [{"path": _rel(p, root), "sha256": corpus.sha256_file(p)} for p in track_paths if p.is_file()],

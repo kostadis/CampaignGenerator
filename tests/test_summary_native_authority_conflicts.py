@@ -78,3 +78,29 @@ def test_same_public_anchor_with_compatible_evidence_and_distinct_audiences_is_n
         "source": player.source,
     })
     assert not detect_conflicts(AuthorityLedger(version=2, campaign="x", revision=1, records=[player, ara]))
+
+
+def _future(ident: str, value: str, classification=Classification.OVERLAY):
+    return _note(ident, value, classification=classification).model_copy(
+        update={"effective": EffectiveInterval(horizon="future")}
+    )
+
+
+def test_a_horizon_overlaps_bounded_records_for_conflicts_supersession_and_precedence():
+    """One overlap rule: a future/open horizon has no bounds to compare, so it overlaps."""
+    from pipelines.summary_native.authority_inputs import _effective_for_range, resolve_planning_precedence
+
+    bounded, future = _note("gate-open", "open"), _future("gate-plan", "closed")
+    assert bounded.effective.overlaps(future.effective) and future.effective.overlaps(bounded.effective)
+    conflicts = detect_conflicts(AuthorityLedger(version=2, campaign="x", revision=1, records=[bounded, future]))
+    assert [c.basis for c in conflicts] == ["structured_value"]
+    assert conflicts[0].overlap == bounded.effective  # the bounded side is the precise overlap
+    # Planning precedence drops the lower-precedence overlay for the same reason.
+    resolved, _ = resolve_planning_precedence([bounded, future])
+    assert [r.id for r in resolved] == ["gate-open"]
+    # A horizon record may supersede the bounded claim it replaces.
+    successor = future.model_copy(update={"supersedes": "gate-open"})
+    AuthorityLedger(version=2, campaign="x", revision=1, records=[bounded, successor])
+    # Range filtering is unchanged: horizons always apply, bounded records must meet the range.
+    assert _effective_for_range(future.effective, 10, 12)
+    assert _effective_for_range(bounded.effective, 3, 5) and not _effective_for_range(bounded.effective, 4, 5)

@@ -7,7 +7,7 @@ import re
 from dataclasses import dataclass
 from pathlib import Path
 
-from pipelines.summary_native.authority import AuthorityError, AuthorityLedger, AuthorityRecord, Classification, DOCUMENT_ANCHOR, NoteRecord, POLICY_VERSION, Projection, RulingRecord, SCHEMA_VERSION, canonicalize, detect_conflicts, ledger_digest, load_ledger, record_metadata_digest, validate_audience_target, validate_record_identity
+from pipelines.summary_native.authority import AuthorityError, AuthorityLedger, AuthorityRecord, Classification, DOCUMENT_ANCHOR, EffectiveInterval, NoteRecord, POLICY_VERSION, Projection, RulingRecord, SCHEMA_VERSION, canonicalize, detect_conflicts, ledger_digest, load_ledger, record_metadata_digest, validate_audience_target, validate_record_identity
 from pipelines.summary_native.authority_apply import authority_lock, require_no_pending_transaction
 
 
@@ -241,11 +241,14 @@ def resolve_selection(campaign_dir: Path, selectors) -> SelectionSnapshot:
             member = SelectionMember(selector.id, authored, str(resolved), not _under(resolved, root), ids, hashlib.sha256(resolved.read_bytes()).hexdigest(), f"selector:{selector.id}")
             old = members.get(resolved)
             if old:
+                # An empty ``record_ids`` selects every record in the file, so it
+                # absorbs a narrower selector rather than being narrowed by it.
+                merged_ids = () if not old.record_ids or not ids else tuple(sorted(set(old.record_ids) | set(ids)))
                 members[resolved] = SelectionMember(
                     selector_id=",".join(sorted({*old.selector_id.split(","), selector.id})),
                     selector_path=",".join(sorted({*old.selector_path.split(","), authored})),
                     resolved_path=str(resolved), external=old.external,
-                    record_ids=tuple(sorted(set(old.record_ids) | set(ids))), digest=old.digest,
+                    record_ids=merged_ids, digest=old.digest,
                     reason=",".join(sorted({*old.reason.split(","), member.reason})),
                 )
             else:
@@ -323,16 +326,15 @@ def resolve_anchored_records(ledger: AuthorityLedger, *, audience: str, since: i
 
 
 def _effective_for_range(effective, since: int | None, until: int | None) -> bool:
-    """Bounded historical records must overlap the requested chapter range.
+    """Whether a record applies to the requested chapter range.
 
     Future/open planning records remain current intentional context; chapter
-    ranges only restrict records that declare chapter bounds.
+    ranges only restrict records that declare chapter bounds.  Both follow
+    from ``EffectiveInterval.overlaps``.
     """
-    if since is None or until is None or effective.horizon is not None:
+    if since is None or until is None:
         return True
-    start = effective.from_chapter if effective.from_chapter is not None else 0
-    end = effective.through_chapter if effective.through_chapter is not None else float("inf")
-    return start <= until and since <= end
+    return EffectiveInterval(from_chapter=since, through_chapter=until).overlaps(effective)
 
 
 _PRECEDENCE = {
@@ -343,15 +345,6 @@ _PRECEDENCE = {
     Classification.PREP: 2,
     Classification.OPEN: 1,
 }
-
-
-def _intervals_overlap(left, right) -> bool:
-    """Future/open intervals overlap conservatively; bounded chapter spans compare exactly."""
-    if left.horizon is not None or right.horizon is not None:
-        return True
-    left_start, left_end = left.from_chapter or 0, left.through_chapter if left.through_chapter is not None else float("inf")
-    right_start, right_end = right.from_chapter or 0, right.through_chapter if right.through_chapter is not None else float("inf")
-    return left_start <= right_end and right_start <= left_end
 
 
 def resolve_planning_precedence(records: list[AuthorityRecord]) -> tuple[list[AuthorityRecord], list[str]]:
@@ -374,14 +367,14 @@ def resolve_planning_precedence(records: list[AuthorityRecord]) -> tuple[list[Au
         overlays = [r for r in active if r.classification is Classification.OVERLAY]
         for index, left in enumerate(overlays):
             for right in overlays[index + 1:]:
-                if left.normalized_value != right.normalized_value and _intervals_overlap(left.effective, right.effective):
+                if left.normalized_value != right.normalized_value and left.effective.overlaps(right.effective):
                     raise AuthorityError(f"AUTH_CONFLICT: equal OVERLAY claims conflict for {key[0]}:{key[1]}", "AUTH_CONFLICT")
         # OPEN is an unresolved question, never a lower-precedence fact that a
         # later fact silently settles.  Keep it in the reviewed prompt.
         open_questions = [r for r in active if r.classification is Classification.OPEN]
         settled: list[AuthorityRecord] = []
         for candidate in (r for r in active if r.classification is not Classification.OPEN):
-            if any(_intervals_overlap(candidate.effective, chosen.effective) for chosen in settled):
+            if any(candidate.effective.overlaps(chosen.effective) for chosen in settled):
                 continue
             settled.append(candidate)
         resolved.extend(settled)

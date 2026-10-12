@@ -255,6 +255,13 @@ def test_non_gm_world_synth_uses_complete_snapshot_support(tmp_path: Path, monke
     ])
     assert rc == 0, err
     assert models.extract_calls and all("SECRET_SENTINEL" not in call["user"] for call in models.extract_calls)
+    # The run binds the notes it read, the audience's own: review and promotion compare it with
+    # <audience state>/notes/manifest.json.  The GM never extracted here, so the GM digest is None.
+    state = audience_state_dir(cs.range_dir(root), audience)
+    run = json.loads(next((state / "runs").glob("*/record.json")).read_text(encoding="utf-8"))
+    own = hashlib.sha256((state / "notes" / "manifest.json").read_bytes()).hexdigest()
+    assert run["inputs"]["notes_manifest_sha256"] == own
+    assert f"notes manifest sha256: {own}" in (state / "drafts" / "world_state.draft.md").read_text(encoding="utf-8").split("\n", 1)[0]
 
 
 def test_all_four_non_gm_documents_use_only_complete_classified_support(tmp_path: Path, monkeypatch):
