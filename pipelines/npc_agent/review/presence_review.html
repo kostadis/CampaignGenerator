@@ -105,10 +105,10 @@ details > summary::-webkit-details-marker { display: none; }
 details > summary::before { content: "▸ "; }
 details[open] > summary::before { content: "▾ "; }
 .via { font-size: 0.8rem; color: var(--muted); }
-.answers { display: grid; grid-template-columns: repeat(2, auto); gap: 4px; }
+.answers { display: grid; grid-template-columns: auto; gap: 4px; }
 .ans { border: 1px solid var(--line); background: var(--surface); border-radius: 6px; padding: 3px 10px; font-size: 0.85rem; }
 .ans[data-a="present"][aria-pressed="true"] { background: var(--present); border-color: var(--present); color: var(--accent-ink); }
-.ans[data-a="mentioned"][aria-pressed="true"] { background: var(--mentioned); border-color: var(--mentioned); color: var(--accent-ink); }
+.ans[data-a="out"][aria-pressed="true"] { background: var(--mentioned); border-color: var(--mentioned); color: var(--accent-ink); }
 .ans[data-a="unsure"][aria-pressed="true"] { background: var(--unsure); border-color: var(--unsure); color: var(--accent-ink); }
 .ans[data-a="absent"][aria-pressed="true"] { background: var(--absent); border-color: var(--absent); color: var(--accent-ink); }
 .ans:disabled { opacity: 0.35; cursor: default; }
@@ -128,9 +128,10 @@ details[open] > summary::before { content: "▾ "; }
     <div>
       <div class="label" id="source"></div>
       <h1>Presence Ledger</h1>
-      <p class="lede">Every passage of the session summaries that names this NPC. Mark whether they were
-        <b>present</b>, only <b>mentioned</b>, or you are <b>unsure</b>. A span rules a run of scenes at once;
-        <b>absent</b> makes an exception inside a span. Nothing here is decided for you: the tags are evidence.</p>
+      <p class="lede">Each passage below comes from the session summaries and names this NPC. For each one,
+        answer one question: <b id="question">was this NPC physically in the scene?</b> A passage can talk
+        about someone who is miles away; that is <b>Not in the scene</b>. The tags under each passage are
+        evidence, never an answer.</p>
     </div>
     <div class="npcs" id="npcs" role="group" aria-label="NPC"></div>
   </header>
@@ -146,20 +147,20 @@ details[open] > summary::before { content: "▾ "; }
   <div class="filters" id="filters" role="group" aria-label="Show" style="margin-top:10px"></div>
 
   <section class="spans" aria-labelledby="default-h">
-    <div class="row-top"><h2 id="default-h">Unmarked passages</h2><span class="via">what every passage you leave unmarked counts as, for this NPC</span></div>
+    <div class="row-top"><h2 id="default-h">Unmarked passages</h2><span class="via">the answer for every passage you leave unanswered, for this NPC</span></div>
     <div class="actions">
       <label for="default-v" class="via">Count them as</label>
       <select id="default-v" class="btn">
-        <option value="">unruled (mark each one)</option>
-        <option value="mentioned">mentioned (not there)</option>
-        <option value="unsure">unsure</option>
+        <option value="">unanswered (answer each one)</option>
+        <option value="mentioned">not in the scene</option>
+        <option value="unsure">can't tell</option>
       </select>
       <span class="via" id="default-note"></span>
     </div>
   </section>
 
   <section class="spans" id="spans" aria-labelledby="spans-h">
-    <div class="row-top"><h2 id="spans-h">Spans</h2><span class="via">a run of scenes ruled at once; an item ruling below always wins</span></div>
+    <div class="row-top"><h2 id="spans-h">Spans</h2><span class="via">a run of scenes answered at once, for a companion who travels with the party; an answer on a passage below always wins</span></div>
     <div id="span-list"></div>
     <div class="actions"><button class="btn" id="add-span" type="button">Add a span</button></div>
     <ul class="problems" id="span-problems"></ul>
@@ -180,7 +181,11 @@ const DATA = /*__NPC_AGENT_DATA__*/null;
   const CHAPTERS = DATA.chapters;
   const KIND_LABEL = { scene: "Scene", prose: "Summary paragraph", moment: "Memorable moment", entry: "NPC entry" };
   const SIG_LABEL = { quoted: "quote attributed", headline: "in the GM headline", own_entry: "own entry", named: "named" };
-  const ANSWERS = ["present", "mentioned", "unsure", "absent"];
+  // Three answers on the page; "Not in the scene" is stored as mentioned for a
+  // passage that names the NPC and absent for a scene that does not.
+  const ANSWERS = [["present", "In the scene"], ["out", "Not in the scene"], ["unsure", "Can't tell"]];
+  const SAY = { present: "in the scene", mentioned: "not in the scene", absent: "not in the scene", unsure: "can't tell" };
+  const stored = (id, a) => a === "out" ? (isCand(id) ? "mentioned" : "absent") : a;
   const SCENE_IDS = CHAPTERS.flatMap((c) => c.items.filter((i) => ITEMS[i].k === "scene"));
   const CORPUS_TEXT = Object.values(ITEMS).map((i) => i.x).join("\n");
 
@@ -282,12 +287,12 @@ const DATA = /*__NPC_AGENT_DATA__*/null;
   function renderTally() {
     const n = npc(), c = counts(n.stem), pct = c.total ? Math.round((100 * c.ruled) / c.total) : 100;
     $("tally").innerHTML =
-      "<span><b>" + c.ruled + "</b> of " + c.total + " passages ruled</span>" +
+      "<span><b>" + c.ruled + "</b> of " + c.total + " passages answered</span>" +
       '<span class="meter" aria-hidden="true"><i style="width:' + pct + '%"></i></span>' +
-      "<span>present " + c.present + " · mentioned " + c.mentioned + " · unsure " + c.unsure +
+      "<span>in the scene " + c.present + " · not in the scene " + c.mentioned + " · can't tell " + c.unsure +
       (c.bySpan ? " · " + c.bySpan + " by span" : "") + (c.byDefault ? " · " + c.byDefault + " by default" : "") + "</span>" +
-      (c.unnamedPresent ? "<span>+ " + c.unnamedPresent + " unnamed scenes present</span>" : "") +
-      (c.absent ? "<span>" + c.absent + " absent</span>" : "");
+      (c.unnamedPresent ? "<span>+ " + c.unnamedPresent + " scenes that never name them, in the scene</span>" : "") +
+      (c.absent ? "<span>" + c.absent + " of those not in the scene</span>" : "");
   }
 
   function hintFor(id, eff) {
@@ -298,7 +303,7 @@ const DATA = /*__NPC_AGENT_DATA__*/null;
   }
 
   function renderFilters() {
-    const f = [["needs", "Needs a ruling"], ["likely", "Quote or headline"], ["all", "Everything"], ["hint", "Check splits"]];
+    const f = [["needs", "Unanswered"], ["likely", "Quote or headline"], ["all", "Everything"], ["hint", "Check splits"]];
     const kinds = ["scene", "prose", "moment", "entry"];
     $("filters").innerHTML =
       f.map(([k, l]) => '<button type="button" class="chip" data-show="' + k + '" aria-pressed="' + (state.show === k) + '">' + l + "</button>").join("") +
@@ -311,8 +316,8 @@ const DATA = /*__NPC_AGENT_DATA__*/null;
     $("default-v").value = r.default || "";
     const n = Object.keys(npc().candidates).length;
     $("default-note").textContent = r.default
-      ? "Applies to every passage below that you have not marked and no span reaches."
-      : n + " passages to mark one by one. For an NPC present in only a few of them, choose mentioned and mark just those.";
+      ? "Applies to every passage below you leave unanswered, unless a span reaches it."
+      : n + " passages to answer one by one. If this NPC is in the scene in only a few of them, choose \u201cnot in the scene\u201d and answer just those.";
   }
 
   function sceneOptions(sel) {
@@ -328,8 +333,8 @@ const DATA = /*__NPC_AGENT_DATA__*/null;
       '<div class="span-row" data-span="' + i + '">' +
       '<label for="sp-from-' + i + '">First scene<select id="sp-from-' + i + '" data-f="from">' + sceneOptions(s.from) + "</select></label>" +
       '<label for="sp-to-' + i + '">Last scene<select id="sp-to-' + i + '" data-f="to">' + sceneOptions(s.to) + "</select></label>" +
-      '<label for="sp-v-' + i + '">Counts as<select id="sp-v-' + i + '" data-f="value">' +
-        ["present", "unsure"].map((v) => '<option value="' + v + '"' + ((s.value || "present") === v ? " selected" : "") + ">" + v + "</option>").join("") + "</select></label>" +
+      '<label for="sp-v-' + i + '">Answer<select id="sp-v-' + i + '" data-f="value">' +
+        ["present", "unsure"].map((v) => '<option value="' + v + '"' + ((s.value || "present") === v ? " selected" : "") + ">" + SAY[v] + "</option>").join("") + "</select></label>" +
       '<label for="sp-fo-' + i + '">Stays with<input id="sp-fo-' + i + '" data-f="follows" value="' + esc(s.follows || "") + '" placeholder="a character, optional"></label>' +
       '<label for="sp-no-' + i + '" style="grid-column:1/-1">Note<input id="sp-no-' + i + '" data-f="note" value="' + esc(s.note || "") + '" placeholder="optional"></label>' +
       '<div class="span-meta">' + spanSummary(s) + ' <button type="button" class="btn" data-del="' + i + '">Remove span</button></div>' +
@@ -372,11 +377,11 @@ const DATA = /*__NPC_AGENT_DATA__*/null;
     return '<div class="row" data-id="' + id + '" data-v="' + v + '">' +
       '<div class="row-main"><div class="row-top"><span class="mono">' + id + '</span><span class="tag">' + KIND_LABEL[it.k] + "</span>" +
       title + sigs + (hint ? '<span class="tag hint">' + esc(hint) + "</span>" : "") + "</div>" +
-      (e && e.src !== "item" ? '<span class="via">' + e.v + " by " + e.src + (own ? "" : "; mark it here to override") + "</span>" : "") +
+      (e && e.src !== "item" ? '<span class="via">' + SAY[e.v] + " (" + (e.src === "span" ? "from the span" : "unanswered passages") + ")" + (own ? "" : "; answer here to change it") + "</span>" : "") +
       "<details" + (openIds.has(id) ? " open" : "") + "><summary>" + esc(first.replace(/^[-#>*\s]+/, "").slice(0, 160)) + '</summary><p class="text">' + esc(it.x) + "</p></details></div>" +
       '<div class="answers" role="group" aria-label="Ruling for ' + id + '">' +
-      ANSWERS.map((a) => '<button type="button" class="ans" data-a="' + a + '" aria-pressed="' + (own === a) + '"' +
-        (allowed(id, a) ? "" : " disabled") + ">" + a + "</button>").join("") +
+      ANSWERS.map(([a, l]) => '<button type="button" class="ans" data-a="' + a + '" aria-pressed="' + (!!own && stored(id, a) === own) + '"' +
+        (allowed(id, stored(id, a)) ? "" : " disabled") + ">" + l + "</button>").join("") +
       '<button type="button" class="ans clear" data-a="" ' + (own ? "" : "disabled") + ">clear</button></div></div>";
   }
 
@@ -390,12 +395,13 @@ const DATA = /*__NPC_AGENT_DATA__*/null;
         '<div class="rows">' + here.map((i) => rowHtml(i, eff)).join("") + "</div></section>";
     }
     $("list").innerHTML = html || '<p class="empty">' + (state.show === "needs"
-      ? "Everything shown for " + esc(npc().subject) + " has a ruling. Choose Everything to review them."
+      ? "Every passage for " + esc(npc().subject) + " has an answer. Choose Everything to review them."
       : "Nothing matches these filters.") + "</p>";
   }
 
   function render() {
     renderTabs(); renderTally(); renderFilters(); renderDefault(); renderSpans(); renderList();
+    $("question").textContent = "was " + npc().subject + " physically in the scene?";
     $("source").textContent = DATA.source;
     $("foot").textContent = "Item ids match npc_agent: NNN.SS is a scene, NNN.pK a summary paragraph, NNN.mK a memorable moment, " +
       "NNN.eK an NPC entry. Saved files are ruling file version " + DATA.rulings_version + "; npc_agent horizon --rulings reads them as they stand.";
@@ -524,7 +530,7 @@ const DATA = /*__NPC_AGENT_DATA__*/null;
       render(); return;
     }
     if (t.dataset.a !== undefined && t.closest(".row")) {
-      const id = t.closest(".row").dataset.id, a = t.dataset.a, r = rul();
+      const id = t.closest(".row").dataset.id, a = stored(t.closest(".row").dataset.id, t.dataset.a), r = rul();
       if (a && !allowed(id, a)) return;
       if (a) r.items[id] = a; else delete r.items[id];
       const y = window.scrollY; render(); window.scrollTo(0, y);
