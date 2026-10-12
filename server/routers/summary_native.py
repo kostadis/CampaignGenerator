@@ -7,11 +7,14 @@ invokes the CLI and never reimplements it). Defaults resolve from
 route takes sentinels (``""`` / ``None``), never a default literal, and the
 declared defaults live in ``pipelines/summary_native/schema.py`` (Principle XII).
 
-``--registry``, ``--canon`` and ``--out-root`` are deliberately never passed:
-they are campaign-layout paths with no per-run UI control (GM ruling). The CLI
-reads ``grounding.yaml``'s ``summary_native`` group itself (``out_root``,
-``canon_file``, ``registry``), so the config file is where they change
-(contracts/http.md, "Deliberately CLI-only").
+``--registry``, ``--canon`` and ``--out-root`` are deliberately never passed by
+the build routes: they are campaign-layout paths with no per-run UI control (GM
+ruling). The CLI reads ``grounding.yaml``'s ``summary_native`` group itself
+(``out_root``, ``canon_file``, ``registry``), so the config file is where they
+change (contracts/http.md, "Deliberately CLI-only"). The promotion and claims
+routes are the exception: ``promote`` and ``claims select`` declare an optional
+per-run ``--out-root`` (specs/037 contracts/cli-ui.md), so their requests carry
+an optional ``out_root`` that is forwarded only when the GM supplied one.
 
 The read-only routes (``/chapters``, ``/report``, ``/drafts``) only list files
 and read a JSON the CLI wrote. None of them parses summary content or calls a
@@ -36,7 +39,7 @@ from campaignlib.projection_config import PROJECTION_CONFIG_FILENAME, load_proje
 from campaignlib.selection import BACKENDS
 from pipelines.summary_native import annotate, audit_select, freshness, notes, resolve, schema, thread_attach
 from server.grounding_config_shared import SummaryNativeRun
-from server.platform_config_service import resolve_selection, selection_cli_args
+from server.platform_config_service import TRACKED_CONFIG_NAME, resolve_selection, selection_cli_args
 from server.routers.grounding import (
     _pick,
     _service,
@@ -355,15 +358,40 @@ def _authority_stream(request: Request, *args: str):
 
 # ── Whole-bundle promotion preview (typed CLI adapter) ─────────────────────
 
+def _campaign_config(root: Path) -> str:
+    """``--config`` for ``promote``, ``promotion <action>`` and every ``claims`` subcommand.
+
+    It names ``<campaign>/config/config.yaml``, as on every ``summary_native``
+    command; the CLI reads ``grounding.yaml`` from beside it. Passing
+    ``grounding.yaml`` itself is the #548 review defect the CLI now refuses.
+    """
+    return str(config_path(root, TRACKED_CONFIG_NAME))
+
+
+def _check_report_arg(root: Path, value: str) -> str:
+    """``--check-report``: a report id (one path part) unchanged, a path contained.
+
+    The CLI resolves a bare id inside the selected range's checks store; anything
+    with a directory part is a path, and it gets the same campaign containment
+    as every other path the claims routes forward (#548 review: the promotion
+    routes forwarded it unvalidated).
+    """
+    if value in {".", ".."}:
+        raise HTTPException(status_code=400, detail="check_report must name a report id or a report path")
+    if len(Path(value).parts) == 1 and not Path(value).is_absolute():
+        return value
+    return _authority_path(root, value, "check_report")
+
+
 def _promotion_preview_command(root: Path, payload: PromotionPreviewRequest) -> list[str]:
     command = [
         console_script("summary_native"),
         "promote",
-        "--config", str(config_path(root, "grounding.yaml")),
+        "--config", _campaign_config(root),
         "--since", str(payload.since),
         "--until", str(payload.until),
         "--review", payload.review,
-        "--check-report", payload.check_report,
+        "--check-report", _check_report_arg(root, payload.check_report),
         "--dry-run",
         "--json",
     ]
@@ -410,7 +438,7 @@ def _promotion_commit_command(root: Path, payload: PromotionCommitRequest) -> li
 
 def _promotion_inspection_command(root: Path, action: str, operation: str | None = None) -> list[str]:
     command = [console_script("summary_native"), "promotion", action,
-               "--config", str(config_path(root, "grounding.yaml"))]
+               "--config", _campaign_config(root)]
     if operation is not None:
         command.extend(("--operation", operation))
     command.append("--json")
@@ -514,7 +542,7 @@ async def migration_recover(request: Request, payload: PromotionOperationRequest
 
 def _claims_command(root: Path, *args: str) -> list[str]:
     return [console_script("summary_native"), "claims", *args,
-            "--config", str(config_path(root, "grounding.yaml")), "--json"]
+            "--config", _campaign_config(root), "--json"]
 
 
 async def _claims_json(request: Request, command: list[str], *, mutation: bool = False, stdin_bytes: bytes | None = None):
@@ -607,6 +635,16 @@ async def claims_disposition(request: Request, payload: ClaimsDispositionRequest
         "--expected-decision-revision", str(payload.expected_decision_revision),
         "--disposition", payload.disposition, "--rationale", payload.rationale,
     ), mutation=True)
+
+
+# ── Claims scope resolution — RESERVED, NOT WIRED (#548 review item 8) ─────
+# The GM's resolution of an unresolved scope entry in a claims selection gets
+# its own CLI subcommand (being added under ``summary_native claims ...``).
+# Its route belongs here, built with ``_claims_command`` and ``_claims_json``
+# like the routes above, once that subcommand's argv is final. Deliberately
+# empty until then: a route guessing the flags would be a second, drifting
+# copy of the CLI contract (Principle VI). The UI's matching slot is marked in
+# frontend/src/components/GroundingClaims.vue.
 
 
 # ── Authority ledger (CLI-backed JSON / SSE) ───────────────────────────────
