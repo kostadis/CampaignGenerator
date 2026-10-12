@@ -27,7 +27,7 @@ Use the same controls in the application's Promotion → Workspace setup panel. 
 1. Inventory the current config, the five document/timeline files plus the reference tree, and every nested reference. Resolve existing configured path choices and prove containment/ownership. Disagreeing canonical/config paths, unsafe symlinks, ambiguous generated-versus-handwritten references, partial loose bundles, broken reading contracts or missing required members refuse with exact affected paths.
 2. A complete loose bundle must pass its pointer and outline checks before adoption. The receipt labels it `legacy_adoption`: this validates current bytes as a rollback baseline, not historical semantic review or an invented generation provenance. The GM sees its entire inventory and explicitly confirms the digest.
 3. A pristine initialized campaign may adopt an explicit absent baseline only if none of the managed outputs exist. Existing incomplete output cannot be silently converted to absent; repair or deliberately relocate it outside this migrator first.
-4. Preview shows every config change and all six aliases, plus exact original backups. Unrecognized config keys are preserved/reported, never dropped by parsing through a narrower model. Unrelated files are outside the target set.
+4. Preview shows every config change and all six aliases, plus exact original backups. Unrecognized config keys are preserved/reported, never dropped by parsing through a narrower model; `config.yaml` is edited in place (only the previewed path values change, comments, key order and mode are kept) and the result is re-parsed against the planned mapping. Unrelated files are outside the target set.
 
 ## Apply/recovery protocol
 
@@ -42,7 +42,13 @@ Migration is a recoverable, temporarily unavailable operation. It is not falsely
 
 ## Behavior without migration
 
-The new promote/check workflow reports `PROMOTION_MIGRATION_REQUIRED` with the exact command. Managed grounding consumers refuse the retired loose layout when those managed roles are selected; unrelated nonbundle document operations continue normally. No fallback between old and new live locations and no read-triggered migration. Existing authority/review commands retain their own schema checks.
+A campaign that has not run the migration has no `docs/grounding/`. Its grounding documents live in exactly one place, the loose `docs/<document>.md` files and `docs/reference/`, and every reader reads them there. The new promote/check workflow refuses with `PROMOTION_MIGRATION_REQUIRED` and the exact dry-run command, and every older single-document publication entry point (the Ensemble `/promote` route, the retired review document prepare/promote routes) refuses with `PROMOTION_WHOLE_BUNDLE_REQUIRED` whether or not the campaign is migrated. No read triggers a migration.
+
+Readers do not refuse the loose layout. That is a recorded decision, not an omission (see the post-merge audit in [validation.md](validation.md)): the location of a grounding document is decided once per campaign by its layout (`docs/grounding/layout.json`), so a reader never consults one location and then falls back to another, and the same fact is never held in two places. After migration the loose paths are compatibility links into the one live generation. Refusing the loose layout would stop every unmigrated campaign's prep and narration to protect a publication path those campaigns cannot use until they migrate anyway.
+
+Prerequisites: the migration takes the authority lock, so a campaign without an authority ledger or review store runs `summary_native authority init --campaign-dir DIR --json` and `summary_native review init --campaign-dir DIR --json` first (`new_workspace` writes these steps into `docs/grounding-migration-required.md`). Re-running the dry run or apply on a migrated campaign returns `PROMOTION_MIGRATION_COMPLETE` with the existing operation.
+
+After an absent baseline, reading a managed member refuses with `PROMOTION_NO_GENERATION` until the first promotion, which installs the six compatibility links; unrelated documents read normally.
 
 ## Editing after migration
 
