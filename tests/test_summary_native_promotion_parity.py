@@ -39,7 +39,7 @@ def _normalize(root: Path, command: list[str]) -> list[str]:
     return [
         "summary_native" if value == console_script("summary_native") else
         "migrate_grounding_bundle" if value == console_script("migrate_grounding_bundle") else
-        "CONFIG" if value == str(root / "config/grounding.yaml") else
+        "CONFIG" if value == str(root / "config/config.yaml") else
         "ROOT" if value == str(root) else value
         for value in command
     ]

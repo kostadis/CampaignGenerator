@@ -74,7 +74,7 @@ def _body() -> dict[str, object]:
 def _cli_argv(root: Path) -> list[str]:
     return [
         "promote",
-        "--config", str(root / "config/grounding.yaml"),
+        "--config", str(root / "config/config.yaml"),
         "--since", "1",
         "--until", "3",
         "--review", "promotion-check",
@@ -214,7 +214,7 @@ def test_inspection_and_migration_routes_are_exact_installed_cli_adapters(
     monkeypatch.setattr(summary_native_routes, "run_bounded_json", fake_run)
     asyncio.run(call(_request(campaign)))
     normalized = [
-        "CONFIG" if item == str(campaign / "config/grounding.yaml") else
+        "CONFIG" if item == str(campaign / "config/config.yaml") else
         "ROOT" if item == str(campaign) else
         Path(item).name if item in {console_script("summary_native"), console_script("migrate_grounding_bundle")} else item
         for item in captured["command"]
@@ -295,7 +295,7 @@ def test_claims_routes_are_exact_installed_cli_adapters(campaign, monkeypatch, c
         str(campaign / "selection.json"): "SELECTION",
         str(campaign / "candidates.json"): "CANDIDATES",
         str(campaign / "report.json"): "REPORT",
-        str(campaign / "config/grounding.yaml"): "CONFIG",
+        str(campaign / "config/config.yaml"): "CONFIG",
     }
     normalized = [Path(value).name if value == console_script("summary_native") else replacements.get(value, value)
                   for value in captured["command"]]

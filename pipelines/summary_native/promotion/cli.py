@@ -7,23 +7,70 @@ import hashlib
 from pathlib import Path
 from typing import Any
 
-from campaignlib.config import campaign_root_for_config
 from campaignlib.grounding_config import promotion_config_from_summary_native
-from pipelines.summary_native.promotion.errors import PromotionError
+from pipelines.summary_native.authority import AuthorityError
+from pipelines.summary_native.promotion.errors import PromotionError, PromotionRecoveryRequired, recover_command
 from pipelines.summary_native.promotion.manifest import build_bundle_selection
 from pipelines.summary_native.promotion.models import GateOutcome
 from pipelines.summary_native.promotion.preview import preview_bundle
-from pipelines.summary_native.promotion.publish import publish_bundle
+from pipelines.summary_native.promotion.publish import (
+    UNRESOLVED_STATES,
+    committed_replay,
+    operation_records,
+    publish_bundle,
+    require_no_unresolved,
+)
 from pipelines.summary_native.promotion.history import joined_receipt
 from pipelines.summary_native.promotion.recovery import recover_publication
 from pipelines.summary_native.promotion.models import AttemptState, OperationIntent, OperationState, OpaqueId
+from pipelines.summary_native.promotion.settings import load_settings, resolve_out_root
 from pydantic import TypeAdapter, ValidationError
 from pipelines.summary_native.promotion.review_bindings import load_signoff_bindings
 from pipelines.summary_native.review.store import ReviewStoreError, load_campaign_identity
 
 
+# The route caps a request id at this length; ids are never truncated, since two
+# ids sharing a prefix would then name the same operation.
+MAX_REQUEST_ID = 96
+
+# contracts/cli-ui.md exit semantics. Codes not named here fall back by family.
+_EXIT_INVALID = frozenset({
+    "PROMOTION_PATH_CONFLICT", "PROMOTION_REQUEST_INVALID", "PROMOTION_OPERATION_CONFLICT",
+    "PROMOTION_MIGRATION_REQUIRED", "PROMOTION_MIXED_RANGE", "PROMOTION_CONFIG_INVALID",
+    "PROMOTION_WHOLE_BUNDLE_REQUIRED", "AUTH_LOCK_MISSING", "AUTH_UNSAFE_PATH",
+    "AUTH_MIGRATION_REQUIRED", "AUTH_VALIDATION", "AUTH_TARGET_NOT_ALLOWED",
+})
+_EXIT_RECOVERY = frozenset({"AUTH_PENDING_TRANSACTION", "AUTH_RECOVERY"})
+
+
+def exit_code(code: str) -> int:
+    """Map one stable refusal code to the contract's exit status."""
+    if code in _EXIT_INVALID:
+        return 2
+    if "STALE" in code:
+        return 3
+    if code in _EXIT_RECOVERY or "RECOVERY" in code or "UNKNOWN" in code:
+        return 4
+    if code.startswith("REVIEW_"):
+        return 2
+    return 5
+
+
+def _preview_exit(refusal_codes: tuple[str, ...] | list[str]) -> int:
+    """A blocked preview exits 5, or 2 when a refusal says the request itself is invalid.
+
+    An unmigrated campaign, a mixed range or a path conflict cannot be fixed by
+    review, so it is not reported as an ordinary blocking gate.
+    """
+    return 2 if any(exit_code(code) == 2 for code in refusal_codes) else 5
+
+
 def _envelope(*, ok: bool, code: str, message: str, data: dict[str, Any]) -> dict[str, Any]:
     return {"ok": ok, "code": code, "message": message, "artifacts": [], "data": data}
+
+
+def _print(payload: dict[str, Any]) -> None:
+    print(json.dumps(payload, sort_keys=True))
 
 
 def _campaign_id(root: Path) -> str:
@@ -51,52 +98,79 @@ def _load_check_report(root: Path, value: str, bundle) -> tuple[str | None, str 
     )
 
 
-def _out_root(root: Path, config_path: Path, raw_summary: object, explicit: str | None) -> str:
-    if explicit:
-        candidate = root / explicit
+def _refusal(args: Any, code: str, message: str, data: dict[str, Any] | None = None) -> int:
+    """Print one refusal envelope. A dry-run keeps its preview shape, without inventing a gate."""
+    if args is not None and getattr(args, "dry_run", False) and data is None:
+        data = {
+            "selection": None,
+            "preview": {"eligible": False, "refusal_codes": [code], "changes": [], "gates": []},
+            "destination": {"edited_since_publication": False},
+            "refusal": {"code": code, "message": message},
+        }
+        _print(_envelope(ok=False, code="PROMOTION_BLOCKED", message=message, data=data))
     else:
-        configured = raw_summary.get("out_root") if isinstance(raw_summary, dict) else None
-        candidate = config_path.parent / configured if isinstance(configured, str) else root / "docs/summary_native"
-    resolved = candidate.resolve()
-    try:
-        return resolved.relative_to(root).as_posix()
-    except ValueError as exc:
-        raise PromotionError("summary_native out_root escapes campaign", code="PROMOTION_PATH_CONFLICT") from exc
+        _print(_envelope(ok=False, code=code, message=message, data=data or {}))
+    return exit_code(code)
+
+
+def _validate_request(args: Any) -> None:
+    if args.dry_run and (args.preview_sha256 or args.request_id):
+        raise PromotionError(
+            "--dry-run cannot be combined with --preview-sha256 or --request-id; "
+            "preview first, then commit the displayed digest",
+            code="PROMOTION_REQUEST_INVALID",
+        )
+    if not args.dry_run and (not args.preview_sha256 or not args.request_id):
+        raise PromotionError(
+            "commit requires --preview-sha256 and --request-id (or --dry-run to preview)",
+            code="PROMOTION_REQUEST_INVALID",
+        )
+    if args.request_id is not None:
+        if len(args.request_id) > MAX_REQUEST_ID:
+            raise PromotionError(
+                f"--request-id is longer than {MAX_REQUEST_ID} characters",
+                code="PROMOTION_REQUEST_INVALID",
+            )
+        try:
+            TypeAdapter(OpaqueId).validate_python(args.request_id, strict=True)
+        except ValidationError as exc:
+            raise PromotionError("--request-id is not an opaque identifier", code="PROMOTION_REQUEST_INVALID") from exc
 
 
 def run(args: Any) -> int:
-    config_path = Path(args.config).expanduser().resolve()
-    root = campaign_root_for_config(config_path)
+    root: Path | None = None
     try:
-        if not args.dry_run and args.request_id:
-            historical = _historical_request(root, args.request_id)
+        _validate_request(args)
+        settings = load_settings(args.config)
+        root = settings.root
+        if not args.dry_run:
+            historical = committed_replay(root, args.request_id)
             if historical is not None:
                 intent, state = historical
                 if args.preview_sha256 != intent.preview_sha256:
                     raise PromotionError(
-                        "request id is already bound to a different preview",
+                        "request id is already bound to a different preview; use a new --request-id",
                         code="PROMOTION_OPERATION_CONFLICT",
                     )
                 assert state.activation_id is not None
                 data = joined_receipt(root, state.activation_id)
                 if "publication" in data and "receipt" not in data:
                     data = {"receipt": data["publication"], "activation": data["activation"]}
-                print(json.dumps(_envelope(ok=True, code="OK", message="promotion already committed", data=data), sort_keys=True))
+                _print(_envelope(ok=True, code="OK", message="promotion already committed", data=data))
                 return 0
-        import yaml
-
-        raw = yaml.safe_load(config_path.read_text(encoding="utf-8")) or {}
-        summary = raw.get("summary_native") if isinstance(raw, dict) else None
-        settings = promotion_config_from_summary_native(summary)
+            require_no_unresolved(
+                root, request_id=args.request_id, operation_id=f"operation-{args.request_id}",
+            )
+        promotion_settings = promotion_config_from_summary_native(settings.summary_native)
         bundle = build_bundle_selection(
             root,
-            out_root=_out_root(root, config_path, summary, args.out_root),
+            out_root=resolve_out_root(settings, args.out_root),
             since=args.since,
             until=args.until,
             campaign_id=_campaign_id(root),
             review_id=args.review,
-            rule_versions=settings.rule_versions,
-            config_path=config_path,
+            rule_versions=promotion_settings.rule_versions,
+            config_path=settings.grounding_path,
         )
         try:
             analysis, resolution, claims_complete, claims_blocking = _load_check_report(
@@ -120,12 +194,17 @@ def run(args: Any) -> int:
             signoff_failure = GateOutcome(
                 gate="document-signoffs", state="blocked", code=exc.code, message=str(exc)
             )
-        except (ReviewStoreError, OSError, ValueError):
+        except AuthorityError as exc:
+            # The lock or ledger is the problem, not a missing decision.
+            signoff_failure = GateOutcome(
+                gate="document-signoffs", state="blocked", code=exc.code, message=str(exc)
+            )
+        except (ReviewStoreError, OSError, ValueError) as exc:
             signoff_failure = GateOutcome(
                 gate="document-signoffs",
                 state="blocked",
                 code="PROMOTION_SIGNOFF_REQUIRED",
-                message="four current grounding-bundle-signoff/2 decisions are required",
+                message=f"four current grounding-bundle-signoff/2 decisions are required ({exc})",
             )
         preview = preview_bundle(
             root,
@@ -148,61 +227,41 @@ def run(args: Any) -> int:
             "destination": destination,
         }
         if not args.dry_run:
-            if not args.preview_sha256 or not args.request_id:
-                raise PromotionError(
-                    "commit requires --preview-sha256 and --request-id",
-                    code="PROMOTION_REQUEST_INVALID",
-                )
             if args.preview_sha256 != preview.preview_sha256:
-                raise PromotionError("preview digest is stale", code="PROMOTION_PREVIEW_STALE")
+                raise PromotionError(
+                    "preview digest is stale; preview again and confirm the new digest",
+                    code="PROMOTION_STALE_PREVIEW",
+                )
             if signoffs is None or not preview.eligible:
-                payload = _envelope(ok=False, code="PROMOTION_BLOCKED", message="promotion preview is blocked", data=data)
-                print(json.dumps(payload, sort_keys=True))
-                return 5
-            suffix = args.request_id[:96]
+                _print(_envelope(ok=False, code="PROMOTION_BLOCKED", message="promotion preview is blocked", data=data))
+                return _preview_exit(preview.refusal_codes)
             result = publish_bundle(
                 root, bundle, preview, signoffs=signoffs,
                 analysis_digest=analysis or "", resolution_digest=resolution or "",
-                request_id=args.request_id, operation_id=f"operation-{suffix}",
-                generation_id=f"generation-{suffix}", actor="summary-native-cli",
+                request_id=args.request_id, operation_id=f"operation-{args.request_id}",
+                generation_id=f"generation-{args.request_id}", actor="summary-native-cli",
                 claims_blocking=claims_blocking, check_report=args.check_report,
             )
-            print(json.dumps(_envelope(ok=True, code="OK", message="promotion committed", data=result), sort_keys=True))
+            _print(_envelope(ok=True, code="OK", message="promotion committed", data=result))
             return 0
-        payload = _envelope(
+        _print(_envelope(
             ok=preview.eligible,
             code="OK" if preview.eligible else "PROMOTION_BLOCKED",
             message="promotion preview is eligible" if preview.eligible else "promotion preview is blocked",
             data=data,
-        )
-        print(json.dumps(payload, sort_keys=True))
-        return 0 if preview.eligible else 5
-    except PromotionError as exc:
-        # Even a malformed candidate returns the stable preview-shaped refusal
-        # envelope when enough explicit range context exists to identify it.
-        data = {
-            "selection": None,
-            "preview": {
-                "eligible": False,
-                "refusal_codes": [exc.code],
-                "changes": [],
-                "gates": [{"gate": "paths", "state": "blocked", "code": exc.code, "message": str(exc)}],
-            },
-            "destination": {"edited_since_publication": False},
-        }
-        code = "PROMOTION_BLOCKED" if args.dry_run else exc.code
-        print(json.dumps(_envelope(ok=False, code=code, message=str(exc), data=data), sort_keys=True))
-        if exc.code in {"PROMOTION_PATH_CONFLICT", "PROMOTION_REQUEST_INVALID", "PROMOTION_OPERATION_CONFLICT"}:
-            return 2
-        if "STALE" in exc.code:
-            return 3
-        if "RECOVERY" in exc.code or "UNKNOWN" in exc.code:
-            return 4
-        return 5
-    except (OSError, ValueError) as exc:
-        operation_id = f"operation-{args.request_id[:96]}" if getattr(args, "request_id", None) else None
+        ))
+        return 0 if preview.eligible else _preview_exit(preview.refusal_codes)
+    except PromotionRecoveryRequired as exc:
+        data = {"operation_id": exc.operation_id} if exc.operation_id else None
+        if data is not None:
+            data["recover"] = recover_command(exc.operation_id)
+        return _refusal(args, exc.code, str(exc), data)
+    except (PromotionError, AuthorityError, ReviewStoreError) as exc:
+        return _refusal(args, exc.code, str(exc))
+    except (OSError, ValueError):
+        operation_id = f"operation-{args.request_id}" if getattr(args, "request_id", None) else None
         state_value = None
-        if operation_id:
+        if operation_id and root is not None:
             try:
                 _intent, state = _read_operation(root, operation_id)
                 state_value = state.state.value
@@ -212,13 +271,13 @@ def run(args: Any) -> int:
             payload = _envelope(
                 ok=False, code="PROMOTION_COMMIT_UNKNOWN",
                 message="publication outcome requires explicit recovery",
-                data={"operation_id": operation_id, "state": state_value},
+                data={"operation_id": operation_id, "state": state_value,
+                      "recover": recover_command(operation_id)},
             )
-            print(json.dumps(payload, sort_keys=True))
+            _print(payload)
             return 4
-        payload = _envelope(ok=False, code="PROMOTION_COMMAND_FAILED", message="promotion failed safely", data={})
-        print(json.dumps(payload, sort_keys=True))
-        return 2
+        _print(_envelope(ok=False, code="PROMOTION_COMMAND_FAILED", message="promotion failed safely", data={}))
+        return 70
 
 
 def _read_operation(root: Path, operation_id: str) -> tuple[OperationIntent, OperationState]:
@@ -232,7 +291,11 @@ def _read_operation(root: Path, operation_id: str) -> tuple[OperationIntent, Ope
         intent = OperationIntent.model_validate_json(intent_bytes)
         state = OperationState.model_validate_json((directory / "state.json").read_bytes())
     except (OSError, ValueError) as exc:
-        raise PromotionError("publication operation is missing or invalid", code="PROMOTION_HISTORY_INVALID") from exc
+        raise PromotionError(
+            f"publication operation {operation_id} is missing or unreadable; "
+            f"run `{recover_command(operation_id)}`",
+            code="PROMOTION_HISTORY_INVALID",
+        ) from exc
     if (intent.operation_id != operation_id or state.operation_id != operation_id
             or hashlib.sha256(intent_bytes).hexdigest() != state.intent_sha256):
         raise PromotionError("publication operation identity differs", code="PROMOTION_HISTORY_INVALID")
@@ -243,26 +306,25 @@ def _read_operation(root: Path, operation_id: str) -> tuple[OperationIntent, Ope
     return intent, state
 
 
-def _historical_request(root: Path, request_id: str) -> tuple[OperationIntent, OperationState] | None:
-    operations = root / "docs/grounding/operations"
-    if not operations.is_dir():
-        return None
-    matched = None
-    for state_path in sorted(operations.glob("*/state.json")):
-        intent, state = _read_operation(root, state_path.parent.name)
-        if intent.request_id != request_id:
-            continue
-        if matched is not None:
-            raise PromotionError("request id has conflicting operation history", code="PROMOTION_HISTORY_INVALID")
-        if state.state is AttemptState.COMMITTED:
-            matched = (intent, state)
-    return matched
+def _status_rows(root: Path) -> list[dict[str, Any]]:
+    """Every operation, including one whose records cannot be read (never skipped)."""
+    rows = []
+    for record in operation_records(root):
+        if record.problem is None:
+            row = record.state.model_dump(mode="json")
+            unresolved = record.state.state in UNRESOLVED_STATES
+        else:
+            row = {"operation_id": record.operation_id, "state": "unreadable", "detail": record.problem}
+            unresolved = True
+        if unresolved:
+            row["recover"] = recover_command(record.operation_id)
+        rows.append(row)
+    return rows
 
 
 def run_inspection(args: Any) -> int:
-    config_path = Path(args.config).expanduser().resolve()
-    root = campaign_root_for_config(config_path)
     try:
+        root = load_settings(args.config).root
         if args.promotion_command == "recover":
             data = recover_publication(root, args.operation)
         elif args.promotion_command == "receipt":
@@ -271,20 +333,20 @@ def run_inspection(args: Any) -> int:
                 raise PromotionError("operation has no completed receipt", code="PROMOTION_RECEIPT_UNAVAILABLE")
             data = joined_receipt(root, state.activation_id)
         elif args.operation:
-            intent, state = _read_operation(root, args.operation)
-            data = {"intent": intent.model_dump(mode="json"), "state": state.model_dump(mode="json")}
+            try:
+                intent, state = _read_operation(root, args.operation)
+            except PromotionError:
+                # Inspection reports an unreadable operation; it does not fail on it.
+                rows = [row for row in _status_rows(root) if row["operation_id"] == args.operation]
+                if not rows or rows[0]["state"] != "unreadable":
+                    raise
+                data = {"intent": None, "state": rows[0]}
+            else:
+                data = {"intent": intent.model_dump(mode="json"), "state": state.model_dump(mode="json")}
         else:
-            operations = root / "docs/grounding/operations"
-            values = []
-            for state_path in sorted(operations.glob("*/state.json")) if operations.is_dir() else ():
-                try:
-                    state = OperationState.model_validate_json(state_path.read_bytes())
-                except ValueError:
-                    continue
-                values.append(state.model_dump(mode="json"))
-            data = {"operations": values}
-        print(json.dumps(_envelope(ok=True, code="OK", message="promotion inspection complete", data=data), sort_keys=True))
+            data = {"operations": _status_rows(root)}
+        _print(_envelope(ok=True, code="OK", message="promotion inspection complete", data=data))
         return 0
-    except PromotionError as exc:
-        print(json.dumps(_envelope(ok=False, code=exc.code, message=str(exc), data={}), sort_keys=True))
-        return 4 if "RECOVERY" in exc.code else 5
+    except (PromotionError, AuthorityError, ReviewStoreError) as exc:
+        _print(_envelope(ok=False, code=exc.code, message=str(exc), data={}))
+        return exit_code(exc.code)

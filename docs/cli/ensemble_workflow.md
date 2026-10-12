@@ -40,7 +40,7 @@ docs/party_draft.md
 docs/planning_draft.md
 ```
 
-Outputs always land in `*_draft.md`. Diff against the live doc and promote by hand after review.
+Outputs always land in `*_draft.md`. Diff against the live doc after review; publishing goes through `summary_native promote`.
 
 ---
 
@@ -1072,12 +1072,18 @@ Review each draft:
 - Diff `world_state_draft.md` against `world_state.md` before promoting. The diff is the edit surface; don't copy blindly.
 - For `planning_draft.md`, check the NPC list against your own sense of who matters — the importance cut may miss forward-looking significance (an NPC who appeared rarely but is about to become central).
 
-Promote by hand:
+Diff by hand, then publish through the reviewed whole-bundle gate:
 
 ```bash
 diff docs/world_state.md docs/world_state_draft.md | less
-cp docs/world_state_draft.md docs/world_state.md
 ```
+
+Do not `cp` a draft over a live grounding document. Live grounding documents are
+published only as one reviewed bundle by `summary_native promote` (see
+[grounding_bundle_promotion.md](grounding_bundle_promotion.md)); on a migrated
+campaign `docs/world_state.md` is a link into the live generation, so a copy would
+overwrite reviewed text with nothing to record it. The Ensemble page's Promote
+button refuses with `PROMOTION_WHOLE_BUNDLE_REQUIRED` for the same reason.
 
 ---
 

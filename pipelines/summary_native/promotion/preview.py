@@ -6,8 +6,9 @@ from pathlib import Path
 import json
 
 from campaignlib.grounding_bundle import open_grounding_snapshot
+from pipelines.summary_native.promotion.aliases import detached_aliases, loose_alias_paths
 from pipelines.summary_native.promotion.diff import diff_members, proposed_bytes
-from pipelines.summary_native.promotion.errors import PromotionMigrationRequired, PromotionPathError
+from pipelines.summary_native.promotion.errors import PromotionMigrationRequired
 from pipelines.summary_native.promotion.gates import (
     check_bundle_structure,
     claims_gate,
@@ -56,26 +57,44 @@ def preview_bundle(
             live_digest = snapshot.live_digest
             edited_since_publication = snapshot.edited_since_publication
             before = dict(snapshot.members)
-    except PromotionMigrationRequired as exc:
+    except PromotionMigrationRequired:
         layout_path = Path(campaign_dir) / "docs/grounding/layout.json"
         try:
             layout_value = json.loads(layout_path.read_text(encoding="utf-8"))
             absent = layout_value.get("version") == 1 and layout_value.get("state") == "absent"
         except (OSError, ValueError):
             absent = False
-        if absent:
+        if not absent:
+            refusal = PromotionMigrationRequired(campaign_dir=Path(campaign_dir).absolute())
+            outcomes.append(GateOutcome(
+                gate="managed-layout", state="blocked", code=refusal.code, message=str(refusal),
+            ))
+        elif loose := loose_alias_paths(campaign_dir):
+            # Only a pristine campaign may start from an absent baseline, and
+            # promotion never adopts loose output implicitly.
+            outcomes.append(GateOutcome(
+                gate="managed-aliases", state="blocked", code="PROMOTION_PATH_CONFLICT",
+                message=(
+                    "the absent baseline has loose output at managed alias paths: "
+                    + ", ".join(loose)
+                    + "; promotion never adopts them — move them out of docs/ and preview again"
+                ),
+            ))
+        else:
             outcomes.append(GateOutcome(
                 gate="managed-layout", state="passed", message="initialized absent baseline is ready",
             ))
-        else:
-            outcomes.append(
-                GateOutcome(
-                    gate="managed-layout",
-                    state="blocked",
-                    code=exc.code,
-                    message=str(exc),
-                )
-            )
+    else:
+        detached = detached_aliases(campaign_dir)
+        if detached:
+            outcomes.append(GateOutcome(
+                gate="managed-aliases", state="blocked", code="PROMOTION_PATH_CONFLICT",
+                message=(
+                    "compatibility alias conflict: " + "; ".join(detached)
+                    + ". Promotion refuses while the conflict exists: keep the wanted text in "
+                    "the managed member, then restore the alias"
+                ),
+            ))
     after = proposed_bytes(campaign_dir, bundle)
     result, is_eligible, _ = finalize_promotion_gates(
         outcomes, source_signoffs_current=signoff_outcome.state == "passed"

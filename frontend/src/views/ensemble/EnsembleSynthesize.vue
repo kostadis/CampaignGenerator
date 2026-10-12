@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted, reactive, watch } from 'vue'
 import { useConfigStore } from '../../stores/config'
-import { apiFetch, apiPost } from '../../api/client'
+import { ApiError, apiFetch, apiPost } from '../../api/client'
 import {
   useEnsembleRun, fetchEnsembleConfig, saveEnsembleConfig, fetchRegistrySummary,
   type EnsembleConfig, type RegistrySummary,
@@ -199,12 +199,26 @@ async function showDiff(doc: string) {
   diffs[doc] = r.diff || '(no differences — or live doc does not exist yet)'
 }
 
+// Per-document promotion is retired (#548 FR-003): live grounding is published
+// only as one reviewed whole bundle. The server refuses /promote with
+// PROMOTION_WHOLE_BUNDLE_REQUIRED and its instructions; this page shows that
+// refusal verbatim and never treats a click as having published anything.
+const promoteRefusal = ref('')
 async function promote(doc: string) {
-  if (!confirm(`Promote ${doc}_draft.md over the live docs/${doc}.md?`)) return
-  await apiPost('/api/ensemble/promote',
-                { draft: `docs/${doc}_draft.md`, live: `docs/${doc}.md` })
-  delete diffs[doc]
-  emit('changed')
+  promoteRefusal.value = ''
+  try {
+    await apiPost('/api/ensemble/promote',
+                  { draft: `docs/${doc}_draft.md`, live: `docs/${doc}.md` })
+    promoteRefusal.value = 'Unexpected response: per-document promotion is retired and nothing was published. '
+      + 'Publish the whole bundle from Grounding → Summary-native → Promotion.'
+  } catch (e) {
+    if (e instanceof ApiError) {
+      const data = (e.data ?? {}) as { code?: string; message?: string; detail?: string }
+      promoteRefusal.value = `${data.code ?? `HTTP ${e.status}`}: ${data.message ?? data.detail ?? e.message}`
+    } else {
+      promoteRefusal.value = e instanceof Error ? e.message : String(e)
+    }
+  }
 }
 </script>
 
@@ -213,7 +227,9 @@ async function promote(doc: string) {
     <h2>Stage 3 — Synthesis &amp; promotion</h2>
     <p class="hint">
       Synthesis writes <code>*_draft.md</code> only — never a live doc. Backend:
-      <strong>{{ cfg?.synthesize.backend ?? '' }}</strong>. Review the diff, then promote by hand.
+      <strong>{{ cfg?.synthesize.backend ?? '' }}</strong>. Review the diff here; live grounding is
+      published only as a whole reviewed bundle from
+      <router-link :to="{ name: 'summary-native' }">Summary-native Promotion</router-link>.
     </p>
     <template v-if="selectedDoc === 'world_state'">
       <p v-if="registry?.found && !registry.error" class="hint">
@@ -295,13 +311,19 @@ async function promote(doc: string) {
     </div>
 
     <h3>Diff &amp; promote <span class="tag">human checkpoint</span></h3>
+    <p class="hint">
+      Per-document promotion is retired. Publish the reviewed whole bundle with
+      <code>summary_native promote</code> or the
+      <router-link :to="{ name: 'summary-native' }">Summary-native Promotion</router-link> panel.
+    </p>
     <table class="promote-tbl">
       <tr v-for="d in DOCS" :key="d.id">
         <td>{{ d.label }}</td>
         <td><button class="btn-neutral btn-sm" @click="showDiff(d.id)">Diff vs live</button></td>
-        <td><button class="btn-warn btn-sm" @click="promote(d.id)">Promote →</button></td>
+        <td><button class="btn-warn btn-sm" :data-test="`promote-${d.id}`" @click="promote(d.id)">Promote →</button></td>
       </tr>
     </table>
+    <p v-if="promoteRefusal" class="refusal" role="alert" data-test="promote-refusal">{{ promoteRefusal }}</p>
     <pre v-for="(d, k) in diffs" :key="k" class="diff"><strong>{{ k }}</strong>
 {{ d }}</pre>
   </div>
@@ -323,5 +345,6 @@ select { font-size: 12px; padding: 5px 7px; background: var(--bg-surface0); colo
 .polish-action .hint { margin-bottom: 8px; }
 .polish-action .btn-neutral { margin-top: 2px; }
 .promote-tbl td { padding: 4px 10px 4px 0; font-size: 12px; }
+.refusal { color: var(--red); font-size: 12px; margin: 6px 0; max-width: 72ch; white-space: pre-wrap; }
 .diff { background: #141420; border: 1px solid var(--bg-surface0); border-radius: 4px; padding: 8px 10px; font-family: var(--mono); font-size: 11px; white-space: pre-wrap; max-height: 300px; overflow-y: auto; }
 </style>

@@ -321,7 +321,7 @@ def _settings(tmp_path, cfg: dict, *flags: str):
     args = argparse.Namespace(backend=None, model=None, max_tokens=None, chunk_chars=None)
     for flag, value in zip(flags[::2], flags[1::2]):
         setattr(args, flag, value)
-    return claims_cli._resolve_extract_settings(config, args), _schema
+    return claims_cli._resolve_extract_settings(cfg.get("summary_native"), args), _schema
 
 
 def test_claims_extract_defaults_to_the_summary_native_extract_block(tmp_path):

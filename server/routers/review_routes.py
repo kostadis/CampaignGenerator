@@ -395,13 +395,30 @@ async def document_sign(request:Request,review_id:str,payload:DocumentSignReques
 async def npc_sign(request:Request,review_id:str,payload:NpcSignRequest):
     return await _run(_root(request),"npc","sign",review_id,"--item",payload.item,"--draft-sha256",payload.draft_sha256,"--expected-decision-revision",str(payload.expected_decision_revision),"--reviewer",payload.reviewer)
 
+def _contained_path(root: Path, value: str, field: str) -> str:
+    """Campaign containment without an existence check (the CLI owns the rest)."""
+    raw = Path(value).expanduser()
+    candidate = raw.resolve() if raw.is_absolute() else (root / raw).resolve()
+    try:
+        candidate.relative_to(root)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=f"{field} must stay inside the active campaign") from exc
+    return str(candidate)
+
+
+# Per-document prepare/promote is retired in favour of whole-bundle promotion.
+# The refusal (PROMOTION_WHOLE_BUNDLE_REQUIRED, with the replacement command) is
+# the CLI's, so these routes run it and relay its envelope like every other
+# route here (contracts/cli-ui.md, Principle VI) instead of a hand-built answer.
 @router.post("/{review_id}/document/prepare")
 async def document_prepare(request:Request,review_id:str,payload:FileSelectionRequest):
-    return JSONResponse({"ok":False,"code":"DOCUMENT_PROMOTION_RETIRED","message":"Per-document preparation is retired. Use /api/grounding/summary-native/promotion/preview with the complete reviewed bundle.","data":{"review_id":review_id,"promotion_path":"/api/grounding/summary-native/promotion/preview","history_path":f"/api/reviews/{review_id}/history"}},status_code=410)
+    root=_root(request)
+    return await _run(root,"document","prepare",review_id,"--documents",_contained_path(root,payload.selection,"documents"))
 
 @router.post("/{review_id}/document/promote")
 async def document_promote(request:Request,review_id:str,payload:FileSelectionRequest):
-    return JSONResponse({"ok":False,"code":"DOCUMENT_PROMOTION_RETIRED","message":"Per-document promotion is retired. Use /api/grounding/summary-native/promotion/preview and commit the exact whole-bundle preview.","data":{"review_id":review_id,"promotion_path":"/api/grounding/summary-native/promotion/preview","history_path":f"/api/reviews/{review_id}/history"}},status_code=410)
+    root=_root(request)
+    return await _run(root,"document","promote",review_id,"--proposals",_contained_path(root,payload.selection,"proposals"))
 
 @router.post("/{review_id}/identity/prepare")
 async def identity_prepare(request:Request,review_id:str,payload:IdentityPrepareRequest):

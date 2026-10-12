@@ -15,7 +15,6 @@ import yaml
 
 from campaignlib import DEFAULT_MODEL, add_backend_args
 from campaignlib.api.client import resolve_cli_model
-from campaignlib.config import campaign_root_for_config
 from campaignlib.grounding_config import promotion_config_from_summary_native
 from pipelines.summary_native.resolve import resolve_extract
 from pipelines.summary_native.claims.models import CandidateRun, CheckReport, ClaimAnnotation, SourceSelection
@@ -23,13 +22,20 @@ from pipelines.summary_native.claims.packets import assemble_packet, save_packet
 from pipelines.summary_native.claims.imports import import_candidates
 from pipelines.summary_native.claims.extract import ANNOTATIONS, campaign_model_invoker, extract_candidates
 from pipelines.summary_native.claims.check import annotations_from_active_ledger, check_claims
-from pipelines.summary_native.claims.report import evaluate_report, render_markdown, report_freshness, write_report
+from pipelines.summary_native.claims.report import (
+    evaluate_report, render_markdown, report_freshness, review_candidates, review_extraction_run, write_report,
+)
 from pipelines.summary_native.claims.review import (
     create_claim_review, load_confirmed_annotations, load_current_resolutions,
     prepare_finding_disposition,
     build_signoff_context,
 )
-from pipelines.summary_native.claims.selection import confirm_selection, existing_confirmation, mandatory_source_closure, save_confirmed_selection, select_whole_source_chunks, validate_selection_against_bundle
+from pipelines.summary_native.claims.selection import (
+    _read_private_regular, confirm_selection, existing_confirmation, mandatory_source_closure, resolve_scope,
+    save_confirmed_selection, save_scope_resolution, select_whole_source_chunks, unresolved_entries,
+    validate_selection_against_bundle,
+)
+from pipelines.summary_native.promotion.settings import load_settings, resolve_out_root
 from pipelines.summary_native.promotion.errors import PromotionError
 from pipelines.summary_native.promotion.manifest import build_bundle_selection
 from pipelines.summary_native.review.store import load_campaign_identity
@@ -39,15 +45,20 @@ from pipelines.summary_native.review.models import (
 )
 from pipelines.summary_native.review.documents import create_document_review, DocumentReviewError
 from pipelines.summary_native.review.models import canonical_digest
-from pipelines.summary_native.claims.review import mapping_annotation_digest
 from pipelines.summary_native.claims.selection import _write_owner_only
+
+
+_CONFIG_HELP = (
+    "<campaign>/config/config.yaml, as on every summary_native command (default: "
+    "./config/config.yaml); grounding.yaml is read from beside it"
+)
 
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="summary_native claims")
     sub = parser.add_subparsers(dest="command", required=True)
     select = sub.add_parser("select")
-    select.add_argument("--config", required=True)
+    select.add_argument("--config", help=_CONFIG_HELP)
     select.add_argument("--since", type=int, required=True)
     select.add_argument("--until", type=int, required=True)
     select.add_argument("--out-root")
@@ -56,18 +67,26 @@ def build_parser() -> argparse.ArgumentParser:
     selection = sub.add_parser("selection")
     selection_sub = selection.add_subparsers(dest="selection_command", required=True)
     save = selection_sub.add_parser("save")
-    save.add_argument("--config", required=True)
+    save.add_argument("--config", help=_CONFIG_HELP)
     save.add_argument("--input", required=True)
     save.add_argument("--reviewer")
     save.add_argument("--json", action="store_true")
     chunks = selection_sub.add_parser("chunks")
-    chunks.add_argument("--config", required=True)
+    chunks.add_argument("--config", help=_CONFIG_HELP)
     chunks.add_argument("--input", required=True)
     chunks.add_argument("--source", action="append", default=[])
     chunks.add_argument("--json", action="store_true")
+    resolve = selection_sub.add_parser("resolve-scope")
+    resolve.add_argument("--config", help=_CONFIG_HELP)
+    resolve.add_argument("--input", required=True)
+    resolve.add_argument("--entry", required=True, help="the exact unresolved_scope entry text")
+    resolve.add_argument("--choice", required=True, choices=("applicable", "not_applicable"))
+    resolve.add_argument("--rationale", required=True)
+    resolve.add_argument("--reviewer", required=True)
+    resolve.add_argument("--json", action="store_true")
     for name in ("extract", "import", "review", "check"):
         command = sub.add_parser(name)
-        command.add_argument("--config", required=True); command.add_argument("--selection", required=True)
+        command.add_argument("--config", help=_CONFIG_HELP); command.add_argument("--selection", required=True)
         command.add_argument("--json", action="store_true")
         if name == "extract":
             # The shared registrar: canonical --backend choices plus the Codex/Claude Code effort and thinking
@@ -79,9 +98,9 @@ def build_parser() -> argparse.ArgumentParser:
         if name == "review":
             command.add_argument("--candidates"); command.add_argument("--review", required=True)
         if name == "check": command.add_argument("--review", required=True)
-    show = sub.add_parser("show"); show.add_argument("--config", required=True); show.add_argument("--report", required=True); show.add_argument("--json", action="store_true")
+    show = sub.add_parser("show"); show.add_argument("--config", help=_CONFIG_HELP); show.add_argument("--report", required=True); show.add_argument("--json", action="store_true")
     disposition = sub.add_parser("prepare-disposition")
-    disposition.add_argument("--config", required=True); disposition.add_argument("--review", required=True)
+    disposition.add_argument("--config", help=_CONFIG_HELP); disposition.add_argument("--review", required=True)
     disposition.add_argument("--item", required=True); disposition.add_argument("--expected-decision-revision", required=True, type=int)
     disposition.add_argument("--disposition", required=True, choices=("dismiss", "accept_uncertainty"))
     disposition.add_argument("--rationale", required=True); disposition.add_argument("--json", action="store_true")
@@ -124,13 +143,17 @@ def _rules(selection: SourceSelection) -> tuple[tuple[str, str], ...]:
     return tuple(tuple(value.rsplit("/", 1)) if "/" in value else (value, "1") for value in selection.rule_versions)
 
 
-def _resolve_extract_settings(config: Path, args) -> tuple[str, str | None, int, int]:
+def _resolve_extract_settings(summary: dict | Path | None, args) -> tuple[str, str | None, int, int]:
     """Backend and model: flag > grounding.yaml summary_native.extract > schema, the same chain as
     ``summary_native extract`` (claims extraction is an extraction step of the same pipeline). The
     configured model applies only to the backend it was written for, so a ``--backend`` with no
-    ``--model`` gets that backend's own default rather than another backend's id."""
-    raw = yaml.safe_load(config.read_text(encoding="utf-8")) or {}
-    summary = raw.get("summary_native") if isinstance(raw, dict) else None
+    ``--model`` gets that backend's own default rather than another backend's id.
+
+    ``summary`` is the ``summary_native`` mapping read by ``load_settings``; a
+    path to a grounding.yaml is also accepted and read the same way."""
+    if isinstance(summary, Path):
+        raw = yaml.safe_load(summary.read_text(encoding="utf-8")) or {}
+        summary = raw.get("summary_native") if isinstance(raw, dict) else None
     promotion = promotion_config_from_summary_native(summary)
     settings = resolve_extract(summary if isinstance(summary, dict) else {}, backend=args.backend, model=args.model)
     return (
@@ -172,34 +195,40 @@ def _create_coverage_review(root: Path, config: Path, selection: SourceSelection
     return create_review(root, manifest, custody, (item,))
 
 
-def _all_review_candidates(root: Path, selection: SourceSelection, review: str) -> tuple[ClaimAnnotation, ...]:
-    _manifest, items, _events, _stale = read_review_state(root, review)
-    wanted = {
-        item.item_id.removeprefix("mapping-"): item.proposed_action.details.get("annotation_digest")
-        for item in items if item.item_id.startswith("mapping-")
-    }
-    base = root / selection.out_root / f"ch{selection.range_since:03d}-{selection.range_until:03d}" / "state/promotion/claims"
-    found: dict[str, ClaimAnnotation] = {}
-    for path in sorted((*base.glob("imports/*.json"), *base.glob("runs/*/rev-*/annotations.json"))):
-        raw = json.loads(path.read_text(encoding="utf-8"))
-        rows = raw.get("annotations", raw) if isinstance(raw, dict) else raw
-        for row in rows:
-            item = ClaimAnnotation.model_validate_json(json.dumps(row))
-            if item.occurrence_id in wanted and mapping_annotation_digest(item) == wanted[item.occurrence_id]:
-                prior = found.get(item.occurrence_id)
-                if prior is not None and canonical_bytes(prior) != canonical_bytes(item):
-                    raise PromotionError("review-bound candidate identity is ambiguous", code="CLAIMS_STALE")
-                found[item.occurrence_id] = item
-    if set(found) != set(wanted):
-        raise PromotionError("review-bound candidate artifact is absent or stale", code="CLAIMS_STALE")
-    return tuple(found[key] for key in sorted(found))
+def _review_inputs(
+    root: Path, selection: SourceSelection, review: str,
+) -> tuple[tuple[ClaimAnnotation, ...], CandidateRun | None]:
+    """Each prose mapping item bound to its own run or import, and the run it needs.
+
+    Structured authority items are projected from the ledger (never from a
+    candidate artifact). Model items bind the run revision whose annotations
+    carry them, so a model run and later manual imports combine in one review.
+    A run with no candidates is bound from the latest review binding naming it.
+    """
+    candidates, origins = review_candidates(root, selection, review, code="CLAIMS_STALE")
+    run_value = review_extraction_run(root, candidates, origins, code="CLAIMS_STALE")
+    if run_value is None:
+        binding_dir = root / selection.out_root / f"ch{selection.range_since:03d}-{selection.range_until:03d}" / "state/promotion/claims/review-bindings"
+        bindings = sorted(binding_dir.glob(f"{review}-g*.json"), key=lambda path: int(path.stem.rsplit("-g", 1)[1]))
+        if not bindings:
+            raise PromotionError("review candidate binding is absent", code="CLAIMS_STALE")
+        for path in reversed(bindings):
+            binding_raw = json.loads(_read_private_regular(root, path.relative_to(root), code="CLAIMS_STALE"))
+            if binding_raw.get("selection_digest") == selection.selection_digest and binding_raw.get("run"):
+                run_value = CandidateRun.model_validate_json(json.dumps(binding_raw["run"]))
+                break
+    return candidates, run_value
 
 
 def run(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
-    config = Path(args.config).expanduser().resolve()
-    root = campaign_root_for_config(config)
     try:
+        # --config is config/config.yaml (auto-detected), as on every
+        # summary_native command; grounding.yaml is read from beside it.
+        settings = load_settings(args.config, code="CLAIMS_CONFIG_INVALID")
+        # The bundle, its custody and the coverage item bind grounding.yaml,
+        # exactly as `promote` does, so both compute the same bundle digest.
+        config, root = settings.grounding_path, settings.root
         if args.command in {"extract", "import", "review", "check"}:
             selection = _load_selection(args.selection)
             review_id = getattr(args, "review", None) or "claims-selection"
@@ -207,7 +236,7 @@ def run(argv: list[str] | None = None) -> int:
             validate_selection_against_bundle(root, selection, bundle)
             packet = _packet(root, selection)
             if args.command == "extract":
-                args.backend, args.model, args.max_tokens, args.chunk_chars = _resolve_extract_settings(config, args)
+                args.backend, args.model, args.max_tokens, args.chunk_chars = _resolve_extract_settings(settings.summary_native, args)
                 # No model for a non-stored backend: that backend's own default, exactly as `summary_native extract`.
                 args.model = resolve_cli_model(args, legacy_default=DEFAULT_MODEL).effective_model
                 result_value = extract_candidates(root, selection, packet,
@@ -241,20 +270,12 @@ def run(argv: list[str] | None = None) -> int:
                 result = _envelope(True, "OK", "claim review created", {"review": args.review, "result": review_result,
                     "extraction_run": run_value.model_dump(mode="json") if run_value else None})
             else:
-                candidates = _all_review_candidates(root, selection, args.review)
+                candidates, extraction_run = _review_inputs(root, selection, args.review)
                 confirmed = load_confirmed_annotations(root, args.review, candidates)
                 confirmed_by_id = {item.occurrence_id: item for item in confirmed}
                 reviewed_candidates = tuple(confirmed_by_id.get(item.occurrence_id, item) for item in candidates)
                 structured = annotations_from_active_ledger(root, selection)
                 authority = {key: value for source in selection.sources for key, value in source.authority_record_digests.items()}
-                binding_dir = root / selection.out_root / f"ch{selection.range_since:03d}-{selection.range_until:03d}" / "state/promotion/claims/review-bindings"
-                bindings = sorted(binding_dir.glob(f"{args.review}-g*.json"),
-                    key=lambda path: int(path.stem.rsplit("-g", 1)[1]))
-                if not bindings:
-                    raise PromotionError("review candidate binding is absent", code="CLAIMS_STALE")
-                binding_path = bindings[-1]
-                binding_raw = json.loads(binding_path.read_text(encoding="utf-8"))
-                extraction_run = CandidateRun.model_validate_json(json.dumps(binding_raw["run"])) if binding_raw.get("run") else None
                 analysis = check_claims(selection, (*reviewed_candidates, *structured), active_authority_ids=authority,
                     extraction_run=extraction_run)
                 resolutions = load_current_resolutions(root, args.review, analysis.findings)
@@ -275,7 +296,7 @@ def run(argv: list[str] | None = None) -> int:
                     context = build_signoff_context(
                         analysis_digest=report.analysis_digest, resolution_digest=report.resolution_digest,
                         support_digest=support_digest, audience=report.audience,
-                        rule_versions=_rules(selection),
+                        rule_versions=_rules(selection), coverage_limitations=report.coverage_limitations,
                     )
                     document_selection = {"documents": [
                         {"id": item.document_id.value, "path": item.path} for item in bundle.documents
@@ -309,6 +330,28 @@ def run(argv: list[str] | None = None) -> int:
                 result = _envelope(True, "OK", "explicit chunk scope materialized", {"selection": value.model_dump(mode="json")})
                 print(json.dumps(result, sort_keys=True))
                 return 0
+            if args.selection_command == "resolve-scope":
+                if value.campaign_id != str(load_campaign_identity(root).campaign_id):
+                    raise PromotionError("selection belongs to another campaign", code="CLAIMS_SELECTION_INVALID")
+                bundle = build_bundle_selection(
+                    root, out_root=value.out_root, since=value.range_since, until=value.range_until,
+                    campaign_id=value.campaign_id, review_id="claims-selection",
+                    rule_versions=value.rule_versions, config_path=config,
+                )
+                value = resolve_scope(
+                    root, value, bundle, entry=args.entry, choice=args.choice,
+                    rationale=args.rationale, reviewer=args.reviewer, resolved_at=datetime.now(timezone.utc),
+                )
+                path = save_scope_resolution(root, value)
+                result = _envelope(True, "OK", "scope resolution recorded", {
+                    "selection": value.model_dump(mode="json"),
+                    "path": path.relative_to(root).as_posix(),
+                    "selection_digest": value.selection_digest,
+                    "resolved": [item.model_dump(mode="json") for item in value.scope_resolutions or ()],
+                    "unresolved": list(unresolved_entries(value)),
+                })
+                print(json.dumps(result, sort_keys=True))
+                return 0
             if value.confirmed_digest is None:
                 reviewer = args.reviewer.strip() if args.reviewer else ""
                 if not reviewer:
@@ -318,7 +361,6 @@ def run(argv: list[str] | None = None) -> int:
                 )
             if value.campaign_id != str(load_campaign_identity(root).campaign_id):
                 raise PromotionError("selection belongs to another campaign", code="CLAIMS_SELECTION_INVALID")
-            raw = yaml.safe_load(config.read_text(encoding="utf-8")) or {}
             bundle = build_bundle_selection(
                 root, out_root=value.out_root, since=value.range_since, until=value.range_until,
                 campaign_id=value.campaign_id, review_id="claims-selection",
@@ -331,22 +373,12 @@ def run(argv: list[str] | None = None) -> int:
                 "confirmed_digest": value.confirmed_digest,
             })
         else:
-            raw = yaml.safe_load(config.read_text(encoding="utf-8")) or {}
-            summary = raw.get("summary_native") if isinstance(raw, dict) else {}
-            settings = promotion_config_from_summary_native(summary)
-            if args.out_root:
-                out_path = (root / args.out_root).resolve()
-            else:
-                configured = summary.get("out_root") if isinstance(summary, dict) else None
-                out_path = (config.parent / configured).resolve() if isinstance(configured, str) else root / "docs/summary_native"
-            try:
-                out_root = out_path.relative_to(root).as_posix()
-            except ValueError as exc:
-                raise PromotionError("summary_native out_root escapes campaign", code="CLAIMS_SELECTION_INVALID") from exc
+            promotion = promotion_config_from_summary_native(settings.summary_native)
+            out_root = resolve_out_root(settings, args.out_root, code="CLAIMS_SELECTION_INVALID")
             bundle = build_bundle_selection(
                 root, out_root=out_root, since=args.since, until=args.until,
                 campaign_id=str(load_campaign_identity(root).campaign_id), review_id="claims-selection",
-                rule_versions=settings.rule_versions, config_path=config,
+                rule_versions=promotion.rule_versions, config_path=config,
             )
             if args.sources:
                 selection = _load_selection(args.sources)
@@ -354,7 +386,7 @@ def run(argv: list[str] | None = None) -> int:
             else:
                 selection = mandatory_source_closure(
                     root, bundle, effective_horizon=f"through-chapter-{args.until}",
-                    audience=bundle.audience, rule_versions=settings.rule_versions,
+                    audience=bundle.audience, rule_versions=promotion.rule_versions,
                 )
             result = _envelope(True, "OK", "source selection materialized", {
                 "selection": selection.model_dump(mode="json"),

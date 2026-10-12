@@ -8,26 +8,39 @@ First complete [grounding bundle migration](grounding_bundle_migration.md).
 
 ## Review workflow
 
-Use the campaign's `config/grounding.yaml` and an explicit range:
+`--config` names `config/config.yaml`, as on every `summary_native` command (run from the
+campaign root and it can be omitted); `grounding.yaml` is read from beside it, and
+`summary_native.out_root` resolves against the campaign root. Choose an explicit range:
 
 ```bash
-summary_native claims select --config config/grounding.yaml --since 1 --until 3 --json
-summary_native claims selection chunks --config config/grounding.yaml \
+summary_native claims select --config config/config.yaml --since 1 --until 3 --json
+summary_native claims selection chunks --config config/config.yaml \
   --input proposed-selection.json --source <source-id> --json
-summary_native claims selection save --config config/grounding.yaml \
+summary_native claims selection resolve-scope --config config/config.yaml \
+  --input proposed-selection.json --entry "<unresolved_scope entry>" \
+  --choice applicable|not_applicable --rationale "<why>" --reviewer "GM name" --json
+summary_native claims selection save --config config/config.yaml \
   --input confirmed-selection.json --reviewer "GM name" --json
-summary_native claims import --config config/grounding.yaml \
+summary_native claims import --config config/config.yaml \
   --selection confirmed-selection.json --candidates candidates.json --json
-summary_native claims review --config config/grounding.yaml \
+summary_native claims review --config config/config.yaml \
   --selection confirmed-selection.json --review promotion-check --json
-summary_native claims check --config config/grounding.yaml \
+summary_native claims check --config config/config.yaml \
   --selection confirmed-selection.json --review promotion-check --json
-summary_native claims show --config config/grounding.yaml --report <report-id> --json
+summary_native claims show --config config/config.yaml --report <report-id> --json
 ```
 
-`select` proposes the mandatory source closure. Confirm exact sources and only
+`select` proposes the mandatory source closure. When an active preparation,
+overlay or open authority note might apply to the range, the selection lists it
+under `unresolved_scope`, and `selection save` refuses until you rule on each
+entry with `resolve-scope` (the Claims panel's "Scope rulings needed" block does
+the same). `applicable` keeps the record as mapping evidence; `not_applicable`
+keeps it in the closure as context only. Neither makes it fact authority, and
+deleting an entry from the JSON is refused, because validation recomputes the
+set from the authority ledger. Confirm exact sources and only
 the chunks you want sent to a model; zero chunks is a supported no-model path
-with an explicit coverage limitation. `extract` is the only claims command that
+with an explicit coverage limitation. Selecting chunks and not completing an
+extraction over them, with no import either, makes the check incomplete. `extract` is the only claims command that
 calls a model and exposes backend, model, token, chunk size, and force choices.
 `import` accepts attributed prepared candidates but grants them no authority.
 
@@ -44,9 +57,9 @@ model, migrate, or publish.
 ## Preview and publish
 
 ```bash
-summary_native promote --config config/grounding.yaml --since 1 --until 3 \
+summary_native promote --config config/config.yaml --since 1 --until 3 \
   --review promotion-check --check-report <report-id> --dry-run --json
-summary_native promote --config config/grounding.yaml --since 1 --until 3 \
+summary_native promote --config config/config.yaml --since 1 --until 3 \
   --review promotion-check --check-report <report-id> \
   --preview-sha256 <preview-sha256> --request-id <unique-request-id> --json
 ```
@@ -62,10 +75,10 @@ publication. Reusing a request ID for different intent refuses.
 ## Status, receipt, and recovery
 
 ```bash
-summary_native promotion status --config config/grounding.yaml --json
-summary_native promotion receipt --config config/grounding.yaml \
+summary_native promotion status --config config/config.yaml --json
+summary_native promotion receipt --config config/config.yaml \
   --operation <operation-id> --json
-summary_native promotion recover --config config/grounding.yaml \
+summary_native promotion recover --config config/config.yaml \
   --operation <operation-id> --json
 ```
 

@@ -54,7 +54,8 @@ function selectAll() {
 const since = computed(() => (typeof rangeSince.value === 'number' ? rangeSince.value : null))
 const until = computed(() => (typeof rangeUntil.value === 'number' ? rangeUntil.value : null))
 
-const sharedClaimsReview = ref('claims-review')
+// Named by the GM in either panel; there is no default review id (#548 review, X/XII).
+const sharedClaimsReview = ref('')
 const sharedClaimsSelection = ref('')
 const sharedClaimsReport = ref('')
 function claimsSelectionSaved(path: string) { sharedClaimsSelection.value = path; if (!path) sharedClaimsReport.value = '' }

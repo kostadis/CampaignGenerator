@@ -213,7 +213,7 @@ def test_missing_named_check_report_returns_available_structured_preview(
     campaign: Path, capsys: pytest.CaptureFixture[str]
 ) -> None:
     before = _tree(campaign)
-    rc, data = _preview(campaign, capsys, "--check-report", "missing-report.json")
+    rc, data = _preview(campaign, capsys, "--check-report", "missing-report")
     assert rc == 5
     assert data["preview"]["eligible"] is False
     assert "CLAIMS_INCOMPLETE" in data["preview"]["refusal_codes"]

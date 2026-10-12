@@ -39,6 +39,9 @@ class CandidateProposal(BaseModel):
     audience: StrictStr = Field(min_length=1)
     effective_from: StrictStr | None = None
     effective_until: StrictStr | None = None
+    # An explicit supersession relation the GM reviews with the mapping; it
+    # must name another occurrence bound to the same confirmed selection.
+    supersedes_occurrence_id: StrictStr | None = Field(default=None, min_length=1)
 
 
 PROPOSALS = TypeAdapter(tuple[CandidateProposal, ...])
@@ -63,11 +66,27 @@ def bind_candidates(
     origin: Literal["human_candidate", "model_candidate"],
     extraction_identity: dict[str, str] | None = None,
     campaign_dir: Path | None = None,
+    known_occurrence_ids: frozenset[str] = frozenset(),
 ) -> tuple[ClaimAnnotation, ...]:
-    """Bind untrusted proposals to exact selected bytes; never grants approval."""
+    """Bind untrusted proposals to exact selected bytes; never grants approval.
+
+    ``known_occurrence_ids`` are occurrences already bound to this selection; a
+    proposal's ``supersedes_occurrence_id`` must name one of them or another
+    proposal in the same document, never itself.
+    """
     if selection.confirmed_digest is None or packet.selection_digest != selection.selection_digest:
         raise PromotionError("candidate input is not bound to the confirmed selection", code="CLAIMS_CANDIDATE_INVALID")
     proposals = _decode(value)
+    proposal_ids = {item.occurrence_id for item in proposals}
+    for proposal in proposals:
+        target = proposal.supersedes_occurrence_id
+        if target is not None and (
+            target == proposal.occurrence_id or target not in proposal_ids | set(known_occurrence_ids)
+        ):
+            raise PromotionError(
+                f"candidate {proposal.occurrence_id} supersedes an occurrence outside this selection: {target}",
+                code="CLAIMS_CANDIDATE_INVALID",
+            )
     chunks = {item.chunk_id: item for item in packet.chunks}
     selected = {item.chunk_id: item for item in selection.chunks}
     sources = {item.source_id: item for item in selection.sources}
@@ -112,6 +131,7 @@ def bind_candidates(
             extraction_run_id=model_fields.get("extraction_run_id"),
             prompt_digest=model_fields.get("prompt_digest"),
             model_id=model_fields.get("model_id"), input_digest=model_fields.get("input_digest"),
+            supersedes_occurrence_id=proposal.supersedes_occurrence_id,
         ))
     return tuple(annotations)
 
@@ -150,13 +170,42 @@ def _resolve_subject(
     return (*unique[0], True) if len(unique) == 1 else (None, kind, False)
 
 
+def _bound_occurrence_ids(campaign_dir: Path, selection: SourceSelection) -> frozenset[str]:
+    """Occurrences already bound to this exact selection: imports, runs and active authority."""
+    from pipelines.summary_native.claims.check import annotations_from_active_ledger
+    from pipelines.summary_native.claims.models import CandidateRun
+
+    root = Path(campaign_dir).resolve()
+    range_dir = f"ch{selection.range_since:03d}-{selection.range_until:03d}"
+    base = Path(selection.out_root) / range_dir / "state/promotion/claims"
+    found = {item.occurrence_id for item in annotations_from_active_ledger(root, selection)}
+    for path in sorted((root / base).glob("imports/*.json")):
+        relative = path.relative_to(root)
+        raw = json.loads(_read_private_regular(root, relative, code="CLAIMS_CANDIDATE_INVALID"))
+        if isinstance(raw, dict) and raw.get("selection_digest") == selection.selection_digest:
+            found.update(str(row.get("occurrence_id")) for row in raw.get("annotations", []) if isinstance(row, dict))
+    for run_path in sorted((root / base).glob("runs/*/rev-*/run.json")):
+        run = CandidateRun.model_validate_json(
+            _read_private_regular(root, run_path.relative_to(root), code="CLAIMS_CANDIDATE_INVALID")
+        )
+        if run.selection_digest == selection.selection_digest:
+            found.update(run.candidate_annotation_ids)
+    return frozenset(found)
+
+
 def import_candidates(
     campaign_dir: Path,
     selection: SourceSelection,
     packet: SourcePacket,
     value: bytes | str | dict[str, Any],
 ) -> Path:
-    annotations = bind_candidates(selection, packet, value, origin="human_candidate", campaign_dir=campaign_dir)
+    declares_supersession = any(item.supersedes_occurrence_id for item in _decode(value))
+    annotations = bind_candidates(
+        selection, packet, value, origin="human_candidate", campaign_dir=campaign_dir,
+        known_occurrence_ids=(
+            _bound_occurrence_ids(campaign_dir, selection) if declares_supersession else frozenset()
+        ),
+    )
     identity = canonical_digest({
         "selection_digest": selection.selection_digest,
         "packet_digest": packet.packet_digest,

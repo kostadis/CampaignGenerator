@@ -6,9 +6,9 @@ import argparse
 import hashlib
 import json
 import os
-import shutil
+import stat
 import sys
-from datetime import datetime, timezone
+from datetime import date, datetime, timezone
 from pathlib import Path, PurePosixPath
 from typing import Any
 
@@ -54,16 +54,35 @@ class MigrationError(ValueError):
         self.code = code
 
 
-def atomic_write_bytes(path: Path | str, data: bytes) -> None:
-    """Migration-local durable replace; inability to sync is a hard failure."""
+def _default_mode() -> int:
+    """The mode an ordinary ``open(..., "w")`` would give a new file."""
+    current = os.umask(0)
+    os.umask(current)
+    return 0o666 & ~current
+
+
+def atomic_write_bytes(path: Path | str, data: bytes, *, mode: int | None = None) -> None:
+    """Migration-local durable replace; inability to sync is a hard failure.
+
+    The replacement keeps the replaced file's permission bits (a campaign's
+    0644 config must not become 0600), or takes ``mode`` when given (a copied
+    member keeps its source's bits), or the ordinary umask default.
+    """
     target = Path(path)
     target.parent.mkdir(parents=True, exist_ok=True)
+    if mode is None:
+        mode = (
+            stat.S_IMODE(target.stat().st_mode)
+            if target.is_file() and not target.is_symlink()
+            else _default_mode()
+        )
     temporary = target.with_name(f".{target.name}.migration-{os.getpid()}")
     descriptor = os.open(temporary, os.O_WRONLY | os.O_CREAT | os.O_TRUNC | os.O_NOFOLLOW, 0o600)
     try:
         with os.fdopen(descriptor, "wb", closefd=False) as stream:
             stream.write(data)
             stream.flush()
+            os.fchmod(stream.fileno(), mode)
             os.fsync(stream.fileno())
     finally:
         os.close(descriptor)
@@ -118,14 +137,35 @@ def _matches_identity(path: Path, expected: dict[str, Any], root: Path) -> bool:
     return all(actual.get(key) == value for key, value in expected.items() if key != "path")
 
 
+CONFIG_DESTINATIONS = {
+    "world_state": "../docs/grounding/current/world_state.md",
+    "campaign_state": "../docs/grounding/current/campaign_state.md",
+    "party": "../docs/grounding/current/party.md",
+    "planning": "../docs/grounding/current/planning.md",
+}
+
+
+def _jsonable(value: Any) -> Any:
+    """Represent parsed YAML in the plan's JSON without losing it.
+
+    YAML has types JSON lacks (a bare ``2024-05-01`` is a ``date``); the plan
+    is printed and digested as JSON, so those become ISO strings here. The
+    config file itself is never re-serialized from this value.
+    """
+    if isinstance(value, dict):
+        return {str(key): _jsonable(item) for key, item in value.items()}
+    if isinstance(value, (list, tuple)):
+        return [_jsonable(item) for item in value]
+    if isinstance(value, (datetime, date)):
+        return value.isoformat()
+    if isinstance(value, bytes):
+        return value.decode("utf-8", errors="replace")
+    return value
+
+
 def _config_after(raw: dict[str, Any]) -> dict[str, Any]:
-    result = json.loads(json.dumps(raw))
-    destinations = {
-        "world_state": "../docs/grounding/current/world_state.md",
-        "campaign_state": "../docs/grounding/current/campaign_state.md",
-        "party": "../docs/grounding/current/party.md",
-        "planning": "../docs/grounding/current/planning.md",
-    }
+    result = _jsonable(raw)
+    destinations = CONFIG_DESTINATIONS
     documents = result.get("documents")
     if isinstance(documents, list):
         for entry in documents:
@@ -139,6 +179,149 @@ def _config_after(raw: dict[str, Any]) -> dict[str, Any]:
         if "distill" in grounding and isinstance(grounding["distill"], str):
             grounding["distill"] = destinations["world_state"]
     return result
+
+
+def _config_edits(text: str) -> list[dict[str, Any]]:
+    """Locate exactly the config values ``_config_after`` changes.
+
+    The config is rewritten by splicing these spans, never by re-dumping a
+    parsed mapping, so the GM's comments, key order, quoting and unrelated
+    values survive byte-for-byte.
+    """
+    try:
+        root = yaml.compose(text)
+    except yaml.YAMLError as exc:
+        raise MigrationError(f"unreadable config: {exc}", "PROMOTION_PATH_CONFLICT") from exc
+    if not isinstance(root, yaml.MappingNode):
+        raise MigrationError("config must be a mapping", "PROMOTION_PATH_CONFLICT")
+    edits: list[dict[str, Any]] = []
+
+    def scalar(node: yaml.Node) -> str | None:
+        return node.value if isinstance(node, yaml.ScalarNode) else None
+
+    def value_edit(where: str, node: yaml.Node, after: str) -> None:
+        if not isinstance(node, yaml.ScalarNode) or node.style in {"|", ">"}:
+            raise MigrationError(
+                f"config value {where} is not a plain or quoted scalar; set it to {after!r} by hand "
+                "and preview again", "PROMOTION_PATH_CONFLICT",
+            )
+        start, end = node.start_mark.index, node.end_mark.index
+        quote = node.style if node.style in {"'", '"'} else ""
+        replacement = f"{quote}{after}{quote}"
+        if start == end and start > 0 and text[start - 1] == ":":
+            replacement = " " + replacement
+        edits.append({"where": where, "start": start, "end": end, "before": node.value,
+                      "after": after, "text": replacement})
+
+    for key_node, value_node in root.value:
+        key = scalar(key_node)
+        if key == "documents" and isinstance(value_node, yaml.SequenceNode):
+            for index, entry in enumerate(value_node.value):
+                if not isinstance(entry, yaml.MappingNode):
+                    continue
+                pairs = [(scalar(k), k, v) for k, v in entry.value]
+                labels = [scalar(v) for name, _k, v in pairs if name == "label"]
+                label = labels[-1] if labels else None
+                if label not in CONFIG_DESTINATIONS:
+                    continue
+                after = CONFIG_DESTINATIONS[label]
+                paths = [(k, v) for name, k, v in pairs if name == "path"]
+                if paths:
+                    for _k, v in paths:
+                        value_edit(f"documents[{index}].path", v, after)
+                    continue
+                if entry.flow_style:
+                    raise MigrationError(
+                        f"config documents[{index}] ({label}) has no path; add `path: {after}` by hand "
+                        "and preview again", "PROMOTION_PATH_CONFLICT",
+                    )
+                label_key = next(k for name, k, _v in pairs if name == "label")
+                label_value = next(v for name, _k, v in reversed(pairs) if name == "label")
+                position = label_value.end_mark.index
+                indent = " " * label_key.start_mark.column
+                edits.append({"where": f"documents[{index}].path", "start": position, "end": position,
+                              "before": None, "after": after, "text": f"\n{indent}path: {after}"})
+        elif key == "grounding" and isinstance(value_node, yaml.MappingNode):
+            for g_key, g_value in value_node.value:
+                name = scalar(g_key)
+                if name in CONFIG_DESTINATIONS:
+                    value_edit(f"grounding.{name}", g_value, CONFIG_DESTINATIONS[name])
+                elif name == "distill" and isinstance(g_value, yaml.ScalarNode) and g_value.tag.endswith(":str"):
+                    value_edit("grounding.distill", g_value, CONFIG_DESTINATIONS["world_state"])
+    return sorted(edits, key=lambda item: item["start"])
+
+
+def _config_after_bytes(data: bytes, expected_after: dict[str, Any]) -> bytes:
+    """The config bytes with only the previewed values replaced, verified."""
+    try:
+        text = data.decode("utf-8")
+    except UnicodeDecodeError as exc:
+        raise MigrationError("config is not UTF-8", "PROMOTION_PATH_CONFLICT") from exc
+    pieces: list[str] = []
+    cursor = 0
+    for edit in _config_edits(text):
+        if edit["start"] < cursor:
+            raise MigrationError("config values overlap; edit them by hand", "PROMOTION_PATH_CONFLICT")
+        pieces.append(text[cursor:edit["start"]])
+        pieces.append(edit["text"])
+        cursor = edit["end"]
+    pieces.append(text[cursor:])
+    rendered = "".join(pieces)
+    try:
+        reparsed = yaml.safe_load(rendered) or {}
+    except yaml.YAMLError as exc:
+        raise MigrationError(f"rewritten config does not parse: {exc}", "PROMOTION_PATH_CONFLICT") from exc
+    if _jsonable(reparsed) != expected_after:
+        raise MigrationError(
+            "config cannot be rewritten in place to exactly the previewed mapping; "
+            "point the four grounding documents at docs/grounding/current/<name>.md by hand",
+            "PROMOTION_PATH_CONFLICT",
+        )
+    return rendered.encode("utf-8")
+
+
+def _completed_migration(root: Path) -> dict[str, Any] | None:
+    """The committed migration this campaign already has, if any.
+
+    A migrated campaign (active, or an absent baseline awaiting its first
+    publication) must report that state on a repeated preview or apply instead
+    of planning a second migration over its own aliases and rewritten config.
+    """
+    if (root / PENDING_RELATIVE).exists():
+        return None
+    layout_path = root / GROUNDING_RELATIVE / "layout.json"
+    if layout_path.is_symlink() or not layout_path.is_file():
+        return None
+    try:
+        layout = json.loads(layout_path.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return None
+    if not isinstance(layout, dict) or layout.get("version") != 1 or layout.get("state") not in {"active", "absent"}:
+        return None
+    operation = layout.get("migration_operation_id")
+    try:
+        TypeAdapter(OpaqueId).validate_python(operation, strict=True)
+    except ValidationError:
+        return None
+    receipt_path = root / GROUNDING_RELATIVE / "migrations" / operation / "receipt.json"
+    if receipt_path.is_symlink() or not receipt_path.is_file():
+        return None
+    try:
+        receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return None
+    if not isinstance(receipt, dict) or receipt.get("state") != "committed":
+        return None
+    return {
+        "state": "migrated",
+        "already_migrated": True,
+        "layout_state": layout.get("state"),
+        "baseline": receipt.get("baseline"),
+        "operation_id": operation,
+        "plan_sha256": receipt.get("plan_sha256"),
+        "generation_id": layout.get("generation_id"),
+        "receipt": receipt,
+    }
 
 
 def _members(root: Path) -> list[dict[str, Any]]:
@@ -183,6 +366,9 @@ def _baseline(root: Path) -> str:
 
 def plan_migration(campaign_dir: Path) -> dict[str, Any]:
     root = _campaign_root(campaign_dir)
+    completed = _completed_migration(root)
+    if completed is not None:
+        return completed
     config_path = root / CONFIG_RELATIVE
     if not config_path.is_file() or config_path.is_symlink():
         raise MigrationError(f"missing safe config: {config_path}", "PROMOTION_PATH_CONFLICT")
@@ -216,14 +402,22 @@ def plan_migration(campaign_dir: Path) -> dict[str, Any]:
             "before": _identity(path, root),
             "after": {"kind": "symlink", "target": f"grounding/current/{name}"},
         })
+    config_bytes = config_path.read_bytes()
+    config_after = _config_after(config)
+    config_after_bytes = _config_after_bytes(config_bytes, config_after)
     base = {
         "version": 1,
         "kind": "grounding_bundle_migration",
         "baseline": baseline,
         "config": {
             "path": CONFIG_RELATIVE.as_posix(),
-            "before_sha256": _sha(config_path.read_bytes()),
-            "after": _config_after(config),
+            "before_sha256": _sha(config_bytes),
+            "after": config_after,
+            "after_sha256": _sha(config_after_bytes),
+            "changes": [
+                {"where": edit["where"], "before": edit["before"], "after": edit["after"]}
+                for edit in _config_edits(config_bytes.decode("utf-8"))
+            ],
         },
         "aliases": aliases,
         "members": members,
@@ -295,7 +489,40 @@ def _copy_file_exact(source: Path, destination: Path) -> None:
         if destination.read_bytes() != source.read_bytes():
             raise MigrationError(f"conflicting retained copy: {destination}", "PROMOTION_PATH_CONFLICT")
         return
-    atomic_write_bytes(destination, source.read_bytes())
+    atomic_write_bytes(destination, source.read_bytes(), mode=stat.S_IMODE(source.stat().st_mode))
+
+
+def _intended_config(plan: dict[str, Any], original: bytes) -> bytes:
+    """Recompute the planned config bytes from the retained original."""
+    if "after_sha256" not in plan["config"]:
+        # A plan journaled before in-place rewriting existed recovers with the
+        # bytes it was written with.
+        return yaml.safe_dump(plan["config"]["after"], sort_keys=True, allow_unicode=True).encode("utf-8")
+    after = _config_after_bytes(original, plan["config"]["after"])
+    expected = plan["config"].get("after_sha256")
+    if expected is not None and _sha(after) != expected:
+        raise MigrationError("config rewrite no longer matches the previewed bytes", "PROMOTION_STALE_PREVIEW")
+    return after
+
+
+def _alias_state_ok(root: Path, operation: Path, alias_plan: dict[str, Any]) -> bool:
+    """Is a managed alias in a state this plan (or its recovery) can explain?
+
+    Before, after, or absent with its exact original retained in
+    ``originals/`` (the journaled gap between moving the loose file or tree
+    aside and linking the alias). Anything else is someone else's bytes.
+    """
+    alias_path = root / alias_plan["path"]
+    if (_matches_identity(alias_path, alias_plan["before"], root)
+            or _matches_identity(alias_path, alias_plan["after"], root)):
+        return True
+    if os.path.lexists(alias_path) or alias_plan["before"].get("kind") not in {"file", "directory"}:
+        return False
+    retained = operation / "originals" / alias_plan["path"]
+    try:
+        return _matches_identity(retained, alias_plan["before"], root)
+    except MigrationError:
+        return False
 
 
 def _write_phase(root: Path, pending: dict[str, Any], phase: str) -> None:
@@ -345,16 +572,14 @@ def _apply_locked(root: Path, plan: dict[str, Any], *, recovering: bool = False)
     _failpoint("prepared")
 
     for alias_plan in plan["aliases"]:
-        alias_path = root / alias_plan["path"]
-        if not (_matches_identity(alias_path, alias_plan["before"], root)
-                or _matches_identity(alias_path, alias_plan["after"], root)):
+        if not _alias_state_ok(root, operation, alias_plan):
             raise MigrationError(f"managed path changed during migration: {alias_plan['path']}", "PROMOTION_STALE_PREVIEW")
 
     config_path = root / CONFIG_RELATIVE
     originals = operation / "originals"
     config_backup = originals / CONFIG_RELATIVE
     if config_backup.is_file():
-        intended = yaml.safe_dump(plan["config"]["after"], sort_keys=True, allow_unicode=True).encode("utf-8")
+        intended = _intended_config(plan, config_backup.read_bytes())
         if config_path.read_bytes() not in {config_backup.read_bytes(), intended}:
             raise MigrationError("config changed during migration", "PROMOTION_STALE_PREVIEW")
     else:
@@ -363,19 +588,22 @@ def _apply_locked(root: Path, plan: dict[str, Any], *, recovering: bool = False)
         for name in MANAGED_FILES:
             source = root / "docs" / name
             backup = originals / "docs" / name
-            if source.is_symlink():
+            if source.is_symlink() or not os.path.lexists(source):
                 if not backup.is_file():
                     raise MigrationError(f"missing retained original for transitioned alias {name}")
             else:
                 _copy_file_exact(source, backup)
         source_ref = root / "docs/reference"
         backup_ref = originals / "docs/reference"
-        if source_ref.is_symlink():
+        if source_ref.is_symlink() or not os.path.lexists(source_ref):
             if not backup_ref.is_dir():
                 raise MigrationError("missing retained original reference tree")
         else:
             _copy_tree_exact(source_ref, backup_ref)
-        _verify_tree_exact(source_ref if not source_ref.is_symlink() else backup_ref, backup_ref)
+        _verify_tree_exact(
+            source_ref if os.path.lexists(source_ref) and not source_ref.is_symlink() else backup_ref,
+            backup_ref,
+        )
     _write_phase(root, pending, "backed_up")
     _failpoint("backed_up")
 
@@ -417,15 +645,27 @@ def _apply_locked(root: Path, plan: dict[str, Any], *, recovering: bool = False)
                 if os.readlink(alias) != target:
                     raise MigrationError(f"alias target conflict: {alias}", "PROMOTION_PATH_CONFLICT")
                 continue
-            if name == "reference":
-                shutil.rmtree(alias)
-            else:
-                alias.unlink()
+            if name == "reference" and os.path.lexists(alias):
+                # A link cannot replace a non-empty directory in one rename,
+                # so the tree is moved aside into the operation journal (never
+                # deleted) and then linked. A crash in between leaves the
+                # alias absent with the exact tree retained in originals/ and
+                # displaced/, which recovery recognises and completes.
+                displaced = operation / "displaced" / "docs" / name
+                if os.path.lexists(displaced):
+                    raise MigrationError(f"displaced reference tree already exists: {displaced}", "PROMOTION_PATH_CONFLICT")
+                displaced.parent.mkdir(parents=True, exist_ok=True)
+                os.rename(alias, displaced)
+                _fsync_directory(alias.parent)
+                _fsync_directory(displaced.parent)
+                _failpoint("reference_displaced")
+            # For a file alias this is one atomic rename of a link over the
+            # loose file: there is no moment with neither present.
             _symlink_atomic(alias, target)
     _write_phase(root, pending, "aliases_installed")
     _failpoint("aliases_installed")
 
-    after_config = yaml.safe_dump(plan["config"]["after"], sort_keys=True, allow_unicode=True).encode("utf-8")
+    after_config = _intended_config(plan, (originals / CONFIG_RELATIVE).read_bytes())
     if config_path.read_bytes() != after_config:
         # Recovery permits exactly the retained-before or intended-after bytes.
         if config_path.read_bytes() != (originals / CONFIG_RELATIVE).read_bytes():
@@ -507,6 +747,9 @@ def apply_migration(campaign_dir: Path, plan_sha256: str) -> dict[str, Any]:
                 continue
             if receipt.get("state") == "committed" and receipt.get("plan_sha256") == plan_sha256:
                 return receipt
+        completed = _completed_migration(root)
+        if completed is not None:
+            return completed
         try:
             plan = plan_migration(root)
         except MigrationError as exc:
@@ -651,7 +894,31 @@ def _parser() -> argparse.ArgumentParser:
     return parser
 
 
+def _prerequisite_guidance(root: Path, code: str) -> str:
+    """Name the exact commands a refused prerequisite needs, in order."""
+    if code not in {"AUTH_LOCK_MISSING", "REVIEW_NOT_INITIALIZED", "REVIEW_AUTHORITY_REQUIRED"}:
+        return ""
+    steps = []
+    if not (root / "docs" / "authority.yaml").is_file():
+        steps.append(f"summary_native authority init --campaign-dir {root} --json")
+    # review init is idempotent once storage exists, and it is the command that
+    # creates docs/authority/.lock, so a missing lock always names it.
+    if code == "AUTH_LOCK_MISSING" or not (root / "docs" / "reviews" / "campaign.json").is_file():
+        steps.append(f"summary_native review init --campaign-dir {root} --json")
+    if not steps:
+        return ""
+    return (
+        "; initialize the campaign's authority and review storage first: "
+        + " then ".join(f"`{step}`" for step in steps)
+        + f", then preview again with `migrate_grounding_bundle --campaign-dir {root} --dry-run --json`"
+    )
+
+
 def main(argv: list[str] | None = None) -> int:
+    from pipelines.summary_native.authority import AuthorityError
+    from pipelines.summary_native.promotion.errors import PromotionError
+    from pipelines.summary_native.review.store import ReviewStoreError
+
     args = _parser().parse_args(argv)
     try:
         if args.dry_run:
@@ -666,11 +933,24 @@ def main(argv: list[str] | None = None) -> int:
             if not args.operation:
                 raise MigrationError("--recover requires --operation", "PROMOTION_PATH_CONFLICT")
             data = recover_migration(args.campaign_dir, args.operation)
+        if isinstance(data, dict) and data.get("already_migrated"):
+            message = (
+                "migration already complete; nothing to apply"
+                + (" (no published generation yet: run `summary_native promote`)"
+                   if data.get("layout_state") == "absent" else "")
+            )
+            print(json.dumps(_envelope(True, "PROMOTION_MIGRATION_COMPLETE", message, data), sort_keys=True))
+            return 0
         print(json.dumps(_envelope(True, "OK", "migration inspection complete", data), sort_keys=True))
         return 0
-    except MigrationError as exc:
-        print(json.dumps(_envelope(False, exc.code, str(exc), {}), sort_keys=True))
-        return 2 if exc.code == "PROMOTION_PATH_CONFLICT" else 3
+    except (MigrationError, AuthorityError, ReviewStoreError, PromotionError) as exc:
+        code = getattr(exc, "code", None) or "PROMOTION_MIGRATION_REQUIRED"
+        try:
+            guidance = _prerequisite_guidance(Path(args.campaign_dir).expanduser().absolute(), code)
+        except OSError:
+            guidance = ""
+        print(json.dumps(_envelope(False, code, f"{exc}{guidance}", {}), sort_keys=True))
+        return 2 if code == "PROMOTION_PATH_CONFLICT" else 3
 
 
 if __name__ == "__main__":

@@ -10,7 +10,7 @@ import shutil
 from datetime import datetime, timezone
 from pathlib import Path
 
-from pipelines.summary_native.promotion.diff import proposed_bytes
+from pipelines.summary_native.promotion.diff import reviewed_bytes
 from pipelines.summary_native.promotion.errors import PromotionError, PromotionPathError
 from pipelines.summary_native.promotion.gates import check_copied_bundle
 from pipelines.summary_native.promotion.models import (
@@ -60,6 +60,7 @@ def stage_generation(
     kind: GenerationKind = GenerationKind.PUBLISHED,
     parent_activation_id: str | None = None,
     created_at: datetime | None = None,
+    analysis_digest: str | None = None,
 ) -> tuple[Path, GenerationManifest]:
     """Copy reviewed bytes twice and validate both copies before activation."""
     root = Path(campaign_dir).resolve()
@@ -69,7 +70,7 @@ def stage_generation(
     stage = grounding / ".staging" / operation_id / generation_id
     if stage.exists() or stage.is_symlink():
         raise PromotionError("staging generation already exists", code="PROMOTION_OPERATION_CONFLICT")
-    members = proposed_bytes(root, bundle)
+    members = reviewed_bytes(root, bundle)
     try:
         _write_tree(stage / "published", members)
         _write_tree(stage / "live", members)
@@ -121,7 +122,7 @@ def stage_generation(
             published_path=f"docs/grounding/generations/{generation_id}/published",
             live_path=f"docs/grounding/generations/{generation_id}/live",
             bundle_digest=bundle.digest,
-            analysis_digest=None,
+            analysis_digest=analysis_digest,
             parent_activation_id=parent_activation_id,
             created_at=created_at or datetime.now(timezone.utc),
             manifest_sha256="0" * 64,

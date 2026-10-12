@@ -139,6 +139,10 @@ def create_claim_review(
                 "effective_until": annotation.effective_until,
                 "audience": annotation.audience,
                 "authority_record_digests": annotation.authority_record_digests,
+                # Shown only when declared, so existing mapping items keep
+                # their exact semantic identity.
+                **({"supersedes_occurrence_id": annotation.supersedes_occurrence_id}
+                   if annotation.supersedes_occurrence_id is not None else {}),
             }},
             scope={"kind": "evidence", "value": annotation.occurrence_id},
             rule_versions=rules, input_bindings=(binding,),
@@ -227,7 +231,12 @@ def create_claim_review(
             and prior.proposed_action.action in {"dismiss_claim_finding", "accept_claim_uncertainty"}
             and all(
                 prior.proposed_action.details.get(key) == item.proposed_action.details.get(key)
-                for key in ("finding_id", "finding_revision", "basis", "semantic_digest", "required_disposition")
+                for key in (
+                    "finding_id", "finding_revision", "basis", "semantic_digest", "required_disposition",
+                    # A ruling is on the meanings it was shown; a changed
+                    # interpretation earns a new unresolved revision.
+                    "annotation_interpretations",
+                )
             )
         ):
             # Rechecking an unchanged finding must retain the exact prepared
@@ -412,6 +421,7 @@ def build_signoff_context(
     audience: str, rule_versions: tuple[tuple[str, str], ...],
     unresolved_required_findings: tuple[str, ...] = (),
     pending_source_corrections: tuple[str, ...] = (),
+    coverage_limitations: tuple[str, ...] = (),
 ) -> dict:
     if unresolved_required_findings or pending_source_corrections:
         raise PromotionError("required claim findings remain unresolved", code="CLAIMS_RESOLUTION_REQUIRED")
@@ -421,6 +431,11 @@ def build_signoff_context(
         "rule_versions": tuple(sorted(rule_versions)),
         "resolution_complete": True, "source_corrections_applied": True,
     }
+    if coverage_limitations:
+        # Each whole-document sign-off displays and binds the disclosed
+        # coverage limits it acknowledges. Omitted when none, so a context
+        # without limitations keeps its exact prior identity.
+        values["coverage_limitations"] = tuple(sorted(coverage_limitations))
     return {**values, "signoff_context_digest": canonical_digest(values)}
 
 
@@ -443,9 +458,15 @@ def validate_signoff_context(value: dict) -> dict:
         "rule_versions", "resolution_complete", "source_corrections_applied",
         "signoff_context_digest",
     }
-    if set(value) != required:
+    if set(value) - {"coverage_limitations"} != required:
         raise PromotionError("v2 sign-off context is incomplete", code="CLAIMS_SIGNOFF_CONTEXT")
-    payload = {key: value[key] for key in required - {"signoff_context_digest"}}
+    payload = {key: value[key] for key in set(value) - {"signoff_context_digest"}}
+    if "coverage_limitations" in value:
+        limitations = value["coverage_limitations"]
+        if (not isinstance(limitations, (list, tuple)) or not limitations
+                or any(not isinstance(item, str) or not item for item in limitations)):
+            raise PromotionError("v2 sign-off coverage limitations are invalid", code="CLAIMS_SIGNOFF_CONTEXT")
+        payload["coverage_limitations"] = tuple(limitations)
     if not value["resolution_complete"] or not value["source_corrections_applied"]:
         raise PromotionError("required claim resolution is not current", code="CLAIMS_RESOLUTION_REQUIRED")
     for key in ("analysis_digest", "resolution_digest", "support_digest"):

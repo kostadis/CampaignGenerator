@@ -56,6 +56,9 @@ test('claims panel confirms exact scope and renders blocked CLI-shaped coverage'
   await panel.getByLabel('Force a fresh extraction run').check()
   await panel.getByRole('button',{name:'Extract selected chunks'}).click()
   expect(extractPayload).toEqual({selection:'private/selection.json',backend:'claude-code',model:'claims-model',max_tokens:777,chunk_chars:2222,force:true})
+  // No default review id (#548 review): checks stay disabled until the GM names the review.
+  await expect(panel.getByRole('button',{name:'Run deterministic checks'})).toBeDisabled()
+  await panel.locator('[data-test="claims-review-id"]').fill('gm-claims-review')
   await panel.getByRole('button',{name:'Run deterministic checks'}).click()
   await expect(panel.locator('[data-test="claims-report"]')).toContainText('blocked')
   await expect(panel.locator('[data-test="claims-report"]')).toContainText('No reviewed identity')
@@ -63,7 +66,7 @@ test('claims panel confirms exact scope and renders blocked CLI-shaped coverage'
   await expect(page.getByRole('heading',{name:'Shared review'})).toHaveCount(0)
   await expect(page.getByRole('link',{name:'Shared review'}).first()).toHaveAttribute('href','/grounding/review')
   const promotion=page.locator('[data-test="grounding-promotion-preview"]')
-  await expect(promotion.locator('[data-test="promotion-review"]')).toHaveValue('claims-review')
+  await expect(promotion.locator('[data-test="promotion-review"]')).toHaveValue('gm-claims-review')
   await expect(promotion.locator('[data-test="promotion-report"]')).toHaveValue('docs/summary_native/checks/report.json')
 })
 
@@ -93,8 +96,10 @@ test('empty discovery materializes explicit chunks and review uses persisted imp
   await panel.getByLabel('Candidate import file').fill('incoming.json')
   await panel.getByRole('button',{name:'Import candidates'}).click()
   await expect(panel.getByLabel('Persisted candidate artifact')).toHaveValue('private/imports/candidates.json')
+  await panel.locator('[data-test="claims-review-id"]').fill('gm-claims-review')
   await panel.getByRole('button',{name:'Create or refresh claim review'}).click()
   expect(reviewPayload.candidates).toBe('private/imports/candidates.json')
+  expect(reviewPayload.review).toBe('gm-claims-review')
 })
 
 test('zero-chunk no-model selection saves while required closure remains intact', async ({ page }) => {
@@ -135,4 +140,27 @@ test('selection-null diagnostics and panel remain contained at narrow width', as
   await expect(panel.locator('[data-test="claims-selection-null"]')).toBeVisible()
   await expect(panel.getByRole('alert')).toContainText('required GM source is missing')
   const box=await panel.boundingBox(); expect(box).not.toBeNull(); expect(box!.x+box!.width).toBeLessThanOrEqual(320)
+})
+
+test('review id starts empty on both panels and out root reaches claims select only when set', async ({ page }) => {
+  await shell(page)
+  await page.route('**/api/grounding/config', route => route.fulfill({ json: {
+    summary_native: { summaries_dir: 'docs/summaries', range_since: 1, range_until: 3, out_root: 'docs/configured_root' },
+  } }))
+  const selects:any[]=[]
+  await page.route('**/api/grounding/summary-native/claims/select', async route => {
+    selects.push(route.request().postDataJSON())
+    await route.fulfill({json:{ok:true,code:'OK',message:'selected',data:{selection:{sources:[],chunks:[]}}}})
+  })
+  await page.goto('/grounding/promotion')
+  const panel=page.locator('[data-test="grounding-claims"]')
+  await expect(panel.locator('[data-test="claims-review-id"]')).toHaveValue('')
+  await expect(page.locator('[data-test="promotion-review"]')).toHaveValue('')
+  await expect(panel.locator('[data-test="claims-out-root"]')).toHaveAttribute('placeholder','docs/configured_root')
+  await panel.getByRole('button',{name:'Load exact source selection'}).click()
+  await expect.poll(()=>selects.length).toBe(1)
+  await panel.locator('[data-test="claims-out-root"]').fill('docs/other_root')
+  await panel.getByRole('button',{name:'Load exact source selection'}).click()
+  await expect.poll(()=>selects.length).toBe(2)
+  expect(selects).toEqual([{since:1,until:3},{since:1,until:3,out_root:'docs/other_root'}])
 })

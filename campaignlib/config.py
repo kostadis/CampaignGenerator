@@ -108,7 +108,13 @@ def load_file(path: str, base_dir: Path | None = None) -> str:
     p = Path(os.path.expandvars(path)).expanduser()
     if not p.is_absolute() and base_dir:
         p = base_dir / p
-    candidate = p.absolute()
+    # Config paths are relative to the config directory (``../docs/x.md``) and
+    # session tools take ``../../docs/party.md`` from a session directory, so
+    # classify and read the same lexically normalized spelling, as
+    # ``assemble_docs`` and ``load_files_snapshot`` do. Reading the normalized
+    # path keeps the bytes read identical to the path that was classified.
+    p = Path(os.path.normpath(p.absolute()))
+    candidate = p
     roots = []
     if base_dir is not None:
         base = Path(base_dir).resolve()
@@ -317,9 +323,12 @@ def assemble_docs(config: dict, doc_labels: list[str], base_dir: Path | None = N
     base = Path(base_dir).resolve() if base_dir is not None else None
     root = (base if base is not None and (base / "docs").is_dir() else base.parent) if base is not None else None
     if root is not None and (root / "docs/grounding").exists():
-        from campaignlib.grounding_bundle import classify_managed_path, inspect_layout, open_grounding_snapshot
+        from campaignlib.grounding_bundle import classify_managed_path, layout_state, open_grounding_snapshot
 
-        layout = inspect_layout(root)
+        # Pending/unreconciled state still refuses every read here; a valid
+        # absent baseline does not, so unrelated documents (mechanics, notes)
+        # keep loading and only a selected managed member refuses.
+        layout = layout_state(root)
         selected = {
             label: member
             for label, path in resolved

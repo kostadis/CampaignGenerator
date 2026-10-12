@@ -35,7 +35,7 @@ flowchart LR
 | per-pass fact JSON (workdir) | generated | `ensemble_merge.load_pass_outputs` | `pipelines/ensemble/ensemble_extract.py` |
 | aliases file (`aliases_path`) | hand-authored | alias-correction gate (bundle stage) | human |
 | known_names sources | referenced files | bundle stage / alias gate | human (selected in `ensemble.yaml`) |
-| GROUNDING_DOCS live/draft pairs | `docs/*.md` + `docs/*_draft.md` | ensemble router promote/diff; synthesis writes draft | synthesize writes `*_draft.md`; promote copies draft → live |
+| GROUNDING_DOCS live/draft pairs | `docs/*.md` + `docs/*_draft.md` | ensemble router diff (its promote refuses: `PROMOTION_WHOLE_BUNDLE_REQUIRED`); synthesis writes draft | synthesize writes `*_draft.md`; live docs are published only by `summary_native promote` |
 
 Stage/model knobs:
 

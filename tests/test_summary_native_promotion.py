@@ -46,5 +46,5 @@ def test_old_preview_cannot_publish_after_destination_changes(tmp_path: Path) ->
     (root / "docs/grounding/current/party.md").write_text("manual destination edit\n")
     with pytest.raises(PromotionError) as caught:
         _publish(root, bundle, signoffs, preview)
-    assert caught.value.code in {"PROMOTION_PREVIEW_STALE", "PROMOTION_DESTINATION_STALE"}
+    assert caught.value.code in {"PROMOTION_STALE_PREVIEW", "PROMOTION_DESTINATION_STALE"}
     assert "legacy-fixture" in (root / "docs/grounding/current").readlink().as_posix()

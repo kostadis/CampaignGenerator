@@ -81,6 +81,29 @@ class SelectedChunk(StrictPromotionModel):
         return self
 
 
+class ScopeResolution(StrictPromotionModel):
+    """The GM's recorded choice for one exact ``unresolved_scope`` entry.
+
+    ``applicable`` keeps the linked record as mapping evidence; ``not_applicable``
+    keeps it in the mandatory closure (it cannot be deselected) as context only.
+    Neither choice promotes a record to factual authority.
+    """
+
+    entry: str = Field(min_length=1)
+    choice: Literal["applicable", "not_applicable"]
+    rationale: str = Field(min_length=1)
+    resolved_by: str = Field(min_length=1)
+    resolved_at: datetime
+
+    @model_validator(mode="after")
+    def utc(self) -> "ScopeResolution":
+        if self.resolved_at.tzinfo is None or self.resolved_at.utcoffset() != timezone.utc.utcoffset(self.resolved_at):
+            raise ValueError("resolved_at must be UTC")
+        if not self.rationale.strip() or not self.resolved_by.strip():
+            raise ValueError("scope resolution requires a reviewer and rationale")
+        return self
+
+
 class SourceSelection(StrictPromotionModel):
     schema_version: Literal[1] = 1
     campaign_id: OpaqueId
@@ -94,6 +117,9 @@ class SourceSelection(StrictPromotionModel):
     suggested_sources: tuple[SourceEntry, ...] = ()
     chunks: tuple[SelectedChunk, ...]
     unresolved_scope: tuple[str, ...] = ()
+    # Absent (None) on a selection with no recorded choice, so its canonical
+    # identity is unchanged from selections saved before this field existed.
+    scope_resolutions: tuple[ScopeResolution, ...] | None = None
     rule_versions: tuple[str, ...]
     selection_digest: Sha256
     confirmed_by: str | None = None
@@ -110,6 +136,11 @@ class SourceSelection(StrictPromotionModel):
             raise ValueError("source ids must be unique")
         if any(chunk.source_id not in source_ids for chunk in self.chunks):
             raise ValueError("each selected chunk must name an explicit source")
+        resolved = [item.entry for item in self.scope_resolutions or ()]
+        if len(resolved) != len(set(resolved)):
+            raise ValueError("each unresolved scope entry has at most one recorded resolution")
+        if not set(resolved) <= set(self.unresolved_scope):
+            raise ValueError("a scope resolution names no unresolved scope entry")
         expected = canonical_digest(self, exclude_fields=frozenset({"selection_digest", "confirmed_by", "confirmed_at", "confirmed_digest"}))
         if self.selection_digest != expected:
             raise ValueError("selection_digest does not match selected inputs")

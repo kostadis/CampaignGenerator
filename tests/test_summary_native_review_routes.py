@@ -522,17 +522,29 @@ def test_correction_interruption_remains_visible_until_explicit_recovery(route_a
     assert client.get(f"{BASE}/review-1/status").json()["data"]["pending_transaction"] is None
 
 
-def test_retired_document_publication_routes_preserve_history_guidance(route_app):
-    _app, _campaign, calls = route_app
-    payload = review_routes.FileSelectionRequest(selection="operation.json")
-    for action in ("prepare", "promote"):
-        response = asyncio.run(getattr(review_routes, f"document_{action}")(None, "review-1", payload))
-        assert response.status_code == 410
-        body = json.loads(response.body)
-        assert body["code"] == "DOCUMENT_PROMOTION_RETIRED"
-        assert body["data"]["promotion_path"] == "/api/grounding/summary-native/promotion/preview"
-        assert body["data"]["history_path"] == f"{BASE}/review-1/history"
-    assert calls == []
+def test_retired_document_publication_routes_relay_the_cli_refusal(route_app, monkeypatch):
+    """The retired per-document routes run the CLI and relay its own refusal.
+
+    They used to answer with a hand-built DOCUMENT_PROMOTION_RETIRED/410 the CLI
+    never emits (contracts/cli-ui.md: the endpoints return the CLI's
+    PROMOTION_WHOLE_BUNDLE_REQUIRED).
+    """
+    app, campaign, calls = route_app
+    message = "PROMOTION_WHOLE_BUNDLE_REQUIRED: use `summary_native promote --since N --until N --review REVIEW --check-report REPORT --dry-run`"
+
+    async def refused(cmd, **kwargs):
+        calls.append((cmd, kwargs))
+        payload = {"ok": False, "code": "PROMOTION_WHOLE_BUNDLE_REQUIRED", "message": message, "artifacts": [], "data": None}
+        raise BoundedJSONError(message, returncode=2, category="nonzero_exit", payload=payload)
+
+    monkeypatch.setattr(review_routes, "run_bounded_json", refused)
+    client = TestClient(app)
+    for action, flag in (("prepare", "--documents"), ("promote", "--proposals")):
+        response = client.post(f"{BASE}/review-1/document/{action}", json={"selection": "operation.json"})
+        assert response.status_code == 400
+        assert response.json() == {"ok": False, "code": "PROMOTION_WHOLE_BUNDLE_REQUIRED", "message": message}
+        assert calls[-1][0][2:-3] == ["document", action, "review-1", flag, str(campaign / "operation.json")]
+    assert len(calls) == 2
 
 
 def test_review_launcher_exposes_every_trusted_cli_control_and_binding():

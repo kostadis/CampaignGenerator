@@ -66,7 +66,7 @@ with `ui_state.yaml`, its models and its route. What is left is one owner per do
 | `projections.yaml` | `PUT /api/projections/config` → `ProjectionConfigService.update_config` | lazy on first write; atomic, own file — cannot corrupt `ensemble.yaml`, `grounding.yaml` or `platform.yaml`. Read-only for the three State Projection CLIs (`event_spine`/`thread_registry`/`grounding_sections`) plus `build_recent_events` — none of them ever write it. See [projection-isolation.md](./projection-isolation.md) |
 | `config/wiring.yaml` | mneme render only | not written by CampaignGenerator |
 | `refs.yaml` / `ingest_manifest.yaml` | hand-authored | refs.local.yaml seedable via `launch --init-local` |
-| ensemble artifacts | ensemble_extract (manifest+facts), synthesize (drafts → `docs/ensemble/drafts/`), promote (live) | per-run workdir; disk is truth |
+| ensemble artifacts | ensemble_extract (manifest+facts), synthesize (drafts → `docs/ensemble/drafts/`); live publication is `summary_native promote` | per-run workdir; disk is truth |
 | state-projection artifacts | `event_spine` (`docs/ensemble/events.jsonl`), `thread_registry` (`docs/thread_registry.yaml` + `docs/ensemble/thread_proposals.yaml`), `grounding_sections` (`docs/grounding_sections/`, drafts → `docs/projections/`) | per-run/durable store; disk is truth; the legacy-draft gate refuses rather than overwriting a pre-move draft still at `docs/{doc}_draft.md` |
 | `grounding.yaml` | `PUT /api/grounding/config` → `GroundingConfigService.update_config` | lazy on first grounding write; atomic, own file |
 | `party.yaml` | `/api/party/characters` CRUD (`PartyConfigService`) | UI editor or hand; one validating implementation |

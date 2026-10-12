@@ -32,23 +32,23 @@ Astra owns this design; GPT-5.6-Sol researches integration and will orchestrate/
 
 ## Constitution Check
 
-Initial and post-design review passed all thirteen constraints. Implementation evidence in `validation.md`, `security-review.md`, the parity/browser suites, and the installed-wheel matrix verifies the same obligations. No constitutional exception is requested.
+Initial and post-design review passed all thirteen constraints. **The post-merge audit (2026-10-12, recorded in `validation.md`) found the merged implementation violated I, II, VI, VIII, XI, XII and XIII**; the table's third column now records what the audit found and how the correcting change meets each requirement. One written justification is recorded, under XIII: unmigrated campaigns keep reading their single loose location rather than refusing (governance: a conflict needs written justification, not a silent override).
 
-| Principle | Initial gate | Post-design requirement |
-|---|---|---|
-| I. Disk is Truth, the Model is a Draft | Pass | Files carry all manifests, claims, review history and receipts; candidates are never authority. |
-| II. The Human Checkpoint is Non-Negotiable | Pass | GM reviews exact extracted claim meanings, disputes and all four documents; publication is explicit. |
-| III. Retrieval and Render are Separated | Pass | Source selection/snapshot and model extraction are separate functions; no model call in promotion/checker. |
-| IV. Verbatim is Sacred | Pass | Keep exact quoted evidence and source locators; promotion copies reviewed bytes without rewriting. |
-| V. One Seam per Boundary | Pass | Optional extraction uses campaignlib's existing model seam; application invokes installed CLI. |
-| VI. CLI is the Engine, UI is a Face | Pass | Domain behavior belongs to CLI library, with typed subprocess adapters. |
-| VII. Extract Once, Synthesize Deliberately | Pass | Extraction caches exact selected input/rule/model bindings; no synthesis redesign or unchecked call chaining. |
-| VIII. State is Discoverable | Pass | Status exposes old/new generation, review gaps, failed checks and recovery work from disk. |
-| IX. The UI Mechanizes; Claude Converses | Pass | Application invokes, shows and links to shared review; facts and rulings remain human decisions. |
-| X. Selection is Explicit; There is No Silent All | Pass | Explicit range and exact source/chunk selection; empty selection refuses. |
-| XI. Parity is Bidirectional; Every CLI Capability Has a Face | Pass | Preview, checking, extraction, review, migration, publish/status/recovery all have application controls. |
-| XII. One Spelling per Option; No Configuration Drift Across CLIs | Pass | Reuse --config, --since/--until/--out-root, --backend/--model, --force semantics; migrator uses --campaign-dir. |
-| XIII. Breaking State Changes Migrate Out of Band and Ship a Migration Document | Pass | Separate deliberate migration, dry-run/bound apply, legacy refusal, operator documentation; no lazy upgrade. |
+| Principle | Initial gate | Post-design requirement | Post-merge audit (2026-10-12) |
+|---|---|---|---|
+| I. Disk is Truth, the Model is a Draft | Pass | Files carry all manifests, claims, review history and receipts; candidates are never authority. | Violated → fixed: staged bytes are now compared with the signed digests inside the lock; a selected-but-unextracted scope is incomplete, coverage limits are disclosed, and an unrun rule reports `not_evaluated`, not `passed`. |
+| II. The Human Checkpoint is Non-Negotiable | Pass | GM reviews exact extracted claim meanings, disputes and all four documents; publication is explicit. | Violated → fixed: the Ensemble `/promote` route refuses (`PROMOTION_WHOLE_BUNDLE_REQUIRED`); a ruling's digest covers subject, value and certainty so it stops settling a changed meaning; scope choices are recorded by `claims selection resolve-scope` and validation recomputes them. |
+| III. Retrieval and Render are Separated | Pass | Source selection/snapshot and model extraction are separate functions; no model call in promotion/checker. | Clean. |
+| IV. Verbatim is Sacred | Pass | Keep exact quoted evidence and source locators; promotion copies reviewed bytes without rewriting. | Clean. |
+| V. One Seam per Boundary | Pass | Optional extraction uses campaignlib's existing model seam; application invokes installed CLI. | Clean. |
+| VI. CLI is the Engine, UI is a Face | Pass | Domain behavior belongs to CLI library, with typed subprocess adapters. | Violated → fixed: retired review document routes run the CLI and relay its envelope; Ensemble `/promote` no longer writes files; the UI shows the engine's own freshness fields instead of matching message text. |
+| VII. Extract Once, Synthesize Deliberately | Pass | Extraction caches exact selected input/rule/model bindings; no synthesis redesign or unchecked call chaining. | Clean. |
+| VIII. State is Discoverable | Pass | Status exposes old/new generation, review gaps, failed checks and recovery work from disk. | Violated → fixed: atomic operation state; `status` lists an unreadable operation; unresolved prior operations block publish with the recovery command; detached aliases block preview; absent baselines and re-runs report their real state; the receipt records range, paths, previous generation and rulings; the workspace note names real commands. |
+| IX. The UI Mechanizes; Claude Converses | Pass | Application invokes, shows and links to shared review; facts and rulings remain human decisions. | Clean. |
+| X. Selection is Explicit; There is No Silent All | Pass | Explicit range and exact source/chunk selection; empty selection refuses. | Borderline → fixed: no invented review id; scope rulings are explicit and recorded. |
+| XI. Parity is Bidirectional; Every CLI Capability Has a Face | Pass | Preview, checking, extraction, review, migration, publish/status/recovery all have application controls. | Violated → fixed: `--out-root` has a field on the Promotion and Claims panels; `resolve-scope` has a route and panel control. |
+| XII. One Spelling per Option; No Configuration Drift Across CLIs | Pass | Reuse --config, --since/--until/--out-root, --backend/--model, --force semantics; migrator uses --campaign-dir. | Violated → fixed: `--config` is `config/config.yaml` (auto-detected) on promote, promotion and claims, as on every other command; `out_root` resolves against the campaign root through `schema.resolve_under` and `schema.DEFAULT_OUT_ROOT`; one stale-preview code (`PROMOTION_STALE_PREVIEW`); CLI and route agree on the request-id bound. |
+| XIII. Breaking State Changes Migrate Out of Band and Ship a Migration Document | Pass | Separate deliberate migration, dry-run/bound apply, legacy refusal, operator documentation; no lazy upgrade. | Violated → fixed, with one written justification: dry runs create no lock file; the migration edits `config.yaml` in place and keeps modes; `PROMOTION_MIGRATION_REQUIRED` names the command; the first publish after an absent baseline installs the links. Justified: an unmigrated campaign's readers read its loose documents instead of refusing — the layout decides one location per campaign, so nothing ever falls back between two, and refusing would stop prep and narration on every unmigrated campaign for a publication path it cannot use anyway (see `migration.md`). |
 
 ## Project Structure
 
