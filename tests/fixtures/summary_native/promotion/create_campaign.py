@@ -164,7 +164,7 @@ def create_campaign(campaign_dir: Path, *, baseline: str = "legacy") -> Path:
 
     _write(
         root / "config/config.yaml",
-        "campaign: promotion-fixture\nsummary_native:\n  out_root: ../docs/summary_native\n"
+        "campaign: promotion-fixture\nsummary_native:\n  out_root: docs/summary_native\n"
         "documents:\n  - label: world_state\n    path: ../docs/world_state.md\n"
         "  - label: campaign_state\n    path: ../docs/campaign_state.md\n"
         "  - label: party\n    path: ../docs/party.md\n"
@@ -172,7 +172,7 @@ def create_campaign(campaign_dir: Path, *, baseline: str = "legacy") -> Path:
     )
     _write(
         root / "config/grounding.yaml",
-        "summary_native:\n  out_root: ../docs/summary_native\n  range_since: 1\n  range_until: 3\n",
+        "summary_native:\n  out_root: docs/summary_native\n  range_since: 1\n  range_until: 3\n",
     )
     _write(root / "config/players.yaml", "version: 1\nplayers:\n  - name: Fixture Player\n    plays: [Mara Vale]\n")
     _write(root / "docs/entity_registry.yaml", "version: 1\ncampaign: promotion-fixture\nentities: []\n")
