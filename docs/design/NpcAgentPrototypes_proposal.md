@@ -297,35 +297,77 @@ npc_agent horizon --campaign-dir ~/campaigns-public/out-of-the-abyss \
 
 ### The ruling file
 
-GM-authored YAML. The tool writes a template beside its report and never
-touches the real file.
+GM-authored, version 2. YAML, or JSON (which is YAML): the review page saves
+JSON and `npc_agent horizon --rulings` reads it as it stands. The tool writes a
+template beside its report and never touches the real file.
 
 ```yaml
-version: 1
+version: 2
 npcs:
+  Glabbagool:
+    spans:
+      - from: "034.03"
+        to: "071.10"
+        value: present
+        follows: Zalthir
+        note: in the bag of holding counts as present
+    items:
+      "039.04": absent        # an exception inside the span
   Sylvira Savikas:
-    "061.05": present
-    "061.p07": present
-    "058.05": mentioned
-    "063.05": unsure
+    items:
+      "061.05": present
+      "058.05": mentioned
+      "063.05": unsure
 ```
 
-Values are `present`, `mentioned` or `unsure`, and the item decides which are
-allowed:
+Values, and which items take them:
 
-- **A candidate** (an item that names the NPC): any value.
-- **Any other scene in the corpus**: `present` or `unsure` only. This is for
-  companions: Glabbagool is named in only 91 of the 240 scenes of his span, and
-  a horizon limited to those would miss most of what he witnessed. `mentioned`
-  is refused here, because an item that does not name the NPC cannot be about
-  them. In the horizon such a scene is marked "not named in the text".
+- `present` / `unsure`: any candidate, **or any scene in the corpus**. This is
+  for companions: Glabbagool is named in only 91 of the 240 scenes of his span,
+  and a horizon limited to those would miss most of what he witnessed. In the
+  horizon such a scene is marked "not named in the text".
+- `mentioned`: candidates only. An item that does not name the NPC cannot be
+  about them.
+- `absent`: a scene that does not name the NPC, to make an exception inside a
+  span. For a candidate, `mentioned` says the same thing.
 
-An unknown NPC, any other item id, or any other value is refused.
+**Spans** rule a run of scenes at once, which is how a companion is ruled. A
+span covers every scene from `from` to `to`, plus the summary paragraphs and
+memorable moments of every chapter whose scenes all lie inside it, plus the
+NPC's own entries there. An item ruling always overrides a span; spans of one
+NPC may not overlap. `follows` names who the NPC stays with when the party
+splits. It is a review hint only: the page flags span scenes that do not name
+that character ("Check splits"), and the GM decides.
 
-Ruling a companion scene by scene is 240 rulings for Glabbagool alone. A span
-ruling ("with the party from 034.03 to 071.10, except …") would cut that to a
-handful. It is not built: whether a companion's presence should be ruled as a
-span with exceptions is the GM's call (see [Open questions](#open-questions)).
+**GM rulings, 2026-10-12.** Glabbagool in the bag of holding counts as present.
+When the party splits, he is with Zalthir. The span seeded in the review page
+(034.03 to 071.10, following Zalthir) encodes both; its two ends were proposed
+from the data (his first named scene, the last scene of chapter 71) and are the
+GM's to confirm. With that one span, 268 of his 282 candidates are ruled; the
+other 14 are chapter 34's summary paragraphs and entries, because the span
+starts inside chapter 34. 104 of the 238 scenes in the span do not name
+Zalthir; most are probably whole-party scenes, but those are the ones to check.
+
+An unknown NPC, any other item id, value or key, a span end that is not a
+scene, a span that runs backwards, overlapping spans, or a `follows` name that
+appears nowhere in the summaries are all refused.
+
+### The review page
+
+`npc_agent review --npc ... --out page.html` writes one self-contained page
+(template `pipelines/npc_agent/review/presence_review.html`, data embedded) for
+ruling presence at the GM's own pace, which the campaign rules ask for once a
+queue passes about a dozen rulings. It shows, per NPC:
+
+- every candidate, by chapter, with its evidence tags and full text;
+- the spans, editable, with the same checks as the loader;
+- the scenes a span reaches that never name the NPC, so they can be excepted;
+- a tally, filters (needs a ruling, everything, check splits; by kind).
+
+Rulings are saved in the artifact's own database (`rulings/<stem>`, one
+document per NPC), so Claude can read them back, and can be exported as
+`presence.json` or copied as YAML. The page applies the loader's rules but is
+not the authority: `npc_agent horizon` re-validates whatever it is given.
 
 ### The horizon
 
@@ -357,9 +399,8 @@ work from.
   a dossier).
 - Whether ruling should be a review artifact (more than a dozen rulings per
   NPC, which the campaign rules say should not be asked one at a time in chat).
-- Whether a companion's presence (Glabbagool) is ruled as a span with
-  exceptions rather than scene by scene, and what "with the party" means when
-  he is in the bag of holding or assigned elsewhere (ch39 sends him to help
-  Uth-Jadger while the party splits).
+- Glabbagool, ch39: the summary sends him with Eldeth and Jimjar to help
+  Uth-Jadger while the party splits; the GM's ruling is that he is with
+  Zalthir. The page's split check is where that gets settled scene by scene.
 - Whether Ilvara should get a published dossier, since she is the only NPC with
   a complete, closed arc to backtest against.

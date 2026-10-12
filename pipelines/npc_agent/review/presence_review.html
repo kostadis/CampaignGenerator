@@ -1,0 +1,543 @@
+<title>Presence Ledger</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Spectral:wght@500;600&family=Source+Sans+3:wght@400;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a ledger. One NPC at a time; a sticky bar with the tally and the save
+   controls; spans first (they rule many scenes at once); then the chapters, each
+   a run of item rows with the GM's four answers beside them. */
+:root {
+  --bg: #f3f5f4;
+  --surface: #ffffff;
+  --sunk: #e8edeb;
+  --fg: #1c2624;
+  --muted: #5b6966;
+  --line: #d3dcd9;
+  --accent: #2a6b64;
+  --accent-ink: #ffffff;
+  --present: #2d7a4b;
+  --mentioned: #9a6408;
+  --unsure: #5650b0;
+  --absent: #8c4646;
+  --hint: #9a6408;
+  --font-display: "Spectral", "Iowan Old Style", Georgia, serif;
+  --font-body: "Source Sans 3", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #121918; --surface: #1a2321; --sunk: #222d2b; --fg: #e3ebe8; --muted: #9aaba6;
+    --line: #33413e; --accent: #62b3a9; --accent-ink: #0d1514; --present: #5fbf84;
+    --mentioned: #e0a63c; --unsure: #9e98f0; --absent: #e08a8a; --hint: #e0a63c; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #121918; --surface: #1a2321; --sunk: #222d2b; --fg: #e3ebe8; --muted: #9aaba6;
+  --line: #33413e; --accent: #62b3a9; --accent-ink: #0d1514; --present: #5fbf84;
+  --mentioned: #e0a63c; --unsure: #9e98f0; --absent: #e08a8a; --hint: #e0a63c; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--fg); font: 15px/1.5 var(--font-body); }
+.wrap { max-width: 980px; margin: 0 auto; padding-inline: 16px; padding-block: 20px 64px; }
+h1, h2, h3 { font-family: var(--font-display); font-weight: 600; text-wrap: balance; margin: 0; }
+h1 { font-size: 1.9rem; letter-spacing: -0.01em; }
+h2 { font-size: 1.25rem; }
+.lede { color: var(--muted); max-width: 65ch; margin: 6px 0 0; }
+.mono { font-family: var(--font-mono); font-size: 0.82rem; }
+.label { font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+button, select, input { font: inherit; color: inherit; }
+button { cursor: pointer; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.head { display: grid; gap: 14px; }
+.npcs { display: flex; flex-wrap: wrap; gap: 8px; }
+.npc-tab { border: 1px solid var(--line); background: var(--surface); border-radius: 999px; padding: 6px 14px;
+  display: flex; gap: 10px; align-items: baseline; }
+.npc-tab[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.npc-tab small { font-variant-numeric: tabular-nums; opacity: 0.85; }
+
+.bar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--bg);
+  border-bottom: 1px solid var(--line); padding-block: 10px; margin-top: 16px; display: grid; gap: 8px; }
+.tally { display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: center; font-variant-numeric: tabular-nums; }
+.tally b { font-weight: 600; }
+.meter { flex: 1 1 160px; height: 6px; background: var(--sunk); border-radius: 3px; overflow: hidden; min-width: 120px; }
+.meter i { display: block; height: 100%; background: var(--accent); width: 0; }
+.actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.btn { border: 1px solid var(--line); background: var(--surface); border-radius: 6px; padding: 5px 12px; }
+.btn.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.btn:disabled { opacity: 0.45; cursor: default; }
+.status { font-size: 0.85rem; color: var(--muted); }
+.status.warn { color: var(--absent); }
+.filters { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { border: 1px solid var(--line); background: var(--surface); border-radius: 999px; padding: 2px 10px; font-size: 0.85rem; }
+.chip[aria-pressed="true"] { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
+
+.spans { margin-top: 20px; display: grid; gap: 10px; }
+.span-row { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 12px;
+  display: grid; gap: 10px; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); align-items: end; }
+.span-row label { display: grid; gap: 3px; font-size: 0.85rem; color: var(--muted); min-width: 0; }
+.span-row select, .span-row input { width: 100%; min-width: 0; border: 1px solid var(--line); border-radius: 6px;
+  background: var(--bg); padding: 5px 8px; color: var(--fg); }
+.span-meta { grid-column: 1 / -1; font-size: 0.85rem; color: var(--muted); }
+.problems { color: var(--absent); font-size: 0.9rem; margin: 0; padding-left: 18px; }
+
+.chapter { margin-top: 26px; }
+.chapter-head { display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: baseline; padding-bottom: 6px;
+  border-bottom: 1px solid var(--line); }
+.chapter-head .mono { color: var(--muted); }
+.rows { display: grid; }
+.row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px 16px; padding-block: 12px;
+  border-bottom: 1px solid var(--line); align-items: start; }
+.row[data-v="present"] { box-shadow: inset 3px 0 0 var(--present); padding-left: 10px; }
+.row[data-v="mentioned"] { box-shadow: inset 3px 0 0 var(--mentioned); padding-left: 10px; }
+.row[data-v="unsure"] { box-shadow: inset 3px 0 0 var(--unsure); padding-left: 10px; }
+.row[data-v="absent"] { box-shadow: inset 3px 0 0 var(--absent); padding-left: 10px; }
+.row-main { min-width: 0; display: grid; gap: 4px; }
+.row-top { display: flex; flex-wrap: wrap; gap: 4px 8px; align-items: baseline; }
+.row-top strong { font-weight: 600; }
+.tag { font-size: 0.75rem; border: 1px solid var(--line); border-radius: 4px; padding: 0 6px; color: var(--muted); }
+.tag.sig { border-color: transparent; background: var(--sunk); color: var(--fg); }
+.tag.unnamed { border-style: dashed; }
+.tag.hint { border-color: var(--hint); color: var(--hint); }
+.text { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; color: var(--fg); font-size: 0.93rem; }
+details > summary { cursor: pointer; color: var(--muted); font-size: 0.85rem; list-style: none; }
+details > summary::-webkit-details-marker { display: none; }
+details > summary::before { content: "▸ "; }
+details[open] > summary::before { content: "▾ "; }
+.via { font-size: 0.8rem; color: var(--muted); }
+.answers { display: grid; grid-template-columns: repeat(2, auto); gap: 4px; }
+.ans { border: 1px solid var(--line); background: var(--surface); border-radius: 6px; padding: 3px 10px; font-size: 0.85rem; }
+.ans[data-a="present"][aria-pressed="true"] { background: var(--present); border-color: var(--present); color: var(--accent-ink); }
+.ans[data-a="mentioned"][aria-pressed="true"] { background: var(--mentioned); border-color: var(--mentioned); color: var(--accent-ink); }
+.ans[data-a="unsure"][aria-pressed="true"] { background: var(--unsure); border-color: var(--unsure); color: var(--accent-ink); }
+.ans[data-a="absent"][aria-pressed="true"] { background: var(--absent); border-color: var(--absent); color: var(--accent-ink); }
+.ans:disabled { opacity: 0.35; cursor: default; }
+.ans.clear { grid-column: 1 / -1; border-style: dashed; }
+.empty { color: var(--muted); padding-block: 24px; }
+.foot { margin-top: 32px; color: var(--muted); font-size: 0.85rem; max-width: 70ch; }
+@media (max-width: 560px) {
+  .row { grid-template-columns: minmax(0, 1fr); }
+  .answers { grid-template-columns: repeat(4, auto); justify-content: start; }
+  .ans.clear { grid-column: auto; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<div class="wrap">
+  <header class="head">
+    <div>
+      <div class="label" id="source"></div>
+      <h1>Presence Ledger</h1>
+      <p class="lede">Every passage of the session summaries that names this NPC. Mark whether they were
+        <b>present</b>, only <b>mentioned</b>, or you are <b>unsure</b>. A span rules a run of scenes at once;
+        <b>absent</b> makes an exception inside a span. Nothing here is decided for you: the tags are evidence.</p>
+    </div>
+    <div class="npcs" id="npcs" role="group" aria-label="NPC"></div>
+  </header>
+
+  <div class="bar" id="bar">
+    <div class="tally" id="tally"></div>
+    <div class="actions">
+      <button class="btn primary" id="save-file" type="button">Save presence.json</button>
+      <button class="btn" id="copy-yaml" type="button">Copy as YAML</button>
+      <span class="status" id="status" role="status"></span>
+    </div>
+  </div>
+  <div class="filters" id="filters" role="group" aria-label="Show" style="margin-top:10px"></div>
+
+  <section class="spans" id="spans" aria-labelledby="spans-h">
+    <div class="row-top"><h2 id="spans-h">Spans</h2><span class="via">a run of scenes ruled at once; an item ruling below always wins</span></div>
+    <div id="span-list"></div>
+    <div class="actions"><button class="btn" id="add-span" type="button">Add a span</button></div>
+    <ul class="problems" id="span-problems"></ul>
+  </section>
+
+  <main id="list"></main>
+  <p class="foot" id="foot"></p>
+</div>
+
+<script>
+const DATA = /*__NPC_AGENT_DATA__*/null;
+(function () {
+  "use strict";
+  const $ = (id) => document.getElementById(id);
+  if (!DATA || DATA.bundle !== 1) { $("list").innerHTML = '<p class="empty">This page was built without its data.</p>'; return; }
+
+  const ITEMS = DATA.items;
+  const CHAPTERS = DATA.chapters;
+  const KIND_LABEL = { scene: "Scene", prose: "Summary paragraph", moment: "Memorable moment", entry: "NPC entry" };
+  const SIG_LABEL = { quoted: "quote attributed", headline: "in the GM headline", own_entry: "own entry", named: "named" };
+  const ANSWERS = ["present", "mentioned", "unsure", "absent"];
+  const SCENE_IDS = CHAPTERS.flatMap((c) => c.items.filter((i) => ITEMS[i].k === "scene"));
+  const CORPUS_TEXT = Object.values(ITEMS).map((i) => i.x).join("\n");
+
+  const state = {
+    npc: 0,
+    show: "needs",            // needs | all | hint
+    kinds: new Set(["scene", "prose", "moment", "entry"]),
+    rulings: {},              // stem -> {spans: [], items: {}}
+  };
+  DATA.npcs.forEach((n) => { state.rulings[n.stem] = { spans: [], items: {} }; });
+  try {
+    const t = localStorage.getItem("presence-ledger-tab");
+    const i = DATA.npcs.findIndex((n) => n.stem === t);
+    if (i >= 0) state.npc = i;
+  } catch (e) { /* storage unavailable: start on the first NPC */ }
+
+  // ── rules (mirrors pipelines/npc_agent/rulings.py) ──────────────────────
+  const key = (id) => { const m = /^(\d{3})\.(\d{2})$/.exec(id || ""); return m ? (+m[1]) * 100 + (+m[2]) : -1; };
+  const covers = (s, id) => key(s.from) <= key(id) && key(id) <= key(s.to);
+  const npc = () => DATA.npcs[state.npc];
+  const rul = () => state.rulings[npc().stem];
+  const isCand = (id) => Object.prototype.hasOwnProperty.call(npc().candidates, id);
+
+  function allowed(id, a) {
+    if (a === "mentioned") return isCand(id);
+    if (a === "absent") return !isCand(id) && ITEMS[id] && ITEMS[id].k === "scene";
+    return true;
+  }
+
+  function spanProblems(spans) {
+    const out = [];
+    spans.forEach((s, n) => {
+      const w = "Span " + (n + 1);
+      if (!SCENE_IDS.includes(s.from)) out.push(w + ": choose a first scene.");
+      if (!SCENE_IDS.includes(s.to)) out.push(w + ": choose a last scene.");
+      if (SCENE_IDS.includes(s.from) && SCENE_IDS.includes(s.to) && key(s.from) > key(s.to))
+        out.push(w + ": the first scene is after the last one.");
+      if (s.follows && !new RegExp("(?<![\\p{L}\\p{N}_])" + s.follows.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "(?![\\p{L}\\p{N}_])", "u").test(CORPUS_TEXT))
+        out.push(w + ": " + s.follows + " appears nowhere in these summaries. Check the spelling.");
+    });
+    for (let a = 0; a < spans.length; a++) for (let b = a + 1; b < spans.length; b++) {
+      const x = spans[a], y = spans[b];
+      if (key(x.from) <= key(y.to) && key(y.from) <= key(x.to)) out.push("Spans " + (a + 1) + " and " + (b + 1) + " overlap.");
+    }
+    return out;
+  }
+
+  function effective(stem) {
+    const r = state.rulings[stem], n = DATA.npcs.find((x) => x.stem === stem), out = {};
+    const valid = spanProblems(r.spans).length === 0 ? r.spans : [];
+    for (const ch of CHAPTERS) {
+      const scenes = ch.items.filter((i) => ITEMS[i].k === "scene");
+      for (const s of valid) {
+        const whole = scenes.length > 0 && scenes.every((i) => covers(s, i));
+        for (const id of ch.items) {
+          const k = ITEMS[id].k;
+          const hit = k === "scene" ? covers(s, id)
+            : (k === "prose" || k === "moment") ? whole
+            : k === "entry" ? whole && Object.prototype.hasOwnProperty.call(n.candidates, id) : false;
+          if (hit) out[id] = { v: s.value || "present", src: "span", span: s };
+        }
+      }
+    }
+    for (const [id, v] of Object.entries(r.items)) if (v) out[id] = { v, src: "item" };
+    return out;
+  }
+
+  function counts(stem) {
+    const n = DATA.npcs.find((x) => x.stem === stem), eff = effective(stem);
+    const c = { total: 0, ruled: 0, present: 0, mentioned: 0, unsure: 0, bySpan: 0 };
+    for (const id of Object.keys(n.candidates)) {
+      c.total++;
+      const e = eff[id];
+      if (e) { c.ruled++; if (c[e.v] !== undefined) c[e.v]++; if (e.src === "span") c.bySpan++; }
+    }
+    c.unnamedPresent = Object.entries(eff).filter(([id, e]) => !n.candidates[id] && ITEMS[id].k === "scene" && e.v === "present").length;
+    c.absent = Object.entries(eff).filter(([, e]) => e.v === "absent").length;
+    return c;
+  }
+
+  // ── rendering ───────────────────────────────────────────────────────────
+  const openIds = new Set();
+  document.addEventListener("toggle", (ev) => {
+    const row = ev.target.closest && ev.target.closest(".row");
+    if (!row) return;
+    if (ev.target.open) openIds.add(row.dataset.id); else openIds.delete(row.dataset.id);
+  }, true);
+  const esc = (s) => String(s == null ? "" : s).replace(/[&<>"]/g, (ch) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[ch]));
+
+  function renderTabs() {
+    $("npcs").innerHTML = DATA.npcs.map((n, i) => {
+      const c = counts(n.stem);
+      return '<button type="button" class="npc-tab" data-npc="' + i + '" aria-pressed="' + (i === state.npc) + '">' +
+        esc(n.subject) + " <small>" + c.ruled + "/" + c.total + "</small></button>";
+    }).join("");
+  }
+
+  function renderTally() {
+    const n = npc(), c = counts(n.stem), pct = c.total ? Math.round((100 * c.ruled) / c.total) : 100;
+    $("tally").innerHTML =
+      "<span><b>" + c.ruled + "</b> of " + c.total + " passages ruled</span>" +
+      '<span class="meter" aria-hidden="true"><i style="width:' + pct + '%"></i></span>' +
+      "<span>present " + c.present + " · mentioned " + c.mentioned + " · unsure " + c.unsure +
+      (c.bySpan ? " · " + c.bySpan + " by span" : "") + "</span>" +
+      (c.unnamedPresent ? "<span>+ " + c.unnamedPresent + " unnamed scenes present</span>" : "") +
+      (c.absent ? "<span>" + c.absent + " absent</span>" : "");
+  }
+
+  function hintFor(id, eff) {
+    const e = eff[id];
+    if (!e || e.src !== "span" || !e.span.follows || ITEMS[id].k !== "scene") return null;
+    const re = new RegExp("(?<![\\p{L}\\p{N}_])" + e.span.follows.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "(?![\\p{L}\\p{N}_])", "u");
+    return re.test(ITEMS[id].x) ? null : e.span.follows + " not named here";
+  }
+
+  function renderFilters() {
+    const f = [["needs", "Needs a ruling"], ["all", "Everything"], ["hint", "Check splits"]];
+    const kinds = ["scene", "prose", "moment", "entry"];
+    $("filters").innerHTML =
+      f.map(([k, l]) => '<button type="button" class="chip" data-show="' + k + '" aria-pressed="' + (state.show === k) + '">' + l + "</button>").join("") +
+      '<span class="label" style="align-self:center;margin-left:6px">Kinds</span>' +
+      kinds.map((k) => '<button type="button" class="chip" data-kind="' + k + '" aria-pressed="' + state.kinds.has(k) + '">' + KIND_LABEL[k] + "</button>").join("");
+  }
+
+  function sceneOptions(sel) {
+    return '<option value="">—</option>' + CHAPTERS.map((ch) =>
+      '<optgroup label="' + esc(ch.title) + '">' + ch.items.filter((i) => ITEMS[i].k === "scene").map((i) =>
+        '<option value="' + i + '"' + (i === sel ? " selected" : "") + ">" + i + " " + esc(ITEMS[i].t) + "</option>").join("") + "</optgroup>"
+    ).join("");
+  }
+
+  function renderSpans() {
+    const r = rul();
+    $("span-list").innerHTML = r.spans.map((s, i) =>
+      '<div class="span-row" data-span="' + i + '">' +
+      '<label for="sp-from-' + i + '">First scene<select id="sp-from-' + i + '" data-f="from">' + sceneOptions(s.from) + "</select></label>" +
+      '<label for="sp-to-' + i + '">Last scene<select id="sp-to-' + i + '" data-f="to">' + sceneOptions(s.to) + "</select></label>" +
+      '<label for="sp-v-' + i + '">Counts as<select id="sp-v-' + i + '" data-f="value">' +
+        ["present", "unsure"].map((v) => '<option value="' + v + '"' + ((s.value || "present") === v ? " selected" : "") + ">" + v + "</option>").join("") + "</select></label>" +
+      '<label for="sp-fo-' + i + '">Stays with<input id="sp-fo-' + i + '" data-f="follows" value="' + esc(s.follows || "") + '" placeholder="a character, optional"></label>' +
+      '<label for="sp-no-' + i + '" style="grid-column:1/-1">Note<input id="sp-no-' + i + '" data-f="note" value="' + esc(s.note || "") + '" placeholder="optional"></label>' +
+      '<div class="span-meta">' + spanSummary(s) + ' <button type="button" class="btn" data-del="' + i + '">Remove span</button></div>' +
+      "</div>").join("") || '<p class="via">No spans for ' + esc(npc().subject) + ". Use one for a companion who is in most scenes nobody names him in.</p>";
+    const probs = spanProblems(r.spans);
+    $("span-problems").innerHTML = probs.map((p) => "<li>" + esc(p) + "</li>").join("");
+  }
+
+  function spanSummary(s) {
+    if (!SCENE_IDS.includes(s.from) || !SCENE_IDS.includes(s.to) || key(s.from) > key(s.to)) return "Not applied until both ends are set.";
+    const n = SCENE_IDS.filter((i) => covers(s, i)).length;
+    return n + " scenes, " + s.from + " to " + s.to + ".";
+  }
+
+  function visibleIds(eff) {
+    const n = npc(), ids = [];
+    for (const ch of CHAPTERS) for (const id of ch.items) {
+      const cand = Object.prototype.hasOwnProperty.call(n.candidates, id);
+      const unnamedScene = !cand && ITEMS[id].k === "scene" && eff[id];
+      if (!cand && !unnamedScene) continue;
+      if (!state.kinds.has(ITEMS[id].k)) continue;
+      if (state.show === "needs" && cand && eff[id]) continue;
+      if (state.show === "needs" && !cand) continue;
+      if (state.show === "hint" && !hintFor(id, eff)) continue;
+      ids.push(id);
+    }
+    return ids;
+  }
+
+  function rowHtml(id, eff) {
+    const it = ITEMS[id], n = npc(), cand = Object.prototype.hasOwnProperty.call(n.candidates, id);
+    const e = eff[id], v = e ? e.v : "";
+    const own = rul().items[id] || "";
+    const sigs = cand ? n.candidates[id].map((s) => '<span class="tag sig">' + SIG_LABEL[s] + "</span>").join("")
+                      : '<span class="tag unnamed">not named in the text</span>';
+    const hint = hintFor(id, eff);
+    const first = it.x.split("\n").find((l) => l.trim() && !/^###? /.test(l)) || it.x;
+    const title = it.t ? "<strong>" + esc(it.t) + "</strong>" : "";
+    return '<div class="row" data-id="' + id + '" data-v="' + v + '">' +
+      '<div class="row-main"><div class="row-top"><span class="mono">' + id + '</span><span class="tag">' + KIND_LABEL[it.k] + "</span>" +
+      title + sigs + (hint ? '<span class="tag hint">' + esc(hint) + "</span>" : "") + "</div>" +
+      (e && e.src === "span" ? '<span class="via">' + e.v + " by span" + (own ? "" : "; mark it here to override") + "</span>" : "") +
+      "<details" + (openIds.has(id) ? " open" : "") + "><summary>" + esc(first.replace(/^[-#>*\s]+/, "").slice(0, 160)) + '</summary><p class="text">' + esc(it.x) + "</p></details></div>" +
+      '<div class="answers" role="group" aria-label="Ruling for ' + id + '">' +
+      ANSWERS.map((a) => '<button type="button" class="ans" data-a="' + a + '" aria-pressed="' + (own === a) + '"' +
+        (allowed(id, a) ? "" : " disabled") + ">" + a + "</button>").join("") +
+      '<button type="button" class="ans clear" data-a="" ' + (own ? "" : "disabled") + ">clear</button></div></div>";
+  }
+
+  function renderList() {
+    const eff = effective(npc().stem), ids = new Set(visibleIds(eff));
+    let html = "";
+    for (const ch of CHAPTERS) {
+      const here = ch.items.filter((i) => ids.has(i));
+      if (!here.length) continue;
+      html += '<section class="chapter"><div class="chapter-head"><h3>' + esc(ch.title) + '</h3><span class="mono">' + esc(ch.file) + "</span></div>" +
+        '<div class="rows">' + here.map((i) => rowHtml(i, eff)).join("") + "</div></section>";
+    }
+    $("list").innerHTML = html || '<p class="empty">' + (state.show === "needs"
+      ? "Everything shown for " + esc(npc().subject) + " has a ruling. Choose Everything to review them."
+      : "Nothing matches these filters.") + "</p>";
+  }
+
+  function render() {
+    renderTabs(); renderTally(); renderFilters(); renderSpans(); renderList();
+    $("source").textContent = DATA.source;
+    $("foot").textContent = "Item ids match npc_agent: NNN.SS is a scene, NNN.pK a summary paragraph, NNN.mK a memorable moment, " +
+      "NNN.eK an NPC entry. Saved files are ruling file version " + DATA.rulings_version + "; npc_agent horizon --rulings reads them as they stand.";
+  }
+
+  // ── the ruling file ─────────────────────────────────────────────────────
+  function rulingFile() {
+    const npcs = {};
+    for (const n of DATA.npcs) {
+      const r = state.rulings[n.stem];
+      const items = {};
+      Object.keys(r.items).sort().forEach((k) => { if (r.items[k]) items[k] = r.items[k]; });
+      const spans = r.spans.filter((s) => SCENE_IDS.includes(s.from) && SCENE_IDS.includes(s.to)).map((s) => {
+        const o = { from: s.from, to: s.to, value: s.value || "present" };
+        if (s.follows) o.follows = s.follows;
+        if (s.note) o.note = s.note;
+        return o;
+      });
+      if (spans.length || Object.keys(items).length) npcs[n.subject] = { spans, items };
+    }
+    return { version: DATA.rulings_version, npcs };
+  }
+
+  function asYaml(f) {
+    const q = (s) => JSON.stringify(String(s));
+    const out = ["version: " + f.version, "npcs:"];
+    for (const [subj, b] of Object.entries(f.npcs)) {
+      out.push("  " + q(subj) + ":");
+      out.push(b.spans.length ? "    spans:" : "    spans: []");
+      for (const s of b.spans) {
+        out.push("      - from: " + q(s.from), "        to: " + q(s.to), "        value: " + s.value);
+        if (s.follows) out.push("        follows: " + q(s.follows));
+        if (s.note) out.push("        note: " + q(s.note));
+      }
+      const ks = Object.keys(b.items);
+      out.push(ks.length ? "    items:" : "    items: {}");
+      for (const k of ks) out.push("      " + q(k) + ": " + b.items[k]);
+    }
+    return out.join("\n") + "\n";
+  }
+
+  // ── persistence ─────────────────────────────────────────────────────────
+  let db = null, canWrite = true, pending = new Set(), writing = false, timer = null;
+  const setStatus = (t, warn) => { $("status").textContent = t; $("status").classList.toggle("warn", !!warn); };
+
+  function bodyFor(stem) {
+    const r = state.rulings[stem], n = DATA.npcs.find((x) => x.stem === stem);
+    return { subject: n.subject, rulings_version: DATA.rulings_version, spans: r.spans, items: r.items };
+  }
+
+  function saveDraftLocally() {
+    try { localStorage.setItem("presence-ledger-draft", JSON.stringify(state.rulings)); } catch (e) { /* no storage */ }
+  }
+
+  function changed(stem) {
+    saveDraftLocally();
+    if (!db || !canWrite) return;
+    pending.add(stem);
+    clearTimeout(timer);
+    timer = setTimeout(flush, 700);
+    setStatus("Saving…");
+  }
+
+  async function flush() {
+    if (writing || !pending.size) return;
+    writing = true;
+    const stems = [...pending]; pending.clear();
+    try {
+      for (const stem of stems) await db.doc("rulings/" + stem).set(bodyFor(stem));
+      setStatus("Saved");
+    } catch (e) {
+      if (e && e.code === "invalid_argument") { canWrite = false; setStatus("This view can read the rulings but not change them.", true); }
+      else { stems.forEach((s) => pending.add(s)); setStatus("Not saved yet. Retrying…", true); setTimeout(flush, 2500); }
+    } finally {
+      writing = false;
+      if (pending.size) flush();
+    }
+  }
+
+  (async function connect() {
+    try {
+      const raw = localStorage.getItem("presence-ledger-draft");
+      if (raw) {
+        const draft = JSON.parse(raw);
+        for (const n of DATA.npcs) if (draft[n.stem]) state.rulings[n.stem] = { spans: draft[n.stem].spans || [], items: draft[n.stem].items || {} };
+      }
+    } catch (e) { /* no draft */ }
+    render();
+    setStatus("Connecting…");
+    const c = window.claude && window.claude.use ? window.claude : null;
+    db = c ? await c.use("db") : null;
+    if (!db) { setStatus("Changes stay in this browser. Save presence.json to keep them.", true); return; }
+    const user = await c.use("user");
+    if (user && user.can && (await user.can("data.write")) === false) { canWrite = false; }
+    let first = true;
+    for (const n of DATA.npcs) {
+      db.doc("rulings/" + n.stem).onSnapshot((snap) => {
+        if (snap.metadata.hasPendingWrites || pending.has(n.stem)) return;
+        if (snap.exists) {
+          const d = snap.data();
+          state.rulings[n.stem] = { spans: JSON.parse(JSON.stringify(d.spans || [])), items: Object.assign({}, d.items || {}) };
+        }
+        render();
+        if (first) { first = false; setStatus(canWrite ? "Saved rulings loaded" : "Read only: you can view these rulings but not change them.", !canWrite); }
+      }, () => setStatus("Lost the connection to saved rulings. Save presence.json to keep your work.", true));
+    }
+  })();
+
+  // ── events ──────────────────────────────────────────────────────────────
+  document.addEventListener("click", async (ev) => {
+    const t = ev.target.closest("button");
+    if (!t) return;
+    if (t.dataset.npc !== undefined) {
+      state.npc = +t.dataset.npc;
+      try { localStorage.setItem("presence-ledger-tab", npc().stem); } catch (e) { /* ignore */ }
+      render(); return;
+    }
+    if (t.dataset.show) { state.show = t.dataset.show; render(); return; }
+    if (t.dataset.kind) {
+      const k = t.dataset.kind;
+      if (state.kinds.has(k) && state.kinds.size > 1) state.kinds.delete(k); else state.kinds.add(k);
+      render(); return;
+    }
+    if (t.dataset.a !== undefined && t.closest(".row")) {
+      const id = t.closest(".row").dataset.id, a = t.dataset.a, r = rul();
+      if (a && !allowed(id, a)) return;
+      if (a) r.items[id] = a; else delete r.items[id];
+      const y = window.scrollY; render(); window.scrollTo(0, y);
+      changed(npc().stem); return;
+    }
+    if (t.id === "add-span") {
+      const n = npc(), first = SCENE_IDS.find((i) => Object.prototype.hasOwnProperty.call(n.candidates, i)) || "";
+      rul().spans.push({ from: first, to: "", value: "present", follows: "", note: "" });
+      render(); changed(n.stem); return;
+    }
+    if (t.dataset.del !== undefined) { rul().spans.splice(+t.dataset.del, 1); render(); changed(npc().stem); return; }
+    if (t.id === "save-file") {
+      const dl = window.claude && window.claude.use ? await window.claude.use("downloads") : null;
+      if (!dl) { setStatus("Saving files is not available in this view. Use Copy as YAML.", true); return; }
+      try {
+        await dl.save({ filename: "presence.json", data: JSON.stringify(rulingFile(), null, 2) + "\n" });
+        setStatus("presence.json saved");
+      } catch (e) {
+        if (e && e.code === "declined") setStatus("Save cancelled");
+        else if (e && e.code === "rate_limited") setStatus("A save prompt is already open.", true);
+        else setStatus("Could not save the file. Use Copy as YAML.", true);
+      }
+      return;
+    }
+    if (t.id === "copy-yaml") {
+      const text = asYaml(rulingFile());
+      try { await navigator.clipboard.writeText(text); setStatus("YAML copied"); }
+      catch (e) {
+        const pre = document.createElement("textarea"); pre.value = text; pre.style.width = "100%"; pre.rows = 12; pre.id = "yaml-fallback";
+        const old = $("yaml-fallback"); if (old) old.remove();
+        $("bar").appendChild(pre); pre.select(); setStatus("Copying is blocked here; the YAML is selected below.", true);
+      }
+    }
+  });
+
+  document.addEventListener("change", (ev) => {
+    const el = ev.target, row = el.closest(".span-row");
+    if (!row) return;
+    const s = rul().spans[+row.dataset.span];
+    s[el.dataset.f] = el.value.trim();
+    render(); changed(npc().stem);
+  });
+})();
+</script>
