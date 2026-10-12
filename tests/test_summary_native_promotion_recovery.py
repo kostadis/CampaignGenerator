@@ -225,7 +225,7 @@ def test_two_contenders_from_one_preview_cannot_both_commit(tmp_path: Path) -> N
     first = _publish(root, bundle, signoffs, preview)
     with pytest.raises(PromotionError) as caught:
         _publish(root, bundle, signoffs, preview, operation="op-two", generation="generation-two", request="request-two")
-    assert caught.value.code in {"PROMOTION_PREVIEW_STALE", "PROMOTION_DESTINATION_STALE"}
+    assert caught.value.code in {"PROMOTION_STALE_PREVIEW", "PROMOTION_DESTINATION_STALE"}
     assert _current(root) == "generations/generation-one/live"
     assert joined_receipt(root, first["activation"]["activation_id"])["publication"]["request_id"] == "request-one"
 

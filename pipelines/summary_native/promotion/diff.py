@@ -7,23 +7,48 @@ import hashlib
 from pathlib import Path
 from typing import Mapping
 
-from pipelines.summary_native.promotion.models import BundleSelection, PathChange
+from pipelines.summary_native.promotion.errors import PromotionStaleError
+from pipelines.summary_native.promotion.models import BundleSelection, ContentIdentity, PathChange
 
 
-def proposed_bytes(campaign_dir: Path, bundle: BundleSelection) -> dict[str, bytes]:
-    root = Path(campaign_dir)
-    result: dict[str, bytes] = {}
+def _sources(bundle: BundleSelection) -> dict[str, ContentIdentity]:
+    """Live member path -> the reviewed source identity enumerated in the bundle."""
+    result: dict[str, ContentIdentity] = {}
     for document in bundle.documents:
-        result[f"{document.document_id.value}.md"] = (root / document.path).read_bytes()
-    result["canon_events_timeline.md"] = (root / bundle.timeline.path).read_bytes()
+        result[f"{document.document_id.value}.md"] = document
+    result["canon_events_timeline.md"] = bundle.timeline
     for reference in bundle.references:
-        source = root / reference.path
         marker = "/reference/"
         if marker not in reference.path:
             raise ValueError(f"reference is outside reference tree: {reference.path}")
         relative = reference.path.split(marker, 1)[1]
-        result[f"reference/{relative}"] = source.read_bytes()
+        result[f"reference/{relative}"] = reference
     return result
+
+
+def reviewed_identities(bundle: BundleSelection) -> dict[str, tuple[str, int]]:
+    """Live member path -> the (sha256, size) the reviewer saw and signed."""
+    return {path: (item.sha256, item.size) for path, item in _sources(bundle).items()}
+
+
+def proposed_bytes(campaign_dir: Path, bundle: BundleSelection) -> dict[str, bytes]:
+    """Current draft bytes for every member (preview reads; may have drifted)."""
+    root = Path(campaign_dir)
+    return {path: (root / item.path).read_bytes() for path, item in _sources(bundle).items()}
+
+
+def reviewed_bytes(campaign_dir: Path, bundle: BundleSelection) -> dict[str, bytes]:
+    """Draft bytes, refused unless each is exactly what the bundle enumerated.
+
+    Staging copies these, so a draft saved between preview and staging (even
+    one reverted afterwards) can never reach a generation.
+    """
+    members = proposed_bytes(campaign_dir, bundle)
+    expected = reviewed_identities(bundle)
+    for path, data in members.items():
+        if (hashlib.sha256(data).hexdigest(), len(data)) != expected[path]:
+            raise PromotionStaleError(f"{path} changed after the reviewed preview")
+    return members
 
 
 def _digest(data: bytes) -> str:

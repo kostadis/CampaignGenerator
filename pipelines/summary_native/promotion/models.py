@@ -304,8 +304,37 @@ class OperationState(StrictPromotionModel):
     detail: str | None = None
 
 
+class ReceiptChange(StrictPromotionModel):
+    """One affected managed path, as the confirmed preview listed it (no diff text)."""
+
+    path: RelativePath
+    kind: Literal["add", "replace", "remove", "unchanged", "type_change"]
+    before_sha256: Sha256 | None = None
+    after_sha256: Sha256 | None = None
+
+
+class ReceiptResolution(StrictPromotionModel):
+    """A finding disposition from the bound check report (e.g. accepted uncertainty)."""
+
+    finding_id: OpaqueId
+    disposition: str = Field(min_length=1)
+    rationale: str = Field(min_length=1)
+    event_id: OpaqueId | None = None
+    decision_revision: int | None = Field(default=None, ge=1)
+
+
+RECEIPT_SCHEMA_VERSION = 2
+# Fields schema version 2 added (FR-008). A version-1 receipt was sealed
+# without them, so its digest excludes them and they must stay unset.
+_RECEIPT_V2_FIELDS = frozenset({
+    "selected_range", "changes", "previous_generation_id", "previous_activation_id",
+    "claims_report_id", "analysis_digest", "resolution_digest",
+    "finding_resolutions", "coverage_limitations",
+})
+
+
 class PublicationReceiptCandidate(StrictPromotionModel):
-    schema_version: Literal[1] = SCHEMA_VERSION
+    schema_version: Literal[1, 2] = RECEIPT_SCHEMA_VERSION
     receipt_id: OpaqueId
     operation_id: OpaqueId
     request_id: OpaqueId
@@ -318,16 +347,40 @@ class PublicationReceiptCandidate(StrictPromotionModel):
     review_event_ids: tuple[OpaqueId, ...]
     gates: tuple[GateOutcome, ...]
     prepared_at: datetime
+    selected_range: RangeSelection | None = None
+    changes: tuple[ReceiptChange, ...] = ()
+    previous_generation_id: OpaqueId | None = None
+    previous_activation_id: OpaqueId | None = None
+    claims_report_id: OpaqueId | None = None
+    analysis_digest: Sha256 | None = None
+    resolution_digest: Sha256 | None = None
+    finding_resolutions: tuple[ReceiptResolution, ...] = ()
+    coverage_limitations: tuple[str, ...] = ()
     receipt_sha256: Sha256
 
     @model_validator(mode="after")
     def valid(self) -> "PublicationReceiptCandidate":
         if self.prepared_at.tzinfo is None or self.prepared_at.utcoffset() != timezone.utc.utcoffset(self.prepared_at):
             raise ValueError("prepared_at must be UTC")
-        expected = canonical_digest(self, exclude_fields=frozenset({"receipt_sha256"}))
+        excluded = {"receipt_sha256"}
+        if self.schema_version == 1:
+            unset = type(self).model_fields
+            if any(getattr(self, name) != unset[name].default for name in _RECEIPT_V2_FIELDS):
+                raise ValueError("a version-1 receipt cannot carry version-2 fields")
+            excluded |= _RECEIPT_V2_FIELDS
+        elif self.selected_range is None or not self.changes:
+            raise ValueError("a version-2 receipt names its range and every affected path")
+        expected = canonical_digest(self, exclude_fields=frozenset(excluded))
         if self.receipt_sha256 != expected:
             raise ValueError("receipt_sha256 does not match receipt candidate")
         return self
+
+    @classmethod
+    def sealed(cls, **values: object) -> "PublicationReceiptCandidate":
+        """Build a version-2 receipt with its digest computed over every field."""
+        provisional = cls.model_construct(**{**values, "receipt_sha256": "0" * 64})
+        digest = canonical_digest(provisional, exclude_fields=frozenset({"receipt_sha256"}))
+        return cls.model_validate({**values, "receipt_sha256": digest})
 
 
 class BaselineKind(str, Enum):

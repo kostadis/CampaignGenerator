@@ -278,7 +278,9 @@ def read_snapshot(campaign_dir: Path, review_id: str, *, _already_locked: bool =
     root = Path(campaign_dir).resolve()
     load_campaign_identity(root)
     directory = _review_dir(root, review_id)
-    with (contextlib.nullcontext() if _already_locked else authority_lock(root, exclusive=False)):
+    # Reading never creates docs/authority or its .lock (``promote --dry-run``
+    # promises zero writes); an uninitialized lock refuses as AUTH_LOCK_MISSING.
+    with (contextlib.nullcontext() if _already_locked else authority_lock(root, exclusive=False, create=False)):
         require_no_pending_transaction(root)
         try:
             manifest_path = _reject_symlinks(root, directory / "manifest.json")
@@ -445,7 +447,7 @@ def history(
     _already_locked: bool = False,
 ) -> list[dict]:
     root = Path(campaign_dir).resolve()
-    lock = contextlib.nullcontext() if _already_locked else authority_lock(root, exclusive=False)
+    lock = contextlib.nullcontext() if _already_locked else authority_lock(root, exclusive=False, create=False)
     with lock:
         require_no_pending_transaction(root)
         events = _events(root, review_id)
@@ -455,7 +457,7 @@ def history(
 def read_review_state(campaign_dir: Path, review_id: str, *, _already_locked: bool = False):
     """Read manifest, items, history and semantic staleness under one lock."""
     root=Path(campaign_dir).resolve()
-    lock = contextlib.nullcontext() if _already_locked else authority_lock(root, exclusive=False)
+    lock = contextlib.nullcontext() if _already_locked else authority_lock(root, exclusive=False, create=False)
     with lock:
         require_no_pending_transaction(root); manifest,_,items=read_snapshot(root,review_id,_already_locked=True); events=_events(root,review_id)
     stale:set[str]=set()

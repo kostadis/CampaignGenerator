@@ -42,7 +42,7 @@ def build_parser() -> argparse.ArgumentParser:
     )
     sub = parser.add_subparsers(dest="command", required=True)
     promote = sub.add_parser("promote", help="preview or publish one reviewed grounding bundle")
-    promote.add_argument("--config", required=True)
+    promote.add_argument("--config", default=None, help="config/config.yaml (default: auto-detected from the working directory)")
     promote.add_argument("--since", type=int, required=True)
     promote.add_argument("--until", type=int, required=True)
     promote.add_argument("--out-root", default=None)
@@ -56,7 +56,7 @@ def build_parser() -> argparse.ArgumentParser:
     promotion_sub = promotion.add_subparsers(dest="promotion_command", required=True)
     for action in ("status", "receipt", "recover"):
         command = promotion_sub.add_parser(action)
-        command.add_argument("--config", required=True)
+        command.add_argument("--config", default=None, help="config/config.yaml (default: auto-detected from the working directory)")
         command.add_argument("--operation", required=action != "status")
         command.add_argument("--json", action="store_true")
     claims = sub.add_parser("claims", help="select, review and check grounded claims")

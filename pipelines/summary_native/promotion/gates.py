@@ -89,9 +89,12 @@ def check_copied_bundle(
     """Validate exact copied membership and document contracts in final layout."""
     root = Path(campaign_dir).resolve()
     target = Path(destination)
-    from pipelines.summary_native.promotion.diff import proposed_bytes
+    from pipelines.summary_native.promotion.diff import reviewed_identities
 
-    expected = proposed_bytes(root, bundle)
+    # Compare with the identities the reviewer signed, never a fresh re-read of
+    # the drafts: a draft saved and reverted around staging would otherwise
+    # match its own copy.
+    expected = reviewed_identities(bundle)
     actual: dict[str, bytes] = {}
     try:
         if target.is_symlink() or not target.is_dir():
@@ -110,9 +113,10 @@ def check_copied_bundle(
             missing = sorted(set(expected) - set(actual))
             extra = sorted(set(actual) - set(expected))
             raise ValueError(f"destination membership differs (missing={missing}, extra={extra})")
-        for relative, source_bytes in expected.items():
-            if actual[relative] != source_bytes:
-                raise ValueError(f"copied bytes differ: {relative}")
+        for relative, identity in expected.items():
+            data = actual[relative]
+            if (hashlib.sha256(data).hexdigest(), len(data)) != identity:
+                raise ValueError(f"copied bytes differ from the reviewed bundle: {relative}")
         for member in bundle.documents:
             document = target / f"{member.document_id.value}.md"
             problems = check_outline(document.read_text(encoding="utf-8"), load_outline(member.document_id.value))

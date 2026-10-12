@@ -179,10 +179,18 @@ def inspect_layout(campaign_dir: Path) -> GroundingLayout:
             try:
                 state = json.loads(state_path.read_text(encoding="utf-8")).get("state")
             except (OSError, ValueError):
-                raise PromotionRecoveryRequired("promotion operation state is unreadable")
-            if state in {"activation_pending", "commit_unknown", "intervention_required"}:
+                operation = state_path.parent.name
                 raise PromotionRecoveryRequired(
-                    f"promotion operation {state_path.parent.name} requires explicit recovery"
+                    f"promotion operation {operation} state is unreadable; run "
+                    f"`summary_native promotion recover --operation {operation} --json`",
+                    operation_id=operation,
+                )
+            if state in {"activation_pending", "commit_unknown", "intervention_required"}:
+                operation = state_path.parent.name
+                raise PromotionRecoveryRequired(
+                    f"promotion operation {operation} requires explicit recovery; run "
+                    f"`summary_native promotion recover --operation {operation} --json`",
+                    operation_id=operation,
                 )
     current = grounding / "current"
     if not grounding.is_dir() or not current.is_symlink():
