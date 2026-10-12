@@ -99,25 +99,25 @@ def render_horizon(h: Horizon) -> str:
     out = [
         f"# Knowledge horizon — {h.subject}, as of chapter {h.chapter}",
         "",
-        "A floor, not a mind: what the GM has ruled this NPC was present for, up to and including",
-        f"chapter {h.chapter}. Nothing after it is shown. Unruled items are listed, never guessed.",
+        "A floor, not a mind: the scenes the GM has said this NPC was physically in, up to and including",
+        f"chapter {h.chapter}. Nothing after it is shown. Unanswered passages are listed, never guessed.",
         "",
         f"- First named: chapter {h.first_seen if h.first_seen is not None else '—'}",
         f"- Last named by chapter {h.chapter}: "
         f"{h.last_seen_by_chapter if h.last_seen_by_chapter is not None else '—'}",
-        f"- Witnessed: {len(h.witnessed)} · mentioned only: {len(h.mentioned)} · "
-        f"unsure: {len(h.unsure)} · unruled: {len(h.unruled)}",
+        f"- In the scene: {len(h.witnessed)} · not in the scene: {len(h.mentioned)} · "
+        f"can't tell: {len(h.unsure)} · unanswered: {len(h.unruled)}",
     ]
     if h.unruled:
         out += [
             "",
-            f"**{len(h.unruled)} candidate(s) are unruled**, so this horizon is incomplete. "
-            "Rule them in the presence file before relying on it.",
+            f"**{len(h.unruled)} passage(s) are unanswered**, so this horizon is incomplete. "
+            "Answer them before relying on it.",
         ]
 
-    out += ["", "## Witnessed (ruled present)", ""]
+    out += ["", "## In the scene (what this NPC could have witnessed)", ""]
     if not h.witnessed:
-        out.append("_(none ruled present)_")
+        out.append("_(none answered \u201cin the scene\u201d)_")
     for c in h.witnessed:
         tags = [t for t, on in (("not named in the text", not c.signals),
                                 ("by span", c.item.item_id in h.by_span)) if on]
@@ -125,9 +125,9 @@ def render_horizon(h: Horizon) -> str:
         out += [head, "", _quote(c.item.text), ""]
 
     for title, group in (
-        ("Mentioned only (about the NPC, who was not there)", h.mentioned),
-        ("Unsure", h.unsure),
-        ("Unruled", h.unruled),
+        ("Not in the scene (talked about while elsewhere)", h.mentioned),
+        ("Can't tell", h.unsure),
+        ("Unanswered", h.unruled),
     ):
         out += ["", f"## {title}", ""]
         if not group:

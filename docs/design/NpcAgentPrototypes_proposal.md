@@ -374,6 +374,16 @@ queue passes about a dozen rulings. It shows, per NPC:
 - the scenes a span reaches that never name the NPC, so they can be excepted;
 - a tally, filters (needs a ruling, everything, check splits; by kind).
 
+**Wording.** The first version labelled the answers *present*, *mentioned*,
+*unsure* and *absent*. The GM read "present" as "appears in this passage", and
+marked four ch57 passages that say Sylvira was absent from the council. The
+page now asks one question, "was this NPC physically in the scene?", with three
+answers: *In the scene*, *Not in the scene*, *Can't tell*. "Not in the scene" is
+stored as `mentioned` for a passage that names the NPC and `absent` for a scene
+that does not, so the GM never chooses between the two. The ruling file keeps
+its values; the horizon's headings use the page's words. The GM's first four
+rulings were cleared at their request (2026-10-12).
+
 Rulings are saved in the artifact's own database (`rulings/<stem>`, one
 document per NPC), so Claude can read them back, and can be exported as
 `presence.json` or copied as YAML. The page applies the loader's rules but is
