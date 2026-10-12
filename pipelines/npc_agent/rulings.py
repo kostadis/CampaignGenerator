@@ -20,14 +20,20 @@ Shape (version 2)::
           "058.05": mentioned
           "063.06":                   # empty: unanswered
 
-**Two answers** (GM ruling 2026-10-12: "There are two possibilities: she is
-physically present, or she is mentioned. There are no other options.")
+**Three answers** (GM rulings 2026-10-12: "There are two possibilities: she is
+physically present, or she is mentioned", and then "because you will make
+mistakes it is also necessary for us to have a unsure or neither present nor
+mentioned").
 
 - ``present``: the NPC was physically in the scene. Any candidate, or any scene in
   the corpus: a companion is in most scenes nobody names him in (Glabbagool,
   riding in the bag of holding, is named in 91 of the 240 scenes of his span).
 - ``mentioned``: the passage names the NPC, who was not physically there. A
   candidate only; an item that does not name them cannot mention them.
+- ``neither``: neither present nor mentioned, or the GM cannot say. It is for the
+  tool's mistakes: a name match that is not this NPC, or a passage too thin to
+  answer. A candidate only. It counts as answered, and the horizon lists it
+  apart from both other answers, so it can be fed back as a linking error.
 
 ``absent`` is not a third answer. It is how a span is cut short around a scene
 that does not name the NPC (he was not there, and nobody mentioned him), so it is
@@ -67,7 +73,8 @@ from pipelines.npc_agent.corpus import ENTRY, MOMENT, PROSE, SCENE, Corpus
 PRESENT = "present"
 MENTIONED = "mentioned"
 ABSENT = "absent"
-VALUES = (PRESENT, MENTIONED, ABSENT)
+NEITHER = "neither"
+VALUES = (PRESENT, MENTIONED, NEITHER, ABSENT)
 SPAN_VALUES = (PRESENT,)
 VERSION = 2
 
@@ -216,6 +223,11 @@ def load_rulings(
                 continue
             elif value not in VALUES:
                 problems.append(f"{subject!r} {item_id}: {value!r} is not one of {', '.join(VALUES)}")
+            elif value == NEITHER and not named:
+                problems.append(
+                    f"{subject!r} {item_id}: 'neither' is for a passage that names the NPC; "
+                    "to take this scene out of a span, use 'absent'"
+                )
             elif value == MENTIONED and not named:
                 problems.append(
                     f"{subject!r} {item_id}: 'mentioned' needs an item that names the NPC; this scene does not"

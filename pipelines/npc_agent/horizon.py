@@ -16,7 +16,7 @@ from dataclasses import dataclass
 from pipelines.npc_agent.corpus import Item
 from pipelines.npc_agent.dossier import Dossier
 from pipelines.npc_agent.presence import Candidate
-from pipelines.npc_agent.rulings import FROM_DEFAULT, FROM_SPAN, MENTIONED, PRESENT
+from pipelines.npc_agent.rulings import FROM_DEFAULT, FROM_SPAN, MENTIONED, NEITHER, PRESENT
 
 
 @dataclass(frozen=True)
@@ -27,6 +27,8 @@ class Horizon:
     last_seen_by_chapter: int | None  # last candidate chapter <= ``chapter``
     witnessed: tuple[Candidate, ...]
     mentioned: tuple[Candidate, ...]
+    #: answered "neither present nor mentioned, or unsure": kept out of both
+    neither: tuple[Candidate, ...]
     unruled: tuple[Candidate, ...]
     #: item ids whose ruling came from a span rather than an item ruling
     by_span: frozenset[str]
@@ -61,7 +63,7 @@ def build_horizon(
     order = {i: n for n, i in enumerate(items)}
     every = sorted(cands + unnamed, key=lambda c: (c.item.chapter, order.get(c.item.item_id, 0)))
     upto = [c for c in every if c.item.chapter <= chapter]
-    by = {PRESENT: [], MENTIONED: [], None: []}
+    by = {PRESENT: [], MENTIONED: [], NEITHER: [], None: []}
     for c in upto:
         value = rulings.get(c.item.item_id, (None, None))[0]
         by[value if value in by else None].append(c)
@@ -73,6 +75,7 @@ def build_horizon(
         last_seen_by_chapter=max(chapters, default=None),
         witnessed=tuple(by[PRESENT]),
         mentioned=tuple(by[MENTIONED]),
+        neither=tuple(by[NEITHER]),
         unruled=tuple(by[None]),
         by_span=frozenset(i for i, (_, src) in rulings.items() if src == FROM_SPAN),
         by_default=frozenset(i for i, (_, src) in rulings.items() if src == FROM_DEFAULT),
@@ -104,7 +107,7 @@ def render_horizon(h: Horizon) -> str:
         f"- Last named by chapter {h.chapter}: "
         f"{h.last_seen_by_chapter if h.last_seen_by_chapter is not None else '—'}",
         f"- Physically present: {len(h.witnessed)} · mentioned: {len(h.mentioned)} · "
-        f"unanswered: {len(h.unruled)}",
+        f"neither or unsure: {len(h.neither)} · unanswered: {len(h.unruled)}",
     ]
     if h.unruled:
         out += [
@@ -124,6 +127,7 @@ def render_horizon(h: Horizon) -> str:
 
     for title, group in (
         ("Mentioned (named, not physically there)", h.mentioned),
+        ("Neither present nor mentioned, or unsure (left out; possible linking errors)", h.neither),
         ("Unanswered", h.unruled),
     ):
         out += ["", f"## {title}", ""]

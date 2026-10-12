@@ -307,10 +307,25 @@ def test_rulings_refuse_what_they_cannot_apply(camp, tmp_path, body, needle):
 
 
 @pytest.mark.parametrize("answer", ["unsure", "can't tell", "maybe"])
-def test_there_are_only_two_answers(camp, tmp_path, answer):
-    # GM ruling 2026-10-12: physically present, or mentioned. No other options.
-    with pytest.raises(rulings.RulingError, match="is not one of present, mentioned, absent"):
+def test_there_are_three_answers_and_no_others(camp, tmp_path, answer):
+    # GM rulings 2026-10-12: physically present, mentioned, or neither/unsure.
+    with pytest.raises(rulings.RulingError, match="is not one of present, mentioned, neither, absent"):
         _load(camp, tmp_path, f'    items:\n      "061.02": "{answer}"\n')
+
+
+def test_neither_is_for_a_passage_that_names_the_npc(camp, tmp_path):
+    with pytest.raises(rulings.RulingError, match="'neither' is for a passage that names the NPC"):
+        _load(camp, tmp_path, '    items:\n      "061.01": neither\n')
+
+
+def test_neither_is_kept_out_of_both_other_answers(camp, tmp_path):
+    # "because you will make mistakes": a wrong name match is answered, not forced.
+    r = _load(camp, tmp_path, '    default: mentioned\n    items:\n      "057.e02": neither\n      "061.02": present\n')
+    c, _, table, syl = _setup(camp)
+    h = horizon.build_horizon(syl, presence.candidates(c, syl, table), _effective(camp, r), 63, _items(camp))
+    assert [x.item.item_id for x in h.neither] == ["057.e02"]
+    assert "057.e02" not in [x.item.item_id for x in h.witnessed + h.mentioned + h.unruled]
+    assert "possible linking errors" in horizon.render_horizon(h)
 
 
 def test_a_span_says_present_and_nothing_else(camp, tmp_path):
