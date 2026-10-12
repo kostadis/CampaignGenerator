@@ -82,3 +82,23 @@ The user completed the disposable `phone-acceptance` review from an iPhone over 
 The installed Python 3.10 correction cycle re-prepared a semantic finding at review-item revision 3, advanced it to revision 4 while retaining semantic finding revision 1, approved it, generated a complete current report, renewed all four advanced sign-offs, obtained an eligible preview, and committed `root-uncertain-publication`. `claims show` reported the report current; replay returned the exact original activation and receipt without moving `current`. All three source-summary hashes remained unchanged and no `.git` directory was created. Disposable evidence remains under `/tmp/cg548-root-acceptance-7j2e4agv/uncertain-*.stdout`.
 
 No real campaign was migrated or published, no capability secret or live campaign content was added, and no Git commit, push, merge, or automatic repository operation was performed.
+
+## Post-merge review and constitution audit (2026-10-12)
+
+A code review of the merged implementation (2de3750, at ffeb8ec) found 29 defects, and a constitution audit found I, II, VI, VIII, XI, XII and XIII violated despite the plan's "all pass" table. The correcting change fixes each; the plan's Constitution Check now carries a post-merge column. Every fix has a regression test in one of four files, each test naming its defect: `tests/test_summary_native_findings_548_{promotion,claims,bundle,routes}.py`.
+
+Highlights, by severity:
+
+- **UI could not find drafts.** `promote` and `claims` resolved `summary_native.out_root` against `config/` while build and synth use the campaign root. Both now share `promotion/settings.py`, and `--config` means `config/config.yaml` (auto-detected) on promote, promotion and claims, as on every other `summary_native` command.
+- **Ensemble `/promote` bypassed the gate.** After migration it copied a draft straight into the live generation and accepted any `docs/reference/` path. It now refuses with `PROMOTION_WHOLE_BUNDLE_REQUIRED` on every campaign; the retired review document routes run the CLI and relay the same code.
+- **First publish after an absent baseline left no compatibility links**, and a detached link did not block preview. Publish and recovery install the links inside the lock; a loose file at a link path, or a detached link, blocks the `managed-aliases` gate.
+- **An absent-baseline campaign could not read unrelated documents**, and `load_file` refused any `..` path once migrated. Absent is a valid layout (`PROMOTION_NO_GENERATION` only for grounding members); paths normalise lexically.
+- **Unsigned bytes could be published.** Staging copies and the in-lock check compare against the signed digests.
+- **Stuck states.** Operation and layout records are written atomically; `status` lists an unreadable operation; an unresolved prior operation blocks publish with its recovery command; migration links replace files without a gap.
+- **Claims.** A ruling's digest covers subject, value and certainty; scope overlap reuses the authority `EffectiveInterval`; uncovered prose is disclosed and a selected-but-unrun extraction is incomplete; structured authority no longer stalls `check`; scope choices are recorded by `claims selection resolve-scope` (route and panel included) and recomputed on validation; equal values with differing certainty are no longer an unwaivable conflict; the supersession rule runs or reports `not_evaluated`; model runs and imports combine in one review; report paths are contained.
+- **Receipt** (schema 2) records range, changed paths, previous generation, report id, analysis and resolution digests, rulings and coverage limitations; version 1 receipts still verify.
+- **Consistency.** One stale-preview code (`PROMOTION_STALE_PREVIEW`), contract exit codes, dry runs create no lock file, the migrator edits `config.yaml` in place and keeps modes, every migrator refusal is a JSON envelope, and `new_workspace`'s note gives the real command sequence.
+
+One decision is recorded instead of changed: unmigrated campaigns keep reading their loose grounding documents (see the XIII row in `plan.md` and "Behavior without migration" in `migration.md`).
+
+A deliberate deviation from data-model wording: chunks selected for extraction with no completed run are complete-with-limitation when the GM imported reviewed mappings for them (the limitation is listed and bound into the four sign-offs), and incomplete when nothing was declared. Imports can bind only to selected chunks, so the stricter reading would make the manual path impossible.
