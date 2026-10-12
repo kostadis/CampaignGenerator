@@ -33,3 +33,16 @@ def test_selection_dedupes_aliases_discloses_external_and_detects_membership_dri
 def test_selection_refuses_zero_matches(tmp_path: Path):
     with pytest.raises(AuthorityError, match="matched no notes"):
         resolve_selection(tmp_path, [PlanningNoteSelector(id="missing", path="notes/*.md")])
+
+
+def test_an_all_records_selector_is_not_narrowed_by_a_selector_naming_ids(tmp_path: Path):
+    """An empty ``record_ids`` means every record in the file; a merge must keep that."""
+    notes = tmp_path / "notes"; notes.mkdir()
+    (notes / "x.md").write_text("x")
+    for selectors in (
+        [PlanningNoteSelector(id="all", path="notes/x.md"), PlanningNoteSelector(id="some", path="notes/*.md", record_ids={"r1"})],
+        [PlanningNoteSelector(id="some", path="notes/*.md", record_ids={"r1"}), PlanningNoteSelector(id="all", path="notes/x.md")],
+    ):
+        (member,) = resolve_selection(tmp_path, selectors).members
+        assert member.record_ids == ()
+        assert member.selector_id == "all,some"

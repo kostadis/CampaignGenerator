@@ -29,7 +29,9 @@ events, snapshots, journals, and receipts.
 
 1. Author a ruling record with an exact source path and anchor, rejected text,
    replacement text, source digests, audience, effective interval, and affected
-   projections. Start a new ruling in `draft` status. Use exact registry identities
+   projections. Start a new ruling in `draft` status, with no `proposal_id`,
+   `applied_receipt` or `withdrawal_reason`; `record apply` refuses a new ruling in
+   any later state, and a new note in any state but `active`. Use exact registry identities
    for entity/thread subjects and named characters. A `topic` subject needs no
    entity registry entry.
 2. Stage the record and inspect the proposed ledger revision. Accept that revision
@@ -138,7 +140,18 @@ summary-only planning; setting `notes: []` is an error.
 | `OPEN` | Unresolved material. |
 
 Future plans never become completed history merely by inclusion. Non-overlapping
-chapter intervals can describe legitimate evolution.
+chapter intervals can describe legitimate evolution. Conflict detection,
+`supersedes`, and planning precedence share one overlap rule for horizons:
+
+| Record A | Record B | Overlap? |
+|---|---|---|
+| `future` | chapters 1–3 (a range that ends) | No: the range is history, so a plan to change it later is not a contradiction and planning keeps both |
+| `future` | from chapter 5 (no end) | Yes: the range still holds when the plan applies |
+| `future` | `future` | Yes |
+| `open` | anything | Yes: `open` is in effect at every chapter |
+
+A chapter-range build still includes every `future` and `open` record; the overlap
+rule decides only whether two claims contradict each other.
 
 ## Choose an audience
 
@@ -233,6 +246,11 @@ source bytes. Inspect and apply the returned reversal proposal through the same
 proposal-digest checkpoint. Unrelated later edits remain. If the corrected passage
 has itself changed, author and review a replacement against the current source.
 The original ruling, approval, and receipt remain in history.
+
+A withdrawal proposal is bound to the ledger digest at the moment it was made, so
+any later ledger change (staging, retiring, a conflict ruling) leaves it stale and
+`apply` refuses it. Run `withdraw` again on the same ruling: a ruling in
+`reversal_proposed` accepts a fresh withdrawal proposal, which supersedes the old one.
 
 ## Recover an interrupted operation
 

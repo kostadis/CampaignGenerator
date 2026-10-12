@@ -156,7 +156,9 @@ async function runAuthority(path: string, payload: Record<string, unknown> = {})
       authorityStageSha.value = ''
       authoritySelectedId.value = typeof data.id === 'string' ? data.id : authoritySelectedId.value
     }
-    if (path.endsWith('/propose')) {
+    // A withdrawal returns the same digest-bound proposal envelope as a source
+    // correction; both are approved through the same apply step.
+    if (path.endsWith('/propose') || path.endsWith('/withdraw')) {
       authorityProposalRecordId.value = authoritySelectedId.value
       authorityProposalId.value = String(data.id ?? data.proposal_id ?? '')
       authorityProposalSha.value = String(data.proposal_sha256 ?? '')

@@ -557,6 +557,41 @@ test('authority keeps stale, recovery, withdrawal, retirement, and proposal bind
   expect(calls[3].body).toMatchObject({ reason: 'Superseded by table ruling', expected_revision: 1, expected_ledger_sha256: 'ledger-7' })
 })
 
+test('a requested withdrawal shows its reversal diff and is approved by its own digest', async ({ page }) => {
+  await openPage(page)
+  const calls: { path: string; body: Record<string, unknown> }[] = []
+  const envelope = (data: Record<string, unknown> = {}, message = 'ok') => ({ ok: true, code: 'OK', message, artifacts: [], data })
+  await page.route(url => url.pathname === `${BASE}/authority/status`, route => route.fulfill({
+    json: envelope({ state: 'initialized', campaign: 'fixture', revision: 4, sha256: 'ledger-4', records: 1, pending_transaction: null, stale_projections: [] }),
+  }))
+  await page.route(url => url.pathname === `${BASE}/authority/records`, route => route.fulfill({
+    json: envelope({ records: [{ id: 'earthstone-actor', revision: 2, status: 'applied' }] }),
+  }))
+  await page.route(url => url.pathname.startsWith(`${BASE}/authority/`), async route => {
+    if (route.request().method() !== 'POST') return route.fallback()
+    const path = new URL(route.request().url()).pathname.slice(`${BASE}/authority/`.length)
+    calls.push({ path, body: route.request().postDataJSON() as Record<string, unknown> })
+    const result = path === 'records/earthstone-actor/withdraw'
+      ? envelope({ id: 'earthstone-actor-withdrawal-r5', proposal_sha256: 'withdrawal-digest', operation: 'withdrawal',
+          diff: '--- before\n+++ after\n-Earthstone was taken\n+Earthstone fell' }, 'withdrawal proposal created for review')
+      : envelope({ transaction_id: 'tx-2' }, 'proposal applied')
+    await route.fulfill({ contentType: 'text/event-stream', body: sse(JSON.stringify(result), 0) })
+  })
+  await page.reload()
+
+  await page.goto('/grounding/authority')
+  const authority = page.locator('[data-test="authority-panel"]')
+  await authority.getByRole('button', { name: 'Select' }).click()
+  await authority.getByPlaceholder('Reason for requesting a safe reversal').fill('Table ruling reversed')
+  await authority.getByRole('button', { name: 'Request withdrawal' }).click()
+  await expect(authority.getByLabel('Exact proposed source diff')).toContainText('+Earthstone fell')
+  await expect(authority.getByLabel('Proposal digest to approve')).toHaveValue('withdrawal-digest')
+  await authority.getByRole('button', { name: 'Apply displayed correction' }).click()
+
+  expect(calls.map(call => call.path)).toEqual(['records/earthstone-actor/withdraw', 'records/earthstone-actor/apply'])
+  expect(calls[1].body.proposal_sha256).toBe('withdrawal-digest')
+})
+
 test('authority conflict review invokes the CLI-backed history, dismissal, and human finding controls', async ({ page }) => {
   await openPage(page)
   const calls: { path: string; body: Record<string, unknown> }[] = []

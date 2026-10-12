@@ -676,13 +676,20 @@ def create_withdrawal_proposal(campaign_dir: Path, *, ruling_id: str, source_pat
 
 
 def request_withdrawal(campaign_dir: Path, *, ruling_id: str, reason: str) -> dict:
-    """Stage one digest-bound reversal without discarding later unrelated edits."""
+    """Stage one digest-bound reversal without discarding later unrelated edits.
+
+    A ruling already in ``reversal_proposed`` may be staged again.  Its earlier
+    withdrawal proposal is bound to the ledger digest of the moment it was
+    made, so any later ledger change leaves it unapprovable; without a fresh
+    proposal the ruling could never be withdrawn.
+    """
     root = Path(campaign_dir).resolve()
     with authority_lock(root, exclusive=True):
         require_no_pending_transaction(root)
         ledger = load_ledger(root)
         record = next((item for item in ledger.records if item.id == ruling_id), None)
-        if not isinstance(record, RulingRecord) or record.status != "applied" or not record.proposal_id:
+        if (not isinstance(record, RulingRecord) or record.status not in {"applied", "reversal_proposed"}
+                or not record.proposal_id):
             raise AuthorityError("withdrawal requires an applied ruling")
         original = _load_proposal(root, record.proposal_id)
         source = allowed_summary_path(root, root / original["summaries_root"], record.source)

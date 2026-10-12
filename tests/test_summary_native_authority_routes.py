@@ -126,18 +126,22 @@ def test_note_preview_forwards_authored_selectors_to_the_authority_cli(client):
 def test_status_exposes_safe_structured_stale_projection_metadata(client):
     http, campaign = client
     assert http.post(f"{BASE}/init", json={"campaign_dir": str(campaign)}).status_code == 200
-    run = campaign / "state" / "ch001-001" / "runs" / "planning-run"
+    state = campaign / "docs" / "grounding" / "ch001-001" / "state"
+    run = state / "runs" / "planning-run"
     run.mkdir(parents=True)
     (run / "record.json").write_text(json.dumps({
         "doc": "planning", "inputs": {"authority_manifest": {"ledger_sha256": "superseded-ledger"}},
     }), encoding="utf-8")
+    draft = state / "drafts" / "planning.draft.md"
+    draft.parent.mkdir()
+    draft.write_text("<!-- summary_native draft | doc: planning | record: runs/planning-run/record.json -->\nbody\n", encoding="utf-8")
 
     status = http.get(f"{BASE}/status")
 
     assert status.status_code == 200
     stale = status.json()["data"]["stale_projections"]
     assert stale == [{
-        "doc": "planning", "draft": str(run.parent / "drafts" / "planning.draft.md"),
+        "doc": "planning", "draft": str(draft),
         "reason": "authority inputs changed since this output",
     }]
 

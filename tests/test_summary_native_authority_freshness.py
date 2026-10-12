@@ -5,7 +5,8 @@ import json
 from pathlib import Path
 
 from pipelines.summary_native import synth
-from pipelines.summary_native.authority import AuthorityLedger, AudienceGrant, Classification, EffectiveInterval, NoteRecord, Projection, SubjectRef, write_ledger
+from pipelines.summary_native.authority import AuthorityLedger, AudienceGrant, Classification, EffectiveInterval, NoteRecord, Projection, SubjectRef, ledger_bytes, write_ledger
+from pipelines.summary_native.authority_apply import write_ledger_tip
 from pipelines.summary_native.cli import main
 from pipelines.summary_native.freshness import check_authority_output_fresh
 from tests import conftest_party as cp
@@ -69,7 +70,10 @@ def test_planning_uses_reviewed_selection_and_refuses_drift_stale_and_legacy_run
         _planning_note("gate-open", Classification.OPEN, "open", opened, claim="seal", value="unknown"),
         _planning_note("unselected-note", Classification.CANON, "prep", prep, claim="other", value="unused"),
     ]
-    write_ledger(root, AuthorityLedger(version=2, campaign="party-fixture", revision=1, records=records))
+    ledger = AuthorityLedger(version=2, campaign="party-fixture", revision=1, records=records)
+    write_ledger(root, ledger)
+    # CLI mutations refuse a ledger with no mutation-history tip, as validate does.
+    write_ledger_tip(root, event_id="seed", after=ledger_bytes(ledger))
     planning = root / "config" / "planning.yaml"
     planning.write_text(planning.read_text(encoding="utf-8") + "notes:\n  - id: gate-authority\n    path: notes/authority-plan.md\n    record_ids: [gate-prep, gate-overlay, gate-open]\n", encoding="utf-8")
 
@@ -165,3 +169,15 @@ def test_planning_synth_blocks_only_selected_overlapping_structured_conflicts_be
     selection = json.loads(capture.getvalue())["data"]["selection_sha256"]
     rc, _, err = cs.run_cli([*command[:-2], selection, "--force"])
     assert rc == 0, err
+
+
+def test_stale_future_warning_reads_chapters_never_calendar_dates():
+    from pipelines.summary_native.synth import _stale_future_warnings
+
+    def dated(identifier: str, planning_date: str) -> NoteRecord:
+        return _planning_note(identifier, Classification.PREP, "plot", b"x", claim="c", value="v").model_copy(
+            update={"planning_date": planning_date})
+
+    records = [dated("by-chapter", "chapter-12"), dated("bare", "12"), dated("calendar", "2026-10-12"), dated("later", "chapter-40")]
+    warnings = _stale_future_warnings(records, latest_chapter=20)
+    assert [w.split(":")[1].split()[0] for w in warnings] == ["by-chapter", "bare"]
