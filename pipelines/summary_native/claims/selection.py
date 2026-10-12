@@ -13,7 +13,7 @@ from datetime import datetime
 from pathlib import Path
 
 from pipelines.summary_native.claims.models import (
-    AuthorityClass, SelectedChunk, SourceEntry, SourceKind, SourceRole, SourceSelection,
+    AuthorityClass, ScopeResolution, SelectedChunk, SourceEntry, SourceKind, SourceRole, SourceSelection,
 )
 from pipelines.summary_native.promotion.errors import PromotionError
 from pipelines.summary_native.promotion.models import BundleSelection, ContentIdentity
@@ -135,7 +135,7 @@ def _discovered_rows(root: Path, bundle: BundleSelection):
             if record.supersedes in relevant_ids and record.id not in relevant_ids:
                 relevant_ids.add(record.id)
                 changed = True
-    ambiguities: list[str] = []
+    ambiguities: list[tuple[str, str]] = []
     ledger_identity = _identity(root, root / "docs/authority.yaml")
     for record in ledger.records:
         active = (isinstance(record, NoteRecord) and record.status == "active") or (
@@ -154,7 +154,11 @@ def _discovered_rows(root: Path, bundle: BundleSelection):
         classification = AuthorityClass.CANON if record.classification.value == "RULED" else AuthorityClass(record.classification.value)
         applicable = classification in {AuthorityClass.CANON, AuthorityClass.TABLE}
         if classification in {AuthorityClass.PREP, AuthorityClass.OVERLAY, AuthorityClass.OPEN}:
-            ambiguities.append(f"Confirm applicability of {record.id} ({classification.value}) for {bundle.audience} through chapter {bundle.selected_range.until}.")
+            ambiguities.append((
+                f"Confirm applicability of {record.id} ({classification.value}) for {bundle.audience} "
+                f"through chapter {bundle.selected_range.until}.",
+                record.id,
+            ))
         key = (ledger_identity.path, f"authority-record:{record.id}:r{record.revision}", record.id)
         if key in seen:
             continue
@@ -217,14 +221,27 @@ def mandatory_source_closure(
     campaign_dir: Path, bundle: BundleSelection, *, effective_horizon: str,
     audience: str, rule_versions: tuple[str, ...], unresolved_scope: tuple[str, ...] = (),
     linked_sources: tuple[tuple[ContentIdentity, SourceKind, SourceRole, tuple[str, ...]], ...] = (),
+    scope_resolutions: tuple[ScopeResolution, ...] | None = None,
 ) -> SourceSelection:
-    """Materialize every bundle dependency; never infer that an empty list means all."""
+    """Materialize every bundle dependency; never infer that an empty list means all.
+
+    ``unresolved_scope`` is always recomputed from current authority (plus any
+    caller-declared entries). A recorded ``not_applicable`` choice keeps its
+    record in the closure as context only; it never removes a mandatory source.
+    """
     root = Path(campaign_dir).resolve()
     sources: list[SourceEntry] = []
     chunks: list[SelectedChunk] = []
-    discovered_rows, discovered_ambiguities = _discovered_rows(root, bundle)
+    discovered_rows, discovered = _discovered_rows(root, bundle)
+    discovered_ambiguities = [text for text, _record_id in discovered]
+    choices = {item.entry: item.choice for item in scope_resolutions or ()}
+    context_only_records = {
+        record_id for text, record_id in discovered if choices.get(text) == "not_applicable"
+    }
     mandatory_rows = [*_identity_rows(bundle), *discovered_rows]
     for index, (identity, kind, role, authority_class, applicability, anchor, authority_ids, authority_digests, source_audience) in enumerate(mandatory_rows, 1):
+        if kind is SourceKind.AUTHORITY and set(authority_ids) & context_only_records:
+            applicability = "context_only"
         if kind is SourceKind.AUTHORITY and authority_ids:
             # The ledger is append-only mutable. load_ledger above validates its
             # complete chain; selection identity binds only the exact chosen
@@ -261,7 +278,9 @@ def mandatory_source_closure(
         range_since=bundle.selected_range.since, range_until=bundle.selected_range.until,
         effective_horizon=effective_horizon, audience=audience, sources=tuple(sources),
         suggested_sources=tuple(suggestions),
-        chunks=tuple(chunks), unresolved_scope=tuple((*unresolved_scope, *sorted(set(discovered_ambiguities)))),
+        chunks=tuple(chunks),
+        unresolved_scope=tuple(dict.fromkeys((*unresolved_scope, *sorted(set(discovered_ambiguities))))),
+        scope_resolutions=tuple(scope_resolutions) if scope_resolutions else None,
         rule_versions=tuple(sorted(rule_versions)), selection_digest="0" * 64,
     )
     provisional = SourceSelection.model_construct(**values)
@@ -271,9 +290,18 @@ def mandatory_source_closure(
     return SourceSelection.model_validate(values)
 
 
+def unresolved_entries(selection: SourceSelection) -> tuple[str, ...]:
+    """Scope entries that still lack a recorded GM choice."""
+    resolved = {item.entry for item in selection.scope_resolutions or ()}
+    return tuple(entry for entry in selection.unresolved_scope if entry not in resolved)
+
+
 def confirm_selection(selection: SourceSelection, *, reviewer: str, confirmed_at: datetime) -> SourceSelection:
-    if selection.unresolved_scope:
-        raise PromotionError("selection has unresolved scope choices", code="CLAIMS_SCOPE_UNRESOLVED")
+    if unresolved_entries(selection):
+        raise PromotionError(
+            "selection has unresolved scope choices; record each with `claims selection resolve-scope`",
+            code="CLAIMS_SCOPE_UNRESOLVED",
+        )
     values = selection.model_dump(mode="python")
     values.update(confirmed_by=reviewer, confirmed_at=confirmed_at, confirmed_digest="0" * 64)
     provisional = SourceSelection.model_construct(**values)
@@ -317,15 +345,84 @@ def selection_path(campaign_dir: Path, selection: SourceSelection) -> Path:
 def validate_selection_against_bundle(campaign_dir: Path, selection: SourceSelection, bundle: BundleSelection) -> None:
     if selection.campaign_id != bundle.campaign_id or selection.bundle_digest != bundle_source_digest(bundle):
         raise PromotionError("selection belongs to another campaign or bundle", code="CLAIMS_SELECTION_INVALID")
+    # The unresolved set is recomputed from current authority, never trusted
+    # from the selection: deleting an entry from the JSON must not bypass it.
     expected = mandatory_source_closure(
         campaign_dir, bundle, effective_horizon=selection.effective_horizon,
         audience=selection.audience, rule_versions=selection.rule_versions,
-        unresolved_scope=selection.unresolved_scope,
+        scope_resolutions=selection.scope_resolutions,
     )
     expected_required = {canonical_bytes(item) for item in expected.sources if item.required}
     actual_required = {canonical_bytes(item) for item in selection.sources if item.required}
     if actual_required != expected_required:
         raise PromotionError("selection omits or changes mandatory sources", code="CLAIMS_SOURCE_MISSING")
+    missing = sorted(set(expected.unresolved_scope) - set(selection.unresolved_scope))
+    if missing:
+        raise PromotionError(
+            "selection omits unresolved scope entries recomputed from authority: " + "; ".join(missing),
+            code="CLAIMS_SCOPE_UNRESOLVED",
+        )
+    if selection.confirmed_digest is not None and unresolved_entries(selection):
+        raise PromotionError(
+            "confirmed selection has scope entries with no recorded GM resolution",
+            code="CLAIMS_SCOPE_UNRESOLVED",
+        )
+
+
+def resolve_scope(
+    campaign_dir: Path, selection: SourceSelection, bundle: BundleSelection, *,
+    entry: str, choice: str, rationale: str, reviewer: str, resolved_at: datetime,
+) -> SourceSelection:
+    """Record the GM's choice for one exact unresolved entry; returns an unconfirmed selection."""
+    reviewer = reviewer.strip(); rationale = rationale.strip()
+    if not reviewer or not rationale:
+        raise PromotionError("a scope resolution requires an explicit reviewer and rationale", code="CLAIMS_SCOPE_INVALID")
+    validate_selection_against_bundle(campaign_dir, selection, bundle)
+    if entry not in selection.unresolved_scope:
+        raise PromotionError("scope entry is not an unresolved entry of this selection", code="CLAIMS_SCOPE_INVALID")
+    try:
+        resolution = ScopeResolution(
+            entry=entry, choice=choice, rationale=rationale, resolved_by=reviewer, resolved_at=resolved_at,
+        )
+    except ValueError as exc:
+        raise PromotionError(f"invalid scope resolution: {exc}", code="CLAIMS_SCOPE_INVALID") from exc
+    # A later choice for the same entry replaces the earlier one in this
+    # proposal; a saved confirmed selection keeps its own exact history.
+    resolutions = tuple(sorted(
+        (*(item for item in selection.scope_resolutions or () if item.entry != entry), resolution),
+        key=lambda item: item.entry,
+    ))
+    recomputed = mandatory_source_closure(
+        campaign_dir, bundle, effective_horizon=selection.effective_horizon,
+        audience=selection.audience, rule_versions=selection.rule_versions,
+        unresolved_scope=selection.unresolved_scope, scope_resolutions=resolutions,
+    )
+    required = {item.source_id: item for item in recomputed.sources}
+    values = selection.model_dump(mode="python")
+    values.update(
+        sources=tuple(required.get(item.source_id, item) if item.required else item for item in selection.sources),
+        unresolved_scope=recomputed.unresolved_scope, scope_resolutions=resolutions,
+        confirmed_by=None, confirmed_at=None, confirmed_digest=None, selection_digest="0" * 64,
+    )
+    provisional = SourceSelection.model_construct(**values)
+    values["selection_digest"] = canonical_digest(
+        provisional, exclude_fields=frozenset({"selection_digest", "confirmed_by", "confirmed_at", "confirmed_digest"})
+    )
+    return SourceSelection.model_validate(values)
+
+
+def scope_resolution_path(campaign_dir: Path, selection: SourceSelection) -> Path:
+    range_dir = f"ch{selection.range_since:03d}-{selection.range_until:03d}"
+    return (Path(campaign_dir).resolve() / selection.out_root / range_dir
+            / "state/promotion/selections/scope-resolutions" / f"{selection.selection_digest}.json")
+
+
+def save_scope_resolution(campaign_dir: Path, selection: SourceSelection) -> Path:
+    """Persist a resolved (still unconfirmed) proposal owner-only under its digest."""
+    path = scope_resolution_path(campaign_dir, selection)
+    _write_owner_only(Path(campaign_dir).resolve(), path, canonical_bytes(selection),
+                      conflict_code="CLAIMS_SELECTION_CONFLICT")
+    return path
 
 
 def save_confirmed_selection(campaign_dir: Path, selection: SourceSelection) -> Path:

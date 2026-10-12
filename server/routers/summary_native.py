@@ -26,7 +26,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 from types import SimpleNamespace
-from typing import Any
+from typing import Any, Literal
 
 from fastapi import APIRouter, HTTPException, Query, Request
 from fastapi.responses import JSONResponse
@@ -637,14 +637,26 @@ async def claims_disposition(request: Request, payload: ClaimsDispositionRequest
     ), mutation=True)
 
 
-# ── Claims scope resolution — RESERVED, NOT WIRED (#548 review item 8) ─────
-# The GM's resolution of an unresolved scope entry in a claims selection gets
-# its own CLI subcommand (being added under ``summary_native claims ...``).
-# Its route belongs here, built with ``_claims_command`` and ``_claims_json``
-# like the routes above, once that subcommand's argv is final. Deliberately
-# empty until then: a route guessing the flags would be a second, drifting
-# copy of the CLI contract (Principle VI). The UI's matching slot is marked in
-# frontend/src/components/GroundingClaims.vue.
+# ── Claims scope resolution ────────────────────────────────────────────────
+
+class ClaimsScopeResolutionRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid", strict=True)
+    selection: dict[str, Any]
+    entry: str = Field(min_length=1)
+    choice: Literal["applicable", "not_applicable"]
+    rationale: str = Field(min_length=1)
+    reviewer: str = Field(min_length=1, max_length=128)
+
+
+@router.post("/claims/selection/resolve-scope")
+async def claims_selection_resolve_scope(request: Request, payload: ClaimsScopeResolutionRequest):
+    """Record the GM's ruling on one unresolved scope entry (the CLI writes the record)."""
+    root = _authority_campaign_dir(request)
+    raw = json.dumps(payload.selection, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    return await _claims_json(request, _claims_command(
+        root, "selection", "resolve-scope", "--input", "-", "--entry", payload.entry,
+        "--choice", payload.choice, "--rationale", payload.rationale, "--reviewer", payload.reviewer,
+    ), mutation=True, stdin_bytes=raw)
 
 
 # ── Authority ledger (CLI-backed JSON / SSE) ───────────────────────────────

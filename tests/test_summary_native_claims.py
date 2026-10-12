@@ -345,10 +345,10 @@ def test_equal_authority_conflict_is_retained_without_a_chosen_winner() -> None:
     assert "do not choose" in finding.next_action.lower()
 
 
-def test_select_cli_resolves_configured_out_root_relative_to_config(tmp_path: Path, capsys) -> None:
+def test_select_cli_resolves_configured_out_root_relative_to_campaign(tmp_path: Path, capsys) -> None:
     root = FACTORY.create_campaign(tmp_path / "campaign", baseline="legacy")
     assert claims_run([
-        "select", "--config", str(root / "config/grounding.yaml"),
+        "select", "--config", str(root / "config/config.yaml"),
         "--since", "1", "--until", "3", "--json",
     ]) == 0
     output = json.loads(capsys.readouterr().out)
@@ -370,7 +370,7 @@ def test_bundle_rule_order_is_canonical_for_select_then_save(tmp_path: Path) -> 
 def test_selection_save_requires_reviewer_for_unconfirmed_input(tmp_path: Path, capsys) -> None:
     root, _bundle_value, proposed = _selection(tmp_path)
     selection_file = tmp_path / "unconfirmed.json"; selection_file.write_bytes(canonical_bytes(proposed))
-    config = root / "config/grounding.yaml"
+    config = root / "config/config.yaml"
     argv = ["claims", "selection", "save", "--config", str(config), "--input", str(selection_file), "--json"]
     assert summary_native_main(argv) == 2
     refused = json.loads(capsys.readouterr().out)
@@ -426,7 +426,7 @@ def test_claims_cli_import_review_check_and_show_use_chosen_review(tmp_path: Pat
         "normalized_value": "active", "certainty": "certain", "audience": "gm",
         "effective_from": "chapter-1", "effective_until": "chapter-3",
     }]}))
-    config = root / "config/grounding.yaml"
+    config = root / "config/config.yaml"
     assert summary_native_main(["claims", "import", "--config", str(config), "--selection", str(selection_file), "--candidates", str(candidates), "--json"]) == 0
     imported = json.loads(capsys.readouterr().out)["data"]["path"]
     assert summary_native_main(["claims", "review", "--config", str(config), "--selection", str(selection_file), "--candidates", imported, "--review", "MY-ID", "--json"]) == 0
@@ -458,7 +458,7 @@ def test_claims_cli_import_review_check_and_show_use_chosen_review(tmp_path: Pat
     current_bundle = build_bundle_selection(
         root, out_root=confirmed.out_root, since=confirmed.range_since, until=confirmed.range_until,
         campaign_id=confirmed.campaign_id, review_id="MY-ID", rule_versions=confirmed.rule_versions,
-        config_path=config,
+        config_path=root / "config/grounding.yaml",
     )
     with pytest.raises(PromotionError, match="stale under current review inputs"):
         load_current_report(root, report_path, current_bundle)
@@ -479,7 +479,7 @@ def test_claims_cli_no_mapping_flow_creates_coverage_then_four_signoffs(
     root, _bundle_value, proposed = _selection(tmp_path)
     confirmed = confirm_selection(proposed, reviewer="gm", confirmed_at=NOW)
     selection_file = tmp_path / "selection.json"; selection_file.write_bytes(canonical_bytes(confirmed))
-    config = root / "config/grounding.yaml"
+    config = root / "config/config.yaml"
     assert summary_native_main(["claims", "review", "--config", str(config), "--selection", str(selection_file),
                                 "--review", "NO-MODEL", "--json"]) == 0
     capsys.readouterr()

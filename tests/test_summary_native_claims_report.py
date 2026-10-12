@@ -132,7 +132,7 @@ def test_unreviewed_specific_candidate_stays_visible_while_empty_declared_scope_
     assert analysis.findings[0].required_disposition
     empty = check_claims(selection, ())
     assert empty.complete and not empty.findings
-    assert "No semantic mappings" in empty.coverage_limitations[0]
+    assert any("No semantic mappings" in item for item in empty.coverage_limitations)
 
 
 def test_equal_authority_conflict_blocks_without_selecting_a_winner(tmp_path: Path) -> None:

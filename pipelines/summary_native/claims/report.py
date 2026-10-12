@@ -126,10 +126,28 @@ def render_markdown(report: CheckReport) -> str:
             lines.append(f"> {evidence.replace(chr(10), ' ')}")
         lines.append("")
     lines.extend(["## Coverage", ""])
+    if report.extraction_complete is False:
+        if report.extraction_run is not None and report.extraction_run.complete:
+            lines.append(
+                f"- Incomplete: selected prose chunks were not covered by extraction run {report.extraction_run.run_id} "
+                "and have no manual import; they were not checked."
+            )
+        elif report.extraction_run is not None:
+            lines.append(
+                f"- Incomplete: selected extraction run {report.extraction_run.run_id} "
+                f"(revision {report.extraction_run.revision}) did not complete; its unchecked chunks block this report."
+            )
+        else:
+            lines.append(
+                "- Incomplete: selected prose chunks have neither a completed extraction run nor a manual import; "
+                "they were not checked."
+            )
     if report.coverage_limitations:
         lines.extend(f"- {item}" for item in report.coverage_limitations)
-    else:
+    elif report.outcome != "incomplete":
         lines.append("- All declared deterministic inputs were checked.")
+    if report.coverage_limitations:
+        lines.append("- These limitations are informational and must be acknowledged at each whole-document sign-off.")
     return "\n".join(lines).rstrip() + "\n"
 
 
@@ -150,6 +168,10 @@ def _private_read(root: Path, path: Path) -> bytes:
         relative = path.relative_to(root)
     except ValueError as exc:
         raise PromotionError("claim artifact escapes campaign", code="CLAIMS_REPORT_INVALID") from exc
+    # relative_to is lexical: "root/../x" passes it, and opening ".." through
+    # the directory handles would walk out of the campaign.
+    if ".." in relative.parts or relative.is_absolute() or not relative.parts:
+        raise PromotionError("claim artifact escapes campaign", code="CLAIMS_REPORT_INVALID")
     flags = os.O_RDONLY | getattr(os, "O_DIRECTORY", 0) | getattr(os, "O_NOFOLLOW", 0)
     directory_fd = os.open(root, flags)
     try:
@@ -168,10 +190,17 @@ def _private_read(root: Path, path: Path) -> bytes:
         os.close(directory_fd)
 
 
-def _current_review_candidates(
-    root: Path, selection: SourceSelection, review_id: str, *, _already_locked: bool,
-) -> tuple[ClaimAnnotation, ...]:
-    """Resolve every current mapping item to its exact immutable candidate payload."""
+def review_candidates(
+    root: Path, selection: SourceSelection, review_id: str, *, _already_locked: bool = False,
+    code: str = "CLAIMS_REPORT_STALE",
+) -> tuple[tuple[ClaimAnnotation, ...], dict[str, tuple[str, ...]]]:
+    """Each current prose mapping item's exact candidate, and the artifacts that carry it.
+
+    Items backed by structured authority are projected from the ledger, not
+    from a candidate artifact, so they are skipped here. The second value maps
+    each occurrence to the campaign-relative imports/run artifacts holding its
+    exact payload, so each item is bound to its own source run or import.
+    """
     _manifest, items, _events, _stale = read_review_state(
         root, review_id, _already_locked=_already_locked,
     )
@@ -182,40 +211,99 @@ def _current_review_candidates(
         and not item.proposed_action.details.get("authority_record_digests")
     }
     if not wanted:
-        return ()
+        return (), {}
     range_dir = f"ch{selection.range_since:03d}-{selection.range_until:03d}"
     base = root / selection.out_root / range_dir / "state/promotion/claims"
     found: dict[str, ClaimAnnotation] = {}
+    origins: dict[str, list[str]] = {}
     paths = sorted((*base.glob("imports/*.json"), *base.glob("runs/*/rev-*/annotations.json")))
     for path in paths:
         try:
             raw = json.loads(_private_read(root, path))
         except (OSError, ValueError) as exc:
-            raise PromotionError("candidate evidence is malformed", code="CLAIMS_REPORT_STALE") from exc
+            raise PromotionError("candidate evidence is malformed", code=code) from exc
         rows = raw.get("annotations", raw) if isinstance(raw, dict) else raw
         if not isinstance(rows, list):
-            raise PromotionError("candidate evidence is malformed", code="CLAIMS_REPORT_STALE")
+            raise PromotionError("candidate evidence is malformed", code=code)
         for row in rows:
             try:
                 candidate = ClaimAnnotation.model_validate_json(canonical_bytes(row))
             except ValueError as exc:
-                raise PromotionError(
-                    "candidate evidence is malformed", code="CLAIMS_REPORT_STALE",
-                ) from exc
+                raise PromotionError("candidate evidence is malformed", code=code) from exc
             expected = wanted.get(candidate.occurrence_id)
             if expected is None or mapping_annotation_digest(candidate) != expected:
                 continue
             prior = found.get(candidate.occurrence_id)
             if prior is not None and canonical_bytes(prior) != canonical_bytes(candidate):
-                raise PromotionError("review candidate identity is ambiguous", code="CLAIMS_REPORT_STALE")
+                raise PromotionError("review candidate identity is ambiguous", code=code)
             found[candidate.occurrence_id] = candidate
+            origins.setdefault(candidate.occurrence_id, []).append(path.relative_to(root).as_posix())
     missing = sorted(set(wanted) - set(found))
     if missing:
+        raise PromotionError("review candidate evidence is missing: " + ", ".join(missing), code=code)
+    return (
+        tuple(found[key] for key in sorted(found)),
+        {key: tuple(value) for key, value in sorted(origins.items())},
+    )
+
+
+def review_extraction_run(
+    root: Path, candidates: tuple[ClaimAnnotation, ...], origins: dict[str, tuple[str, ...]],
+    *, code: str = "CLAIMS_STALE",
+) -> CandidateRun | None:
+    """The one immutable run revision that carries this review's model candidates.
+
+    Manual imports carry no run, so a review may combine one model run with any
+    number of imports. Model candidates from two run revisions cannot be checked
+    as one extraction and refuse rather than silently dropping either.
+    """
+    revisions: set[str] = set()
+    for item in candidates:
+        if item.origin != "model_candidate":
+            continue
+        run_dirs = sorted({
+            Path(path).parent.as_posix() for path in origins.get(item.occurrence_id, ())
+            if Path(path).name == "annotations.json" and Path(path).parent.parent.name == item.extraction_run_id
+        })
+        if not run_dirs:
+            raise PromotionError(f"model candidate {item.occurrence_id} has no extraction run artifact", code=code)
+        # A forced re-run may carry an identical payload; the latest revision binds.
+        revisions.add(run_dirs[-1])
+    if not revisions:
+        return None
+    if len(revisions) != 1:
         raise PromotionError(
-            "review candidate evidence is missing: " + ", ".join(missing),
-            code="CLAIMS_REPORT_STALE",
+            "review model candidates come from more than one extraction run revision: " + ", ".join(sorted(revisions)),
+            code=code,
         )
-    return tuple(found[key] for key in sorted(found))
+    run_dir = next(iter(revisions))
+    try:
+        return CandidateRun.model_validate_json(_private_read(root, root / run_dir / "run.json"))
+    except ValueError as exc:
+        raise PromotionError("review extraction run is malformed", code=code) from exc
+
+
+def _contained_report(root: Path, checks: Path, candidate: Path) -> Path:
+    """Require ``checks/<report-id>/report.json`` after resolution, before any read.
+
+    A lexical prefix test admits ``checks/../../x``; resolving first means a
+    supplied path cannot probe files outside the range's checks directory.
+    """
+    resolved_checks = checks.resolve()
+    resolved = candidate.resolve()
+    try:
+        relative = resolved.relative_to(resolved_checks)
+    except ValueError as exc:
+        raise PromotionError("check report is outside the selected claims store", code="CLAIMS_REPORT_INVALID") from exc
+    if len(relative.parts) != 2 or relative.name != "report.json":
+        raise PromotionError("check report is outside the selected claims store", code="CLAIMS_REPORT_INVALID")
+    try:
+        resolved.relative_to(root)
+    except ValueError as exc:
+        raise PromotionError("check report is outside the selected claims store", code="CLAIMS_REPORT_INVALID") from exc
+    # The lexical spelling is what the persisted report binds; a symlinked
+    # component still fails the no-follow read.
+    return checks / relative
 
 
 def _report_path(root: Path, bundle: BundleSelection, value: str) -> Path:
@@ -228,11 +316,7 @@ def _report_path(root: Path, bundle: BundleSelection, value: str) -> Path:
         candidate = checks / value
     else:
         candidate = supplied if supplied.is_absolute() else root / supplied
-    try:
-        candidate.relative_to(checks)
-    except ValueError as exc:
-        raise PromotionError("check report is outside the selected claims store", code="CLAIMS_REPORT_INVALID") from exc
-    return candidate
+    return _contained_report(root, checks, candidate)
 
 
 def load_current_report(
@@ -284,9 +368,14 @@ def load_current_report(
         if bind_extraction_run(selection, extraction_run) != binding:
             raise PromotionError("report extraction run changed", code="CLAIMS_REPORT_STALE")
 
-    candidates = _current_review_candidates(
+    candidates, origins = review_candidates(
         root, selection, bundle.review_id, _already_locked=_already_locked,
     )
+    item_run = review_extraction_run(root, candidates, origins, code="CLAIMS_REPORT_STALE")
+    if item_run is not None and (
+        extraction_run is None or bind_extraction_run(selection, item_run) != persisted.extraction_run
+    ):
+        raise PromotionError("review model candidates belong to another extraction run", code="CLAIMS_REPORT_STALE")
     confirmed = load_confirmed_annotations(
         root, bundle.review_id, candidates, _already_locked=_already_locked,
     )
@@ -300,10 +389,13 @@ def load_current_report(
         for source in selection.sources
         for record_id, digest in source.authority_record_digests.items()
     }
-    analysis = check_claims(
-        selection, (*reviewed_candidates, *structured), active_authority_ids=authority,
-        extraction_run=extraction_run,
-    )
+    try:
+        analysis = check_claims(
+            selection, (*reviewed_candidates, *structured), active_authority_ids=authority,
+            extraction_run=extraction_run,
+        )
+    except ValueError as exc:
+        raise PromotionError(f"check report inputs changed: {exc}", code="CLAIMS_REPORT_STALE") from exc
     resolutions = load_current_resolutions(
         root, bundle.review_id, analysis.findings, _already_locked=_already_locked,
     )
@@ -320,6 +412,14 @@ def report_freshness(campaign_dir: Path, value: str, config_path: Path) -> tuple
     root = Path(campaign_dir).resolve()
     supplied = Path(value)
     path = supplied if supplied.is_absolute() else root / supplied
+    # Only a report under some range's state/promotion/checks/<id>/ may be read.
+    try:
+        relative = path.resolve().relative_to(root)
+    except ValueError as exc:
+        raise PromotionError("check report is outside the claims store", code="CLAIMS_REPORT_INVALID") from exc
+    if ".." in supplied.parts or relative.parts[-5:-2] != ("state", "promotion", "checks") or relative.name != "report.json":
+        raise PromotionError("check report is outside the claims store", code="CLAIMS_REPORT_INVALID")
+    path = root / relative
     persisted = CheckReport.model_validate_json(_private_read(root, path))
     if persisted.review_id is None:
         return persisted, {"state": "unknown", "code": "CLAIMS_REPORT_LEGACY", "message": "report has no review identity"}

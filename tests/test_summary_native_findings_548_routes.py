@@ -220,3 +220,29 @@ def test_retired_document_routes_keep_campaign_containment(campaign, monkeypatch
     assert response.status_code == 400
     assert calls == []
     assert json.loads(response.content)["detail"].endswith("must stay inside the active campaign")
+
+
+def test_scope_ruling_has_a_face_and_reaches_the_cli_unchanged(campaign, monkeypatch):
+    """Defect: no command or route recorded the GM's scope choice, so a selection with an
+    unresolved scope entry could only be confirmed by deleting the entry from the JSON."""
+    seen: dict = {}
+
+    async def fake_run(command, **kwargs):
+        seen["command"], seen["stdin"] = command, kwargs.get("stdin_bytes")
+        return {"ok": True, "code": "OK", "message": "scope resolution recorded", "artifacts": [], "data": {}}
+
+    monkeypatch.setattr(routes, "run_bounded_json", fake_run)
+    body = routes.ClaimsScopeResolutionRequest(
+        selection={"unresolved_scope": ["PREP note"]}, entry="PREP note", choice="not_applicable",
+        rationale="Planning only", reviewer="GM",
+    )
+    asyncio.run(routes.claims_selection_resolve_scope(_request(campaign), body))
+    command = seen["command"]
+    assert command[1:4] == ["claims", "selection", "resolve-scope"]
+    for flag, value in (("--input", "-"), ("--entry", "PREP note"), ("--choice", "not_applicable"),
+                        ("--rationale", "Planning only"), ("--reviewer", "GM")):
+        assert command[command.index(flag) + 1] == value
+    assert _config_value(command) == str(campaign / "config" / "config.yaml")
+    assert json.loads(seen["stdin"]) == {"unresolved_scope": ["PREP note"]}
+    with pytest.raises(ValidationError):
+        routes.ClaimsScopeResolutionRequest(selection={}, entry="x", choice="maybe", rationale="r", reviewer="GM")

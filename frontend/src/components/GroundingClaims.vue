@@ -56,6 +56,10 @@ async function command(path:string, payload:object) {
   } catch(error) { diagnostic.value=error instanceof Error?error.message:String(error); return null }
   finally { busy.value=false }
 }
+const scopeChoice = ref<Record<string, ''|'applicable'|'not_applicable'>>({}), scopeRationale = ref<Record<string, string>>({})
+const unresolvedScope = computed<string[]>(() => selection.value?.unresolved_scope ?? [])
+function scopeRuling(entry:string){return (selection.value?.scope_resolutions ?? []).find((item:any)=>item.entry===entry) ?? null}
+async function resolveScope(entry:string){if(!selection.value)return;const choice=scopeChoice.value[entry];if(!choice)return;clearDownstream();const body=await command('selection/resolve-scope',{selection:selection.value,entry,choice,rationale:(scopeRationale.value[entry]??'').trim(),reviewer:reviewer.value.trim()});if(body?.data?.selection)selection.value=body.data.selection}
 function clearDownstream(){selectionFile.value='';candidateArtifact.value='';reportFile.value='';report.value=null;emit('selectionSaved','');emit('reportReady','')}
 async function selectSources(){if(props.since===null||props.until===null)return;clearDownstream();const body=await command('select',{since:props.since,until:props.until,...(outRoot.value.trim()?{out_root:outRoot.value.trim()}:{})});selection.value=body?.data?.selection??null;confirmedSources.value=[];confirmedChunks.value=[];chunkScopeConfirmed.value=false;if(!selection.value)diagnostic.value=body?.message||'No source selection was returned.'}
 async function saveSelection(){if(!canonicalSelection.value)return;const body=await command('selection/save',{selection:canonicalSelection.value,reviewer:reviewer.value});selectionFile.value=body?.data?.path??selectionFile.value;if(selectionFile.value)emit('selectionSaved',selectionFile.value)}
@@ -88,10 +92,17 @@ watch(useExtraction,value=>{if(!value&&candidateArtifactKind.value==='extract'){
       <label v-for="chunk in chunkRows" :key="chunk.chunk_id"><input v-model="confirmedChunks" type="checkbox" :value="chunk.chunk_id" @change="clearDownstream"> <code>{{ chunk.locator }}</code> ({{ chunk.sha256 }})</label>
       <button type="button" :disabled="busy||confirmedSources.length===0" @click="materializeChunks">Materialize whole-source chunks</button>
       <label><input v-model="chunkScopeConfirmed" type="checkbox"> Confirm this exact chunk scope, including an intentional empty scope</label>
-      <!-- RESERVED, NOT WIRED (#548 review item 8): the GM's resolution of an unresolved scope entry in this
-           selection. Its CLI subcommand is being added under `summary_native claims ...`; the route slot is
-           marked in server/routers/summary_native.py. Wire the control here once that argv is final —
-           do not guess its flags. -->
+      <div v-if="unresolvedScope.length" class="scope-rulings" data-test="claims-unresolved-scope">
+        <h3>Scope rulings needed</h3>
+        <p>Each authority note below may or may not apply to this range. Rule on each before confirming; your ruling is recorded with the selection.</p>
+        <div v-for="entry in unresolvedScope" :key="entry" class="scope-ruling">
+          <code>{{ entry }}</code>
+          <span v-if="scopeRuling(entry)" class="ruled" data-test="claims-scope-ruled">Ruled {{ scopeRuling(entry)?.choice }} by {{ scopeRuling(entry)?.resolved_by }}</span>
+          <label>Ruling <select v-model="scopeChoice[entry]"><option value="">choose…</option><option value="applicable">applies</option><option value="not_applicable">context only</option></select></label>
+          <label>Rationale <input v-model="scopeRationale[entry]" autocomplete="off"></label>
+          <button type="button" :disabled="busy||!reviewer.trim()||!scopeChoice[entry]||!scopeRationale[entry]?.trim()" @click="resolveScope(entry)">Record scope ruling</button>
+        </div>
+      </div>
     </div>
     <label>Reviewer <input v-model="reviewer"></label><label>Confirmed selection file <input v-model="selectionFile" readonly placeholder="Saved by the claims service after confirmation"></label>
     <button :disabled="busy||!reviewer||!exactConfirmed" @click="saveSelection">Save exact confirmation</button>
