@@ -183,7 +183,7 @@ presence from prose is the substring problem the narrator rule forbids.
 
 So **who was in a scene is an attribution decision, and it gets a human
 checkpoint**. Code lists the candidates and the evidence for each; the GM rules
-present / mentioned / unsure; code builds the horizon from the ruling.
+physically present or mentioned; code builds the horizon from the ruling.
 
 ## A data-quality finding on the way
 
@@ -317,12 +317,11 @@ npcs:
     default: mentioned        # every candidate no span or item ruling reaches
     items:
       "061.05": present
-      "063.05": unsure
 ```
 
 Values, and which items take them:
 
-- `present` / `unsure`: any candidate, **or any scene in the corpus**. This is
+- `present` (physically present): any candidate, **or any scene in the corpus**. This is
   for companions: Glabbagool is named in only 91 of the 240 scenes of his span,
   and a horizon limited to those would miss most of what he witnessed. In the
   horizon such a scene is marked "not named in the text".
@@ -348,7 +347,7 @@ other 14 are chapter 34's summary paragraphs and entries, because the span
 starts inside chapter 34. 104 of the 238 scenes in the span do not name
 Zalthir; most are probably whole-party scenes, but those are the ones to check.
 
-**Default.** `default: mentioned` (or `unsure`) rules every candidate that no
+**Default.** `default: mentioned` rules every candidate that no
 span or item ruling reaches. It is the mirror of a companion's span, added
 after the GM's first pass at Sylvira: most of the 75 passages naming her are
 mentions where she was not there, and marking each one was the burden. With the
@@ -357,8 +356,9 @@ headline" filter lists the 4 most likely (061.05, 061.m12, 061.m14, 067.03),
 as a place to start, not a ruling. Precedence is item ruling, then span, then
 default, and the horizon labels what the default ruled.
 
-An unknown NPC, any other item id, value or key, a default other than
-`mentioned` or `unsure`, a span end that is not a
+An unknown NPC, any other item id, value or key, any answer other than
+`present` or `mentioned` (or `absent` on a span scene), a default other than
+`mentioned`, a span end that is not a
 scene, a span that runs backwards, overlapping spans, or a `follows` name that
 appears nowhere in the summaries are all refused.
 
@@ -374,15 +374,16 @@ queue passes about a dozen rulings. It shows, per NPC:
 - the scenes a span reaches that never name the NPC, so they can be excepted;
 - a tally, filters (needs a ruling, everything, check splits; by kind).
 
-**Wording.** The first version labelled the answers *present*, *mentioned*,
-*unsure* and *absent*. The GM read "present" as "appears in this passage", and
-marked four ch57 passages that say Sylvira was absent from the council. The
-page now asks one question, "was this NPC physically in the scene?", with three
-answers: *In the scene*, *Not in the scene*, *Can't tell*. "Not in the scene" is
-stored as `mentioned` for a passage that names the NPC and `absent` for a scene
-that does not, so the GM never chooses between the two. The ruling file keeps
-its values; the horizon's headings use the page's words. The GM's first four
-rulings were cleared at their request (2026-10-12).
+**Two answers.** The first versions offered *present / mentioned / unsure /
+absent*, then *In the scene / Not in the scene / Can't tell*. Neither matched how
+the GM thinks about it. The GM's ruling (2026-10-12): "There are two
+possibilities: she is physically present, or she is mentioned. There are no
+other options." The page now offers exactly **Physically present** and
+**Mentioned** on every passage that names the NPC, and `unsure` is gone from the
+ruling file (refused if it appears). The only other stored value, `absent`, is
+not an answer: it is how a span is cut around a scene that never names the NPC,
+offered on those rows as "Remove from span". The GM's answers were cleared at
+their request twice while the wording settled.
 
 Rulings are saved in the artifact's own database (`rulings/<stem>`, one
 document per NPC), so Claude can read them back, and can be exported as
@@ -396,9 +397,9 @@ not the authority: `npc_agent horizon` re-validates whatever it is given.
 - **witnessed**: items ruled `present`, with their text and citation;
 - **mentioned only**: items ruled `mentioned` (things that happened *about*
   the NPC, which they may not know);
-- **unruled or unsure**: candidates with no ruling, or ruled `unsure`, kept
-  separate so nothing is guessed;
-- the NPC's **first and last chapter** in the corpus.
+- **unanswered**: candidates with no answer, kept separate so nothing is
+  guessed;
+- the NPC's **first and last chapter named**, up to the horizon's chapter.
 
 An NPC's knowledge includes more than what they witnessed (what they were
 told), and less than the whole scene (they may have left). Prototype 1 does not

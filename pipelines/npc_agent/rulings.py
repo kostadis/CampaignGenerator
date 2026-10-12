@@ -8,7 +8,7 @@ Shape (version 2)::
         spans:
           - from: "034.03"            # first scene of the span
             to: "071.10"              # last scene of the span
-            value: present            # present (default) | unsure
+            value: present            # optional; a span can only say present
             follows: Zalthir          # optional: a review hint, never a ruling
             note: rides in the bag of holding; counts as present
         items:
@@ -18,18 +18,20 @@ Shape (version 2)::
         items:
           "061.05": present
           "058.05": mentioned
-          "063.05": unsure
-          "063.06":                   # empty: unruled
+          "063.06":                   # empty: unanswered
 
-**Values, and which items take them.**
+**Two answers** (GM ruling 2026-10-12: "There are two possibilities: she is
+physically present, or she is mentioned. There are no other options.")
 
-- ``present`` / ``unsure``: any of the NPC's candidates, or any scene in the corpus.
-  A companion is in most scenes nobody names him in (Glabbagool, riding in the bag
-  of holding, is named in 91 of the 240 scenes of his span).
-- ``mentioned``: a candidate only. The item is about the NPC, who was not there;
-  an item that does not name them cannot be about them.
-- ``absent``: a scene that does not name the NPC. It exists to make an exception
-  inside a span; for a candidate, ``mentioned`` says the same thing.
+- ``present``: the NPC was physically in the scene. Any candidate, or any scene in
+  the corpus: a companion is in most scenes nobody names him in (Glabbagool,
+  riding in the bag of holding, is named in 91 of the 240 scenes of his span).
+- ``mentioned``: the passage names the NPC, who was not physically there. A
+  candidate only; an item that does not name them cannot mention them.
+
+``absent`` is not a third answer. It is how a span is cut short around a scene
+that does not name the NPC (he was not there, and nobody mentioned him), so it is
+allowed only there.
 
 **Spans.** A span rules a run of scenes at once (GM ruling 2026-10-12: Glabbagool
 in the bag of holding counts as present, and when the party splits he is with
@@ -39,7 +41,7 @@ paragraph and memorable moment of a chapter whose scenes are *all* inside it; an
 Spans of one NPC may not overlap. ``follows`` names the character the NPC stays
 with; it is shown to the GM as a hint at review and changes no ruling.
 
-**Default.** ``default: mentioned`` (or ``unsure``) rules every *candidate* that no
+**Default.** ``default: mentioned`` rules every *candidate* that no
 span or item ruling reaches. It is the mirror of a companion's span: Sylvira is
 present in a handful of the 75 passages that name her and talked about in the
 rest, so the GM marks the few and says once what the others are. It is the GM's
@@ -64,17 +66,16 @@ from pipelines.npc_agent.corpus import ENTRY, MOMENT, PROSE, SCENE, Corpus
 
 PRESENT = "present"
 MENTIONED = "mentioned"
-UNSURE = "unsure"
 ABSENT = "absent"
-VALUES = (PRESENT, MENTIONED, UNSURE, ABSENT)
-SPAN_VALUES = (PRESENT, UNSURE)
+VALUES = (PRESENT, MENTIONED, ABSENT)
+SPAN_VALUES = (PRESENT,)
 VERSION = 2
 
 #: Where an effective ruling came from.
 FROM_ITEM = "item"
 FROM_SPAN = "span"
 FROM_DEFAULT = "default"
-DEFAULT_VALUES = (MENTIONED, UNSURE)
+DEFAULT_VALUES = (MENTIONED,)
 
 _SCENE_ID_RE = re.compile(r"^(\d{3})\.(\d{2})$")
 
