@@ -10,7 +10,6 @@ single campaignlib seam honors (Principle V).
 
 import difflib
 import glob
-import shutil
 from collections import Counter
 from dataclasses import replace
 from pathlib import Path
@@ -60,8 +59,9 @@ def get_ensemble_service(request: Request) -> EnsembleConfigService:
     base = platform.config_path_base if platform is not None else Path.cwd() / "config"
     return EnsembleConfigService(base)
 
-# The four grounding docs the workflow targets — the promote allow-list.
-# Nothing else may be promoted (FR-013). Live paths only: the draft
+# The four grounding docs the workflow targets — drafts are diffed against
+# these. Nothing here writes them: per-document /promote is retired in favour
+# of the whole-bundle gate (#548 FR-003). Live paths only: the draft
 # counterpart is no longer a stored literal — EnsemblePaths.drafts_dir is
 # resolved per-request and composed by _draft_path() at the route edge
 # (research D13), so it can be redirected via config without a code change.
@@ -294,7 +294,10 @@ def _is_live_doc(path: Path) -> bool:
     from pipelines.summary_native.promotion.errors import PromotionMigrationRequired
 
     try:
-        return classify_managed_path(path, cwd) is not None
+        # allow_unpublished: on an absent baseline the alias and current
+        # spellings are still managed (nothing published there yet), so a
+        # write to them must be refused, not fall through to the loose list.
+        return classify_managed_path(path, cwd, allow_unpublished=True) is not None
     except PromotionMigrationRequired:
         live = {(cwd / live_rel).resolve() for live_rel in GROUNDING_DOCS.values()}
         return path.resolve() in live
@@ -402,9 +405,11 @@ def _default_party_context(drafts_dir: str) -> list[str]:
     absent. Prefers each doc's draft (this workflow's own freshest output)
     over its live counterpart when both exist."""
     cwd = Path.cwd()
-    from campaignlib.grounding_bundle import inspect_layout
+    from campaignlib.grounding_bundle import layout_state
 
-    layout = inspect_layout(cwd) if (cwd / "docs/grounding").exists() else None
+    # layout_state: a pending/unreconciled layout still refuses; a valid
+    # absent baseline has nothing published, so only drafts are offered.
+    layout = layout_state(cwd) if (cwd / "docs/grounding").exists() else None
     found = []
     for key in ("world_state", "campaign_state"):
         draft, live = cwd / _draft_path(key, drafts_dir), cwd / GROUNDING_DOCS[key]
@@ -691,7 +696,8 @@ async def write_file(path: str, request: Request):
     p = _resolve_ensemble_path(path)
     if _is_live_doc(p):
         raise HTTPException(status_code=403,
-                            detail="refusing to write a live grounding doc; use /promote")
+                            detail="refusing to write a live grounding doc; live grounding is "
+                                   "published only by `summary_native promote` (whole bundle)")
     p.parent.mkdir(parents=True, exist_ok=True)
     data = await request.json()
     p.write_text(data.get("content", ""), encoding="utf-8")
@@ -713,20 +719,43 @@ def diff(draft: str, live: str):
             "draft_exists": dp.exists(), "live_exists": lp.exists()}
 
 
+WHOLE_BUNDLE_REQUIRED_CODE = "PROMOTION_WHOLE_BUNDLE_REQUIRED"
+WHOLE_BUNDLE_REQUIRED_MESSAGE = (
+    "Per-document promotion is retired: live grounding is published only as a "
+    "whole reviewed bundle. Preview and publish it with `summary_native promote "
+    "--since N --until N --review REVIEW --check-report REPORT --dry-run`, then "
+    "commit the exact preview, or use Grounding → Summary-native → Promotion. "
+    "A campaign still on the loose layout migrates first with "
+    "`migrate_grounding_bundle --campaign-dir <campaign> --dry-run --json`."
+)
+
+
 @router.post("/promote")
 async def promote(request: Request):
-    """Copy a reviewed draft over its live grounding doc — the single explicit
-    live-doc writer (FR-013). Restricted to the four known grounding docs."""
-    body = await request.json()
-    draft = _resolve_ensemble_path(body.get("draft", ""))
-    live = _resolve_ensemble_path(body.get("live", ""))
-    if not _is_live_doc(live):
-        raise HTTPException(status_code=400,
-                            detail="promote target must be one of the four grounding docs")
-    if not draft.exists():
-        raise HTTPException(status_code=404, detail="draft does not exist")
-    shutil.copyfile(draft, live)
-    return {"ok": True, "live": str(live), "size": live.stat().st_size}
+    """Retired per-document publication entry point (#548 US1 #6, FR-003).
+
+    This used to copy one draft over one live grounding document. Once the
+    bundle is managed that bypassed the reviewed whole-bundle gate entirely —
+    and the managed boundary also admits the timeline and any
+    ``docs/reference/*`` member, so it could plant an unreviewed file in the
+    active generation. An older individual-document entry point must invoke the
+    whole-bundle gate or refuse with its instructions; it refuses, without
+    reading or writing anything. ``/diff`` stays as a read-only review aid.
+    """
+    return JSONResponse(
+        {
+            "ok": False,
+            "code": WHOLE_BUNDLE_REQUIRED_CODE,
+            "message": WHOLE_BUNDLE_REQUIRED_MESSAGE,
+            "detail": WHOLE_BUNDLE_REQUIRED_MESSAGE,
+            "artifacts": [],
+            "data": {
+                "promotion_path": "/api/grounding/summary-native/promotion/preview",
+                "command": "summary_native promote",
+            },
+        },
+        status_code=409,
+    )
 
 
 # ── Stage runners (SSE) ─────────────────────────────────────────────────────

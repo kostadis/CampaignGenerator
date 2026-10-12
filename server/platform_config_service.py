@@ -944,19 +944,25 @@ class PlatformConfigService:
         s = str(value).strip()
         if not s:
             return None
+        # lexical_campaign_path resolves symlinks like Path.resolve() but stops
+        # at a managed grounding alias / ``current`` link: following one would
+        # store ``generations/<id>/live/...`` and pin a generation that the
+        # next promotion retires.
+        from campaignlib.grounding_bundle import lexical_campaign_path
+
         p = Path(s).expanduser()
         if p.is_absolute():
-            return str(p.resolve())
+            return str(lexical_campaign_path(p))
         if base == "session":
             sd = session_dir or self._doc.runtime.session_dir
             if sd:
                 base_path = Path(sd).expanduser()
                 if not base_path.is_absolute():
                     base_path = (self.campaign_dir / base_path).resolve()
-                return str((base_path / p).resolve())
+                return str(lexical_campaign_path(base_path / p))
             # session_dir unset → fall back to campaign root rather than
             # leave the path relative; downstream consumers expect absolute.
-        return str((self.campaign_dir / p).resolve())
+        return str(lexical_campaign_path(self.campaign_dir / p))
 
     def relativize_path(
         self,
@@ -1009,7 +1015,11 @@ class PlatformConfigService:
         else:
             base_path = self.campaign_dir
 
-        resolved_value = p.resolve()
+        from campaignlib.grounding_bundle import lexical_campaign_path
+
+        # Not p.resolve(): that follows docs/<member> into the active
+        # generation's live tree and stores a generation-pinned path.
+        resolved_value = lexical_campaign_path(p)
         base_resolved = base_path.resolve()
         if resolved_value.is_relative_to(base_resolved):
             return resolved_value.relative_to(base_resolved).as_posix()
@@ -1112,10 +1122,15 @@ class PlatformConfigService:
         # member path so pending migration/activation is surfaced instead of
         # being disguised as a collection of independently existing files.
         managed_layout = None
+        managed_unpublished = False
         if (docs / "grounding").exists():
-            from campaignlib.grounding_bundle import inspect_layout
+            from campaignlib.grounding_bundle import layout_state
 
-            managed_layout = inspect_layout(cd)
+            # A completed absent migration is a healthy layout with nothing
+            # published yet: there is no member path to prefill, and it must
+            # not surface as a 500.
+            managed_layout = layout_state(cd)
+            managed_unpublished = managed_layout is None
 
         # docs/*.md — presence, not content, decides whether a grounding
         # doc "exists yet" for this campaign.
@@ -1128,6 +1143,8 @@ class PlatformConfigService:
             p = docs / name
             if managed_layout is not None:
                 result[key] = str(p)
+            elif managed_unpublished:
+                result[key] = ""
             else:
                 result[key] = str(p) if p.exists() else ""
 

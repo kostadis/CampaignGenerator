@@ -14,6 +14,7 @@ from typing import Iterator, Mapping, Sequence
 from pipelines.summary_native.authority import AuthorityError
 from pipelines.summary_native.authority_apply import authority_lock
 from pipelines.summary_native.promotion.errors import (
+    PromotionError,
     PromotionMigrationRequired,
     PromotionPathError,
     PromotionRecoveryRequired,
@@ -32,6 +33,31 @@ MANAGED_FILES = frozenset(
 )
 REFERENCE_NAME = "reference"
 GROUNDING_RELATIVE = Path("docs/grounding")
+NOT_PUBLISHED_CODE = "PROMOTION_NO_GENERATION"
+
+
+class GroundingNotPublished(PromotionMigrationRequired):
+    """A completed ``absent`` migration: managed, but nothing published yet.
+
+    This is a valid migrated layout, not a migration request. Unrelated reads
+    proceed; only a read that selects a managed member refuses, because there is
+    no generation to read it from. It subclasses ``PromotionMigrationRequired``
+    so promotion preview keeps treating the initialized absent baseline as the
+    parent of a first publication, but it carries its own code and message.
+    """
+
+    def __init__(self, message: str | None = None, *, campaign_dir: object | None = None) -> None:
+        self.campaign_dir = campaign_dir
+        PromotionError.__init__(
+            self,
+            message
+            or (
+                "no published grounding generation yet: this campaign was migrated with an "
+                "absent baseline. Publish the first whole bundle with `summary_native promote` "
+                "(or the Summary-native Promotion panel) before reading managed grounding."
+            ),
+            code=NOT_PUBLISHED_CODE,
+        )
 
 
 @dataclass(frozen=True)
@@ -90,6 +116,54 @@ def _contained_relative(value: str) -> PurePosixPath:
     raise PromotionPathError(f"path is not a managed bundle member: {value}")
 
 
+def _absent_baseline_committed(grounding: Path) -> bool:
+    """True only for a layout the migrator committed with an absent baseline."""
+    layout_path = grounding / "layout.json"
+    if layout_path.is_symlink() or not layout_path.is_file():
+        return False
+    try:
+        metadata = json.loads(layout_path.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return False
+    if (
+        not isinstance(metadata, dict)
+        or metadata.get("version") != 1
+        or metadata.get("state") != "absent"
+        or metadata.get("generation_id") is not None
+    ):
+        return False
+    operation = metadata.get("migration_operation_id")
+    if not isinstance(operation, str) or not operation or "/" in operation or operation in {".", ".."}:
+        return False
+    receipt_path = grounding / "migrations" / operation / "receipt.json"
+    if receipt_path.is_symlink() or not receipt_path.is_file():
+        return False
+    try:
+        receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return False
+    return (
+        isinstance(receipt, dict)
+        and receipt.get("state") == "committed"
+        and receipt.get("baseline") == "absent"
+        and receipt.get("operation_id") == operation
+    )
+
+
+def layout_state(campaign_dir: Path) -> GroundingLayout | None:
+    """Inspect a managed layout, returning ``None`` for a valid absent baseline.
+
+    Use this where the caller has not selected a managed member yet and must
+    still surface pending migration or unreconciled activation: an absent
+    baseline is a healthy layout with nothing published, so it is not an error
+    until a managed member is actually requested.
+    """
+    try:
+        return inspect_layout(campaign_dir)
+    except GroundingNotPublished:
+        return None
+
+
 def inspect_layout(campaign_dir: Path) -> GroundingLayout:
     """Resolve the active generation once without creating state."""
     raw_root = Path(campaign_dir).absolute()
@@ -103,7 +177,7 @@ def inspect_layout(campaign_dir: Path) -> GroundingLayout:
     if operations.is_dir():
         for state_path in sorted(operations.glob("*/state.json")):
             try:
-                state = __import__("json").loads(state_path.read_text(encoding="utf-8")).get("state")
+                state = json.loads(state_path.read_text(encoding="utf-8")).get("state")
             except (OSError, ValueError):
                 raise PromotionRecoveryRequired("promotion operation state is unreadable")
             if state in {"activation_pending", "commit_unknown", "intervention_required"}:
@@ -112,7 +186,9 @@ def inspect_layout(campaign_dir: Path) -> GroundingLayout:
                 )
     current = grounding / "current"
     if not grounding.is_dir() or not current.is_symlink():
-        raise PromotionMigrationRequired()
+        if grounding.is_dir() and not os.path.lexists(current) and _absent_baseline_committed(grounding):
+            raise GroundingNotPublished(campaign_dir=raw_root)
+        raise PromotionMigrationRequired(campaign_dir=raw_root)
     target_text = os.readlink(current)
     target = PurePosixPath(target_text)
     if target.is_absolute() or any(part in {"", ".", ".."} for part in target.parts):
@@ -160,11 +236,22 @@ def inspect_layout(campaign_dir: Path) -> GroundingLayout:
     return GroundingLayout(raw_root.resolve(), docs.resolve(), grounding.resolve(), current, generation_id, live.resolve())
 
 
-def classify_managed_path(path: Path, campaign_dir: Path, layout: GroundingLayout | None = None) -> str | None:
+def classify_managed_path(
+    path: Path,
+    campaign_dir: Path,
+    layout: GroundingLayout | None = None,
+    *,
+    allow_unpublished: bool = False,
+) -> str | None:
     """Return member-relative identity or ``None`` for a nonmanaged path.
 
     Only the six compatibility aliases, the pinned current spelling, and the
     pinned live tree are accepted. No caller follows ``current`` independently.
+
+    On a valid absent baseline a managed path names a member that has not been
+    published: readers get ``GroundingNotPublished``; write guards pass
+    ``allow_unpublished=True`` and receive the member identity so they can
+    refuse the write rather than create a loose file where an alias belongs.
     """
     raw_root = Path(campaign_dir).absolute()
     supplied = Path(path)
@@ -179,14 +266,27 @@ def classify_managed_path(path: Path, campaign_dir: Path, layout: GroundingLayou
     parts = docs_relative.parts
     if not parts:
         return None
+
+    def active() -> GroundingLayout | None:
+        if layout is not None:
+            return layout
+        try:
+            return inspect_layout(raw_root)
+        except GroundingNotPublished:
+            if allow_unpublished:
+                return None
+            raise
+
     if parts[0] in MANAGED_FILES and len(parts) == 1:
-        active = layout or inspect_layout(raw_root)
+        if active() is None:
+            return _contained_relative(parts[0]).as_posix()
         expected = f"grounding/current/{parts[0]}"
         if not lexical.is_symlink() or os.readlink(lexical) != expected:
             raise PromotionPathError(f"managed compatibility alias is detached: {lexical}")
         return _contained_relative(parts[0]).as_posix()
     if parts[0] == REFERENCE_NAME and len(parts) > 1:
-        active = layout or inspect_layout(raw_root)
+        if active() is None:
+            return _contained_relative(PurePosixPath(*parts).as_posix()).as_posix()
         alias = docs / REFERENCE_NAME
         if not alias.is_symlink() or os.readlink(alias) != "grounding/current/reference":
             raise PromotionPathError(f"managed compatibility alias is detached: {alias}")
@@ -195,10 +295,22 @@ def classify_managed_path(path: Path, campaign_dir: Path, layout: GroundingLayou
     # is provably unrelated and must not force migration.
     if parts[0] != "grounding":
         return None
-    active = layout or inspect_layout(raw_root)
+    current_prefix = Path("grounding/current")
+    try:
+        pinned = layout if layout is not None else inspect_layout(raw_root)
+    except GroundingNotPublished:
+        # Grounding bookkeeping (layout.json, migrations/) is unrelated; only
+        # the current spelling names an unpublished member.
+        try:
+            relative = docs_relative.relative_to(current_prefix)
+        except ValueError:
+            return None
+        if not allow_unpublished:
+            raise
+        return _contained_relative(PurePosixPath(*relative.parts).as_posix()).as_posix()
     for prefix in (
-        Path("grounding/current"),
-        Path("grounding/generations") / active.generation_id / "live",
+        current_prefix,
+        Path("grounding/generations") / pinned.generation_id / "live",
     ):
         try:
             relative = docs_relative.relative_to(prefix)
@@ -215,6 +327,40 @@ def classify_managed_path(path: Path, campaign_dir: Path, layout: GroundingLayou
             f"managed path names a retired generation: {lexical}"
         )
     return None
+
+
+def lexical_campaign_path(path: Path | str) -> Path:
+    """``Path.resolve()`` that does not follow a managed grounding link.
+
+    ``resolve()`` follows ``docs/<member>``, ``docs/reference`` and
+    ``docs/grounding/current`` into ``generations/<id>/live``, so a stored
+    resolved path silently pins one generation and keeps reading it after the
+    next promotion retires it. This resolves exactly as before, except that it
+    stops at a compatibility alias (or ``current``) whose target is exactly the
+    managed one: everything above it is resolved, the alias and everything
+    below it are kept as spelled (lexically normalized).
+    """
+    absolute = Path(path).expanduser().absolute()
+    parts = absolute.parts
+    for index in range(1, len(parts)):
+        candidate = Path(*parts[: index + 1])
+        if not candidate.is_symlink():
+            continue
+        parent, name = candidate.parent, candidate.name
+        managed = False
+        if parent.name == "docs" and (name in MANAGED_FILES or name == REFERENCE_NAME):
+            managed = os.readlink(candidate) == f"grounding/current/{name}"
+        elif name == "current" and parent.name == "grounding" and parent.parent.name == "docs":
+            target = PurePosixPath(os.readlink(candidate))
+            managed = (
+                not target.is_absolute()
+                and len(target.parts) == 3
+                and target.parts[0] == "generations"
+                and target.parts[2] == "live"
+            )
+        if managed:
+            return Path(os.path.normpath(parent.resolve().joinpath(*parts[index:])))
+    return absolute.resolve()
 
 
 def _collect_members(live: Path, requested: Sequence[str] | None) -> dict[str, bytes]:
@@ -275,21 +421,30 @@ def open_grounding_snapshot(
             )
     except AuthorityError as exc:
         if exc.code == "AUTH_LOCK_MISSING":
-            raise PromotionMigrationRequired() from exc
+            raise PromotionMigrationRequired(campaign_dir=root) from exc
         raise
     yield snapshot
 
 
 def refuse_managed_write(path: Path, campaign_dir: Path, *, draft_hint: str) -> None:
-    """Refuse legacy per-file writers that target one managed member."""
-    target = Path(path).absolute()
+    """Refuse legacy per-file writers that target one managed member.
+
+    An absent baseline is a migrated layout: its alias and ``current`` paths
+    are managed members that have not been published, so a generated write to
+    them refuses exactly like one to a published member. Only a genuinely
+    unmigrated campaign (``PromotionMigrationRequired`` proper) keeps its loose
+    files writable.
+    """
+    target = Path(os.path.normpath(Path(path).absolute()))
     roots = [Path(campaign_dir).resolve()]
     roots.extend(parent.parent for parent in target.parents if parent.name == "docs")
     for root in dict.fromkeys(roots):
         if not (root / GROUNDING_RELATIVE).exists():
             continue
         try:
-            managed = classify_managed_path(target, root)
+            managed = classify_managed_path(target, root, allow_unpublished=True)
+        except GroundingNotPublished:
+            raise
         except PromotionMigrationRequired:
             continue
         if managed is not None:

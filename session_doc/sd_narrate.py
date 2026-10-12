@@ -507,6 +507,33 @@ def _refuse_over_authored_work(narration_dir: Path, *, reroll: bool) -> None:
     sys.exit(1)
 
 
+# Refusal code and flag for each grouped prompt input that cannot be read.
+# These are the codes each input had before the inputs were grouped into one
+# grounding snapshot (#548); grouping must not relabel a context failure.
+_UNREADABLE_INPUT = {
+    "party": ("PARTY_UNREADABLE", "--party"),
+    "context": ("CONTEXT_UNREADABLE", "--context"),
+    "known_lore": ("KNOWN_LORE_UNREADABLE", "--known-lore"),
+}
+
+
+def _first_unreadable_input(
+    roles: list[tuple[str, Path]], exc: BaseException,
+) -> tuple[str, Path, BaseException]:
+    """Attribute a failed grouped read to the input that caused it.
+
+    Only diagnoses: each input is re-read alone to find the first one that
+    fails, and nothing read here reaches a prompt.
+    """
+    for role, path in roles:
+        try:
+            load_files_snapshot([path], Path.cwd())
+        except (OSError, UnicodeError) as cause:
+            return role, path, cause
+    role, path = roles[0] if roles else ("party", Path(""))
+    return role, path, exc
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(
         description="Render per-scene first-person narration from a plan + scene extractions."
@@ -770,24 +797,35 @@ def main() -> None:
             )
         raise
 
-    grouped_inputs = [Path(args.party).expanduser()] if args.party else []
-    grouped_inputs.extend(
-        Path(value).expanduser() for value in (args.context or []) if Path(value).expanduser().is_file()
+    # Every prompt input that may be managed grounding (--party, --context,
+    # --known-lore) is captured in ONE snapshot, so a promotion mid-run cannot
+    # mix generations. Each input keeps its own refusal code, though: an
+    # unreadable --context is CONTEXT_UNREADABLE, never PARTY_UNREADABLE.
+    grouped_roles: list[tuple[str, Path]] = (
+        [("party", Path(args.party).expanduser())] if args.party else []
     )
-    grouped_inputs.extend(
-        Path(value).expanduser() for value in (args.known_lore or []) if Path(value).expanduser().is_file()
+    grouped_roles.extend(
+        ("context", Path(value).expanduser())
+        for value in (args.context or []) if Path(value).expanduser().is_file()
     )
+    grouped_roles.extend(
+        ("known_lore", Path(value).expanduser())
+        for value in (args.known_lore or []) if Path(value).expanduser().is_file()
+    )
+    grouped_inputs = [path for _role, path in grouped_roles]
     try:
         grouped_values = load_files_snapshot(grouped_inputs, Path.cwd())
-        grouped_text = {
-            Path(os.path.abspath(path)): value
-            for path, value in zip(grouped_inputs, grouped_values)
-        }
-        party = grouped_text[Path(os.path.abspath(Path(args.party).expanduser()))] if args.party else None
     except (OSError, UnicodeError) as exc:
+        role, failed_path, cause = _first_unreadable_input(grouped_roles, exc)
         if args.batch_scenes:
-            refuse_bundle("PARTY_UNREADABLE", f"cannot read --party {args.party}: {exc}")
+            code, flag = _UNREADABLE_INPUT[role]
+            refuse_bundle(code, f"cannot read {flag} {failed_path}: {cause}")
         raise
+    grouped_text = {
+        Path(os.path.abspath(path)): value
+        for path, value in zip(grouped_inputs, grouped_values)
+    }
+    party = grouped_text[Path(os.path.abspath(Path(args.party).expanduser()))] if args.party else None
 
     # The roster comes from each character's sheet frontmatter (#265). There is
     # no party.md fallback: --party still supplies the party document's

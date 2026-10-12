@@ -31,8 +31,10 @@ from campaignlib import (
     find_default_config,
     load_agent_prompt,
     load_config,
+    load_files_snapshot,
     save_log,
 )
+from campaignlib.grounding_bundle import lexical_campaign_path
 from campaignlib.api.client import resolve_cli_model, resolve_cli_reasoning
 from campaignlib.party_config import load_party_config_arg, require_from_config
 from session_doc import roster_from_config
@@ -850,7 +852,10 @@ def main() -> None:
     doc_path = Path(args.doc).expanduser().resolve()
     recap_path = Path(args.recap).expanduser().resolve()
     voice_dir = Path(args.voice_dir).expanduser().resolve()
-    party_path = Path(args.party).expanduser().resolve()
+    # --party and --context may name managed grounding (docs/party.md, an
+    # alias). Keep those spellings lexical so a managed path is read through
+    # the bundle snapshot rather than resolved into one generation's live tree.
+    party_path = lexical_campaign_path(args.party)
     output_path = Path(args.output).expanduser().resolve()
     changelog_path = Path(args.changelog).expanduser().resolve()
 
@@ -865,7 +870,7 @@ def main() -> None:
 
     context_paths: dict[str, Path] = {}
     for c in args.context:
-        cp = Path(c).expanduser().resolve()
+        cp = lexical_campaign_path(c)
         if not cp.exists():
             print(f"Error: context doc not found: {cp}", file=sys.stderr)
             sys.exit(1)
@@ -878,7 +883,14 @@ def main() -> None:
         sys.exit(1)
 
     recap_text = recap_path.read_text(encoding="utf-8")
-    party_text = party_path.read_text(encoding="utf-8")
+    # Party and every context document are captured together, once, before
+    # any model turn: a managed member comes from one grounding generation
+    # (one snapshot), so a promotion during the agent loop cannot hand the
+    # model a party from one bundle and a context doc from the next.
+    grounding_paths = [party_path, *context_paths.values()]
+    grounding_texts = load_files_snapshot(grounding_paths, Path.cwd())
+    party_text = grounding_texts[0]
+    preloaded_context = dict(zip(context_paths, grounding_texts[1:]))
     # The roster comes from each character's sheet frontmatter (#265) — no
     # party.md fallback. party_text is still read, for the ## Name headers
     # below. #398: the roster never names the person playing a character, so
@@ -968,7 +980,7 @@ def main() -> None:
 
     ctx = ToolContext(
         doc=doc, recap_text=recap_text, voices=voices,
-        context_docs={}, context_paths=context_paths,
+        context_docs=preloaded_context, context_paths=context_paths,
         roster_names=roster_names, current_turn=0,
     )
 

@@ -144,6 +144,37 @@ _Add resources, relationships, and character arc tracking._
 """
 
 
+# The exact, verified sequence a fresh workspace needs to adopt the managed
+# grounding bundle (#548). The migrator takes the campaign's authority lock and
+# binds the generation to the review storage's campaign identity, so authority
+# and review storage are initialized first. Every command runs from the
+# workspace root; the placeholders above form a complete loose bundle, so the
+# dry run plans a `legacy_adoption`.
+MIGRATION_NOTE = """\
+# Grounding bundle migration required
+
+This workspace uses the loose grounding layout: `docs/world_state.md`,
+`campaign_state.md`, `party.md`, `planning.md`, `canon_events_timeline.md`
+and `docs/reference/` are ordinary files, and readers use them as they are.
+
+Before publishing with `summary_native promote`, adopt them as the managed
+grounding bundle. From the workspace root:
+
+```bash
+summary_native authority init --campaign-dir . --json
+summary_native review init --campaign-dir . --json
+migrate_grounding_bundle --campaign-dir . --dry-run --json
+# review the plan, then apply exactly that plan by its digest:
+migrate_grounding_bundle --campaign-dir . --plan-sha256 <data.plan_sha256 from the dry run> --json
+migrate_grounding_bundle --campaign-dir . --verify --json
+```
+
+The first two commands create `docs/authority.yaml` (with its lock) and
+`docs/reviews/campaign.json`; skip either one that already exists. After the
+migration this note can be deleted.
+"""
+
+
 def resolve_existing(flag: str, value: str) -> Path:
     p = Path(value).expanduser().resolve()
     if not p.exists():
@@ -294,9 +325,7 @@ def main() -> None:
     )
     (docs_dir / "reference").mkdir(exist_ok=True)
     (docs_dir / "grounding-migration-required.md").write_text(
-        "# Grounding bundle migration required\n\n"
-        "Run `migrate_grounding_bundle plan --campaign-dir .`, review the plan, "
-        "then apply it before using managed grounding readers or writers.\n",
+        MIGRATION_NOTE,
         encoding="utf-8",
     )
 

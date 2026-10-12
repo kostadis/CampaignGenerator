@@ -1,5 +1,5 @@
-"""Gate guards: drafts-only synthesis, no live-doc writes, promote is the sole
-live-doc writer (FR-013, SC-005, spec US3)."""
+"""Gate guards: drafts-only synthesis, no live-doc writes, and per-document
+promote is retired in favour of the whole-bundle gate (FR-013, SC-005, #548)."""
 
 from pathlib import Path
 
@@ -35,7 +35,13 @@ def test_put_file_allows_aliases(tmp_path, monkeypatch):
     assert (tmp_path / "docs/ensemble/aliases.json").read_text() == "{}"
 
 
-def test_promote_is_sole_live_writer(tmp_path, monkeypatch):
+def test_promote_refuses_with_whole_bundle_instructions(tmp_path, monkeypatch):
+    """Per-document promote is retired (#548 FR-003): it refuses and writes nothing.
+
+    It used to copy one draft over one live doc, which bypassed the reviewed
+    whole-bundle gate. Now no live doc is created or changed, and the refusal
+    names the replacement workflow.
+    """
     monkeypatch.chdir(tmp_path)
     (tmp_path / "docs").mkdir()
     draft = tmp_path / "docs/world_state_draft.md"
@@ -45,17 +51,22 @@ def test_promote_is_sole_live_writer(tmp_path, monkeypatch):
 
     r = client.post("/api/ensemble/promote",
                     json={"draft": "docs/world_state_draft.md", "live": "docs/world_state.md"})
-    assert r.status_code == 200
-    assert live.read_text() == "promoted body"
+    assert r.status_code == 409
+    body = r.json()
+    assert body["ok"] is False
+    assert body["code"] == "PROMOTION_WHOLE_BUNDLE_REQUIRED"
+    assert "summary_native promote" in body["message"]
+    assert not live.exists()
 
 
-def test_promote_rejects_non_grounding_target(tmp_path, monkeypatch):
+def test_promote_refuses_non_grounding_target_too(tmp_path, monkeypatch):
     monkeypatch.chdir(tmp_path)
     (tmp_path / "docs").mkdir()
     (tmp_path / "docs/world_state_draft.md").write_text("x")
     r = client.post("/api/ensemble/promote",
                     json={"draft": "docs/world_state_draft.md", "live": "docs/notes.md"})
-    assert r.status_code == 400
+    assert r.status_code == 409
+    assert not (tmp_path / "docs/notes.md").exists()
 
 
 def test_path_traversal_rejected(tmp_path, monkeypatch):

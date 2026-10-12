@@ -40,10 +40,25 @@ from campaignlib.api.client import resolve_cli_model
 
 # ── Prompt assembly ───────────────────────────────────────────────────────────
 
-def assemble_user_prompt(config: dict, beat: str, base_dir: Path | None = None) -> str:
+def assemble_grounding(config: dict, base_dir: Path | None = None) -> str:
+    """Read every configured document once — one grounding snapshot.
+
+    ``assemble_docs`` captures all managed members from a single generation.
+    Calling it once per beat, with model calls in between, would let a
+    promotion during the run hand later beats a different bundle than earlier
+    ones; a session run captures this once, before any model work, and reuses
+    it for every beat (reader-inventory T029).
+    """
     all_labels = [d["label"] for d in config.get("documents", []) if d.get("path")]
-    docs = assemble_docs(config, all_labels, base_dir)
+    return assemble_docs(config, all_labels, base_dir)
+
+
+def user_prompt_for_beat(docs: str, beat: str) -> str:
     return f"{docs}\n\n---\n\n## Session Beat\n\n{beat.strip()}"
+
+
+def assemble_user_prompt(config: dict, beat: str, base_dir: Path | None = None) -> str:
+    return user_prompt_for_beat(assemble_grounding(config, base_dir), beat)
 
 
 # ── Session outline parsing ───────────────────────────────────────────────────
@@ -269,13 +284,15 @@ def run_session(client, config, outline: str, mode: str, model: str, clipboard: 
 
     log_sections: list[tuple[str, str]] = [("Session Outline", outline)]
     all_final_outputs: list[str] = []
+    # One grounding capture for the whole session, before the first model call.
+    grounding = assemble_grounding(config, base_dir)
 
     for i, beat in enumerate(beats, 1):
         print(f"\n{'=' * 60}")
         print(f"  Encounter {i}/{len(beats)}: {beat}")
         print(f"{'=' * 60}\n")
 
-        user = assemble_user_prompt(config, beat, base_dir)
+        user = user_prompt_for_beat(grounding, beat)
 
         if mode == "single":
             response = _call_llm(client, system, user, model, batch=batch)
