@@ -256,6 +256,7 @@ def ruling_template(dossiers_and_cands: list[tuple[Dossier, list[Candidate]]]) -
         "# items: one answer per passage; leave it empty to keep it unanswered.",
         "#   present    the NPC was physically in the scene",
         "#   mentioned  the passage names the NPC, who was not physically there",
+        "#   neither    neither present nor mentioned, or unsure (a wrong match, a thin passage)",
         "# default: mentioned answers every passage you leave empty.",
         "# spans: a run of scenes where the NPC was physically present (a companion);",
         "#   cut one short around a scene with  \"NNN.SS\": absent  under items.",

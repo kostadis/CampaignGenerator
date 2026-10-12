@@ -183,7 +183,7 @@ presence from prose is the substring problem the narrator rule forbids.
 
 So **who was in a scene is an attribution decision, and it gets a human
 checkpoint**. Code lists the candidates and the evidence for each; the GM rules
-physically present or mentioned; code builds the horizon from the ruling.
+physically present, mentioned, or neither/unsure; code builds the horizon from the ruling.
 
 ## A data-quality finding on the way
 
@@ -357,7 +357,7 @@ as a place to start, not a ruling. Precedence is item ruling, then span, then
 default, and the horizon labels what the default ruled.
 
 An unknown NPC, any other item id, value or key, any answer other than
-`present` or `mentioned` (or `absent` on a span scene), a default other than
+`present`, `mentioned` or `neither` (or `absent` on a span scene), a default other than
 `mentioned`, a span end that is not a
 scene, a span that runs backwards, overlapping spans, or a `follows` name that
 appears nowhere in the summaries are all refused.
@@ -374,14 +374,21 @@ queue passes about a dozen rulings. It shows, per NPC:
 - the scenes a span reaches that never name the NPC, so they can be excepted;
 - a tally, filters (needs a ruling, everything, check splits; by kind).
 
-**Two answers.** The first versions offered *present / mentioned / unsure /
-absent*, then *In the scene / Not in the scene / Can't tell*. Neither matched how
-the GM thinks about it. The GM's ruling (2026-10-12): "There are two
-possibilities: she is physically present, or she is mentioned. There are no
-other options." The page now offers exactly **Physically present** and
-**Mentioned** on every passage that names the NPC, and `unsure` is gone from the
-ruling file (refused if it appears). The only other stored value, `absent`, is
-not an answer: it is how a span is cut around a scene that never names the NPC,
+**Answers.** The first versions offered *present / mentioned / unsure / absent*,
+then *In the scene / Not in the scene / Can't tell*. Neither matched how the GM
+thinks about it. The GM's rulings (2026-10-12): "There are two possibilities:
+she is physically present, or she is mentioned", and then, "because you will
+make mistakes it is also necessary for us to have a unsure or neither present
+nor mentioned". So every passage that names the NPC has three answers:
+
+- **Physically present** (`present`)
+- **Mentioned** (`mentioned`): named, not physically there
+- **Neither / unsure** (`neither`): the name match is wrong, or the passage
+  does not let the GM say. It counts as answered, is kept out of both other
+  answers, and the horizon lists it as a possible linking error.
+
+Nothing else is accepted. The one other stored value, `absent`, is not an
+answer: it is how a span is cut around a scene that never names the NPC,
 offered on those rows as "Remove from span". The GM's answers were cleared at
 their request twice while the wording settled.
 

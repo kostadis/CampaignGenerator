@@ -18,6 +18,7 @@
   --present: #2d7a4b;
   --mentioned: #9a6408;
   --absent: #8c4646;
+  --neither: #6a6f8a;
   --hint: #9a6408;
   --font-display: "Spectral", "Iowan Old Style", Georgia, serif;
   --font-body: "Source Sans 3", "Segoe UI", system-ui, sans-serif;
@@ -27,13 +28,13 @@
   :root:not([data-theme="light"]) {
     --bg: #121918; --surface: #1a2321; --sunk: #222d2b; --fg: #e3ebe8; --muted: #9aaba6;
     --line: #33413e; --accent: #62b3a9; --accent-ink: #0d1514; --present: #5fbf84;
-    --mentioned: #e0a63c; --absent: #e08a8a; --hint: #e0a63c; color-scheme: dark;
+    --mentioned: #e0a63c; --absent: #e08a8a; --neither: #a6abc9; --hint: #e0a63c; color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
   --bg: #121918; --surface: #1a2321; --sunk: #222d2b; --fg: #e3ebe8; --muted: #9aaba6;
   --line: #33413e; --accent: #62b3a9; --accent-ink: #0d1514; --present: #5fbf84;
-  --mentioned: #e0a63c; --absent: #e08a8a; --hint: #e0a63c; color-scheme: dark;
+  --mentioned: #e0a63c; --absent: #e08a8a; --neither: #a6abc9; --hint: #e0a63c; color-scheme: dark;
 }
 * { box-sizing: border-box; }
 body { background: var(--bg); color: var(--fg); font: 15px/1.5 var(--font-body); }
@@ -89,6 +90,7 @@ button { cursor: pointer; }
   border-bottom: 1px solid var(--line); align-items: start; }
 .row[data-v="present"] { box-shadow: inset 3px 0 0 var(--present); padding-left: 10px; }
 .row[data-v="mentioned"] { box-shadow: inset 3px 0 0 var(--mentioned); padding-left: 10px; }
+.row[data-v="neither"] { box-shadow: inset 3px 0 0 var(--neither); padding-left: 10px; }
 .row[data-v="absent"] { box-shadow: inset 3px 0 0 var(--absent); padding-left: 10px; }
 .row-main { min-width: 0; display: grid; gap: 4px; }
 .row-top { display: flex; flex-wrap: wrap; gap: 4px 8px; align-items: baseline; }
@@ -107,6 +109,7 @@ details[open] > summary::before { content: "▾ "; }
 .ans { border: 1px solid var(--line); background: var(--surface); border-radius: 6px; padding: 3px 10px; font-size: 0.85rem; }
 .ans[data-a="present"][aria-pressed="true"] { background: var(--present); border-color: var(--present); color: var(--accent-ink); }
 .ans[data-a="mentioned"][aria-pressed="true"] { background: var(--mentioned); border-color: var(--mentioned); color: var(--accent-ink); }
+.ans[data-a="neither"][aria-pressed="true"] { background: var(--neither); border-color: var(--neither); color: var(--accent-ink); }
 .ans[data-a="absent"][aria-pressed="true"] { background: var(--absent); border-color: var(--absent); color: var(--accent-ink); }
 .ans:disabled { opacity: 0.35; cursor: default; }
 .ans.clear { grid-column: 1 / -1; border-style: dashed; }
@@ -125,9 +128,10 @@ details[open] > summary::before { content: "▾ "; }
     <div>
       <div class="label" id="source"></div>
       <h1>Presence Ledger</h1>
-      <p class="lede">Each passage below comes from the session summaries and names this NPC. Answer each one
-        <b>Physically present</b> or <b>Mentioned</b>: <b id="question">was this NPC physically there, or only talked about?</b>
-        The tags under each passage are evidence, never an answer.</p>
+      <p class="lede">Each passage below comes from the session summaries and was matched to this NPC by name.
+        <b id="question">Was this NPC physically there, or only talked about?</b> Answer <b>Physically present</b>
+        or <b>Mentioned</b>. When the match is wrong, or the passage does not let you say, answer
+        <b>Neither / unsure</b>. The tags under each passage are evidence, never an answer.</p>
     </div>
     <div class="npcs" id="npcs" role="group" aria-label="NPC"></div>
   </header>
@@ -176,12 +180,13 @@ const DATA = /*__NPC_AGENT_DATA__*/null;
   const CHAPTERS = DATA.chapters;
   const KIND_LABEL = { scene: "Scene", prose: "Summary paragraph", moment: "Memorable moment", entry: "NPC entry" };
   const SIG_LABEL = { quoted: "quote attributed", headline: "in the GM headline", own_entry: "own entry", named: "named" };
-  // Two answers (GM ruling 2026-10-12): physically present, or mentioned.
+  // Three answers (GM rulings 2026-10-12): physically present, mentioned, or
+  // neither/unsure, the last for the matcher's mistakes.
   // A scene that never names the NPC can only be in a span, so its second
   // button takes it out of the span instead (stored as absent).
-  const NAMED_ANSWERS = [["present", "Physically present"], ["mentioned", "Mentioned"]];
+  const NAMED_ANSWERS = [["present", "Physically present"], ["mentioned", "Mentioned"], ["neither", "Neither / unsure"]];
   const SPAN_ANSWERS = [["present", "Physically present"], ["absent", "Remove from span"]];
-  const SAY = { present: "physically present", mentioned: "mentioned", absent: "removed from span" };
+  const SAY = { present: "physically present", mentioned: "mentioned", neither: "neither / unsure", absent: "removed from span" };
   const SCENE_IDS = CHAPTERS.flatMap((c) => c.items.filter((i) => ITEMS[i].k === "scene"));
   const CORPUS_TEXT = Object.values(ITEMS).map((i) => i.x).join("\n");
 
@@ -206,7 +211,7 @@ const DATA = /*__NPC_AGENT_DATA__*/null;
   const isCand = (id) => Object.prototype.hasOwnProperty.call(npc().candidates, id);
 
   function allowed(id, a) {
-    if (a === "mentioned") return isCand(id);
+    if (a === "mentioned" || a === "neither") return isCand(id);
     if (a === "absent") return !isCand(id) && ITEMS[id] && ITEMS[id].k === "scene";
     return true;
   }
@@ -252,7 +257,7 @@ const DATA = /*__NPC_AGENT_DATA__*/null;
 
   function counts(stem) {
     const n = DATA.npcs.find((x) => x.stem === stem), eff = effective(stem);
-    const c = { total: 0, ruled: 0, present: 0, mentioned: 0, bySpan: 0, byDefault: 0 };
+    const c = { total: 0, ruled: 0, present: 0, mentioned: 0, neither: 0, bySpan: 0, byDefault: 0 };
     for (const id of Object.keys(n.candidates)) {
       c.total++;
       const e = eff[id];
@@ -285,7 +290,7 @@ const DATA = /*__NPC_AGENT_DATA__*/null;
     $("tally").innerHTML =
       "<span><b>" + c.ruled + "</b> of " + c.total + " passages answered</span>" +
       '<span class="meter" aria-hidden="true"><i style="width:' + pct + '%"></i></span>' +
-      "<span>physically present " + c.present + " · mentioned " + c.mentioned +
+      "<span>physically present " + c.present + " · mentioned " + c.mentioned + " · neither / unsure " + c.neither +
       (c.bySpan ? " · " + c.bySpan + " by span" : "") + (c.byDefault ? " · " + c.byDefault + " by default" : "") + "</span>" +
       (c.unnamedPresent ? "<span>+ " + c.unnamedPresent + " scenes that never name them, present by span</span>" : "") +
       (c.absent ? "<span>" + c.absent + " removed from the span</span>" : "");
