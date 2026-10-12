@@ -4,7 +4,6 @@ from __future__ import annotations
 import base64
 import json
 import re
-import subprocess
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
@@ -31,6 +30,7 @@ from pipelines.summary_native import (
     validate,
 )
 from pipelines.summary_native.authority import (
+    AuthorityError,
     AuthorityLedger,
     ReviewArtifactRef,
     ReviewDecisionRecord,
@@ -39,6 +39,7 @@ from pipelines.summary_native.authority import (
     ledger_path,
     load_ledger,
     sha256_bytes,
+    validate_review_decision_references,
 )
 from pipelines.summary_native.authority_apply import (
     TransactionTarget,
@@ -701,15 +702,9 @@ def execute_identity_regeneration(
             "review the generated prose and use the exact NPC signoff/publish workflow"
         )
     if runner is None:
-        runner = lambda argv, cwd: subprocess.run(  # noqa: E731
-            argv,
-            cwd=cwd,
-            text=True,
-            check=False,
-            timeout=3600,
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL,
-        )
+        from campaignlib.subprocess_runner import run_quiet
+
+        runner = lambda argv, cwd: run_quiet(argv, cwd=cwd, timeout=3600)  # noqa: E731
     from pipelines.summary_native.cli import build_parser
 
     def cleanup_job(job, ordinal: int) -> None:
@@ -1091,6 +1086,17 @@ def _corpus_plan(
             or dependencies.get("inventory_complete") is not True
             or not isinstance(dependencies.get("artifacts"), list)
         ):
+            if isinstance(manifest, dict) and manifest.get("kind") == "summary_native" and (
+                not isinstance(dependencies, dict) or dependencies.get("precision") != "subject"
+            ):
+                # A build that predates subject-level identity dependencies is
+                # the retired shape: name the adoption command instead of only
+                # reporting an incomplete inventory.
+                inventory.blocked.append(
+                    f"REVIEW_IDENTITY_DEPENDENCIES_MIGRATION_REQUIRED: {relative} predates identity "
+                    f"dependency metadata; run `summary_native review dependencies migrate "
+                    f"--campaign-dir {root} --dry-run --json`"
+                )
             inventory.blocked.append("REVIEW_IDENTITY_INVENTORY_INCOMPLETE")
             continue
 
@@ -1895,7 +1901,7 @@ def prepare_identity_alternatives(
     return tuple(proposals)
 
 
-def _approval(ledger: AuthorityLedger, review_id: str, proposal: IdentityProposal) -> ReviewDecisionRecord:
+def _approval(ledger: AuthorityLedger, review_id: str, proposal: IdentityProposal, ledger_root: Path) -> ReviewDecisionRecord:
     binding = proposal.decision_bindings[0]
     records = [
         record
@@ -1912,6 +1918,12 @@ def _approval(ledger: AuthorityLedger, review_id: str, proposal: IdentityProposa
     if not records:
         raise IdentityReviewError("REVIEW_APPROVAL_REQUIRED: exact proposal is not approved")
     record = records[-1]
+    # The ledger record is only an index of the human decision; the immutable
+    # decision event behind it is the decision.  Refuse a record without one.
+    try:
+        validate_review_decision_references(ledger_root, record)
+    except AuthorityError as exc:
+        raise IdentityReviewError(f"REVIEW_APPROVAL_REQUIRED: approval has no matching decision event ({exc})") from exc
     if (
         record.item_revision != binding.item_revision
         or record.review_digest != binding.review_digest
@@ -1994,7 +2006,7 @@ def apply_identity_proposal(
         require_no_pending_transaction(root)
         validate_ledger_tip(root)
         ledger = load_ledger(root)
-        record = _approval(ledger, review_id, proposal)
+        record = _approval(ledger, review_id, proposal, root)
         if receipt_path.exists():
             receipt = model_from_json(IdentityReceipt, receipt_path.read_bytes())
             if (

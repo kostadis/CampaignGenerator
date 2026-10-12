@@ -86,6 +86,7 @@ def add_parser(subparsers: argparse._SubParsersAction) -> None:
     retract.add_argument("--event", required=True)
     retract.add_argument("--expected-decision-revision", required=True, type=int)
     retract.add_argument("--reason", required=True)
+    retract.add_argument("--reviewer", required=True, help="who is withdrawing the decision")
     _scope_args(retract)
     refresh = commands.add_parser("refresh", help="refresh source custody and approval freshness")
     refresh.add_argument("review"); refresh.add_argument("--expected-generation",required=True,type=int); _scope_args(refresh)
@@ -146,7 +147,7 @@ def add_parser(subparsers: argparse._SubParsersAction) -> None:
 
 def _endpoint_args(parser: argparse.ArgumentParser) -> None:
     parser.add_argument("--host", required=True, metavar="ADDRESS")
-    parser.add_argument("--port", required=True, type=int)
+    parser.add_argument("--port", type=int, default=None, help="default: config/review.yaml port")
     parser.add_argument("--origin", required=True, metavar="URL")
     parser.add_argument("--tls-cert", default=None, metavar="FILE")
     parser.add_argument("--tls-key", default=None, metavar="FILE")
@@ -218,13 +219,18 @@ def _document_section(root: Path, item, offset: int) -> dict:
         raise ReviewStoreError("REVIEW_STALE_CUSTODY: document bytes changed", "REVIEW_STALE_CUSTODY")
     size = load_campaign_review_config(root).max_section_bytes
     end = min(len(data), offset + size)
-    while end > offset:
+    # A UTF-8 character is at most four bytes, so a page boundary that splits
+    # one is fixed by backing off at most three.  Anything else (an offset
+    # inside a character, or bytes that are not UTF-8) refuses at once.
+    content = None
+    for trim in range(min(4, end - offset)):
         try:
-            content = data[offset:end].decode("utf-8")
-            break
+            content = data[offset:end - trim].decode("utf-8")
         except UnicodeDecodeError:
-            end -= 1
-    else:
+            continue
+        end -= trim
+        break
+    if content is None:
         raise ReviewStoreError("REVIEW_PAGE_INVALID: section offset splits encoded text", "REVIEW_PAGE_INVALID")
     return {"content": content, "offset": offset, "next_offset": end if end < len(data) else None,
             "total_bytes": len(data), "full_document_sha256": digest}
@@ -345,6 +351,12 @@ def _create_selected_review(root: Path, kind: str, selection_path: Path) -> dict
     """Materialize the explicit prepared selection used by local producers."""
     if kind == "duplicate_identity":
         return _create_duplicate_review(root, selection_path)
+    if kind == "grounding_documents":
+        from pipelines.summary_native.review.documents import create_document_review
+
+        return create_document_review(
+            root, f"document-review-{uuid.uuid4().hex[:12]}", selection_path, created_by="local-cli"
+        )
     if kind != "npc_verification":
         raise ReviewStoreError(f"REVIEW_KIND_PENDING: {kind} adapter is not available yet")
     raw=parse_json_strict(selection_path.read_bytes())
@@ -673,7 +685,7 @@ def run(args: argparse.Namespace) -> int:
             )
             return _emit(args, ok=True, code="REVIEW_SHOW", message="Review loaded.", data=result)
         if args.review_command == "retract":
-            result = retract_decision(root, args.review, event_id=args.event, expected_revision=args.expected_decision_revision, reason=args.reason)
+            result = retract_decision(root, args.review, event_id=args.event, expected_revision=args.expected_decision_revision, reason=args.reason, reviewer=args.reviewer)
             return _emit(args, ok=True, code="REVIEW_RETRACTED", message="Decision withdrawn; applied artifacts were not changed.", data=result)
         if args.review_command == "refresh":
             from pipelines.summary_native.review.store import refresh_review
@@ -767,6 +779,8 @@ def run(args: argparse.Namespace) -> int:
                 return _emit(args, ok=True, code="REVIEW_ACCESS_ISSUED", message="Review link issued.", data=result)
             result = revoke_grant(root, args.review, args.grant)
             return _emit(args, ok=True, code="REVIEW_ACCESS_REVOKED", message="Review link revoked.", data=result)
+        if getattr(args, "port", "absent") is None:
+            args.port = load_campaign_review_config(root).port
         if args.review_command == "serve":
             from pipelines.summary_native.review.service import serve_foreground
 

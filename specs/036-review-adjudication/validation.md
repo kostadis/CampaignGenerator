@@ -527,3 +527,23 @@ user description Chrome/Safari, not a claim that both browsers were tested.
 Offline recovery was user-confirmed; its specific new event was not correlated
 in history, so same-request retry correctness relies on the independent
 automated coverage. No live campaign data was changed.
+
+## Post-merge constitution audit (2026-10-12)
+
+The Constitution Check in `plan.md` recorded every principle as PASS. A later
+audit of the merged code against all thirteen principles found violations of
+II, VIII, XI and XIII and borderline cases under I, V and XII. The recorded
+assessment is left as written; this section records what was found and fixed.
+
+| Principle | Found | Fix |
+|---|---|---|
+| II | The phone viewer saved a verdict on the ticked items even while a different item was on screen. Identity apply accepted a ledger approval record with no decision event behind it, and bundle import added such records unchecked. | Save applies to the ticked batch only when the item on screen is in it. `identity apply` validates the record against its immutable event. Import requires every record to match a local or bundled decision event and validates withdrawal ids. |
+| VIII | The local review routes collapsed every unlisted CLI refusal to 503 "failed safely", hiding e.g. the transaction id recovery needs. `npc-publish` reported a v1 ledger as a missing sign-off; `review init` dropped the migration command. | Local routes relay the CLI's code and message (409/423/404/422/400; 503 only when the command dies without an envelope). Both commands now name the migration. |
+| XI | `create --kind grounding_documents` always refused, so the grounding page's create button could not work; `document create` and decision recording had no face; `summaries_dir`, `--section-offset` and the `duplicate_identity` kind were unreachable. | Grounding create works; routes and launcher controls added for document create, decisions, section offset, kind and summaries directory. `review serve` is the foreground form of `service start` (same flags), reached by Start reviewer. |
+| XIII | Every `registry` command, read-only ones included, created `docs/authority/.lock`, which marks a campaign review-enabled. `review migrate --dry-run` and `review init` could create it too. Recovery rewrote a v1 journal in the v2 shape. | Locking is skipped where `docs/authority/` does not exist; dry run and init refuse before locking. Recovery leaves a v1 journal's shape alone. `migration.md` and the operator doc now state affected workspaces and `dependencies migrate`. |
+| I | A withdrawal and its audit event were attributed to the original decider. | `review retract --reviewer` records the withdrawer. |
+| V | The review CLI spawned processes outside the shared runner; no guard kept model calls out of `review/`. | `spawn_detached` / `run_quiet` in `campaignlib/subprocess_runner.py`; `test_review_package_makes_no_model_call`. |
+| XII | The launcher restated the port, grant lifetime and page size defaults; `access.py` restated the grant bounds. | Blank fields defer to `config/review.yaml`; bounds are `MIN/MAX_GRANT_EXPIRY_SECONDS`. The three `--expected-*` flags stay distinct because they guard different things (ledger revision, review generation, decision revision). |
+
+Regression tests: `tests/test_summary_native_review_findings_547.py`, plus
+additions to the routes, installation, decisions and no-LLM suites.

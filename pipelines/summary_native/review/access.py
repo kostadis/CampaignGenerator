@@ -12,7 +12,11 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Iterable
 
-from campaignlib.review_config import load_campaign_review_config
+from campaignlib.review_config import (
+    MAX_GRANT_EXPIRY_SECONDS,
+    MIN_GRANT_EXPIRY_SECONDS,
+    load_campaign_review_config,
+)
 from pipelines.summary_native.authority_apply import authority_lock, require_no_pending_transaction
 from pipelines.summary_native.review.models import (
     AccessAction,
@@ -178,8 +182,15 @@ def issue_grant(
     identity = load_campaign_identity(root)
     config = load_campaign_review_config(root)
     duration = config.grant_expiry_seconds if expires_in is None else expires_in
-    if not isinstance(duration, int) or isinstance(duration, bool) or not 60 <= duration <= 31 * 86400:
-        raise ReviewStoreError("REVIEW_ACCESS_INVALID: --expires-in must be between 60 and 2678400 seconds")
+    if (
+        not isinstance(duration, int)
+        or isinstance(duration, bool)
+        or not MIN_GRANT_EXPIRY_SECONDS <= duration <= MAX_GRANT_EXPIRY_SECONDS
+    ):
+        raise ReviewStoreError(
+            f"REVIEW_ACCESS_INVALID: --expires-in must be between {MIN_GRANT_EXPIRY_SECONDS} "
+            f"and {MAX_GRANT_EXPIRY_SECONDS} seconds"
+        )
     advertised_origin = origin or str(_runtime_handle(root, review_id)["origin"])
     token = secrets.token_urlsafe(TOKEN_BYTES)
     grant_id = f"grant-{secrets.token_hex(16)}"

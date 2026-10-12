@@ -81,6 +81,7 @@ def test_all_us1_actions_use_fixed_bounded_cli_arrays_and_preserve_defaults(rout
         ("get", f"{BASE}/review-1/history?item=item-1", None),
         ("post", f"{BASE}/review-1/retract", {
             "event": "event-1", "expected_decision_revision": 1, "reason": "Renew review",
+            "reviewer": "GM Two",
         }),
         ("post", f"{BASE}/review-1/export", {"selection": "selection.json"}),
         ("post", f"{BASE}/import", {"bundle": "bundle.json", "expected_generation": 1}),
@@ -124,15 +125,15 @@ def test_all_us1_actions_use_fixed_bounded_cli_arrays_and_preserve_defaults(rout
     assert commands[9][2:-3] == ["history", "review-1", "--item", "item-1"]
     assert commands[10][2:-3] == [
         "retract", "review-1", "--event", "event-1",
-        "--expected-decision-revision", "1", "--reason", "Renew review",
+        "--expected-decision-revision", "1", "--reason", "Renew review", "--reviewer", "GM Two",
     ]
     assert commands[11][2:-3] == ["export", "review-1", "--selection", str(selection)]
     assert commands[12][2:-3] == [
         "import", "--bundle", str(bundle), "--expected-generation", "1"
     ]
     assert commands[13][2:-3] == [
-        "service", "start", "review-1", "--host", "127.0.0.1", "--port", "8766",
-        "--origin", "http://127.0.0.1:8766",
+        "service", "start", "review-1", "--host", "127.0.0.1",
+        "--origin", "http://127.0.0.1:8766", "--port", "8766",
     ]
     assert commands[14][2:-3] == ["service", "status", "review-1"]
     assert commands[15][2:-3] == ["service", "stop", "review-1"]
@@ -154,32 +155,50 @@ def test_paths_cannot_retarget_the_local_server_campaign(route_app, tmp_path: Pa
     assert calls == []
 
 
+def _refusing(monkeypatch, message: str, payload: dict | None):
+    async def refuse(_cmd, **kwargs):
+        assert kwargs["save_run_log"] is False
+        raise BoundedJSONError(message, returncode=3, category="nonzero_exit", payload=payload)
+
+    monkeypatch.setattr(review_routes, "run_bounded_json", refuse)
+
+
 def test_bounded_failures_keep_stable_http_classes_without_run_logs(route_app, monkeypatch):
     app, _campaign, _calls = route_app
-    secret = "capability-secret-must-not-escape"
-
-    async def stale(_cmd, **kwargs):
-        assert kwargs["save_run_log"] is False
-        raise BoundedJSONError(
-            "changed",
-            returncode=3,
-            category="nonzero_exit",
-            payload={
-                "ok": False,
-                "code": "REVIEW_STALE_DECISION",
-                "message": f"Reload after checking {secret}.",
-            },
-        )
-
-    monkeypatch.setattr(review_routes, "run_bounded_json", stale)
+    message = "REVIEW_STALE_DECISION: decision revision changed"
+    _refusing(monkeypatch, message, {"ok": False, "code": "REVIEW_STALE_DECISION", "message": message})
     response = TestClient(app).get(f"{BASE}/review-1/status")
     assert response.status_code == 409
-    assert response.json() == {
-        "ok": False,
-        "code": "REVIEW_STALE_DECISION",
-        "message": "Review state changed. Reload before trying again.",
-    }
-    assert secret not in response.text
+    assert response.json() == {"ok": False, "code": "REVIEW_STALE_DECISION", "message": message}
+
+
+@pytest.mark.parametrize(
+    "code,status",
+    [
+        ("AUTH_PENDING_TRANSACTION", 423),
+        ("AUTH_RECOVERY", 423),
+        ("REVIEW_UNKNOWN_ITEM", 404),
+        ("REVIEW_ACTION_MISMATCH", 422),
+        ("REVIEW_SERVICE_REQUIRED", 400),
+        ("REVIEW_KIND_PENDING", 400),
+    ],
+)
+def test_local_refusals_reach_the_gm_with_their_own_code_and_message(route_app, monkeypatch, code, status):
+    """The trusted local surface relays what the CLI said, e.g. the transaction id recovery needs."""
+    app, _campaign, _calls = route_app
+    message = f"{code}: recover with `summary_native review recover tx-0123`"
+    _refusing(monkeypatch, message, {"ok": False, "code": code, "message": message})
+    response = TestClient(app).get(f"{BASE}/review-1/status")
+    assert response.status_code == status
+    assert response.json() == {"ok": False, "code": code, "message": message}
+
+
+def test_a_child_that_dies_without_an_envelope_reads_as_a_command_failure(route_app, monkeypatch):
+    app, _campaign, _calls = route_app
+    _refusing(monkeypatch, "command timed out", None)
+    response = TestClient(app).get(f"{BASE}/review-1/status")
+    assert response.status_code == 503
+    assert response.json()["code"] == "REVIEW_COMMAND_FAILED"
 
 
 def test_campaign_review_config_owns_route_bounds(route_app):
@@ -215,7 +234,7 @@ def test_campaign_review_config_owns_route_bounds(route_app):
     ).status_code == 400
     assert client.post(
         f"{BASE}/review-1/retract",
-        json={"event": "event-1", "expected_decision_revision": 1, "reason": "long"},
+        json={"event": "event-1", "expected_decision_revision": 1, "reason": "long", "reviewer": "GM"},
     ).status_code == 400
 
     assert client.get(f"{BASE}/review-1?limit=2").status_code == 200
@@ -304,6 +323,8 @@ def test_us2_through_us4_actions_preserve_every_typed_cli_flag(route_app):
     app, campaign, calls = route_app
     operation = campaign / "operation.json"
     operation.write_text("{}", encoding="utf-8")
+    summaries = campaign / "summaries"
+    summaries.mkdir()
     selection_digest = "b" * 64
     artifact_digest = "c" * 64
     client = TestClient(app)
@@ -372,11 +393,11 @@ def test_us2_through_us4_actions_preserve_every_typed_cli_flag(route_app):
         [
             "correction", "prepare", "review-1", "--item", "item-1", "--target-kind", "source",
             "--replacement", "Exact replacement", "--expected-decision-revision", "0",
-            "--summaries-dir", "summaries",
+            "--summaries-dir", str(summaries),
         ],
         [
             "correction", "apply", "review-1", "--proposal", "correction-1",
-            "--proposal-sha256", artifact_digest, "--summaries-dir", "summaries",
+            "--proposal-sha256", artifact_digest, "--summaries-dir", str(summaries),
         ],
         [
             "npc", "sign", "review-1", "--item", "npc-signoff-1", "--draft-sha256",
@@ -464,8 +485,9 @@ def test_service_tls_and_grant_lifecycle_flags_are_visible_in_argv(route_app):
     ).status_code == 200
 
     assert calls[0][0][2:-3] == [
-        "service", "start", "review-1", "--host", "100.64.0.10", "--port", "9443",
-        "--origin", "https://review.example:9443", "--tls-cert", str(cert), "--tls-key", str(key),
+        "service", "start", "review-1", "--host", "100.64.0.10",
+        "--origin", "https://review.example:9443", "--port", "9443",
+        "--tls-cert", str(cert), "--tls-key", str(key),
     ]
     assert calls[1][0][2:-3] == ["access", "issue", "review-1", "--expires-in", "3600"]
     assert calls[2][0][2:-3] == ["access", "revoke", "review-1", "--grant", "grant-1"]
@@ -523,7 +545,12 @@ def test_review_launcher_exposes_every_trusted_cli_control_and_binding():
         "dependency migration": "request('/dependencies/migrate','POST',{dry_run:true})",
         "list": "request('','GET')",
         "status": "/status`,'GET'",
-        "pagination limit": "?limit=${pageLimit}",
+        "pagination limit": "limit=${pageLimit}",
+        "section offset": "&section_offset=${sectionOffset}",
+        "create kind": "{kind:createKind,selection}",
+        "document create": "/document/create`,'POST'",
+        "record decision": "/decisions`,'POST'",
+        "correction summaries dir": "summaries_dir:summariesDir",
         "pagination cursor": "&cursor=${encodeURIComponent(cursor)}",
         "history": "/history${historyItem?",
         "retract": "/retract`,'POST'",
@@ -561,6 +588,7 @@ def test_review_launcher_exposes_every_trusted_cli_control_and_binding():
         "tls_cert:tlsCert",
         "tls_key:tlsKey",
         "expires_in:expiresIn",
+        "reason:retractReason,reviewer",
         "grant_id",
         "selection_sha256:selectionSha",
         "proposal_sha256:proposalSha",
@@ -595,3 +623,40 @@ def test_service_process_identity_rejects_zombie_and_reaps_owned_child(tmp_path:
         assert process.returncode == 0
     finally:
         process.wait()
+
+
+def test_summaries_dir_is_contained_like_every_other_browser_path(route_app, tmp_path: Path):
+    """summaries_dir sets the root the correction guard admits, so it may not widen it."""
+    app, campaign, calls = route_app
+    outside = tmp_path.parent / "outside-summaries"
+    outside.mkdir(exist_ok=True)
+    client = TestClient(app)
+    body = {
+        "item": "item-1", "target_kind": "source", "replacement": "Exact replacement",
+        "expected_decision_revision": 0,
+    }
+    for value in (str(outside), ".", str(campaign), "../"):
+        response = client.post(f"{BASE}/review-1/correction/prepare", json={**body, "summaries_dir": value})
+        assert response.status_code == 400, (value, response.text)
+        response = client.post(f"{BASE}/review-1/correction/apply", json={
+            "proposal": "correction-1", "proposal_sha256": "d" * 64, "summaries_dir": value,
+        })
+        assert response.status_code == 400, (value, response.text)
+    assert calls == []
+
+
+def test_document_create_section_offset_and_config_defaults_reach_the_cli(route_app):
+    app, campaign, calls = route_app
+    (campaign / "documents.json").write_text("{}", encoding="utf-8")
+    client = TestClient(app)
+    assert client.post(f"{BASE}/review-1/document/create", json={"selection": "documents.json"}).status_code == 200
+    assert client.get(f"{BASE}/review-1?item=document-1&section_offset=65536").status_code == 200
+    # No port means config/review.yaml's port; the route does not restate a default.
+    assert client.post(f"{BASE}/review-1/service/start", json={
+        "host": "127.0.0.1", "origin": "http://127.0.0.1:8766",
+    }).status_code == 200
+    assert [command[2:-3] for command, _kwargs in calls] == [
+        ["document", "create", "review-1", "--selection", str(campaign / "documents.json")],
+        ["show", "review-1", "--item", "document-1", "--section-offset", "65536"],
+        ["service", "start", "review-1", "--host", "127.0.0.1", "--origin", "http://127.0.0.1:8766"],
+    ]

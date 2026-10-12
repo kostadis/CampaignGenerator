@@ -195,6 +195,7 @@ def test_withdrawn_document_decision_is_not_current(tmp_path: Path) -> None:
         event_id=events[0]["event_id"],
         expected_revision=events[0]["decision_revision"],
         reason="fixture withdrawal",
+        reviewer="GM",
     )
     with pytest.raises(PromotionError, match="four distinct current"):
         load_signoff_bindings(root, bundle)

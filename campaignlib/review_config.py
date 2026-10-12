@@ -26,6 +26,8 @@ from campaignlib.config import (
 REVIEW_CONFIG_FILENAME = "review.yaml"
 
 DEFAULT_GRANT_EXPIRY_SECONDS = 24 * 60 * 60
+MIN_GRANT_EXPIRY_SECONDS = 60
+MAX_GRANT_EXPIRY_SECONDS = 31 * 24 * 60 * 60
 DEFAULT_MAX_REQUEST_BYTES = 1 * 1024 * 1024
 DEFAULT_MAX_NOTE_CHARS = 16 * 1024
 DEFAULT_MAX_BATCH_DECISIONS = 100
@@ -92,8 +94,8 @@ class ReviewConfig(BaseModel):
     origin: str | None = None
     grant_expiry_seconds: int = Field(
         default=DEFAULT_GRANT_EXPIRY_SECONDS,
-        ge=60,
-        le=31 * 24 * 60 * 60,
+        ge=MIN_GRANT_EXPIRY_SECONDS,
+        le=MAX_GRANT_EXPIRY_SECONDS,
     )
     max_request_bytes: int = Field(default=DEFAULT_MAX_REQUEST_BYTES, ge=1024)
     max_note_chars: int = Field(default=DEFAULT_MAX_NOTE_CHARS, ge=1)

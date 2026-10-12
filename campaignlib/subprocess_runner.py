@@ -13,6 +13,7 @@ import asyncio
 import json
 import os
 import signal
+import subprocess
 import sys
 import time
 from collections.abc import AsyncGenerator, Callable
@@ -470,3 +471,33 @@ def console_script(name: str) -> str:
     the same robustness ``python_exe()`` already gives the interpreter path.
     """
     return str(Path(python_exe()).parent / name)
+
+
+def spawn_detached(cmd: list[str], *, cwd: str | Path) -> subprocess.Popen:
+    """Start a long-lived CLI in its own session with no inherited stdio.
+
+    The caller owns the returned process (readiness, group kill, reaping).
+    Used for background services such as ``summary_native review service``.
+    """
+    return subprocess.Popen(
+        cmd,
+        cwd=cwd,
+        stdin=subprocess.DEVNULL,
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+        start_new_session=True,
+        close_fds=True,
+    )
+
+
+def run_quiet(cmd: list[str], *, cwd: str | Path, timeout: float) -> subprocess.CompletedProcess:
+    """Run a CLI to completion, discarding output; the exit status is the result."""
+    return subprocess.run(
+        cmd,
+        cwd=cwd,
+        text=True,
+        check=False,
+        timeout=timeout,
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+    )

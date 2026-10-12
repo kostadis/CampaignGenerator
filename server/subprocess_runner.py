@@ -18,6 +18,8 @@ from campaignlib.subprocess_runner import (  # noqa: F401
     python_exe,
     run_bounded_json,
     run_command_capture,
+    run_quiet,
+    spawn_detached,
     sse_error_stream,
     stream_subprocess,
 )

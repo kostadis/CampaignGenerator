@@ -846,6 +846,11 @@ def test_incomplete_manifest_and_symlink_alias_block_bounded_alternatives(tmp_pa
         "REVIEW_IDENTITY_INVENTORY_INCOMPLETE" in proposal.blocked_reasons
         for proposal in malformed
     )
+    # A build that predates identity dependencies is the retired shape: the refusal names the adoption.
+    assert all(
+        any("summary_native review dependencies migrate" in reason for reason in proposal.blocked_reasons)
+        for proposal in malformed
+    )
 
     symlink_root, _item, _summary = _campaign(tmp_path / "symlink")
     authored = symlink_root / "docs/npcs/authored"

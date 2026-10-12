@@ -363,6 +363,13 @@ def _plan_locked(root: Path) -> dict:
 def plan_authority_migration(campaign_dir: Path) -> dict:
     """Return the exact, side-effect-free authority v1-to-v2 migration plan."""
     root = Path(campaign_dir).resolve()
+    # A dry run must not create docs/authority (and with it the review-enabled
+    # marker) on a campaign that has no ledger to migrate.
+    if not (root / "docs" / "authority.yaml").is_file():
+        raise AuthorityError(
+            "AUTH_MIGRATION_INVALID: no authority ledger at docs/authority.yaml; nothing to migrate",
+            "AUTH_MIGRATION_INVALID",
+        )
     with authority_lock(root, exclusive=False):
         return _plan_locked(root)
 

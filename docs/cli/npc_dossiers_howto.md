@@ -748,6 +748,8 @@ document. Re-run with `--force`, or a larger `--max-tokens`.
 | `…/draft/<stem>.md: draft header missing or unreadable; re-run npc-draft` | Re-draft. |
 | `verification failed; see …/draft/<stem>.verify.md` | Read the report; re-draft or fix. `--force` only after reading it. |
 | `not verified; run summary_native npc-verify (or --force)` | No verdict exists (e.g. only an `.incomplete.md`). |
+| `NPC_DRAFT_SIGNOFF_REQUIRED: exact draft approval is missing or stale; create a real NPC verification review and run summary_native review npc sign` | A summary-native dossier is published only after a GM signs its exact draft bytes in a review (`docs/cli/summary_native_review.md`). Create an `npc_verification` review over the draft, sign it, and publish again. A changed draft byte needs a new sign-off. |
+| `authority ledger version 1 requires deliberate migration; run summary_native review migrate --campaign-dir … --dry-run --json` | The sign-off lives in the authority ledger, and this one predates review. Run the migration it names (dry run, then apply the returned digest); sign-offs cannot be read until then. |
 | `both sources exist: … and …; choose with --source summary_native\|hand-built` | Say which. |
 | `no hand-built dossier docs/npcs/authored/<slug>.md` | `--source hand-built` with no such file. |
 | `slug collision: A, B all map to 'x'` | Two canonical names share a slug. |

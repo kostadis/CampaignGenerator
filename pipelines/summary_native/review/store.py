@@ -1,6 +1,7 @@
 """Campaign-local durable storage for review manifests and immutable records."""
 from __future__ import annotations
 
+import re
 import uuid
 import contextlib
 from datetime import datetime, timezone
@@ -33,14 +34,24 @@ from pipelines.summary_native.review.models import (
     model_from_json,
     parse_json_strict,
     DecisionEvent,
+    _opaque_id,
 )
+
+
+_CODE_PREFIX = re.compile(r"([A-Z][A-Z0-9_]+):")
 
 
 class ReviewStoreError(ValueError):
     """A safe, actionable refusal at the review storage boundary."""
 
-    def __init__(self, message: str, code: str = "REVIEW_INVALID"):
+    def __init__(self, message: str, code: str | None = None):
         super().__init__(message)
+        # Most refusals spell their code as the message prefix
+        # ("REVIEW_INVALID_BATCH: ...").  Without an explicit code that prefix
+        # is the code, so callers and HTTP adapters see the real refusal class.
+        if code is None:
+            prefix = _CODE_PREFIX.match(message)
+            code = prefix.group(1) if prefix else "REVIEW_INVALID"
         self.code = code
 
 
@@ -132,6 +143,11 @@ def initialize_campaign(campaign_dir: Path) -> CampaignReviewIdentity:
     """Deliberately initialize review storage; never migrate authority implicitly."""
     root = Path(campaign_dir).resolve()
     path = _identity_path(root)
+    migrate = f"summary_native review migrate --campaign-dir {root} --dry-run --json"
+    # Refuse before locking: the lock would create docs/authority on a campaign
+    # that has no authority to review against.
+    if not (root / "docs" / "authority.yaml").is_file():
+        raise ReviewStoreError("REVIEW_AUTHORITY_REQUIRED: initialize authority before review storage")
     with authority_lock(root, exclusive=True):
         require_no_pending_transaction(root)
         if not (root / "docs" / "authority.yaml").is_file():
@@ -141,10 +157,14 @@ def initialize_campaign(campaign_dir: Path) -> CampaignReviewIdentity:
             validate_ledger_tip(root)
         except AuthorityError as exc:
             raise ReviewStoreError(
-                "REVIEW_AUTHORITY_MIGRATION_REQUIRED: validate or migrate the authority ledger before review init"
+                f"REVIEW_AUTHORITY_MIGRATION_REQUIRED: the authority ledger must validate before review init ({exc})",
+                "REVIEW_AUTHORITY_MIGRATION_REQUIRED",
             ) from exc
         if ledger.version != 2:
-            raise ReviewStoreError("REVIEW_AUTHORITY_MIGRATION_REQUIRED: run review migrate before review init")
+            raise ReviewStoreError(
+                f"REVIEW_AUTHORITY_MIGRATION_REQUIRED: run `{migrate}` before review init",
+                "REVIEW_AUTHORITY_MIGRATION_REQUIRED",
+            )
         if path.exists():
             identity = load_campaign_identity(root)
             if identity.canonical_root != str(root):
@@ -639,7 +659,7 @@ def save_decisions(
         return result
 
 
-def retract_decision(campaign_dir: Path, review_id: str, *, event_id: str, expected_revision: int, reason: str) -> dict:
+def retract_decision(campaign_dir: Path, review_id: str, *, event_id: str, expected_revision: int, reason: str, reviewer: str) -> dict:
     root = Path(campaign_dir).resolve()
     with authority_lock(root, exclusive=True):
         require_no_pending_transaction(root)
@@ -654,6 +674,8 @@ def retract_decision(campaign_dir: Path, review_id: str, *, event_id: str, expec
             raise ReviewStoreError("REVIEW_STALE_DECISION: only the current decision may be withdrawn", "REVIEW_STALE_DECISION")
         if not reason.strip():
             raise ReviewStoreError("REVIEW_INVALID: retraction reason is required")
+        if not reviewer.strip():
+            raise ReviewStoreError("REVIEW_INVALID: the withdrawing reviewer is required")
         withdrawal_id = f"withdrawal-{sha256_bytes(f'{event_id}:{expected_revision}'.encode())[:20]}"
         withdrawal = {
             "version": 1, "kind": "withdrawal", "event_id": withdrawal_id,
@@ -661,7 +683,7 @@ def retract_decision(campaign_dir: Path, review_id: str, *, event_id: str, expec
             "item_id": original["item_id"], "item_revision": original["item_revision"],
             "review_digest": original["review_digest"], "decision_revision": expected_revision + 1,
             "supersedes_event": event_id, "withdrawal_reason": reason,
-            "reviewer": original["reviewer"], "recorded_at": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
+            "reviewer": reviewer, "withdrawn_decision_reviewer": original["reviewer"], "recorded_at": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
         }
         ledger = load_ledger(root)
         validate_ledger_tip(root)
@@ -676,7 +698,7 @@ def retract_decision(campaign_dir: Path, review_id: str, *, event_id: str, expec
         after = AuthorityLedger(version=ledger.version, campaign=ledger.campaign, revision=ledger.revision + (1 if found else 0), records=records, conflicts=ledger.conflicts)
         before_bytes = ledger_path(root).read_bytes(); after_bytes = ledger_bytes(after)
         audit_id = f"event-review-withdraw-{uuid.uuid4().hex}"
-        audit = {"id":audit_id,"reason":"review-withdrawal","actor":original["reviewer"],"recorded_at":withdrawal["recorded_at"],"before_sha256":sha256_bytes(before_bytes),"after_sha256":sha256_bytes(after_bytes)}
+        audit = {"id":audit_id,"reason":"review-withdrawal","actor":reviewer,"recorded_at":withdrawal["recorded_at"],"before_sha256":sha256_bytes(before_bytes),"after_sha256":sha256_bytes(after_bytes)}
         targets = [TransactionTarget.create(_review_dir(root, review_id)/"events"/f"{withdrawal_id}.json", canonical_bytes(withdrawal))]
         if found:
             targets += [
@@ -810,6 +832,59 @@ def export_review(campaign_dir: Path, review_id: str, item_ids: list[str]) -> di
     return {"export_id":path.stem,"path":str(path.relative_to(root)),"bundle_sha256":digest}
 
 
+_WITHDRAWAL_FIELDS = frozenset({
+    "version", "kind", "event_id", "campaign_id", "review_id", "item_id", "item_revision",
+    "review_digest", "decision_revision", "supersedes_event", "withdrawal_reason", "reviewer",
+    "withdrawn_decision_reviewer", "recorded_at",
+})
+
+
+def _validate_imported_withdrawal(event: dict, *, review_id: str, campaign_id: str) -> None:
+    """A withdrawal's ``event_id`` becomes a file name, so it is checked first."""
+    required = _WITHDRAWAL_FIELDS - {"withdrawn_decision_reviewer"}
+    if not required.issubset(event) or not set(event).issubset(_WITHDRAWAL_FIELDS):
+        raise ReviewStoreError("REVIEW_INVALID_IMPORT: malformed withdrawal event")
+    for field in ("event_id", "supersedes_event", "item_id"):
+        try:
+            _opaque_id(str(event[field]))
+        except ValueError as exc:
+            raise ReviewStoreError(f"REVIEW_INVALID_IMPORT: withdrawal {field} is not an opaque id") from exc
+    if event["review_id"] != review_id or event["campaign_id"] != campaign_id:
+        raise ReviewStoreError("REVIEW_INVALID_IMPORT: withdrawal belongs to another review")
+    revision = event["decision_revision"]
+    if not isinstance(revision, int) or isinstance(revision, bool) or revision < 2:
+        raise ReviewStoreError("REVIEW_INVALID_IMPORT: withdrawal decision_revision is invalid")
+    if not str(event["withdrawal_reason"]).strip() or not str(event["reviewer"]).strip():
+        raise ReviewStoreError("REVIEW_INVALID_IMPORT: withdrawal needs a reason and a reviewer")
+
+
+def _validate_imported_record(record: ReviewDecisionRecord, event: dict | None, *, review_id: str, campaign_id) -> None:
+    if event is None or event.get("kind") == "withdrawal":
+        raise ReviewStoreError("REVIEW_INVALID_IMPORT: authority record has no decision event")
+    if sha256_bytes(canonical_bytes(event)) != record.event_digest:
+        raise ReviewStoreError("REVIEW_INVALID_IMPORT: authority record does not match its decision event")
+    expected = {
+        "review_id": review_id,
+        "campaign_id": str(campaign_id),
+        "item_id": record.item_id,
+        "item_revision": record.item_revision,
+        "review_digest": record.review_digest,
+        "decision_revision": record.decision_revision,
+        "verdict": "approve",
+        "disposition": record.disposition,
+        "authority_record_id": record.id,
+    }
+    if record.review_id != review_id or record.campaign_id != campaign_id or any(
+        event.get(field) != value for field, value in expected.items()
+    ):
+        raise ReviewStoreError("REVIEW_INVALID_IMPORT: authority record does not match its decision event")
+    proposal = (None, None) if record.proposal is None else (record.proposal.id, record.proposal.digest)
+    if (event.get("proposal_id"), event.get("proposal_digest")) != proposal and not (
+        record.proposal is not None and record.proposal.kind == "document_promotion"
+    ):
+        raise ReviewStoreError("REVIEW_INVALID_IMPORT: authority record proposal differs from its decision event")
+
+
 def import_review_bundle(campaign_dir: Path, bundle_path: Path, *, expected_generation: int) -> dict:
     root = Path(campaign_dir).resolve(); identity = load_campaign_identity(root)
     raw = parse_json_strict(Path(bundle_path).read_bytes())
@@ -843,6 +918,7 @@ def import_review_bundle(campaign_dir: Path, bundle_path: Path, *, expected_gene
         if item is None:
             raise ReviewStoreError("REVIEW_STALE_DECISION: imported event names an unknown item", "REVIEW_STALE_DECISION")
         if event.get("kind") == "withdrawal":
+            _validate_imported_withdrawal(event, review_id=review_id, campaign_id=str(identity.campaign_id))
             validated_events.append(event)
             continue
         try:
@@ -881,6 +957,12 @@ def import_review_bundle(campaign_dir: Path, bundle_path: Path, *, expected_gene
             prior=by_record.get(record.id)
             if prior is not None and canonical_bytes(prior)!=canonical_bytes(record): raise ReviewStoreError("REVIEW_STALE_DECISION: authority history differs","REVIEW_STALE_DECISION")
             if prior is None: additions.append(record)
+        # An authority decision record is only proof of a human decision when
+        # the decision event behind it exists, so every imported record must
+        # name an event that is already local or arrives in this same bundle.
+        known_events={**local_by_id,**{event["event_id"]:event for event in missing}}
+        for record in additions:
+            _validate_imported_record(record,known_events.get(record.event_id),review_id=review_id,campaign_id=identity.campaign_id)
         if not missing and not additions: return {"review_id":review_id,"bundle_sha256":claimed,"imported_events":0}
         before=ledger_path(root).read_bytes();after_ledger=AuthorityLedger(version=ledger.version,campaign=ledger.campaign,revision=ledger.revision+1,records=[*ledger.records,*additions],conflicts=ledger.conflicts);after=ledger_bytes(after_ledger)
         audit_id=f"event-review-import-{uuid.uuid4().hex}";now=datetime.now(timezone.utc).isoformat().replace("+00:00","Z");audit={"id":audit_id,"reason":"review-import","actor":"import","recorded_at":now,"before_sha256":sha256_bytes(before),"after_sha256":sha256_bytes(after)}

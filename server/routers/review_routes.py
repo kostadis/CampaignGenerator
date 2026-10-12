@@ -16,7 +16,12 @@ from fastapi import APIRouter, HTTPException, Query, Request
 from fastapi.responses import JSONResponse, StreamingResponse
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
-from campaignlib.review_config import ReviewConfig, load_campaign_review_config
+from campaignlib.review_config import (
+    MAX_GRANT_EXPIRY_SECONDS,
+    MIN_GRANT_EXPIRY_SECONDS,
+    ReviewConfig,
+    load_campaign_review_config,
+)
 from server.platform_config_service import require_platform
 from server.subprocess_runner import BoundedJSONError, console_script, run_bounded_json, stream_subprocess
 
@@ -77,6 +82,7 @@ class RetractRequest(StrictRequest):
     event: str = Field(min_length=1, max_length=128, pattern=r"^[A-Za-z0-9_.-]+$")
     expected_decision_revision: int = Field(ge=1)
     reason: str = Field(min_length=1)
+    reviewer: str = Field(min_length=1, max_length=256)
 
 
 class FileSelectionRequest(StrictRequest):
@@ -105,7 +111,8 @@ class RecoverRequest(StrictRequest):
 
 class EndpointRequest(StrictRequest):
     host: str = Field(min_length=1, max_length=255)
-    port: int = Field(ge=1, le=65535)
+    # None resolves to config/review.yaml's ``port`` in the CLI.
+    port: int | None = Field(default=None, ge=1, le=65535)
     origin: str = Field(min_length=1, max_length=2048)
     tls_cert: str | None = None
     tls_key: str | None = None
@@ -118,7 +125,9 @@ class EndpointRequest(StrictRequest):
 
 
 class GrantIssueRequest(StrictRequest):
-    expires_in: int | None = Field(default=None, ge=60, le=31 * 86_400)
+    expires_in: int | None = Field(
+        default=None, ge=MIN_GRANT_EXPIRY_SECONDS, le=MAX_GRANT_EXPIRY_SECONDS
+    )
 
 
 class GrantRevokeRequest(StrictRequest):
@@ -159,6 +168,20 @@ def _contained_file(root: Path, value: str, field: str) -> str:
     return str(candidate)
 
 
+def _contained_dir(root: Path, value: str, field: str) -> str:
+    raw = Path(value).expanduser()
+    candidate = raw.resolve() if raw.is_absolute() else (root / raw).resolve()
+    try:
+        candidate.relative_to(root)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=f"{field} must stay inside the active campaign") from exc
+    if candidate == root:
+        raise HTTPException(status_code=400, detail=f"{field} must name a directory below the campaign root")
+    if not candidate.is_dir():
+        raise HTTPException(status_code=400, detail=f"{field} does not exist")
+    return str(candidate)
+
+
 def _command(root: Path, *arguments: str) -> list[str]:
     return [
         console_script("summary_native"),
@@ -175,28 +198,36 @@ def _config(root: Path) -> ReviewConfig:
 
 
 def _error(exc: BoundedJSONError) -> JSONResponse:
+    """Relay a CLI refusal with its own code and message.
+
+    This router is the trusted local surface, so the GM sees what the CLI said
+    (for example the transaction id a recovery needs).  Only a child that died
+    without an envelope (timeout, crash, oversized output) reads as a failure
+    of the command itself.  The capability service keeps its own opaque mapping.
+    """
     payload = exc.payload if isinstance(exc.payload, dict) else None
     supplied = payload.get("code") if payload else None
-    known: dict[str, tuple[int, str]] = {
-        "REVIEW_STALE_DECISION": (409, "Review state changed. Reload before trying again."),
-        "REVIEW_STALE_GENERATION": (409, "Review state changed. Reload before trying again."),
-        "REVIEW_STALE_CUSTODY": (409, "Review state changed. Reload before trying again."),
-        "REVIEW_REQUEST_ID_CONFLICT": (409, "Review state changed. Reload before trying again."),
-        "REVIEW_RECOVERY_REQUIRED": (423, "Review recovery is required before this operation."),
-        "REVIEW_PENDING_TRANSACTION": (423, "Review recovery is required before this operation."),
-        "REVIEW_PAGE_INVALID": (400, "Review page request is invalid."),
-        "REVIEW_INVALID_BATCH": (400, "Decision request is invalid."),
-        "REVIEW_UNKNOWN_ITEM": (404, "Review item was not found."),
-        "REVIEW_UNKNOWN_REVIEW": (404, "Review was not found."),
-    }
-    if isinstance(supplied, str) and supplied in known:
-        code = supplied
-        status, message = known[code]
-    else:
-        code = "REVIEW_COMMAND_FAILED"
-        status = 503
-        message = "Review command failed safely."
-    return JSONResponse({"ok": False, "code": code, "message": message}, status_code=status)
+    if not isinstance(supplied, str) or not supplied:
+        return JSONResponse(
+            {"ok": False, "code": "REVIEW_COMMAND_FAILED", "message": "Review command failed safely."},
+            status_code=503,
+        )
+    return JSONResponse(
+        {"ok": False, "code": supplied, "message": str(exc)},
+        status_code=_status_for(supplied),
+    )
+
+
+def _status_for(code: str) -> int:
+    if "STALE" in code or code.endswith("_CONFLICT"):
+        return 409
+    if "RECOVER" in code or "PENDING_TRANSACTION" in code:
+        return 423
+    if "UNKNOWN" in code or code.endswith("_NOT_FOUND"):
+        return 404
+    if code.endswith("_MISMATCH"):
+        return 422
+    return 400
 
 
 async def _run(root: Path, *arguments: str, stdin: bytes | None = None):
@@ -256,6 +287,7 @@ async def show(
     item: str | None = None,
     cursor: str | None = None,
     limit: int | None = Query(default=None, ge=1),
+    section_offset: int | None = Query(default=None, ge=0),
 ):
     root = _root(request)
     if limit is not None and limit > _config(root).max_page_items:
@@ -267,6 +299,8 @@ async def show(
         arguments += ["--cursor", cursor]
     if limit is not None:
         arguments += ["--limit", str(limit)]
+    if section_offset is not None:
+        arguments += ["--section-offset", str(section_offset)]
     return await _run(root, *arguments)
 
 
@@ -311,6 +345,7 @@ async def retract(request: Request, review_id: str, payload: RetractRequest):
         "--event", payload.event,
         "--expected-decision-revision", str(payload.expected_decision_revision),
         "--reason", payload.reason,
+        "--reviewer", payload.reviewer,
     )
 
 @router.post("/{review_id}/refresh")
@@ -333,15 +368,24 @@ async def rerun_run(request:Request,review_id:str,payload:RerunRunRequest):
 
 @router.post("/{review_id}/correction/prepare")
 async def correction_prepare(request:Request,review_id:str,payload:CorrectionPrepareRequest):
+    root=_root(request)
     arguments=["correction","prepare",review_id,"--item",payload.item,"--target-kind",payload.target_kind,"--replacement",payload.replacement,"--expected-decision-revision",str(payload.expected_decision_revision)]
-    if payload.summaries_dir: arguments += ["--summaries-dir",payload.summaries_dir]
-    return await _run(_root(request),*arguments)
+    # summaries_dir is the root the correction guard admits targets under, so it
+    # is contained like every other path the browser supplies.
+    if payload.summaries_dir: arguments += ["--summaries-dir",_contained_dir(root,payload.summaries_dir,"summaries_dir")]
+    return await _run(root,*arguments)
 
 @router.post("/{review_id}/correction/apply")
 async def correction_apply(request:Request,review_id:str,payload:ProposalApplyRequest):
+    root=_root(request)
     arguments=["correction","apply",review_id,"--proposal",payload.proposal,"--proposal-sha256",payload.proposal_sha256]
-    if payload.summaries_dir: arguments += ["--summaries-dir",payload.summaries_dir]
-    return await _run(_root(request),*arguments)
+    if payload.summaries_dir: arguments += ["--summaries-dir",_contained_dir(root,payload.summaries_dir,"summaries_dir")]
+    return await _run(root,*arguments)
+
+@router.post("/{review_id}/document/create")
+async def document_create(request:Request,review_id:str,payload:FileSelectionRequest):
+    root=_root(request); selection=_contained_file(root,payload.selection,"selection")
+    return await _run(root,"document","create",review_id,"--selection",selection)
 
 @router.post("/{review_id}/document/sign")
 async def document_sign(request:Request,review_id:str,payload:DocumentSignRequest):
@@ -421,9 +465,10 @@ async def service_start(request: Request, review_id: str, payload: EndpointReque
     arguments = [
         "service", "start", review_id,
         "--host", payload.host,
-        "--port", str(payload.port),
         "--origin", payload.origin,
     ]
+    if payload.port is not None:
+        arguments += ["--port", str(payload.port)]
     if payload.tls_cert is not None and payload.tls_key is not None:
         root = _root(request)
         arguments += [

@@ -1705,10 +1705,8 @@ def _campaign_locked(*, exclusive: bool):
     def decorate(function):
         @functools.wraps(function)
         def wrapped(args):
-            from pipelines.summary_native.authority_apply import authority_lock, require_no_pending_transaction
-            root=Path(args.campaign_dir).resolve()
-            with authority_lock(root,exclusive=exclusive):
-                require_no_pending_transaction(root)
+            from pipelines.summary_native.authority_apply import campaign_lock_if_enabled
+            with campaign_lock_if_enabled(Path(args.campaign_dir), exclusive=exclusive):
                 return function(args)
         return wrapped
     return decorate
@@ -1862,8 +1860,9 @@ def main(argv: "list[str] | None" = None) -> int:
     # Registry reads and every legacy writer share the review authority
     # campaign boundary.  This keeps load/validate/write sequences coherent
     # with reviewed multi-file transactions without adding nested locks to
-    # the loader library used inside those transactions.
-    from pipelines.summary_native.authority_apply import authority_lock, require_no_pending_transaction
+    # the loader library used inside those transactions.  A campaign that has
+    # never used authority is not locked, so no command creates docs/authority.
+    from pipelines.summary_native.authority_apply import campaign_lock_if_enabled
     writers = {
         "init", "add", "project", "import-inventory", "import-dedup",
         "import-frontmatter", "import-alias-decisions", "mark-distinct",
@@ -1872,8 +1871,7 @@ def main(argv: "list[str] | None" = None) -> int:
     if args.cmd == "init":
         # init creates the campaign; the lock lives inside it.
         Path(args.campaign_dir).mkdir(parents=True, exist_ok=True)
-    with authority_lock(Path(args.campaign_dir).resolve(), exclusive=args.cmd in writers):
-        require_no_pending_transaction(Path(args.campaign_dir).resolve())
+    with campaign_lock_if_enabled(Path(args.campaign_dir), exclusive=args.cmd in writers):
         return args.func(args)
 
 
