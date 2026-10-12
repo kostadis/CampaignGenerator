@@ -306,6 +306,18 @@ def test_rulings_refuse_what_they_cannot_apply(camp, tmp_path, body, needle):
         _load(camp, tmp_path, body)
 
 
+@pytest.mark.parametrize("answer", ["unsure", "can't tell", "maybe"])
+def test_there_are_only_two_answers(camp, tmp_path, answer):
+    # GM ruling 2026-10-12: physically present, or mentioned. No other options.
+    with pytest.raises(rulings.RulingError, match="is not one of present, mentioned, absent"):
+        _load(camp, tmp_path, f'    items:\n      "061.02": "{answer}"\n')
+
+
+def test_a_span_says_present_and_nothing_else(camp, tmp_path):
+    with pytest.raises(rulings.RulingError, match="value 'unsure' is not one of present"):
+        _load(camp, tmp_path, '    spans:\n      - {from: "057.01", to: "061.02", value: unsure}\n')
+
+
 @pytest.mark.parametrize(
     "text, needle",
     [
@@ -343,14 +355,14 @@ def test_a_span_starting_mid_chapter_does_not_cover_that_chapters_prose(camp, tm
 
 
 def test_an_item_ruling_overrides_the_span(camp, tmp_path):
-    body = ('    spans:\n      - {from: "057.01", to: "063.01", value: unsure, note: "in the bag"}\n'
+    body = ('    spans:\n      - {from: "057.01", to: "063.01", note: "in the bag"}\n'
             '    items:\n      "061.01": absent\n      "061.02": present\n')
     r = _load(camp, tmp_path, body)
     assert r.spans[0].note == "in the bag"
     eff = _effective(camp, r)
     assert eff["061.01"] == ("absent", rulings.FROM_ITEM)
     assert eff["061.02"] == ("present", rulings.FROM_ITEM)
-    assert eff["057.01"] == ("unsure", rulings.FROM_SPAN)
+    assert eff["057.01"] == ("present", rulings.FROM_SPAN)
 
 
 def test_follows_is_kept_as_a_hint(camp, tmp_path):
@@ -394,7 +406,7 @@ def test_an_absent_scene_is_left_out(camp, tmp_path):
     r = _load(camp, tmp_path, '    spans:\n      - {from: "061.01", to: "061.02"}\n    items:\n      "061.01": absent\n')
     c, _, table, syl = _setup(camp)
     h = horizon.build_horizon(syl, presence.candidates(c, syl, table), _effective(camp, r), 61, _items(camp))
-    assert "061.01" not in [x.item.item_id for x in h.witnessed + h.unruled + h.unsure + h.mentioned]
+    assert "061.01" not in [x.item.item_id for x in h.witnessed + h.unruled + h.mentioned]
 
 
 def test_an_unnamed_scene_after_the_chapter_stays_hidden(camp):
@@ -415,11 +427,11 @@ def test_nothing_is_present_without_a_ruling(camp):
 def test_horizon_cuts_at_the_chapter_and_sorts_by_ruling(camp):
     c, _, table, syl = _setup(camp)
     cands = presence.candidates(c, syl, table)
-    ruled = _item_rulings({"061.02": "present", "057.01": "mentioned", "061.p01": "unsure", "063.01": "mentioned"})
+    ruled = _item_rulings({"061.02": "present", "057.01": "mentioned", "063.01": "mentioned"})
     h = horizon.build_horizon(syl, cands, ruled, 61)
     assert [x.item.item_id for x in h.witnessed] == ["061.02"]
     assert [x.item.item_id for x in h.mentioned] == ["057.01"]
-    assert [x.item.item_id for x in h.unsure] == ["061.p01"]
+    assert "061.p01" in [x.item.item_id for x in h.unruled]
     assert h.later == 1  # chapter 63 is withheld, ruled or not
     text = horizon.render_horizon(h)
     assert "Moziqodo" not in text

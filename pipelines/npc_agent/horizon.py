@@ -16,7 +16,7 @@ from dataclasses import dataclass
 from pipelines.npc_agent.corpus import Item
 from pipelines.npc_agent.dossier import Dossier
 from pipelines.npc_agent.presence import Candidate
-from pipelines.npc_agent.rulings import FROM_DEFAULT, FROM_SPAN, MENTIONED, PRESENT, UNSURE
+from pipelines.npc_agent.rulings import FROM_DEFAULT, FROM_SPAN, MENTIONED, PRESENT
 
 
 @dataclass(frozen=True)
@@ -27,7 +27,6 @@ class Horizon:
     last_seen_by_chapter: int | None  # last candidate chapter <= ``chapter``
     witnessed: tuple[Candidate, ...]
     mentioned: tuple[Candidate, ...]
-    unsure: tuple[Candidate, ...]
     unruled: tuple[Candidate, ...]
     #: item ids whose ruling came from a span rather than an item ruling
     by_span: frozenset[str]
@@ -57,12 +56,12 @@ def build_horizon(
     unnamed = [
         Candidate(item=items[i], signals=(), forms_matched=(), match_lines=())
         for i, (v, _) in rulings.items()
-        if i not in named and i in items and v in (PRESENT, UNSURE)
+        if i not in named and i in items and v == PRESENT
     ]
     order = {i: n for n, i in enumerate(items)}
     every = sorted(cands + unnamed, key=lambda c: (c.item.chapter, order.get(c.item.item_id, 0)))
     upto = [c for c in every if c.item.chapter <= chapter]
-    by = {PRESENT: [], MENTIONED: [], UNSURE: [], None: []}
+    by = {PRESENT: [], MENTIONED: [], None: []}
     for c in upto:
         value = rulings.get(c.item.item_id, (None, None))[0]
         by[value if value in by else None].append(c)
@@ -74,7 +73,6 @@ def build_horizon(
         last_seen_by_chapter=max(chapters, default=None),
         witnessed=tuple(by[PRESENT]),
         mentioned=tuple(by[MENTIONED]),
-        unsure=tuple(by[UNSURE]),
         unruled=tuple(by[None]),
         by_span=frozenset(i for i, (_, src) in rulings.items() if src == FROM_SPAN),
         by_default=frozenset(i for i, (_, src) in rulings.items() if src == FROM_DEFAULT),
@@ -99,14 +97,14 @@ def render_horizon(h: Horizon) -> str:
     out = [
         f"# Knowledge horizon — {h.subject}, as of chapter {h.chapter}",
         "",
-        "A floor, not a mind: the scenes the GM has said this NPC was physically in, up to and including",
+        "A floor, not a mind: the scenes the GM has said this NPC was physically present in, up to and including",
         f"chapter {h.chapter}. Nothing after it is shown. Unanswered passages are listed, never guessed.",
         "",
         f"- First named: chapter {h.first_seen if h.first_seen is not None else '—'}",
         f"- Last named by chapter {h.chapter}: "
         f"{h.last_seen_by_chapter if h.last_seen_by_chapter is not None else '—'}",
-        f"- In the scene: {len(h.witnessed)} · not in the scene: {len(h.mentioned)} · "
-        f"can't tell: {len(h.unsure)} · unanswered: {len(h.unruled)}",
+        f"- Physically present: {len(h.witnessed)} · mentioned: {len(h.mentioned)} · "
+        f"unanswered: {len(h.unruled)}",
     ]
     if h.unruled:
         out += [
@@ -115,9 +113,9 @@ def render_horizon(h: Horizon) -> str:
             "Answer them before relying on it.",
         ]
 
-    out += ["", "## In the scene (what this NPC could have witnessed)", ""]
+    out += ["", "## Physically present (what this NPC could have witnessed)", ""]
     if not h.witnessed:
-        out.append("_(none answered \u201cin the scene\u201d)_")
+        out.append("_(none answered \u201cphysically present\u201d)_")
     for c in h.witnessed:
         tags = [t for t, on in (("not named in the text", not c.signals),
                                 ("by span", c.item.item_id in h.by_span)) if on]
@@ -125,8 +123,7 @@ def render_horizon(h: Horizon) -> str:
         out += [head, "", _quote(c.item.text), ""]
 
     for title, group in (
-        ("Not in the scene (talked about while elsewhere)", h.mentioned),
-        ("Can't tell", h.unsure),
+        ("Mentioned (named, not physically there)", h.mentioned),
         ("Unanswered", h.unruled),
     ):
         out += ["", f"## {title}", ""]
