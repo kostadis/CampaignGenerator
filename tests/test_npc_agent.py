@@ -1178,3 +1178,247 @@ def test_an_ordinary_word_opening_a_quotation_is_not_a_name(kcamp):
     answer = 'She smiles. “And that is all. Standing is hard.” She mentions Asha.'
     flags = _check(kcamp, answer, given="Sylvira.", chapter=64)
     assert [f.name for f in flags if f.kind == leakcheck.KIND_NAME] == ["Asha"]
+
+
+# ── prep passages ───────────────────────────────────────────────────────────
+
+PREP = """# Interviews
+
+Intro paragraph about the vault, no names here.
+
+---
+
+## SCENE A
+
+Mira waits at the desk.
+
+## SCENE B — The Reading Room
+
+Sylvira arrives late and says nothing.
+It is raining.
+
+- Sylvira keeps the key in her sleeve.
+  She will not say so.
+- GM: the key is cursed.
+* A third item with no name.
+
+1. Step one: the party asks Sylvira about the ledger.
+
+> "Do not touch the ledger."
+> Said while looking away.
+
+| Item | Note |
+| --- | --- |
+| Ledger | Sylvira burned page 9 |
+| Candle | plain |
+
+### Aside
+
+Sylvira's sister is the real thief.
+
+## SCENE C
+
+Back to Mira. Sylvira is not here.
+"""
+FORMS = ("Sylvira Savikas", "Sylvira")
+
+
+def _texts(ps):
+    return [p.text for p in ps]
+
+
+def test_section_takes_everything_under_the_heading_including_subsections():
+    from pipelines.npc_agent import prep
+
+    ps = prep.extract(PREP, FORMS, "SCENE B", file="reader.md")
+    assert _texts(ps) == [
+        "Sylvira arrives late and says nothing.\nIt is raining.",
+        "- Sylvira keeps the key in her sleeve.\n  She will not say so.",
+        "- GM: the key is cursed.",
+        "* A third item with no name.",
+        "1. Step one: the party asks Sylvira about the ledger.",
+        '> "Do not touch the ledger."\n> Said while looking away.',
+        "| Ledger | Sylvira burned page 9 |",
+        "| Candle | plain |",
+        "Sylvira's sister is the real thief.",
+    ]
+    assert ps[0].heading == ("Interviews", "SCENE B — The Reading Room")
+    assert ps[-1].heading == ("Interviews", "SCENE B — The Reading Room", "Aside")
+    assert ps[0].line == 13 and ps[0].file == "reader.md"
+
+
+def test_without_a_section_only_passages_naming_the_npc_are_taken():
+    from pipelines.npc_agent import prep
+
+    ps = prep.extract(PREP, FORMS)
+    assert _texts(ps) == [
+        "Sylvira arrives late and says nothing.\nIt is raining.",
+        "- Sylvira keeps the key in her sleeve.\n  She will not say so.",
+        "1. Step one: the party asks Sylvira about the ledger.",
+        "| Ledger | Sylvira burned page 9 |",
+        "Sylvira's sister is the real thief.",
+        "Back to Mira. Sylvira is not here.",
+    ]
+    # case-sensitive and word-bounded
+    assert prep.extract("sylvira lowercase\n\nSylvirane no\n", FORMS) == []
+
+
+def test_rules_headers_and_separators_are_not_passages():
+    from pipelines.npc_agent import prep
+
+    ps = prep.extract(PREP, FORMS, "SCENE B")
+    assert not any("---" in t or "Item | Note" in t for t in _texts(ps))
+    assert prep.extract(PREP, ("Mira",), "SCENE A")[0].text == "Mira waits at the desk."
+    assert prep.extract("---\n\n***\n", ("x",), "") == []
+
+
+def test_a_missing_section_is_refused_but_an_empty_one_is_not():
+    from pipelines.npc_agent import prep
+
+    with pytest.raises(prep.PrepError, match="no heading starts with 'SCENE Z'"):
+        prep.extract(PREP, FORMS, "SCENE Z")
+    assert prep.extract("# T\n\n## Empty\n\n## Next\n\ntext\n", FORMS, "Empty") == []
+
+
+def test_pid_is_stable_and_an_edit_changes_it():
+    from pipelines.npc_agent import prep
+
+    a = prep.extract(PREP, FORMS, "SCENE B", file="/x/reader.md")
+    b = prep.extract(PREP, FORMS, "SCENE B", file="/y/reader.md")
+    assert [p.pid for p in a] == [p.pid for p in b]
+    assert a[0].pid.startswith("reader:13:") and len(a[0].pid.split(":")[2]) == 8
+    edited = prep.extract(PREP.replace("It is raining.", "It is snowing."), FORMS, "SCENE B", file="reader.md")
+    assert edited[0].pid != a[0].pid and edited[1].pid == a[1].pid
+
+
+def _ruling_file(tmp_path, passages, npc="Sylvira Savikas", version=1, extra=None):
+    import json
+
+    f = tmp_path / f"prep{len(list(tmp_path.glob('prep*.json')))}.json"
+    body = {"version": version, "npc": npc,
+            "targets": {"061.05": {"source": "reader.md", "section": "SCENE B", "passages": passages}}}
+    body.update(extra or {})
+    f.write_text(json.dumps(body))
+    return f
+
+
+def test_rulings_load_and_a_missing_target_is_unruled(tmp_path):
+    from pipelines.npc_agent import prep
+
+    ps = prep.extract(PREP, FORMS, "SCENE B", file="reader.md")
+    f = _ruling_file(tmp_path, {ps[0].pid: "hers", ps[1].pid: "gm"})
+    assert prep.load_rulings(f, "Sylvira Savikas", "061.05", ps) == {ps[0].pid: "hers", ps[1].pid: "gm"}
+    assert prep.load_rulings(f, "Sylvira Savikas", "067.03", ps) == {}
+
+
+def test_rulings_refuse_what_they_cannot_apply(tmp_path):
+    from pipelines.npc_agent import prep
+
+    ps = prep.extract(PREP, FORMS, "SCENE B", file="reader.md")
+    ok = ps[0].pid
+    cases = [
+        (_ruling_file(tmp_path, {ok: "hers"}, version=2), "version must be 1"),
+        (_ruling_file(tmp_path, {ok: "hers"}, npc="Daral"), "not 'Sylvira Savikas'"),
+        (_ruling_file(tmp_path, {ok: "maybe"}), "'hers' or 'gm'"),
+        (_ruling_file(tmp_path, {ok: "hers"}, extra={"stray": 1}), "expected a mapping"),
+        (_ruling_file(tmp_path, {"reader:99:deadbeef": "hers"}), "prep file changed since it was ruled; re-rule"),
+    ]
+    for f, needle in cases:
+        with pytest.raises(prep.PrepError, match=needle):
+            prep.load_rulings(f, "Sylvira Savikas", "061.05", ps)
+    # an edited passage makes the old ruling stale, never silently re-attached
+    edited = prep.extract(PREP.replace("It is raining.", "It is snowing."), FORMS, "SCENE B", file="reader.md")
+    f = _ruling_file(tmp_path, {ok: "hers"})
+    with pytest.raises(prep.PrepError, match=ok):
+        prep.load_rulings(f, "Sylvira Savikas", "061.05", edited)
+
+
+def test_the_sheet_holds_hers_only_with_no_apparatus():
+    from pipelines.npc_agent import prep
+
+    ps = prep.extract(PREP, FORMS, "SCENE B", file="reader.md")
+    rulings_ = {p.pid: "gm" for p in ps}
+    rulings_[ps[0].pid] = "hers"
+    rulings_[ps[1].pid] = "hers"
+    rulings_[ps[-1].pid] = "hers"
+    out = prep.sheet(ps, rulings_)
+    assert out == (
+        "### SCENE B — The Reading Room\n\n"
+        "Sylvira arrives late and says nothing.\nIt is raining.\n\n"
+        "- Sylvira keeps the key in her sleeve.\n  She will not say so.\n\n"
+        "### Aside\n\nSylvira's sister is the real thief.\n"
+    )
+    assert "cursed" not in out and "reader" not in out and "14" not in out and "line" not in out
+
+
+def test_the_sheet_refuses_while_anything_is_unruled():
+    from pipelines.npc_agent import prep
+
+    ps = prep.extract(PREP, FORMS, "SCENE B", file="reader.md")
+    with pytest.raises(prep.PrepError, match="not ruled yet") as e:
+        prep.sheet(ps, {ps[0].pid: "hers"})
+    assert ps[1].pid in str(e.value) and ps[0].pid not in str(e.value)
+    assert prep.sheet(ps, {ps[0].pid: "hers"}, require_complete=False).count("Sylvira") == 1
+
+
+def _prep_files(tmp_path):
+    d = tmp_path / "preps"
+    d.mkdir()
+    (d / "reader.md").write_text(PREP)
+    (d / "vault.md").write_text("# Vault\n\nSylvira unlocks the door.\n\nThe door is oak.\n")
+    return d / "reader.md", d / "vault.md"
+
+
+def test_page_embeds_prep_data_safely_and_loads_nothing_but_fonts(camp, tmp_path):
+    import re
+
+    r, v = _prep_files(tmp_path)
+    v.write_text(v.read_text() + "\nSylvira </script><b>x</b>\n")
+    out = tmp_path / "pg" / "prep.html"
+    rc = cli.main(["prep", "--campaign-dir", str(camp), "--npc", "Sylvira", "--target", "061.02", "--prep", str(r),
+                   "--section", "SCENE B", "--target", "063.01", "--prep", str(v), "--section", "", "--out", str(out)])
+    assert rc == 0
+    page = out.read_text()
+    from pipelines.npc_agent import prep_page
+
+    assert prep_page.DATA_SLOT not in page and "<title>Prep sheet</title>" in page
+    assert page.count("</script>") == 1
+    assert set(re.findall(r"https?://([^/\"' ]+)", page)) <= {"fonts.googleapis.com", "fonts.gstatic.com"}
+    assert "Interview with Sylvira" in page and "Battle in the Rotunda" in page  # scene title from the summaries
+
+
+def test_cli_prep_prints_counts_and_sheet_round_trips(camp, tmp_path, capsys):
+    import json
+
+    r, v = _prep_files(tmp_path)
+    out = tmp_path / "pg" / "prep.html"
+    base = ["--campaign-dir", str(camp), "--npc", "Sylvira"]
+    assert cli.main(["prep", *base, "--target", "061.02", "--prep", str(r), "--section", "SCENE B",
+                     "--target", "063.01", "--prep", str(v), "--section", "", "--out", str(out)]) == 0
+    text = capsys.readouterr().out
+    assert "061.02: 9 passage(s)" in text and "063.01: 1 passage(s)" in text
+    from pipelines.npc_agent import prep
+
+    ps = prep.extract(PREP, FORMS, "SCENE B", file=str(r))
+    f = tmp_path / "prep.json"
+    sheet_args = ["prep-sheet", *base, "--target", "061.02", "--prep", str(r), "--section", "SCENE B", "--rulings", str(f)]
+    f.write_text(json.dumps({"version": 1, "npc": "Sylvira Savikas", "targets": {"061.02": {
+        "source": "reader.md", "section": "SCENE B", "passages": {ps[0].pid: "hers"}}}}))
+    assert cli.main(sheet_args) == 2
+    assert "not ruled yet" in capsys.readouterr().err
+    f.write_text(json.dumps({"version": 1, "npc": "Sylvira Savikas", "targets": {"061.02": {
+        "source": "reader.md", "section": "SCENE B", "passages": {p.pid: ("hers" if i == 0 else "gm") for i, p in enumerate(ps)}}}}))
+    sheet_out = tmp_path / "sheet.md"
+    assert cli.main([*sheet_args, "--out", str(sheet_out)]) == 0
+    assert sheet_out.read_text().startswith("### SCENE B") and "cursed" not in sheet_out.read_text()
+
+
+def test_cli_prep_refuses_mismatched_lists_and_writes_into_sources(camp, tmp_path, capsys):
+    r, v = _prep_files(tmp_path)
+    base = ["prep", "--campaign-dir", str(camp), "--npc", "Sylvira", "--target", "061.02", "--prep", str(r)]
+    assert cli.main([*base, "--target", "063.01", "--out", str(tmp_path / "a.html")]) == 2
+    assert cli.main([*base, "--out", str(camp / "npcs" / "p.html")]) == 2
+    assert cli.main([*base, "--out", str(r.parent / "p.html")]) == 2
+    assert "never writes into its sources" in capsys.readouterr().err
+    assert cli.main([*base, "--section", "SCENE Z", "--out", str(tmp_path / "a.html")]) == 2
+    assert not (tmp_path / "a.html").exists()
