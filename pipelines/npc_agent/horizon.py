@@ -17,6 +17,8 @@ Built from authored structure and the GM's answers, nothing else:
 Within an event answered *physically present*, a beat the GM listed as
 ``not_perceived`` is left out of what the NPC could know: the same summary that
 records Sylvira at 067.03 also says, in that scene, what she does not know.
+A beat the GM ruled a ``secret`` hidden from this NPC (:mod:`knowledge`) is left
+out the same way, wherever they were present.
 
 ``render_horizon(h, for_agent=True)`` gives only what the NPC could know, the
 part an agent may be shown; everything else is for the GM.
@@ -53,7 +55,8 @@ class Horizon:
     since_snapshot: tuple[Candidate, ...]  # events naming them after the snapshot's chapter
     by_span: frozenset[str]
     by_default: frozenset[str]
-    not_perceived: frozenset[str]
+    not_perceived: frozenset[str]  # every beat left out, from either source
+    hidden_by_note: frozenset[str]  # of those, the ones a knowledge note hides
     #: events after ``chapter``. Kept for the caller, never rendered.
     later: int
 
@@ -66,12 +69,15 @@ def build_horizon(
     items: dict[str, Item] | None = None,
     snapshots: list[Candidate] | None = None,
     not_perceived: frozenset[str] = frozenset(),
+    hidden: frozenset[str] = frozenset(),
 ) -> Horizon:
     """``events`` are the scenes naming the NPC; ``rulings`` is :func:`rulings.effective`.
 
     ``items`` (every corpus item by id, in corpus order) lets an answer on a scene
     that does not name the NPC (a span, or one marked by hand) take effect: it
     enters as an event with no signals. ``absent`` scenes are left out.
+    ``hidden`` is :func:`knowledge.hidden_from`: beats of any scene; only those of
+    a present event change what is shown.
     """
     items = items or {}
     named = {c.item.item_id for c in events}
@@ -91,6 +97,9 @@ def build_horizon(
     snaps = [s.item for s in (snapshots or []) if s.item.chapter <= chapter]
     snap = snaps[-1] if snaps else None
     since = tuple(c for c in upto if c.signals and snap is not None and c.item.chapter > snap.chapter)
+    # Only beats of events shown can be left out of them; a count of any others
+    # would be wrong, and a later one would hint at the future.
+    seen = {b.beat_id for c in by[PRESENT] for b in beats(c.item)}
     return Horizon(
         subject=dossier.subject,
         chapter=chapter,
@@ -104,7 +113,8 @@ def build_horizon(
         since_snapshot=since,
         by_span=frozenset(i for i, (_, src) in rulings.items() if src == FROM_SPAN),
         by_default=frozenset(i for i, (_, src) in rulings.items() if src == FROM_DEFAULT),
-        not_perceived=frozenset(not_perceived),
+        not_perceived=(frozenset(not_perceived) | frozenset(hidden)) & seen,
+        hidden_by_note=frozenset(hidden) & seen,
         later=len(every) - len(upto),
     )
 
@@ -184,7 +194,8 @@ def render_horizon(h: Horizon, for_agent: bool = False) -> str:
         for c in h.witnessed:
             for b in beats(c.item):
                 if b.beat_id in h.not_perceived:
-                    out.append(f"- {b.beat_id} — {b.text.splitlines()[0][:160]}")
+                    why = " (knowledge note: a secret hidden from them)" if b.beat_id in h.hidden_by_note else ""
+                    out.append(f"- {b.beat_id}{why} — {b.text.splitlines()[0][:160]}")
     for title, group in (
         ("Events that mention them (named, not physically there)", h.mentioned),
         ("Neither present nor mentioned, or unsure (left out; possible linking errors)", h.neither),

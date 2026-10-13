@@ -17,7 +17,7 @@ and long-term planning**: Sylvira, Vizeran, Ilvara.
 
 This document records how that discussion went, what the data can and cannot
 support, and the series of prototypes that follows from it. Prototype 1 is
-implemented on this branch (see [Prototype 1](#prototype-1--presence-candidates-and-the-knowledge-horizon)).
+implemented on this branch (see [Prototype 1](#prototype-1--events-and-the-knowledge-horizon)).
 
 ## What the data is
 
@@ -353,6 +353,55 @@ Two consequences, both built:
   events. `npc_agent horizon --for-agent` writes Part 1 alone and refuses while
   any event naming the NPC is unanswered.
 
+### Knowledge notes: other beats that say someone does not know
+
+067.03.b04 is not the only one. A fixed search (`knowledge.PATTERN`: "does not
+know", "unaware of", "has no idea", "has not been told", "still believes", …)
+over scene beats, outside quoted speech and `>` quote lines, finds **21 beats in
+Out of the Abyss and 7 in Obelisk**. The same phrasings turn up in 30 summary
+paragraphs, 16 NPC entries and 6 memorable moments, which are not beats and are
+not candidates.
+
+The words cover three different things, and a first reading of the 21 (mine,
+not a ruling) split them roughly 4 / 4 / 11, with two borderline:
+
+| kind | what the beat is | example | effect |
+|---|---|---|---|
+| `secret` | the GM's note on a secret, hidden from named character(s) | 017.04.b22, "the dragon doesn't know about the egg" | left out of each named NPC's horizon wherever they were present; a leak case |
+| `party` | what the party does not know | 062.06.b09, "the party does not know which spells" | none here; a player-side view's concern |
+| `said` | a character tells the party they don't know | 026.04.b08, "Hgraam does not know where it is" | none: it was said, so it is part of the scene |
+| `unsure` | the GM cannot say | | none; listed apart |
+
+So the search finds candidates and rules nothing; the GM rules each in a
+**knowledge ruling file** (version 1, one block per campaign because beat ids
+repeat across campaigns):
+
+```yaml
+version: 1
+campaigns:
+  out-of-the-abyss:
+    "067.03.b04": {kind: secret, hidden_from: [Sylvira Savikas]}
+    "026.04.b08": {kind: said}
+```
+
+- **`hidden_from` is the GM's name, not a match.** It counts for an NPC when it
+  is their dossier subject or a name form their dossier lists. A name with no
+  published dossier (Themberchaud, Asha) is kept: it is still a leak case. A
+  name that appears nowhere in the summaries is refused as a likely misspelling.
+- **`npc_agent horizon --knowledge FILE`** leaves a secret's beat out of the
+  named NPC's Part 1 exactly as `not_perceived` does, and Part 2 labels it
+  "(knowledge note …)". Only beats of events shown count: a secret at a scene
+  the NPC missed, or after the chapter, changes nothing and is not counted. On
+  Sylvira at chapter 67, the knowledge note alone gives a byte-identical agent
+  view to the hand-marked `not_perceived`.
+- **`npc_agent leaks --knowledge FILE`** writes the leak cases: one per secret
+  and name, "as of this beat's scene, this character must not know what it
+  says", with the beat's text. They are the cases Prototype 3 (the leak test) scores: an NPC agent's
+  move that states a secret hidden from that NPC is a leak.
+
+A secret beat is hidden whole, so 067.03.b04 still takes Sylvira's thanks to
+Thorin with it; the fix stays a split of the bullet in the summary.
+
 ### The horizon
 
 `npc_agent horizon --npc NAME --chapter N --rulings FILE`, up to and including
@@ -383,6 +432,16 @@ database (`rulings/<stem>`, one document per NPC) so Claude can read them back,
 and can be exported as `presence.json` or copied as YAML. `npc_agent horizon`
 re-validates whatever it is given.
 
+A second view, **Knowledge notes**, has one card per candidate beat (from this
+campaign and any `--also-campaign-dir`, each on its own tab): the beat's text
+with the matched words marked, the whole scene collapsed beneath it, the four
+kinds, and for a secret, who doesn't know (suggesting dossier subjects, warning
+on a name that is neither a dossier subject nor in the scene). A secret with
+nobody named stays unanswered and is left out of the file. A secret hidden from
+an NPC on the Presence view shows on its beat there as "Hidden by a knowledge
+note". Saved per campaign in the database (`knowledge/<campaign>`), exported as
+`knowledge.json` or copied as YAML.
+
 ### Usage
 
 ```bash
@@ -392,11 +451,19 @@ npc_agent candidates --campaign-dir ~/campaigns-public/out-of-the-abyss \
 #  → sylvira-savikas.candidates.{md,json}, check_report.md, presence.template.yaml
 
 npc_agent review --campaign-dir ~/campaigns-public/out-of-the-abyss \
-    --npc Sylvira --npc Glabbagool --out ledger.html
+    --npc Sylvira --npc Glabbagool --also-campaign-dir ~/campaigns-public/obelisk \
+    --out ledger.html
 
 npc_agent horizon --campaign-dir ~/campaigns-public/out-of-the-abyss \
-    --npc "Sylvira Savikas" --chapter 67 --rulings presence.json
+    --npc "Sylvira Savikas" --chapter 67 --rulings presence.json \
+    --knowledge knowledge.json [--for-agent]
+
+npc_agent leaks --campaign-dir ~/campaigns-public/out-of-the-abyss \
+    --knowledge knowledge.json --out leaks.yaml
 ```
+
+A knowledge file's campaign key is the `--campaign-dir` name (`--campaign`
+overrides it), the same label the review page uses.
 
 ## Non-goals
 
@@ -415,5 +482,9 @@ npc_agent horizon --campaign-dir ~/campaigns-public/out-of-the-abyss \
 - Glabbagool, ch39: the summary sends him with Eldeth and Jimjar to help
   Uth-Jadger while the party splits; the GM's ruling is that he is with
   Zalthir. The page's split check is where that gets settled scene by scene.
+- Whether the knowledge search should also read summary paragraphs and NPC
+  entries (52 more hits). They are not beats, so a ruling there would hide
+  nothing from a horizon, but a secret stated only in an entry would still be a
+  leak case.
 - Whether Ilvara should get a published dossier, since she is the only NPC with
   a complete, closed arc to backtest against.

@@ -43,7 +43,8 @@ pipelines/rlm/query.py      # CLI: search summaries
 pipelines/grounding/planning.py         # CLI: NPC dossiers + arc scores → planning.md
 pipelines/grounding/party.py            # CLI: character sheets + summaries → party.md
 pipelines/summary_native/     # CLI: summary_native — validate | build | synth | compare; grounding-doc drafts straight from reviewed structured summaries
-pipelines/npc_agent/          # CLI: npc_agent — prototype: NPC presence candidates + knowledge horizon (no LLM);
+pipelines/npc_agent/          # CLI: npc_agent — prototype: NPC presence candidates + knowledge horizon,
+                            #   knowledge notes (secrets hidden from an NPC) and leak cases (no LLM);
                             #   see docs/design/NpcAgentPrototypes_proposal.md
 pipelines/content_ingest/dnd_sheet.py  # CLI: D&D Beyond PDF → markdown (vision API)
 pipelines/workspace/new_workspace.py  # CLI: create a new campaign workspace

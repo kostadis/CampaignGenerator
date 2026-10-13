@@ -10,7 +10,7 @@ from pathlib import Path
 
 import pytest
 
-from pipelines.npc_agent import cli, corpus, dossier, horizon, presence, review, rulings
+from pipelines.npc_agent import cli, corpus, dossier, horizon, knowledge, presence, review, rulings
 
 CH57 = """# Chapter 57
 
@@ -610,3 +610,169 @@ def test_the_review_bundle_carries_each_scenes_beats(camp):
     data = review.bundle(c, [(syl, presence.mentions(c, syl, table))], "test")
     assert [b[0] for b in data["items"]["061.02"]["b"]] == ["061.02.b01", "061.02.b02"]
     assert "b" not in data["items"]["061.p01"]
+
+
+# ── knowledge notes ─────────────────────────────────────────────────────────
+
+CH64 = """# Chapter 64
+
+## Scenes
+
+### Tea with Sylvira
+
+#### Sylvira receives Daz in the Vault.
+
+- Sylvira does not yet know that the party killed her son. She thanks Daz.
+- Daz asks where the key is. Sylvira does not know.
+- The party is unaware of the trap under the rug.
+- Daral says, "She does not know," and leaves.
+
+> She does not know.
+"""
+
+
+@pytest.fixture
+def kcamp(camp: Path) -> Path:
+    (camp / "summaries" / "064-session-tea.md").write_text(CH64)
+    return camp
+
+
+def _kfile(tmp_path, notes: str, campaign: str = "camp") -> Path:
+    f = tmp_path / "k.yaml"
+    f.write_text(f"version: 1\ncampaigns:\n  {campaign}:\n" + notes)
+    return f
+
+
+def test_the_search_finds_not_knowing_beats_outside_quoted_speech(kcamp):
+    found = knowledge.find(_corpus(kcamp))
+    assert [k.beat_id for k in found] == ["064.01.b02", "064.01.b03", "064.01.b04"]
+    assert found[0].phrase == "does not yet know" and found[0].scene_title == "Tea with Sylvira"
+    assert found[2].phrase == "is unaware"
+    # b05's only matches are quoted speech and a > quote line: never a candidate
+
+
+def test_a_knowledge_file_loads_one_campaign(kcamp, tmp_path):
+    f = _kfile(tmp_path, '    "064.01.b02": {kind: secret, hidden_from: [Sylvira], note: learns at 70}\n'
+                         '    "064.01.b03": {kind: said}\n    "064.01.b04":\n'
+                         '  other:\n    "999.01.b01": {kind: nonsense}\n')
+    notes = knowledge.load_knowledge(f, "camp", _corpus(kcamp))
+    assert notes == {
+        "064.01.b02": knowledge.Note("064.01.b02", "secret", ("Sylvira",), "learns at 70"),
+        "064.01.b03": knowledge.Note("064.01.b03", "said"),
+    }
+
+
+@pytest.mark.parametrize("notes, needle", [
+    ('    "064.01.b02": {kind: hidden}\n', "not one of secret, party, said, unsure"),
+    ('    "064.01.b02": {kind: secret}\n', "a secret needs hidden_from"),
+    ('    "064.01.b03": {kind: said, hidden_from: [Sylvira]}\n', "hidden_from is for a secret"),
+    ('    "064.01.b09": {kind: party}\n', "not a beat"),
+    ('    "064.01.b02": {kind: secret, hidden_from: [Sylvra]}\n', "Sylvra appears nowhere in the summaries"),
+    ('    "064.01.b02": {kind: secret, whom: [Sylvira]}\n', "expected a mapping"),
+])
+def test_a_knowledge_file_refuses_what_it_cannot_apply(kcamp, tmp_path, notes, needle):
+    with pytest.raises(knowledge.KnowledgeError, match=needle):
+        knowledge.load_knowledge(_kfile(tmp_path, notes), "camp", _corpus(kcamp))
+
+
+def test_a_knowledge_file_of_another_version_is_refused(kcamp, tmp_path):
+    f = tmp_path / "k.yaml"
+    f.write_text("version: 3\nnpcs: {}\n")
+    with pytest.raises(knowledge.KnowledgeError, match="expected a mapping with 'version' and 'campaigns'"):
+        knowledge.load_knowledge(f, "camp", _corpus(kcamp))
+
+
+def _kview(kcamp, tmp_path, notes, chapter):
+    r = _load(kcamp, tmp_path, '    default: mentioned\n    items:\n      "064.01": present\n')
+    c, _, table, syl = _setup(kcamp)
+    ms = presence.mentions(c, syl, table)
+    hidden = knowledge.hidden_from(knowledge.load_knowledge(_kfile(tmp_path, notes), "camp", c), syl)
+    return horizon.build_horizon(syl, presence.events(ms), _effective(kcamp, r), chapter, _items(kcamp),
+                                 presence.snapshots(ms), r.not_perceived, hidden)
+
+
+def test_a_secret_hidden_from_an_npc_never_reaches_what_they_could_know(kcamp, tmp_path):
+    h = _kview(kcamp, tmp_path, '    "064.01.b02": {kind: secret, hidden_from: [Sylvira]}\n', 64)
+    agent = horizon.render_horizon(h, for_agent=True)
+    assert "killed her son" not in agent and "1 beat(s) of this scene left out" in agent
+    assert "Daz asks where the key is" in agent
+    assert "064.01.b02 (knowledge note: a secret hidden from them)" in horizon.render_horizon(h)
+
+
+def test_a_secret_hidden_from_someone_else_or_later_changes_nothing(kcamp, tmp_path):
+    other = _kview(kcamp, tmp_path, '    "064.01.b02": {kind: secret, hidden_from: [Daral]}\n', 64)
+    assert other.not_perceived == frozenset() and "killed her son" in horizon.render_horizon(other, for_agent=True)
+    earlier = _kview(kcamp, tmp_path, '    "064.01.b02": {kind: secret, hidden_from: [Sylvira]}\n', 63)
+    assert earlier.not_perceived == frozenset() and earlier.hidden_by_note == frozenset()
+    assert "Beats left out as not perceived: 0" in horizon.render_horizon(earlier)
+
+
+def test_only_a_secret_hides_anything(kcamp, tmp_path):
+    h = _kview(kcamp, tmp_path, '    "064.01.b02": {kind: said}\n    "064.01.b04": {kind: party}\n', 64)
+    assert h.not_perceived == frozenset()
+
+
+def test_cli_leaks_lists_who_must_not_know_what(kcamp, tmp_path, capsys):
+    import yaml
+
+    f = _kfile(tmp_path, '    "064.01.b02": {kind: secret, hidden_from: [Sylvira, Daral]}\n    "064.01.b03": {kind: said}\n',
+               campaign=kcamp.name)
+    out = tmp_path / "leaks.yaml"
+    assert cli.main(["leaks", "--campaign-dir", str(kcamp), "--knowledge", str(f), "--out", str(out)]) == 0
+    cases = yaml.safe_load(out.read_text())
+    assert cases["campaign"] == kcamp.name
+    assert [(c["who"], c.get("dossier"), c["beat"], c["chapter"]) for c in cases["cases"]] == [
+        ("Sylvira", "Sylvira Savikas", "064.01.b02", 64), ("Daral", None, "064.01.b02", 64)]
+    assert cases["cases"][0]["must_not_know"].startswith("- Sylvira does not yet know")
+    err = capsys.readouterr().err
+    assert "Daral has no published dossier; kept as a leak case" in err and "secret 1, party 0, said 1" in err
+
+
+def test_cli_horizon_reads_the_knowledge_file(kcamp, tmp_path, capsys):
+    r = tmp_path / "r.yaml"
+    r.write_text('version: 3\nnpcs:\n  Sylvira Savikas:\n    default: mentioned\n    items:\n      "064.01": present\n')
+    f = _kfile(tmp_path, '    "064.01.b02": {kind: secret, hidden_from: [Sylvira Savikas]}\n', campaign="tea")
+    rc = cli.main(["horizon", "--campaign-dir", str(kcamp), "--npc", "Sylvira", "--chapter", "64", "--rulings", str(r),
+                   "--knowledge", str(f), "--campaign", "tea", "--for-agent"])
+    assert rc == 0
+    assert "killed her son" not in capsys.readouterr().out
+    bad = _kfile(tmp_path, '    "064.01.b02": {kind: secret}\n', campaign="tea")
+    rc = cli.main(["horizon", "--campaign-dir", str(kcamp), "--npc", "Sylvira", "--chapter", "64", "--rulings", str(r),
+                   "--knowledge", str(bad), "--campaign", "tea"])
+    assert rc == 2 and "a secret needs hidden_from" in capsys.readouterr().err
+
+
+def test_review_shows_knowledge_notes_from_each_campaign_its_own_first(kcamp, tmp_path):
+    import json
+
+    other = tmp_path / "elsewhere" / "obelisk"
+    (other / "summaries").mkdir(parents=True)
+    (other / "npcs").mkdir()
+    (other / "summaries" / "002-session-x.md").write_text(
+        "# Chapter 2\n\n## Scenes\n\n### Town\n\n#### Arrival.\n\n- Harbin does not know who sent them.\n")
+    out = tmp_path / "page.html"
+    assert cli.main(["review", "--campaign-dir", str(kcamp), "--npc", "Sylvira", "--also-campaign-dir", str(other),
+                     "--out", str(out)]) == 0
+    page = out.read_text()
+    data = json.loads(page.split("const DATA = ", 1)[1].split(";\n", 1)[0].replace("<\\/", "</"))
+    camps = data["knowledge"]["campaigns"]
+    assert [c["campaign"] for c in camps] == [kcamp.name, "obelisk"]
+    assert [k["id"] for k in camps[0]["cards"]] == ["064.01.b02", "064.01.b03", "064.01.b04"]
+    assert camps[0]["subjects"] == ["Sylvira Savikas", "Wick"] and camps[1]["subjects"] == []
+    assert camps[1]["cards"][0]["ph"] == "does not know" and "Harbin" in camps[1]["cards"][0]["sx"]
+    assert data["knowledge"]["kinds"] == list(knowledge.KINDS)
+    rc = cli.main(["review", "--campaign-dir", str(kcamp), "--npc", "Sylvira", "--also-campaign-dir", str(kcamp),
+                   "--out", str(out)])
+    assert rc == 2
+
+
+def test_the_file_the_page_saves_is_a_knowledge_file(kcamp, tmp_path):
+    import json
+
+    saved = {"version": 1, "campaigns": {"camp": {
+        "064.01.b02": {"kind": "secret", "hidden_from": ["Sylvira Savikas"], "note": "learns at 70"},
+        "064.01.b04": {"kind": "party"}}}}
+    f = tmp_path / "knowledge.json"
+    f.write_text(json.dumps(saved, indent=2))
+    notes = knowledge.load_knowledge(f, "camp", _corpus(kcamp))
+    assert notes["064.01.b02"].hidden_from == ("Sylvira Savikas",) and notes["064.01.b04"].kind == "party"
