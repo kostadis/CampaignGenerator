@@ -362,44 +362,58 @@ Out of the Abyss and 7 in Obelisk**. The same phrasings turn up in 30 summary
 paragraphs, 16 NPC entries and 6 memorable moments, which are not beats and are
 not candidates.
 
-The words cover three different things, and a first reading of the 21 (mine,
-not a ruling) split them roughly 4 / 4 / 11, with two borderline:
+**Two questions, about the person** (GM, 2026-10-13). The first page asked what
+kind of beat each was (a secret, about the party, said in the scene, unsure). The
+GM marked 19 of 21 "secret" and named nobody: "Most of the cards were 'the object
+of the sentence doesn't know' … for example 'Asha doesn't know'." Every card does
+say someone doesn't know; the kind was the wrong question. So each card asks:
 
-| kind | what the beat is | example | effect |
-|---|---|---|---|
-| `secret` | the GM's note on a secret, hidden from named character(s) | 017.04.b22, "the dragon doesn't know about the egg" | left out of each named NPC's horizon wherever they were present; a leak case |
-| `party` | what the party does not know | 062.06.b09, "the party does not know which spells" | none here; a player-side view's concern |
-| `said` | a character tells the party they don't know | 026.04.b08, "Hgraam does not know where it is" | none: it was said, so it is part of the scene |
-| `unsure` | the GM cannot say | | none; listed apart |
+1. **Who doesn't know?** Characters, `party`, or `unsure` (nobody in particular:
+   "anyone who did not know which key was genuine"). The page offers the name just
+   before the phrase ("Asha remained unaware", "Nym and Kaelira genuinely did not
+   know") and any NPC with a published dossier the beat names, as buttons; a
+   pronoun gets no suggestion. A suggestion is only a button: the answer is the
+   GM's.
+2. For characters: **does the beat give away what they don't know?** Sylvira's
+   names her son's death, so `gives_away: true`: the beat is hidden from her and
+   is a leak case. Hgraam's says only that he "does not know where it is", so
+   `gives_away: false`: it stays, because not knowing is part of what he knows.
 
-So the search finds candidates and rules nothing; the GM rules each in a
-**knowledge ruling file** (version 1, one block per campaign because beat ids
+The **knowledge ruling file** (version 2, one block per campaign because beat ids
 repeat across campaigns):
 
 ```yaml
-version: 1
+version: 2
 campaigns:
   out-of-the-abyss:
-    "067.03.b04": {kind: secret, hidden_from: [Sylvira Savikas]}
-    "026.04.b08": {kind: said}
+    "067.03.b04": {who: [Sylvira Savikas], gives_away: true}
+    "026.04.b08": {who: [Hgraam], gives_away: false}
+    "062.06.b09": {who: party}
+    "063.06.b08": {who: unsure}
 ```
 
-- **`hidden_from` is the GM's name, not a match.** It counts for an NPC when it
+The GM's first two answers were `party` for 062.06.b09 (the horrors' three
+immunities) and 068.05.b06 (Manshoon is a simulacrum). A version-1 file is refused
+with the conversion; the page carries version-1 `party`, `unsure` and named
+`secret` answers over and drops a secret with nobody named, which was never an
+answer.
+
+- **`who` names are the GM's, not a match.** A name counts for an NPC when it
   is their dossier subject or a name form their dossier lists. A name with no
   published dossier (Themberchaud, Asha) is kept: it is still a leak case. A
   name that appears nowhere in the summaries is refused as a likely misspelling.
-- **`npc_agent horizon --knowledge FILE`** leaves a secret's beat out of the
-  named NPC's Part 1 exactly as `not_perceived` does, and Part 2 labels it
-  "(knowledge note …)". Only beats of events shown count: a secret at a scene
-  the NPC missed, or after the chapter, changes nothing and is not counted. On
-  Sylvira at chapter 67, the knowledge note alone gives a byte-identical agent
+- **`npc_agent horizon --knowledge FILE`** leaves a beat that gives something
+  away out of each named NPC's Part 1 exactly as `not_perceived` does, and Part 2
+  labels it "(knowledge note …)". Only beats of events shown count: a beat at a
+  scene the NPC missed, or after the chapter, changes nothing and is not counted.
+  On Sylvira at chapter 67, the knowledge note alone gives a byte-identical agent
   view to the hand-marked `not_perceived`.
-- **`npc_agent leaks --knowledge FILE`** writes the leak cases: one per secret
-  and name, "as of this beat's scene, this character must not know what it
-  says", with the beat's text. They are the cases Prototype 3 (the leak test) scores: an NPC agent's
-  move that states a secret hidden from that NPC is a leak.
+- **`npc_agent leaks --knowledge FILE`** writes the leak cases: one per hidden
+  beat and name, "as of this beat's scene, this character must not know what it
+  says", with the beat's text. They are the cases Prototype 3 (the leak test)
+  scores: an NPC agent's move that states one of them is a leak.
 
-A secret beat is hidden whole, so 067.03.b04 still takes Sylvira's thanks to
+A hidden beat is hidden whole, so 067.03.b04 still takes Sylvira's thanks to
 Thorin with it; the fix stays a split of the bullet in the summary.
 
 ### The horizon
@@ -434,12 +448,11 @@ re-validates whatever it is given.
 
 A second view, **Knowledge notes**, has one card per candidate beat (from this
 campaign and any `--also-campaign-dir`, each on its own tab): the beat's text
-with the matched words marked, the whole scene collapsed beneath it, the four
-kinds, and for a secret, who doesn't know (suggesting dossier subjects, warning
-on a name that is neither a dossier subject nor in the scene). A secret with
-nobody named stays unanswered and is left out of the file. A secret hidden from
-an NPC on the Presence view shows on its beat there as "Hidden by a knowledge
-note". Saved per campaign in the database (`knowledge/<campaign>`), exported as
+with the matched words marked, the whole scene collapsed beneath it, and the two
+questions, with the suggested names as buttons and a warning on a name that is
+neither a dossier subject nor in the scene. A card with a name and question 2
+unanswered stays unanswered and is left out of the file. A beat hidden from an
+NPC shows on the Presence view as "Hidden by a knowledge note". Saved per campaign in the database (`knowledge/<campaign>`), exported as
 `knowledge.json` or copied as YAML.
 
 ### Usage
@@ -484,7 +497,7 @@ overrides it), the same label the review page uses.
   Zalthir. The page's split check is where that gets settled scene by scene.
 - Whether the knowledge search should also read summary paragraphs and NPC
   entries (52 more hits). They are not beats, so a ruling there would hide
-  nothing from a horizon, but a secret stated only in an entry would still be a
+  nothing from a horizon, but a fact hidden from someone and stated only in an entry would still be a
   leak case.
 - Whether Ilvara should get a published dossier, since she is the only NPC with
   a complete, closed arc to backtest against.

@@ -17,8 +17,8 @@ Built from authored structure and the GM's answers, nothing else:
 Within an event answered *physically present*, a beat the GM listed as
 ``not_perceived`` is left out of what the NPC could know: the same summary that
 records Sylvira at 067.03 also says, in that scene, what she does not know.
-A beat the GM ruled a ``secret`` hidden from this NPC (:mod:`knowledge`) is left
-out the same way, wherever they were present.
+A beat the GM ruled gives away what this NPC does not know (:mod:`knowledge`)
+is left out the same way, wherever they were present.
 
 ``render_horizon(h, for_agent=True)`` gives only what the NPC could know, the
 part an agent may be shown; everything else is for the GM.
@@ -194,7 +194,7 @@ def render_horizon(h: Horizon, for_agent: bool = False) -> str:
         for c in h.witnessed:
             for b in beats(c.item):
                 if b.beat_id in h.not_perceived:
-                    why = " (knowledge note: a secret hidden from them)" if b.beat_id in h.hidden_by_note else ""
+                    why = " (knowledge note: gives away what they don't know)" if b.beat_id in h.hidden_by_note else ""
                     out.append(f"- {b.beat_id}{why} — {b.text.splitlines()[0][:160]}")
     for title, group in (
         ("Events that mention them (named, not physically there)", h.mentioned),

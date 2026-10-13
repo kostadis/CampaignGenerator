@@ -639,7 +639,7 @@ def kcamp(camp: Path) -> Path:
 
 def _kfile(tmp_path, notes: str, campaign: str = "camp") -> Path:
     f = tmp_path / "k.yaml"
-    f.write_text(f"version: 1\ncampaigns:\n  {campaign}:\n" + notes)
+    f.write_text(f"version: 2\ncampaigns:\n  {campaign}:\n" + notes)
     return f
 
 
@@ -651,34 +651,54 @@ def test_the_search_finds_not_knowing_beats_outside_quoted_speech(kcamp):
     # b05's only matches are quoted speech and a > quote line: never a candidate
 
 
+def test_the_search_suggests_who_does_not_know_and_rules_nothing(kcamp):
+    c, ds, _, _ = _setup(kcamp)
+    found = {k.beat_id: k for k in knowledge.find(c)}
+    # "Sylvira does not yet know": the name before the phrase; no other dossier is named
+    assert knowledge.suggest(found["064.01.b02"], ds) == (("Sylvira",), False)
+    # "Daz asks ... Sylvira does not know."
+    assert knowledge.suggest(found["064.01.b03"], ds) == (("Sylvira",), False)
+    assert knowledge.suggest(found["064.01.b04"], ds) == ((), True)  # "The party is unaware"
+
+
+def test_a_suggestion_takes_two_names_and_skips_pronouns():
+    def cand(before):
+        return knowledge.Candidate("1.01.b01", "001.01", 1, "f", 1, "did not know", before + "did not know", "", before)
+    assert knowledge.suggest(cand("- The party learned that Nym and Kaelira genuinely "), []) == (("Nym", "Kaelira"), False)
+    assert knowledge.suggest(cand("- He "), []) == ((), False)
+    assert knowledge.suggest(cand("- Asha "), []) == (("Asha",), False)  # "Asha remained unaware": the verb is in the phrase
+
+
 def test_a_knowledge_file_loads_one_campaign(kcamp, tmp_path):
-    f = _kfile(tmp_path, '    "064.01.b02": {kind: secret, hidden_from: [Sylvira], note: learns at 70}\n'
-                         '    "064.01.b03": {kind: said}\n    "064.01.b04":\n'
-                         '  other:\n    "999.01.b01": {kind: nonsense}\n')
+    f = _kfile(tmp_path, '    "064.01.b02": {who: [Sylvira], gives_away: true, note: learns at 70}\n'
+                         '    "064.01.b03": {who: [Sylvira], gives_away: false}\n'
+                         '    "064.01.b04": {who: party}\n    "064.01.b01":\n'
+                         '  other:\n    "999.01.b01": {who: nonsense}\n')
     notes = knowledge.load_knowledge(f, "camp", _corpus(kcamp))
     assert notes == {
-        "064.01.b02": knowledge.Note("064.01.b02", "secret", ("Sylvira",), "learns at 70"),
-        "064.01.b03": knowledge.Note("064.01.b03", "said"),
+        "064.01.b02": knowledge.Note("064.01.b02", ("Sylvira",), gives_away=True, note="learns at 70"),
+        "064.01.b03": knowledge.Note("064.01.b03", ("Sylvira",), gives_away=False),
+        "064.01.b04": knowledge.Note("064.01.b04", party=True),
     }
 
 
 @pytest.mark.parametrize("notes, needle", [
-    ('    "064.01.b02": {kind: hidden}\n', "not one of secret, party, said, unsure"),
-    ('    "064.01.b02": {kind: secret}\n', "a secret needs hidden_from"),
-    ('    "064.01.b03": {kind: said, hidden_from: [Sylvira]}\n', "hidden_from is for a secret"),
-    ('    "064.01.b09": {kind: party}\n', "not a beat"),
-    ('    "064.01.b02": {kind: secret, hidden_from: [Sylvra]}\n', "Sylvra appears nowhere in the summaries"),
-    ('    "064.01.b02": {kind: secret, whom: [Sylvira]}\n', "expected a mapping"),
+    ('    "064.01.b02": {who: everyone}\n', "who must be 'party', 'unsure', or a list of names"),
+    ('    "064.01.b02": {who: [Sylvira]}\n', "gives_away must be true or false"),
+    ('    "064.01.b04": {who: party, gives_away: false}\n', "gives_away is for characters"),
+    ('    "064.01.b09": {who: party}\n', "not a beat"),
+    ('    "064.01.b02": {who: [Sylvra], gives_away: true}\n', "Sylvra appears nowhere in the summaries"),
+    ('    "064.01.b02": {kind: secret, hidden_from: [Sylvira]}\n', "expected a mapping with 'who'"),
 ])
 def test_a_knowledge_file_refuses_what_it_cannot_apply(kcamp, tmp_path, notes, needle):
     with pytest.raises(knowledge.KnowledgeError, match=needle):
         knowledge.load_knowledge(_kfile(tmp_path, notes), "camp", _corpus(kcamp))
 
 
-def test_a_knowledge_file_of_another_version_is_refused(kcamp, tmp_path):
+def test_a_version_1_knowledge_file_is_refused_with_the_conversion(kcamp, tmp_path):
     f = tmp_path / "k.yaml"
-    f.write_text("version: 3\nnpcs: {}\n")
-    with pytest.raises(knowledge.KnowledgeError, match="expected a mapping with 'version' and 'campaigns'"):
+    f.write_text('version: 1\ncampaigns:\n  camp:\n    "064.01.b04": {kind: party}\n')
+    with pytest.raises(knowledge.KnowledgeError, match="'kind: party' is 'who: party'"):
         knowledge.load_knowledge(f, "camp", _corpus(kcamp))
 
 
@@ -691,31 +711,33 @@ def _kview(kcamp, tmp_path, notes, chapter):
                                  presence.snapshots(ms), r.not_perceived, hidden)
 
 
-def test_a_secret_hidden_from_an_npc_never_reaches_what_they_could_know(kcamp, tmp_path):
-    h = _kview(kcamp, tmp_path, '    "064.01.b02": {kind: secret, hidden_from: [Sylvira]}\n', 64)
+def test_a_beat_giving_away_what_an_npc_does_not_know_never_reaches_them(kcamp, tmp_path):
+    h = _kview(kcamp, tmp_path, '    "064.01.b02": {who: [Sylvira], gives_away: true}\n', 64)
     agent = horizon.render_horizon(h, for_agent=True)
     assert "killed her son" not in agent and "1 beat(s) of this scene left out" in agent
     assert "Daz asks where the key is" in agent
-    assert "064.01.b02 (knowledge note: a secret hidden from them)" in horizon.render_horizon(h)
+    assert "064.01.b02 (knowledge note: gives away what they don't know)" in horizon.render_horizon(h)
 
 
-def test_a_secret_hidden_from_someone_else_or_later_changes_nothing(kcamp, tmp_path):
-    other = _kview(kcamp, tmp_path, '    "064.01.b02": {kind: secret, hidden_from: [Daral]}\n', 64)
+def test_a_beat_hidden_from_someone_else_or_later_changes_nothing(kcamp, tmp_path):
+    other = _kview(kcamp, tmp_path, '    "064.01.b02": {who: [Daral], gives_away: true}\n', 64)
     assert other.not_perceived == frozenset() and "killed her son" in horizon.render_horizon(other, for_agent=True)
-    earlier = _kview(kcamp, tmp_path, '    "064.01.b02": {kind: secret, hidden_from: [Sylvira]}\n', 63)
+    earlier = _kview(kcamp, tmp_path, '    "064.01.b02": {who: [Sylvira], gives_away: true}\n', 63)
     assert earlier.not_perceived == frozenset() and earlier.hidden_by_note == frozenset()
     assert "Beats left out as not perceived: 0" in horizon.render_horizon(earlier)
 
 
-def test_only_a_secret_hides_anything(kcamp, tmp_path):
-    h = _kview(kcamp, tmp_path, '    "064.01.b02": {kind: said}\n    "064.01.b04": {kind: party}\n', 64)
+def test_only_a_beat_that_gives_it_away_hides_anything(kcamp, tmp_path):
+    h = _kview(kcamp, tmp_path, '    "064.01.b02": {who: [Sylvira], gives_away: false}\n'
+                                '    "064.01.b03": {who: unsure}\n    "064.01.b04": {who: party}\n', 64)
     assert h.not_perceived == frozenset()
 
 
 def test_cli_leaks_lists_who_must_not_know_what(kcamp, tmp_path, capsys):
     import yaml
 
-    f = _kfile(tmp_path, '    "064.01.b02": {kind: secret, hidden_from: [Sylvira, Daral]}\n    "064.01.b03": {kind: said}\n',
+    f = _kfile(tmp_path, '    "064.01.b02": {who: [Sylvira, Daral], gives_away: true}\n'
+                         '    "064.01.b03": {who: [Sylvira], gives_away: false}\n',
                campaign=kcamp.name)
     out = tmp_path / "leaks.yaml"
     assert cli.main(["leaks", "--campaign-dir", str(kcamp), "--knowledge", str(f), "--out", str(out)]) == 0
@@ -725,21 +747,22 @@ def test_cli_leaks_lists_who_must_not_know_what(kcamp, tmp_path, capsys):
         ("Sylvira", "Sylvira Savikas", "064.01.b02", 64), ("Daral", None, "064.01.b02", 64)]
     assert cases["cases"][0]["must_not_know"].startswith("- Sylvira does not yet know")
     err = capsys.readouterr().err
-    assert "Daral has no published dossier; kept as a leak case" in err and "secret 1, party 0, said 1" in err
+    assert "Daral has no published dossier; kept as a leak case" in err
+    assert "gives away (hidden) 1, only says they don't know (kept) 1, the party 0, unsure 0" in err
 
 
 def test_cli_horizon_reads_the_knowledge_file(kcamp, tmp_path, capsys):
     r = tmp_path / "r.yaml"
     r.write_text('version: 3\nnpcs:\n  Sylvira Savikas:\n    default: mentioned\n    items:\n      "064.01": present\n')
-    f = _kfile(tmp_path, '    "064.01.b02": {kind: secret, hidden_from: [Sylvira Savikas]}\n', campaign="tea")
+    f = _kfile(tmp_path, '    "064.01.b02": {who: [Sylvira Savikas], gives_away: true}\n', campaign="tea")
     rc = cli.main(["horizon", "--campaign-dir", str(kcamp), "--npc", "Sylvira", "--chapter", "64", "--rulings", str(r),
                    "--knowledge", str(f), "--campaign", "tea", "--for-agent"])
     assert rc == 0
     assert "killed her son" not in capsys.readouterr().out
-    bad = _kfile(tmp_path, '    "064.01.b02": {kind: secret}\n', campaign="tea")
+    bad = _kfile(tmp_path, '    "064.01.b02": {who: [Sylvira Savikas]}\n', campaign="tea")
     rc = cli.main(["horizon", "--campaign-dir", str(kcamp), "--npc", "Sylvira", "--chapter", "64", "--rulings", str(r),
                    "--knowledge", str(bad), "--campaign", "tea"])
-    assert rc == 2 and "a secret needs hidden_from" in capsys.readouterr().err
+    assert rc == 2 and "gives_away must be true or false" in capsys.readouterr().err
 
 
 def test_review_shows_knowledge_notes_from_each_campaign_its_own_first(kcamp, tmp_path):
@@ -760,7 +783,8 @@ def test_review_shows_knowledge_notes_from_each_campaign_its_own_first(kcamp, tm
     assert [k["id"] for k in camps[0]["cards"]] == ["064.01.b02", "064.01.b03", "064.01.b04"]
     assert camps[0]["subjects"] == ["Sylvira Savikas", "Wick"] and camps[1]["subjects"] == []
     assert camps[1]["cards"][0]["ph"] == "does not know" and "Harbin" in camps[1]["cards"][0]["sx"]
-    assert data["knowledge"]["kinds"] == list(knowledge.KINDS)
+    assert camps[0]["cards"][0]["sg"] == ["Sylvira"] and camps[0]["cards"][2]["sp"] is True
+    assert data["knowledge"]["version"] == knowledge.VERSION == 2
     rc = cli.main(["review", "--campaign-dir", str(kcamp), "--npc", "Sylvira", "--also-campaign-dir", str(kcamp),
                    "--out", str(out)])
     assert rc == 2
@@ -769,10 +793,10 @@ def test_review_shows_knowledge_notes_from_each_campaign_its_own_first(kcamp, tm
 def test_the_file_the_page_saves_is_a_knowledge_file(kcamp, tmp_path):
     import json
 
-    saved = {"version": 1, "campaigns": {"camp": {
-        "064.01.b02": {"kind": "secret", "hidden_from": ["Sylvira Savikas"], "note": "learns at 70"},
-        "064.01.b04": {"kind": "party"}}}}
+    saved = {"version": 2, "campaigns": {"camp": {
+        "064.01.b02": {"who": ["Sylvira Savikas"], "gives_away": True, "note": "learns at 70"},
+        "064.01.b04": {"who": "party"}}}}
     f = tmp_path / "knowledge.json"
     f.write_text(json.dumps(saved, indent=2))
     notes = knowledge.load_knowledge(f, "camp", _corpus(kcamp))
-    assert notes["064.01.b02"].hidden_from == ("Sylvira Savikas",) and notes["064.01.b04"].kind == "party"
+    assert notes["064.01.b02"].who == ("Sylvira Savikas",) and notes["064.01.b04"].party
