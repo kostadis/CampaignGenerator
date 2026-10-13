@@ -539,6 +539,19 @@ class TestWorldStateBudgetsAndReferences:
         assert "reference/factions.md" in contract and "canon_events_timeline.md" in contract
         assert "not verbatim" in contract
 
+    def test_campaign_state_opens_with_its_reading_contract(self, extracted, fm):
+        """Promotion requires one reading-contract path record in every document; campaign_state's thread
+        sections point into reference/, so its contract names those files and no timeline."""
+        assert cs.run_cli(synth_args(extracted, "campaign_state"))[0] == 0
+        lines = draft_of(extracted, "campaign_state").splitlines()
+        assert lines[0].startswith("<!-- summary_native draft")
+        assert lines[1].startswith("> **How to read this document.**")
+        first_h2 = next(i for i, ln in enumerate(lines) if ln.startswith("## "))
+        contract = "\n".join(lines[1:first_h2])
+        assert contract.count("<!-- summary_native pointers:") == 1
+        assert "reference/threads.md" in contract and "reference/threads_unratified.md" in contract
+        assert "Every event, in order" not in contract  # only world_state names the timeline
+
     def test_the_outline_check_runs_on_the_sections_and_the_contract_adds_nothing_else(self, extracted, fm):
         assert cs.run_cli(synth_args(extracted, "world_state"))[0] == 0
         text = draft_of(extracted, "world_state")
@@ -577,7 +590,7 @@ class TestWorldStateBudgetsAndReferences:
         for h in ("## Resolved Plot Threads", "## Active Quests & Open Threads"):
             assert "_Full notes: reference/threads.md (" in section(text, h)
         assert "_Full notes:" not in section(text, "## Party Current Situation")
-        assert not text.splitlines()[1].startswith(">")  # the contract opens world_state only
+        assert text.splitlines()[1].startswith(">")  # every promoted document opens with its contract
         assert (state_dir(extracted) / "drafts" / "reference" / "threads.md").is_file()
 
     def test_dump_only_writes_no_reference_files(self, extracted, fm):

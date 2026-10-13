@@ -182,8 +182,9 @@ STATE_SYSTEM = {
     "party": "state.party.system.md",
     "planning": "state.planning.system.md",
 }
-#: The documents that open with a reading contract (campaign_state, as before, does not).
-CONTRACT_DOCS = ("world_state", "party", "planning")
+#: The documents that open with a reading contract. Every promoted document carries one: promotion checks
+#: each document's pointers against it, and campaign_state's thread sections point into ``reference/``.
+CONTRACT_DOCS = ("world_state", "campaign_state", "party", "planning")
 #: The documents whose thread sections are built from the GM's thread registry (spec 034 for planning, #530 for campaign_state).
 THREAD_DOCS = ("planning", "campaign_state")
 

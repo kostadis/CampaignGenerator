@@ -154,7 +154,7 @@ UNRATIFIED_KIND = "threads_unratified"
 #: all six kinds; the other documents name only the files they point to.
 CONTRACT_REFERENCES: dict[str, tuple[str, ...]] = {
     "world_state": tuple(REFERENCE_KINDS),
-    "campaign_state": ("threads",),
+    "campaign_state": ("threads", UNRATIFIED_KIND),
     "party": ("party",),
     "planning": ("factions", "npcs", "threads", UNRATIFIED_KIND),
 }

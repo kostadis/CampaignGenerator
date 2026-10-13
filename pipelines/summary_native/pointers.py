@@ -22,7 +22,7 @@ def check_paths(document: Path, campaign: Path) -> list[str]:
     Older drafts without the machine-readable contract must be regenerated before checking.
 
     Only the files the document's own reading contract names are required: world_state lists six reference
-    files and the timeline, planning three reference files, party one, campaign_state one; a promoted party
+    files and the timeline, planning four reference files, party one, campaign_state two; a promoted party
     or planning bundle does not carry the files it never pointed to.
     """
     document, campaign = Path(document), Path(campaign)
