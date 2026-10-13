@@ -39,15 +39,13 @@ def knowledge_campaign(campaign: str, corpus: Corpus, dossiers: list[Dossier]) -
     """One campaign's knowledge candidates, each with its scene for context."""
     scenes = {it.item_id: it for it in corpus.items() if it.kind == corpus_mod.SCENE}
     titles = {ch.chapter: ch.title or f"Chapter {ch.chapter}" for ch in corpus.chapters}
-    return {
-        "campaign": campaign,
-        "subjects": sorted(d.subject for d in dossiers),
-        "cards": [
-            {"id": k.beat_id, "s": k.scene_id, "c": k.chapter, "ct": titles[k.chapter], "st": k.scene_title,
-             "f": k.source_file, "l": k.line, "ph": k.phrase, "x": k.text, "sx": scenes[k.scene_id].text}
-            for k in knowledge.find(corpus)
-        ],
-    }
+    cards = []
+    for k in knowledge.find(corpus):
+        names, party = knowledge.suggest(k, dossiers)
+        cards.append({"id": k.beat_id, "s": k.scene_id, "c": k.chapter, "ct": titles[k.chapter], "st": k.scene_title,
+                      "f": k.source_file, "l": k.line, "ph": k.phrase, "x": k.text, "sx": scenes[k.scene_id].text,
+                      "sg": list(names), "sp": party})
+    return {"campaign": campaign, "subjects": sorted(d.subject for d in dossiers), "cards": cards}
 
 
 def bundle(corpus: Corpus, pairs: list[tuple[Dossier, list[Candidate]]], source: str,
@@ -88,8 +86,7 @@ def bundle(corpus: Corpus, pairs: list[tuple[Dossier, list[Candidate]]], source:
     ]
     return {"bundle": BUNDLE_VERSION, "rulings_version": VERSION, "source": source,
             "chapters": chapters, "items": items, "npcs": npcs,
-            "knowledge": {"version": knowledge.VERSION, "kinds": list(knowledge.KINDS),
-                          "campaigns": knowledge_campaigns or []}}
+            "knowledge": {"version": knowledge.VERSION, "campaigns": knowledge_campaigns or []}}
 
 
 def render_page(data: dict) -> str:

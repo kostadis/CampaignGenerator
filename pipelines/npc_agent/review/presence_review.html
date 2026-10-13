@@ -134,15 +134,17 @@ details[open] > summary::before { content: "▾ "; }
 .view-tab[aria-selected="true"] { color: var(--fg); border-bottom-color: var(--accent); }
 .view-tab small { font-weight: 400; font-variant-numeric: tabular-nums; }
 .card { display: grid; gap: 8px; padding-block: 14px; border-bottom: 1px solid var(--line); min-width: 0; }
-.card[data-v="secret"] { box-shadow: inset 3px 0 0 var(--absent); padding-left: 10px; }
+.card[data-v="hide"] { box-shadow: inset 3px 0 0 var(--absent); padding-left: 10px; }
 .card[data-v="party"] { box-shadow: inset 3px 0 0 var(--mentioned); padding-left: 10px; }
-.card[data-v="said"] { box-shadow: inset 3px 0 0 var(--present); padding-left: 10px; }
+.card[data-v="keep"] { box-shadow: inset 3px 0 0 var(--present); padding-left: 10px; }
 .card[data-v="unsure"] { box-shadow: inset 3px 0 0 var(--neither); padding-left: 10px; }
 .kanswers { display: flex; flex-wrap: wrap; gap: 6px; }
-.ans[data-kind="secret"][aria-pressed="true"] { background: var(--absent); border-color: var(--absent); color: var(--accent-ink); }
-.ans[data-kind="party"][aria-pressed="true"] { background: var(--mentioned); border-color: var(--mentioned); color: var(--accent-ink); }
-.ans[data-kind="said"][aria-pressed="true"] { background: var(--present); border-color: var(--present); color: var(--accent-ink); }
-.ans[data-kind="unsure"][aria-pressed="true"] { background: var(--neither); border-color: var(--neither); color: var(--accent-ink); }
+.ans[data-kgive="1"][aria-pressed="true"] { background: var(--absent); border-color: var(--absent); color: var(--accent-ink); }
+.ans[data-kwho="party"][aria-pressed="true"] { background: var(--mentioned); border-color: var(--mentioned); color: var(--accent-ink); }
+.ans[data-kgive="0"][aria-pressed="true"] { background: var(--present); border-color: var(--present); color: var(--accent-ink); }
+.ans[data-kwho="unsure"][aria-pressed="true"] { background: var(--neither); border-color: var(--neither); color: var(--accent-ink); }
+.ans[data-ksug]::before { content: "+ "; color: var(--muted); }
+.row-top .ans.clear { margin-left: auto; }
 mark { background: color-mix(in srgb, var(--hint) 28%, transparent); color: inherit; border-radius: 2px; padding: 0 1px; }
 .who { display: grid; gap: 6px; background: var(--sunk); border-radius: 6px; padding: 8px 10px; }
 .names { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
@@ -217,12 +219,12 @@ mark { background: color-mix(in srgb, var(--hint) 28%, transparent); color: inhe
 
   <div id="knowledge-view" role="tabpanel" aria-labelledby="tab-knowledge" hidden>
     <header class="head" style="margin-top:14px">
-      <p class="lede">Each card is a bullet from the summaries that says someone does not know something. The same
-        words mean three different things, so <b>say which this one is</b>. <b>Your note on a secret</b>: you wrote
-        down what a character does not know; name who, and it is left out of what they could know, wherever they
-        were present, and it becomes a test that an NPC agent never knows it. <b>About the party</b>: what the
-        players do not know. <b>Said in the scene</b>: a character tells the party they don&rsquo;t know; it was
-        said, so it stays. When you cannot tell, <b>Unsure</b>.</p>
+      <p class="lede">Each card is a bullet from the summaries that says someone doesn&rsquo;t know something.
+        Answer two things. <b>1 &middot; Who doesn&rsquo;t know?</b> Tap the name the bullet gives (suggested from the
+        sentence), type another, or choose the party or nobody in particular. <b>2 &middot; Does the bullet give away
+        what they don&rsquo;t know?</b> Sylvira&rsquo;s names her son&rsquo;s death, so it does: the bullet is hidden from
+        her wherever she was present, and becomes a test that an agent playing her never knows it. Hgraam&rsquo;s
+        says only that he doesn&rsquo;t know the way, so it stays: not knowing is part of what he knows.</p>
       <div class="npcs" id="k-camps" role="group" aria-label="Campaign"></div>
     </header>
     <div class="bar" id="k-bar">
@@ -539,13 +541,13 @@ const DATA = /*__NPC_AGENT_DATA__*/null;
 
   // ── knowledge notes (mirrors pipelines/npc_agent/knowledge.py) ─────────
   // K.campaigns[0] is this page's own campaign (npc_agent review puts it first),
-  // so its secrets are the ones that hide beats in the Presence view.
-  const K = DATA.knowledge || { version: 1, campaigns: [] };
-  const KINDS = [["secret", "Your note: a secret, hidden from a character"], ["party", "About what the party doesn\u2019t know"],
-                 ["said", "A character says it in the scene"], ["unsure", "Unsure"]];
-  const KSAY = { secret: "secret", party: "about the party", said: "said in the scene", unsure: "unsure" };
+  // so its notes are the ones that hide beats in the Presence view.
+  // Two questions per card: who doesn't know, and (for characters) does the
+  // bullet give away what they don't know. A note in the page:
+  //   {who: "party" | "unsure" | "names", names: [...], gives_away: null | true | false, note}
+  const K = DATA.knowledge || { version: 2, campaigns: [] };
   // ``kept``: cards answered since the filter last changed. They stay in the
-  // Unanswered list, so a secret can take a second name and a slip can be undone.
+  // Unanswered list, so a second name can be added and a slip undone.
   const kstate = { view: "presence", camp: 0, show: "needs", notes: {}, kept: new Set() };
   K.campaigns.forEach((c) => { kstate.notes[c.campaign] = {}; });
   try {
@@ -555,29 +557,43 @@ const DATA = /*__NPC_AGENT_DATA__*/null;
   const kc = () => K.campaigns[kstate.camp];
   const kn = () => kstate.notes[kc().campaign];
   const wordRe = (name) => new RegExp("(?<![\\p{L}\\p{N}_])" + name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "(?![\\p{L}\\p{N}_])", "u");
-  // A secret with nobody named is not a note yet: it is left out of the file.
-  const complete = (n) => !!(n && n.kind && (n.kind !== "secret" || (n.hidden_from || []).length));
+  const complete = (n) => !!(n && (n.who === "party" || n.who === "unsure" ||
+    (n.who === "names" && (n.names || []).length && typeof n.gives_away === "boolean")));
+  const outcome = (n) => !complete(n) ? "" : n.who !== "names" ? n.who : n.gives_away ? "hide" : "keep";
+
+  // Version 1 asked what kind of bullet it was; only its party, unsure and
+  // named-secret answers carry over. A secret with nobody named was never an answer.
+  function fromV1(notes) {
+    const out = {};
+    for (const [id, n] of Object.entries(notes || {})) {
+      if (!n) continue;
+      const note = n.note || "";
+      if (n.kind === "party" || n.kind === "unsure") out[id] = { who: n.kind, names: [], gives_away: null, note };
+      else if (n.kind === "secret" && (n.hidden_from || []).length) out[id] = { who: "names", names: n.hidden_from.slice(), gives_away: true, note };
+    }
+    return out;
+  }
 
   function hiddenFor(n) {
     const out = new Set(), c = K.campaigns[0];
     if (!c) return out;
     for (const [id, x] of Object.entries(kstate.notes[c.campaign] || {}))
-      if (complete(x) && x.kind === "secret" && x.hidden_from.some((nm) => nm === n.subject || n.forms.includes(nm))) out.add(id);
+      if (outcome(x) === "hide" && x.names.some((nm) => nm === n.subject || n.forms.includes(nm))) out.add(id);
     return out;
   }
 
   function kCounts(c) {
-    const src = kstate.notes[c.campaign] || {}, t = { total: c.cards.length, ruled: 0, incomplete: 0, secret: 0, party: 0, said: 0, unsure: 0 };
+    const src = kstate.notes[c.campaign] || {}, t = { total: c.cards.length, ruled: 0, hide: 0, keep: 0, party: 0, unsure: 0, halfway: 0 };
     for (const k of c.cards) {
-      const n = src[k.id];
-      if (complete(n)) { t.ruled++; t[n.kind]++; } else if (n && n.kind) t.incomplete++;
+      const o = outcome(src[k.id]);
+      if (o) { t.ruled++; t[o]++; } else if (src[k.id] && (src[k.id].names || []).length) t.halfway++;
     }
     return t;
   }
 
   function nameWarning(c, card, name) {
     if (c.subjects.includes(name)) return "";
-    return wordRe(name).test(card.sx) ? "no published dossier; still a leak case"
+    return wordRe(name).test(card.sx) ? "no published dossier; still a leak case if hidden"
       : "not a published dossier and not named in this scene; check the spelling";
   }
 
@@ -587,27 +603,38 @@ const DATA = /*__NPC_AGENT_DATA__*/null;
     return esc(text.slice(0, i)) + "<mark>" + esc(phrase) + "</mark>" + esc(text.slice(i + phrase.length));
   }
 
+  const listNames = (ns) => ns.length < 2 ? ns.join("") : ns.slice(0, -1).join(", ") + " and " + ns[ns.length - 1];
+
   function cardHtml(c, k) {
-    const n = kn()[k.id] || {}, kind = n.kind || "", key = c.campaign + "/" + k.id, names = n.hidden_from || [];
-    let who = "";
-    if (kind === "secret") {
-      who = '<div class="who"><span class="label">Who doesn\u2019t know</span>' +
-        (names.length ? '<div class="names">' + names.map((nm, i) => {
-          const w = nameWarning(c, k, nm);
-          return '<span class="name">' + esc(nm) + '<button type="button" class="x" data-kdel="' + i + '" aria-label="Remove ' + esc(nm) + '">\u00d7</button></span>' +
-            (w ? '<span class="via warn">' + esc(w) + "</span>" : "");
-        }).join("") + "</div>" : '<span class="via warn">Name at least one character. Until then this card stays unanswered and is left out of the file.</span>') +
-        '<div class="actions"><input data-kname list="k-subjects" placeholder="a character" aria-label="Who doesn\u2019t know, for ' + k.id + '">' +
-        '<button type="button" class="btn" data-kadd>Add</button></div></div>';
-    }
-    const note = kind ? '<label class="knote">Note<input data-knote value="' + esc(n.note || "") + '" placeholder="optional" aria-label="Note for ' + k.id + '"></label>' : "";
-    return '<div class="card" data-id="' + esc(key) + '" data-k="' + k.id + '" data-v="' + (complete(n) ? kind : "") + '">' +
-      '<div class="row-top"><span class="mono">' + k.id + "</span><strong>" + esc(k.st) + '</strong><span class="tag sig">' + esc(k.ph) + "</span></div>" +
+    const n = kn()[k.id] || { who: "", names: [], gives_away: null, note: "" }, key = c.campaign + "/" + k.id;
+    const names = n.who === "names" ? n.names : [];
+    const btn = (attrs, pressed, label) => '<button type="button" class="ans" ' + attrs + ' aria-pressed="' + pressed + '">' + label + "</button>";
+    const sugg = (k.sg || []).filter((x) => !names.includes(x));
+    let q1 = '<div class="who"><span class="label">1 · Who doesn’t know?</span>';
+    if (names.length) q1 += '<div class="names">' + names.map((nm, i) => {
+      const w = nameWarning(c, k, nm);
+      return '<span class="name">' + esc(nm) + '<button type="button" class="x" data-kdel="' + i + '" aria-label="Remove ' + esc(nm) + '">×</button></span>' +
+        (w ? '<span class="via warn">' + esc(w) + "</span>" : "");
+    }).join("") + "</div>";
+    q1 += '<div class="kanswers">' +
+      sugg.map((x) => btn('data-ksug="' + esc(x) + '"', false, esc(x))).join("") +
+      btn('data-kwho="party"', n.who === "party", "The party") +
+      btn('data-kwho="unsure"', n.who === "unsure", "Nobody in particular / unsure") + "</div>" +
+      '<div class="actions"><input data-kname list="k-subjects" placeholder="' + (names.length ? "someone else" : "another name") + '" aria-label="Who doesn’t know, for ' + k.id + '">' +
+      '<button type="button" class="btn" data-kadd>Add</button></div></div>';
+    let q2 = "";
+    if (names.length) q2 = '<div class="who"><span class="label">2 · Does this bullet give away what ' + esc(listNames(names)) + " " +
+      (names.length > 1 ? "don’t" : "doesn’t") + ' know?</span><div class="kanswers">' +
+      btn('data-kgive="1"', n.gives_away === true, "Yes — hide this bullet from " + (names.length > 1 ? "them" : esc(names[0]))) +
+      btn('data-kgive="0"', n.gives_away === false, "No — it only says they don’t know; keep it") + "</div></div>";
+    const any = n.who || names.length;
+    const note = complete(n) ? '<label class="knote">Note<input data-knote value="' + esc(n.note || "") + '" placeholder="optional" aria-label="Note for ' + k.id + '"></label>' : "";
+    return '<div class="card" data-id="' + esc(key) + '" data-k="' + k.id + '" data-v="' + outcome(n) + '">' +
+      '<div class="row-top"><span class="mono">' + k.id + "</span><strong>" + esc(k.st) + '</strong><span class="tag sig">' + esc(k.ph) + "</span>" +
+      (any ? '<button type="button" class="ans clear" data-kclear>clear</button>' : "") + "</div>" +
       '<p class="text">' + marked(k.x, k.ph) + "</p>" +
-      "<details" + (openIds.has(key) ? " open" : "") + "><summary>The whole scene \u00b7 " + esc(k.f) + ":" + k.l + '</summary><p class="text">' + esc(k.sx) + "</p></details>" +
-      '<div class="kanswers" role="group" aria-label="What ' + k.id + ' is">' +
-      KINDS.map(([a, l]) => '<button type="button" class="ans" data-kind="' + a + '" aria-pressed="' + (kind === a) + '">' + l + "</button>").join("") +
-      '<button type="button" class="ans clear" data-kind="" ' + (kind ? "" : "disabled") + ">clear</button></div>" + who + note + "</div>";
+      "<details" + (openIds.has(key) ? " open" : "") + "><summary>The whole scene · " + esc(k.f) + ":" + k.l + '</summary><p class="text">' + esc(k.sx) + "</p></details>" +
+      q1 + q2 + note + "</div>";
   }
 
   function renderK() {
@@ -619,8 +646,8 @@ const DATA = /*__NPC_AGENT_DATA__*/null;
     }).join("");
     $("k-tally").innerHTML = "<span><b>" + t.ruled + "</b> of " + t.total + " bullets answered</span>" +
       '<span class="meter" aria-hidden="true"><i style="width:' + pct + '%"></i></span>' +
-      "<span>secret " + t.secret + " · about the party " + t.party + " · said in the scene " + t.said + " · unsure " + t.unsure + "</span>" +
-      (t.incomplete ? '<span class="via warn">' + t.incomplete + " secret(s) with nobody named</span>" : "");
+      "<span>hidden " + t.hide + " · kept " + t.keep + " · the party " + t.party + " · unsure " + t.unsure + "</span>" +
+      (t.halfway ? '<span class="via warn">' + t.halfway + " with a name but question 2 unanswered</span>" : "");
     $("k-filters").innerHTML = [["needs", "Unanswered"], ["all", "Everything"]].map(([k, l]) =>
       '<button type="button" class="chip" data-kshow="' + k + '" aria-pressed="' + (kstate.show === k) + '">' + l + "</button>").join("");
     const src = kn();
@@ -634,8 +661,9 @@ const DATA = /*__NPC_AGENT_DATA__*/null;
     if (ch !== null) html += "</div></section>";
     $("k-list").innerHTML = (html || '<p class="empty">Every bullet in ' + esc(c.campaign) + " has an answer. Choose Everything to review them.</p>") +
       '<datalist id="k-subjects">' + c.subjects.map((x) => '<option value="' + esc(x) + '">').join("") + "</datalist>";
-    $("k-foot").textContent = "Found by a fixed list of phrasings (\u201cdoes not know\u201d, \u201cunaware of\u201d, \u201chas not been told\u201d, \u2026) in scene bullets, " +
-      "outside quoted speech: a search, never a ruling. A name counts for an NPC when it is their dossier subject or a name form their dossier lists. " +
+    $("k-foot").textContent = "Found by a fixed list of phrasings (“does not know”, “unaware of”, “has not been told”, …) in scene bullets, " +
+      "outside quoted speech: a search, never a ruling. The name buttons are suggestions: the name just before the phrase, and any NPC with a published dossier the bullet names. " +
+      "A name counts for an NPC when it is their dossier subject or a name form their dossier lists. " +
       "Saved files are knowledge file version " + K.version + "; npc_agent horizon --knowledge and npc_agent leaks read them as they stand.";
   }
 
@@ -646,8 +674,7 @@ const DATA = /*__NPC_AGENT_DATA__*/null;
       for (const id of Object.keys(src).sort()) {
         const n = src[id];
         if (!complete(n)) continue;
-        const o = { kind: n.kind };
-        if (n.kind === "secret") o.hidden_from = n.hidden_from.slice();
+        const o = n.who === "names" ? { who: n.names.slice(), gives_away: n.gives_away } : { who: n.who };
         if (n.note) o.note = n.note;
         notes[id] = o;
       }
@@ -664,8 +691,9 @@ const DATA = /*__NPC_AGENT_DATA__*/null;
     for (const c of cs) {
       out.push("  " + q(c) + ":");
       for (const [id, n] of Object.entries(f.campaigns[c])) {
-        out.push("    " + q(id) + ":", "      kind: " + n.kind);
-        if (n.hidden_from) out.push("      hidden_from: [" + n.hidden_from.map(q).join(", ") + "]");
+        out.push("    " + q(id) + ":");
+        out.push("      who: " + (Array.isArray(n.who) ? "[" + n.who.map(q).join(", ") + "]" : n.who));
+        if (Array.isArray(n.who)) out.push("      gives_away: " + n.gives_away);
         if (n.note) out.push("      note: " + q(n.note));
       }
     }
@@ -692,7 +720,7 @@ const DATA = /*__NPC_AGENT_DATA__*/null;
   function saveDraftLocally() {
     try {
       localStorage.setItem("presence-ledger-draft-v3", JSON.stringify(state.rulings));
-      localStorage.setItem("presence-ledger-knowledge-v1", JSON.stringify(kstate.notes));
+      localStorage.setItem("presence-ledger-knowledge-v2", JSON.stringify(kstate.notes));
     } catch (e) { /* no storage */ }
   }
 
@@ -732,8 +760,11 @@ const DATA = /*__NPC_AGENT_DATA__*/null;
       }
     } catch (e) { /* no draft */ }
     try {
-      const raw = localStorage.getItem("presence-ledger-knowledge-v1");
-      if (raw) { const d = JSON.parse(raw); for (const c of K.campaigns) if (d[c.campaign]) kstate.notes[c.campaign] = d[c.campaign]; }
+      const raw = localStorage.getItem("presence-ledger-knowledge-v2"), old = raw ? null : localStorage.getItem("presence-ledger-knowledge-v1");
+      if (raw || old) {
+        const d = JSON.parse(raw || old);
+        for (const c of K.campaigns) if (d[c.campaign]) kstate.notes[c.campaign] = raw ? d[c.campaign] : fromV1(d[c.campaign]);
+      }
     } catch (e) { /* no draft */ }
     render();
     setStatus("Connecting…");
@@ -757,7 +788,10 @@ const DATA = /*__NPC_AGENT_DATA__*/null;
     for (const c of K.campaigns) {
       db.doc("knowledge/" + c.campaign).onSnapshot((snap) => {
         if (snap.metadata.hasPendingWrites || pending.has("knowledge/" + c.campaign)) return;
-        if (snap.exists) kstate.notes[c.campaign] = JSON.parse(JSON.stringify(snap.data().notes || {}));
+        if (snap.exists) {
+          const d = snap.data();
+          kstate.notes[c.campaign] = d.knowledge_version === K.version ? JSON.parse(JSON.stringify(d.notes || {})) : fromV1(d.notes);
+        }
         const y = window.scrollY; render(); window.scrollTo(0, y);
       }, () => setStatus("Lost the connection to saved notes. Save knowledge.json to keep your work.", true));
     }
@@ -777,12 +811,20 @@ const DATA = /*__NPC_AGENT_DATA__*/null;
     const card = t.closest(".card");
     if (card) {
       const id = card.dataset.k, notes = kn();
+      const n = notes[id] = notes[id] || { who: "", names: [], gives_away: null, note: "" };
       kstate.kept.add(id);
-      if (t.dataset.kind !== undefined) {
-        if (t.dataset.kind) notes[id] = Object.assign({ hidden_from: [], note: "" }, notes[id], { kind: t.dataset.kind });
-        else delete notes[id];
+      if (t.dataset.kclear !== undefined) {
+        delete notes[id];
+      } else if (t.dataset.kwho) {
+        const was = n.who === t.dataset.kwho;
+        Object.assign(n, { who: was ? "" : t.dataset.kwho, names: [], gives_away: null });
+      } else if (t.dataset.ksug) {
+        addNameTo(n, t.dataset.ksug);
+      } else if (t.dataset.kgive !== undefined) {
+        n.gives_away = t.dataset.kgive === "1";
       } else if (t.dataset.kdel !== undefined) {
-        notes[id].hidden_from.splice(+t.dataset.kdel, 1);
+        n.names.splice(+t.dataset.kdel, 1);
+        if (!n.names.length) Object.assign(n, { who: "", gives_away: null });
       } else if (t.dataset.kadd !== undefined) {
         if (!addName(card)) return;
       } else return;
@@ -857,11 +899,16 @@ const DATA = /*__NPC_AGENT_DATA__*/null;
     }
   });
 
+  function addNameTo(n, name) {
+    if (n.who !== "names") Object.assign(n, { who: "names", names: [], gives_away: null });
+    if (!n.names.includes(name)) n.names.push(name);
+  }
+
   function addName(card) {
     const input = card.querySelector("[data-kname]"), name = input ? input.value.trim() : "";
     if (!name) return false;
-    const n = kn()[card.dataset.k];
-    if (!n.hidden_from.includes(name)) n.hidden_from.push(name);
+    const notes = kn(), id = card.dataset.k;
+    addNameTo(notes[id] = notes[id] || { who: "", names: [], gives_away: null, note: "" }, name);
     return true;
   }
 

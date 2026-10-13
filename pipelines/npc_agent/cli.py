@@ -237,8 +237,7 @@ def cmd_leaks(args) -> int:
         Path(args.out).parent.mkdir(parents=True, exist_ok=True)
         atomic_write_text(Path(args.out), text)
         print(f"wrote {args.out}: {len(cases)} leak case(s)")
-    kinds = {k: sum(1 for n in notes.values() if n.kind == k) for k in knowledge.KINDS}
-    print("notes: " + ", ".join(f"{k} {v}" for k, v in kinds.items()), file=sys.stderr)
+    print("notes: " + ", ".join(f"{k} {v}" for k, v in knowledge.tally(notes).items()), file=sys.stderr)
     for c in cases:
         if c.subject is None:
             print(f"{c.beat_id}: {c.who} has no published dossier; kept as a leak case", file=sys.stderr)
@@ -287,7 +286,7 @@ def build_parser() -> argparse.ArgumentParser:
     h.add_argument("--for-agent", action="store_true",
                    help="only what the NPC could know; refused while any event is unanswered")
     h.add_argument("--knowledge", type=Path, default=None,
-                   help="the GM's knowledge ruling file: secrets hidden from this NPC are left out")
+                   help="the GM's knowledge ruling file: beats giving away what this NPC does not know are left out")
     h.add_argument("--campaign", default=None, help="this campaign's name in --knowledge (default: --campaign-dir's name)")
     h.set_defaults(func=cmd_horizon)
 
