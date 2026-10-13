@@ -537,6 +537,22 @@ would score Partly, because the agent followed the prep's cover story where the
 table had her name suspects; the GM judged the substance the same. At 067.03,
 with the clue answers ruled hers, she gives both clues as she did at the table.
 
+### Free-running replay: she sees only her own answers
+
+`replay --free` keeps the party's lines real but replaces each earlier answer
+with the agent's own, so a turn reacts to what *this* Sylvira said. GM scores
+(GM: "This worked really well for Sylvira"): 061.05, turns 4 and 5 partly, 6 to 9
+the same, 1 to 3 left unscored; 067.03, both turns the same. No leak flags.
+
+Where it parts from the table is pacing: at turn 5, just after "Daz persuades
+her of his sincerity", she shows the bite and tells all of it (plague, lover,
+the ultimatum over Moziqodo, the Cursed Tower). The prep says her truth is
+"earned, if pressed honestly", so the agent applied the GM's own rule at the
+first moment it was met; at the table it came out four turns later. From there
+the party's real lines lag her, a limit of replaying a fixed script against a
+player who has changed. At 067.03 she gives both clues and stays behind ("I
+cannot go with you"), where the real Sylvira came along.
+
 ### Prototype 5 — the forward turn
 
 Frozen at 66, she proposes 1–3 off-screen moves before she next meets the party,
@@ -552,8 +568,8 @@ preference record (Prototype 6).
 
 - With her persona, horizon and ruled prep, the agent plays her scenes with the
   same substance as the GM did, and leaks nothing it was not given.
-- Teacher forcing makes the replay easy: each turn sees the real scene so far.
-  A replay where she sees only her own earlier answers is the harder test.
+- Teacher forcing makes the replay easy; the free-running replay is the harder
+  test, and she held up (8 of 8 scored turns same or partly).
 - One NPC, two scenes, three moves. Not a measurement yet.
 - The forward turn was compared, not tested: nothing checks a move against a
   rule the GM wrote down, because there are no written rules for Sylvira.
