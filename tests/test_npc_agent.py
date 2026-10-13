@@ -1034,3 +1034,147 @@ def test_a_secret_paraphrase_missing_one_word_is_still_flagged(kcamp):
     flags = leakcheck.check("The party killed Moziqodo. I pray for my son.", given="", cases=[case],
                             corpus=c, chapter=64, target_scene="064.01")
     assert [f.sentence for f in flags if f.kind == leakcheck.KIND_SECRET] == ["The party killed Moziqodo."]
+
+
+# ── agent + backtest (the one model step, always faked here) ────────────────
+
+import json  # noqa: E402
+
+from pipelines.npc_agent import agent, backtest_page  # noqa: E402
+
+
+@pytest.fixture
+def fake(monkeypatch):
+    calls = []
+
+    def play(args, system, user):
+        calls.append((system, user))
+        return "Sylvira lifts her head. \"Daral, sit.\" She pours the tea and asks about Asha."
+
+    monkeypatch.setattr(agent, "play", play)
+    return calls
+
+
+def _rulings_file(tmp_path, body='    default: mentioned\n    items:\n      "064.01": present\n'):
+    f = tmp_path / "r.yaml"
+    f.write_text("version: 3\nnpcs:\n  Sylvira Savikas:\n" + body)
+    return f
+
+
+def _bt(kcamp, tmp_path, *extra, rulings_path=None, target="064.01"):
+    out = tmp_path / "out"
+    argv = ["backtest", "--campaign-dir", str(kcamp), "--npc", "Sylvira", "--rulings",
+            str(rulings_path or _rulings_file(tmp_path)), "--target", target, "--out-dir", str(out), *extra]
+    return cli.main(argv), out
+
+
+def test_situation_holds_only_the_headline(kcamp):
+    s = agent.situation(_corpus(kcamp), "064.01")
+    assert s == "# Chapter 64\n\n## Tea with Sylvira\n\nSylvira receives Daz in the Vault.\n"
+    assert "grieving" not in s and "####" not in s
+
+
+def test_build_prompt_has_the_three_sections_in_order():
+    system, user = agent.build_prompt("Sylvira Savikas", "PERSONA", "HORIZON", "SITUATION")
+    assert "playing Sylvira Savikas" in system and "150 to 300 words" in system
+    assert user.index("## Who you are\n\nPERSONA") < user.index("## What you know\n\nHORIZON") < user.index("## The scene\n\nSITUATION")
+
+
+def test_backtest_refuses_a_target_not_answered_present(kcamp, tmp_path, fake, capsys):
+    rc, out = _bt(kcamp, tmp_path, target="063.01")
+    assert rc == 2 and "do not answer 'present'" in capsys.readouterr().err
+    assert not out.exists() and not fake
+
+
+def test_backtest_refuses_a_second_bad_target_before_writing_the_first(kcamp, tmp_path, fake):
+    out = tmp_path / "out"
+    rc = cli.main(["backtest", "--campaign-dir", str(kcamp), "--npc", "Sylvira", "--rulings", str(_rulings_file(tmp_path)),
+                   "--target", "064.01", "--target", "063.01", "--out-dir", str(out)])
+    assert rc == 2 and not out.exists() and not fake
+
+
+def test_backtest_refuses_an_unanswered_horizon(kcamp, tmp_path, fake, capsys):
+    r = _rulings_file(tmp_path, '    items:\n      "064.01": present\n')
+    rc, out = _bt(kcamp, tmp_path, rulings_path=r)
+    assert rc == 2 and "unanswered" in capsys.readouterr().err and not out.exists() and not fake
+
+
+def test_backtest_refuses_to_write_into_its_sources(kcamp, tmp_path, fake):
+    rc = cli.main(["backtest", "--campaign-dir", str(kcamp), "--npc", "Sylvira", "--rulings", str(_rulings_file(tmp_path)),
+                   "--target", "064.01", "--out-dir", str(kcamp / "summaries" / "x")])
+    assert rc == 2 and not fake
+
+
+def test_dry_run_writes_prompts_but_no_answer(kcamp, tmp_path, fake):
+    rc, out = _bt(kcamp, tmp_path, "--dry-run")
+    t = out / "064.01"
+    assert rc == 0 and not fake
+    for name in ("persona.md", "persona.report.md", "horizon.md", "situation.md", "prompt.system.md",
+                 "prompt.user.md", "actual.md", "run.json"):
+        assert (t / name).is_file(), name
+    assert not (t / "answer.md").exists() and not (out / "backtest.html").exists()
+    run = json.loads((t / "run.json").read_text())
+    assert (run["npc"], run["target"], run["freeze_chapter"], run["dry_run"]) == ("Sylvira Savikas", "064.01", 63, True)
+
+
+def test_the_answer_key_is_never_in_the_prompt(kcamp, tmp_path, fake):
+    rc, out = _bt(kcamp, tmp_path, "--dry-run")
+    user = (out / "064.01" / "prompt.user.md").read_text()
+    assert "killed her son" not in user and "where the key is" not in user
+    assert "Sylvira receives Daz in the Vault." in user
+    assert "killed her son" in (out / "064.01" / "actual.md").read_text()
+
+
+def test_a_hidden_beat_never_reaches_the_prompt(kcamp, tmp_path, fake):
+    # 064.01 is an event she attended at chapter 64; frozen at 65 its hidden beat must stay out of her horizon.
+    (kcamp / "summaries" / "065-session-after.md").write_text("# Chapter 65\n\n## Scenes\n\n### Later\n\n#### Sylvira waits.\n\n- She waits.\n")
+    r = _rulings_file(tmp_path, '    default: mentioned\n    items:\n      "064.01": present\n      "065.01": present\n')
+    k = _kfile(tmp_path, '      "064.01.b06": [Daral]\n', campaign="camp")
+    rc, out = _bt(kcamp, tmp_path, "--dry-run", "--knowledge", str(k), "--campaign", "camp", rulings_path=r, target="065.01")
+    assert rc == 0
+    user = (out / "065.01" / "prompt.user.md").read_text()
+    assert "killed her son" not in user and "1 beat(s) of this scene left out" in user
+    assert "Sylvira receives Daz" in user  # the scene she attended is in her horizon
+
+
+def test_a_run_writes_answer_flags_and_page(kcamp, tmp_path, fake):
+    rc, out = _bt(kcamp, tmp_path)
+    t = out / "064.01"
+    assert rc == 0 and len(fake) == 1
+    assert "Sylvira lifts her head" in (t / "answer.md").read_text()
+    flags = json.loads((t / "flags.json").read_text())
+    assert [f["name"] for f in flags if f["kind"] == "name"] == ["Daral", "Asha"]
+    assert "Leak check" in (t / "flags.md").read_text()
+    page = (out / "backtest.html").read_text()
+    assert backtest_page.DATA_SLOT not in page and "Asha" in page
+
+
+def test_a_second_run_with_the_same_prompt_reuses_the_answer_and_force_calls_again(kcamp, tmp_path, fake):
+    _bt(kcamp, tmp_path)
+    assert len(fake) == 1
+    rc, out = _bt(kcamp, tmp_path)
+    assert rc == 0 and len(fake) == 1
+    assert _bt(kcamp, tmp_path, "--force")[0] == 0 and len(fake) == 2
+    # a dry run in between must not make a stale answer look current
+    (kcamp / "summaries" / "064-session-tea.md").write_text(CH64.replace("receives Daz", "receives Wick"))
+    assert _bt(kcamp, tmp_path, "--dry-run")[0] == 0
+    assert _bt(kcamp, tmp_path)[0] == 0 and len(fake) == 3
+
+
+def test_backtest_page_embeds_its_data_safely_and_loads_nothing_but_fonts():
+    import re
+
+    b = {"version": 1, "npc": "S", "run_id": "r", "model": "m", "targets": [{
+        "target": "064.01", "freeze": 63, "scene_title": "T", "situation": "x </script> y", "persona": "", "horizon": "",
+        "answer": "a", "flags": [], "actual_beats": [["064.01.b01", "</script><b>"]]}]}
+    page = backtest_page.render(b)
+    assert backtest_page.DATA_SLOT not in page and page.count("</script>") == 1
+    assert set(re.findall(r"https?://([^/\"' ]+)", page)) <= {"fonts.googleapis.com", "fonts.gstatic.com"}
+    assert "<title>Backtest</title>" in page
+
+
+def test_an_ordinary_word_opening_a_quotation_is_not_a_name(kcamp):
+    # "And", "That", "Standing": the real run's 11 false flags were all this shape
+    answer = 'She smiles. “And that is all. Standing is hard.” She mentions Asha.'
+    flags = _check(kcamp, answer, given="Sylvira.", chapter=64)
+    assert [f.name for f in flags if f.kind == leakcheck.KIND_NAME] == ["Asha"]

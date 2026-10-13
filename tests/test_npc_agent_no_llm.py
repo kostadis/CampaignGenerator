@@ -14,7 +14,8 @@ import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
 PKG = ROOT / "pipelines" / "npc_agent"
-MODEL_STEPS: set[str] = set()  # none yet
+#: ``agent`` is the one deliberate model step; it reaches a model only through campaignlib.
+MODEL_STEPS: set[str] = {"agent"}
 FORBIDDEN_MODULES = ("anthropic", "campaignlib.api", "openai", "pipelines.ensemble")
 FORBIDDEN_CALLS = ("make_client", "stream_api", "call_api", "client_from_args")
 
@@ -44,3 +45,15 @@ def test_module_makes_no_model_call(name, path):
             f = node.func
             called = f.id if isinstance(f, ast.Name) else f.attr if isinstance(f, ast.Attribute) else ""
             assert called not in FORBIDDEN_CALLS, f"{path.name} calls {called}"
+
+
+def test_agent_is_the_only_module_that_reaches_campaignlib_api():
+    assert MODEL_STEPS == {"agent"}
+    importers = set()
+    for p in PKG.glob("*.py"):
+        for node in ast.walk(ast.parse(p.read_text(encoding="utf-8"))):
+            if isinstance(node, ast.ImportFrom) and node.module and (
+                    node.module == "campaignlib" or node.module.startswith("campaignlib.api")):
+                if node.module != "campaignlib" or {a.name for a in node.names} & {"call_api", "stream_api", "client_from_args", "make_client"}:
+                    importers.add(p.stem)
+    assert importers == {"agent"}

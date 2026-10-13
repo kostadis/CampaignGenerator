@@ -110,8 +110,11 @@ def _names(sentences: list[str], lower_words: frozenset[str]) -> list[tuple[str,
     for run, s, at_start in runs:
         words = [_POSSESSIVE.sub("", w) for w in run.split()]
         words = [w for w in words if w not in _PRONOUNS]
-        if at_start and words and words[0] not in mid and (words[0].lower() in lower_words
-                                                          or words[0].lower() in _STOP):
+        # A capitalised word the summaries also use in lower case is an ordinary
+        # word at the head of a sentence or a quotation ("And", "Standing"), not
+        # a name. Real run, 2026-10-13: every one of 11 flags was this. A name
+        # that is also a common word ("Bow") is missed; the GM reads the answer.
+        while words and (words[0].lower() in lower_words or words[0].lower() in _STOP):
             words = words[1:]
         while words and words[0] in ("of", "the", "of the"):
             words = words[1:]
