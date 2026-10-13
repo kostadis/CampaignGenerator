@@ -8,6 +8,8 @@
     npc_agent persona    --campaign-dir DIR --npc NAME --chapter N [--out FILE] [--report FILE]
     npc_agent leakcheck  --campaign-dir DIR --npc NAME --chapter N --answer FILE --given FILE
                          [--knowledge FILE] [--target-scene NNN.SS] [--out FILE]
+    npc_agent backtest   --campaign-dir DIR --npc NAME --rulings FILE --target NNN.SS [--target ...]
+                         --out-dir OUT [--knowledge FILE] [--dry-run] [--force] [--model M] [--backend B]
 
 A beat whose sentence states what someone does not know is always left out of
 their horizon (:mod:`knowledge`); ``--knowledge`` adds the GM's ``who`` where
@@ -25,21 +27,33 @@ a campaign root (``<dir>/docs/summaries`` + ``<dir>/docs/npcs``).
 to confirm, sentences of an agent's answer that state a hidden beat or name
 something the agent was not given (:mod:`leakcheck`). Flags are not failures.
 
+``backtest`` freezes the NPC at the chapter before each target scene she attended,
+asks the model (:mod:`agent`, the only model step) what she does there, then
+leak-checks the answer and writes a scoring page for the GM. The scene's own
+text is written beside it as the answer key and is never in the prompt.
+
 Exit codes: 0 done; 2 refused, nothing written; 3 written, but a candidate list
 does not match its published dossier (see ``check_report.md``).
 
 Writes only under ``--out-dir`` / ``--out``, never inside the summaries or the
-dossiers, and never the ruling file. No model call.
+dossiers, and never the ruling file. No model call here: ``backtest`` reaches the
+model only through :func:`agent.play`.
 """
 
 from __future__ import annotations
 
 import argparse
+import dataclasses
+import hashlib
+import json
 import re
 import sys
+from datetime import datetime, timezone
 from pathlib import Path
 
 from campaignlib.util import atomic_write_text
+from pipelines.npc_agent import agent as agent_mod
+from pipelines.npc_agent import backtest_page
 from pipelines.npc_agent import corpus as corpus_mod
 from pipelines.npc_agent import dossier as dossier_mod
 from pipelines.npc_agent import horizon as horizon_mod
@@ -170,36 +184,46 @@ def cmd_candidates(args) -> int:
     return 0 if all(c.ok for c in checks) else 3
 
 
-def cmd_horizon(args) -> int:
-    summaries, npcs, corpus, chosen, table = _load(args)
-    if args.out is not None:
-        _refuse_inside(Path(args.out), (summaries, npcs))
-    d = chosen[0]
-    ms = presence.mentions(corpus, d, table)
-    cands = presence.events(ms)
-    items = {it.item_id: it for it in corpus.items()}
+def _ruled(args, corpus, d, cands):
+    """The GM's presence rulings for ``d``: ``(NpcRulings, effective)``."""
     cand_ids = {c.item.item_id for c in cands}
     try:
         ruled = rulings.load_rulings(args.rulings, {d.subject: cand_ids}, corpus)
     except rulings.RulingError as e:
         raise Refusal(str(e)) from None
     npc = ruled.get(d.subject, rulings.NpcRulings())
-    eff = rulings.effective(npc, corpus, cand_ids)
+    return npc, rulings.effective(npc, corpus, cand_ids)
+
+
+def _horizon(args, summaries, corpus, d, ms, npc, eff, chapter, for_agent):
+    """The horizon at ``chapter``; with ``for_agent`` it refuses what an agent must never be given."""
+    items = {it.item_id: it for it in corpus.items()}
     resolved = _knowledge(args, summaries, corpus)
     unresolved = frozenset(r.candidate.beat_id for r in resolved if r.unresolved)
-    h = horizon_mod.build_horizon(d, cands, eff, args.chapter, items, presence.snapshots(ms),
+    h = horizon_mod.build_horizon(d, presence.events(ms), eff, chapter, items, presence.snapshots(ms),
                                   npc.not_perceived, knowledge.hidden_from(resolved, d), unresolved)
-    if args.for_agent and h.unresolved:
+    if for_agent and h.unresolved:
         raise Refusal(
             f"{', '.join(sorted(h.unresolved))}: in an event {d.subject} attended, the summary says someone "
             "doesn't know something without naming who; an agent is never given a beat that may be hidden "
             "from it. Rule who in --knowledge."
         )
-    if args.for_agent and h.unruled:
+    if for_agent and h.unruled:
         raise Refusal(
-            f"{len(h.unruled)} event(s) naming {d.subject} up to chapter {args.chapter} are unanswered; "
+            f"{len(h.unruled)} event(s) naming {d.subject} up to chapter {chapter} are unanswered; "
             "an agent is never given an incomplete horizon. Answer them, or run without --for-agent."
         )
+    return h
+
+
+def cmd_horizon(args) -> int:
+    summaries, npcs, corpus, chosen, table = _load(args)
+    if args.out is not None:
+        _refuse_inside(Path(args.out), (summaries, npcs))
+    d = chosen[0]
+    ms = presence.mentions(corpus, d, table)
+    npc, eff = _ruled(args, corpus, d, presence.events(ms))
+    h = _horizon(args, summaries, corpus, d, ms, npc, eff, args.chapter, args.for_agent)
     text = horizon_mod.render_horizon(h, for_agent=args.for_agent)
     if args.out is None:
         sys.stdout.write(text)
@@ -319,6 +343,134 @@ def cmd_leakcheck(args) -> int:
     return 0
 
 
+def _now() -> str:
+    return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+
+def _sha(system: str, user: str) -> str:
+    return hashlib.sha256((system + "\n\0\n" + user).encode("utf-8")).hexdigest()
+
+
+def _read_json(path: Path) -> dict:
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return {}
+
+
+@dataclasses.dataclass
+class _Target:
+    """Everything one target needs, built (and every refusal raised) before anything is written."""
+
+    target: str
+    freeze: int
+    scene: corpus_mod.Item
+    persona_md: str
+    persona_report: str
+    horizon_md: str
+    situation_md: str
+    system: str
+    user: str
+    sha: str
+    empty_horizon: bool
+    persona_sentences: int
+
+
+def _prepare_target(args, summaries, corpus, d, ms, npc, eff, target: str) -> _Target:
+    if not re.fullmatch(r"\d{3}\.\d{2}", target):
+        raise Refusal(f"--target {target}: expected NNN.SS")
+    scene = next((it for it in corpus.items() if it.item_id == target and it.kind == corpus_mod.SCENE), None)
+    if scene is None:
+        raise Refusal(f"--target {target}: not a scene in the summaries")
+    answer = eff.get(target)
+    if answer is None or answer[0] != rulings.PRESENT:
+        raise Refusal(
+            f"--target {target}: the presence rulings do not answer 'present' for {d.subject} here "
+            f"(effective: {answer[0] if answer else 'unanswered'}); a backtest predicts what she does at "
+            "an event she attended."
+        )
+    freeze = scene.chapter - 1
+    h = _horizon(args, summaries, corpus, d, ms, npc, eff, freeze, for_agent=True)
+    horizon_md = horizon_mod.render_horizon(h, for_agent=True)
+    entries = [c.item for c in presence.snapshots(ms)]
+    sentences = persona.persona(entries, d, freeze)
+    persona_md = persona.render_persona(sentences, d.subject, freeze)
+    situation_md = agent_mod.situation(corpus, target)
+    system, user = agent_mod.build_prompt(d.subject, persona_md, horizon_md, situation_md)
+    return _Target(target, freeze, scene, persona_md, persona.render_persona_report(sentences, d.subject, freeze),
+                   horizon_md, situation_md, system, user, _sha(system, user),
+                   not h.witnessed and h.snapshot is None, sum(1 for s in sentences if s.kept and s.chapter <= freeze))
+
+
+def cmd_backtest(args) -> int:
+    summaries, npcs, corpus, chosen, table = _load(args)
+    out_dir = Path(args.out_dir)
+    _refuse_inside(out_dir, (summaries, npcs))
+    d = chosen[0]
+    ms = presence.mentions(corpus, d, table)
+    npc, eff = _ruled(args, corpus, d, presence.events(ms))
+    targets = list(dict.fromkeys(args.target))
+    prepared = [_prepare_target(args, summaries, corpus, d, ms, npc, eff, t) for t in targets]
+    resolved = _knowledge(args, summaries, corpus)
+    cases = [c for c in knowledge.leak_cases(resolved, args.dossiers) if knowledge.names_dossier(c.who, d)]
+    backend = agent_mod.backend_name(args)
+    out_dir.mkdir(parents=True, exist_ok=True)
+    bundle_targets, answered_at = [], []
+    for t in prepared:
+        tdir = out_dir / t.target
+        tdir.mkdir(parents=True, exist_ok=True)
+        for name, text in (("persona.md", t.persona_md), ("persona.report.md", t.persona_report),
+                           ("horizon.md", t.horizon_md), ("situation.md", t.situation_md),
+                           ("prompt.system.md", t.system), ("prompt.user.md", t.user),
+                           ("actual.md", t.scene.text + "\n")):
+            atomic_write_text(tdir / name, text)
+        prev = _read_json(tdir / "run.json")
+        run = {"npc": d.subject, "target": t.target, "freeze_chapter": t.freeze, "model": args.model,
+               "backend": backend, "prompt_sha256": t.sha, "dry_run": bool(args.dry_run), "written_at": _now(),
+               "answer_prompt_sha256": prev.get("answer_prompt_sha256"), "answer_model": prev.get("answer_model"),
+               "answer_backend": prev.get("answer_backend"), "answer_at": prev.get("answer_at")}
+        ans_path = tdir / "answer.md"
+        reuse = (not args.force and ans_path.is_file() and run["answer_prompt_sha256"] == t.sha
+                 and run["answer_model"] == args.model and run["answer_backend"] == backend)
+        status = "dry run"
+        if not args.dry_run:
+            if reuse:
+                status = "answer reused"
+            else:
+                atomic_write_text(ans_path, agent_mod.play(args, t.system, t.user).strip() + "\n")
+                run.update(answer_prompt_sha256=t.sha, answer_model=args.model, answer_backend=backend, answer_at=_now())
+                status = "answered"
+        atomic_write_text(tdir / "run.json", json.dumps(run, indent=2) + "\n")
+        if args.dry_run or not ans_path.is_file():
+            print(f"{t.target}: {status}; persona {t.persona_sentences} sentence(s), "
+                  f"horizon {'empty' if t.empty_horizon else 'not empty'}")
+            continue
+        answer = ans_path.read_text(encoding="utf-8")
+        given = "\n\n".join((t.persona_md, t.horizon_md, t.situation_md))
+        flags = leakcheck.check(answer, given=given, cases=cases, corpus=corpus, chapter=t.freeze, target_scene=t.target)
+        atomic_write_text(tdir / "flags.md", leakcheck.render_flags(flags))
+        atomic_write_text(tdir / "flags.json", json.dumps([dataclasses.asdict(f) for f in flags], indent=2) + "\n")
+        answered_at.append(run["answer_at"] or run["written_at"])
+        bundle_targets.append({
+            "target": t.target, "freeze": t.freeze, "scene_title": t.scene.title or t.target,
+            "situation": t.situation_md, "persona": t.persona_md, "horizon": t.horizon_md, "answer": answer,
+            "flags": [{"kind": f.kind, "sentence": f.sentence, "detail": f.detail, "beat_id": f.beat_id,
+                       "name": f.name, "future": f.future} for f in flags],
+            "actual_beats": [[b.beat_id, b.text] for b in corpus_mod.beats(t.scene)],
+        })
+        print(f"{t.target}: {status}; persona {t.persona_sentences} sentence(s), "
+              f"horizon {'empty' if t.empty_horizon else 'not empty'}; {len(flags)} flag(s)")
+    if bundle_targets:
+        run_id = max(answered_at).replace("-", "").replace(":", "")
+        page = backtest_page.render({"version": backtest_page.BUNDLE_VERSION, "npc": d.subject, "run_id": run_id,
+                                     "model": args.model, "targets": bundle_targets})
+        atomic_write_text(out_dir / "backtest.html", page)
+        print(f"wrote {out_dir / 'backtest.html'}")
+    else:
+        print("dry run: prompts written, no answers and no page")
+    return 0
+
+
 def _common(p: argparse.ArgumentParser) -> None:
     p.add_argument("--campaign-dir", type=Path, default=None,
                    help="campaigns-public/<campaign>, or a campaign root")
@@ -393,12 +545,25 @@ def build_parser() -> argparse.ArgumentParser:
     lc.add_argument("--target-scene", default=None, help="NNN.SS: cases up to and including this scene (default: the chapter)")
     lc.add_argument("--out", type=Path, default=None, help="default: stdout")
     lc.set_defaults(func=cmd_leakcheck)
+    bt = sub.add_parser("backtest", help="replay an NPC at scenes she attended, from the chapter before, and score it")
+    _common(bt)
+    bt.add_argument("--npc", action="append", required=True)
+    bt.add_argument("--rulings", type=Path, required=True, help="the GM's presence ruling file")
+    bt.add_argument("--knowledge", type=Path, default=None,
+                    help="the GM's who rulings, for beats whose sentence gives a description, not a name")
+    bt.add_argument("--campaign", default=None, help="this campaign's name in --knowledge (default: --campaign-dir's name)")
+    bt.add_argument("--target", action="append", required=True, help="NNN.SS, a scene she attended (repeatable)")
+    bt.add_argument("--out-dir", type=Path, required=True)
+    bt.add_argument("--dry-run", action="store_true", help="write the prompts and answer key; call no model")
+    bt.add_argument("--force", action="store_true", help="ask the model again even if an answer for this prompt exists")
+    agent_mod.add_model_args(bt)
+    bt.set_defaults(func=cmd_backtest)
     return parser
 
 
 def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
-    if args.command in ("horizon", "persona", "leakcheck") and len(args.npc) != 1:
+    if args.command in ("horizon", "persona", "leakcheck", "backtest") and len(args.npc) != 1:
         print(f"Error: {args.command} takes exactly one --npc", file=sys.stderr)
         return 2
     try:
