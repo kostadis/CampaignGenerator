@@ -24,6 +24,12 @@ doesn't know" and answered accordingly. So the questions are about that someone:
    it is a leak case. ``gives_away: false`` (Hgraam "does not know where it
    is"): the beat stays; not knowing is part of what they know.
 
+The search also shows **what** they don't know: the words after the phrase, up to
+the end of the clause ("didn't know *where the secret room was*"), so question 2
+reads "Would this bullet tell Fargas where the secret room was?" A question
+(where, which, how) never answers itself; a "that …" or "about …" clause usually
+does. Nothing is decided from that: the GM answers.
+
 The search suggests the name it finds right before the phrase ("Asha remained
 unaware", "Nym and Kaelira genuinely did not know") and any published dossier
 named in the beat. A suggestion is a button on the review page; only the GM's
@@ -84,6 +90,9 @@ _NAME = r"[A-Z][\w'’-]*(?: [A-Z][\w'’-]*)*"
 #: "Asha remained", "Nym and Kaelira genuinely", "Tadric".
 _BEFORE = re.compile(rf"(?:^|[^\w'’-])({_NAME}(?: and {_NAME})?) (?:\w+ly )?$")
 _PARTY_BEFORE = re.compile(r"\bthe party (?:\w+ly )?$", re.I)
+#: Where "what they don't know" ends: the sentence, or a clause that moves on
+#: ("…, only that…", "… and appears to be flailing", "… and is unsure").
+_WHAT_END = re.compile(r"[.;:!?]|,? (?:only|but|though|so)\b|,? and (?:is|was|are|were|appears?|has|had)\b")
 _NOT_NAMES = frozenset({"He", "She", "They", "It", "The", "This", "That", "GM", "The GM"})
 
 
@@ -102,6 +111,7 @@ class Candidate:
     text: str  # the whole beat
     scene_title: str
     before: str  # the matching line up to the phrase, quoted speech blanked
+    what: str  # what they don't know, as written after the phrase; "" if the bullet does not say
 
 
 @dataclass(frozen=True)
@@ -133,9 +143,16 @@ def find(corpus: Corpus) -> list[Candidate]:
                 m = PATTERN.search(u)
                 if m:
                     out.append(Candidate(b.beat_id, it.item_id, it.chapter, it.source_file, n,
-                                         t[m.start():m.end()], b.text, it.title, u[:m.start()]))
+                                         t[m.start():m.end()], b.text, it.title, u[:m.start()],
+                                         _what(t[m.end():], u[m.end():])))
                     break
     return out
+
+
+def _what(after: str, after_unquoted: str) -> str:
+    """The rest of the clause after the phrase; the cut is found outside quoted speech."""
+    m = _WHAT_END.search(after_unquoted)
+    return after[: m.start() if m else len(after)].strip(" ,*")
 
 
 def _word(form: str, text: str) -> bool:
