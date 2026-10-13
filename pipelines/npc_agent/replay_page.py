@@ -6,10 +6,13 @@ agent did (each flagged sentence marked) side by side; the GM scores the match
 (Same substance / Partly / Different). For each forward move it shows the move
 and why, with flags, beside what she actually did next and the GM's own plan;
 the GM approves or rejects it. Everything is kept in the artifact database as
-``replay/<run_id>--<target>--<NN>`` and ``forward/<run_id>--<index>``, and can be
+``replay/<run_id>--<target>--<NN>`` (a free-running turn: ``replay/<run_id>--free--<target>--<NN>``) and ``forward/<run_id>--<index>``, and can be
 saved as ``scores.json``. A forward verdict is stored with the move's text and the
 prompt's sha256, so the verdicts can be replayed later as a preference record.
 The page decides nothing.
+
+A free-running replay (``replay --free``) is its own section beside the teacher-forced one: she sees only her own
+earlier answers while the party's lines stay real, and the page says so.
 
 The template is ``review/replay_review.html``; this module only fills it.
 
