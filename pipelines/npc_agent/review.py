@@ -7,8 +7,12 @@ template is ``review/presence_review.html``; this module only fills it.
 
 The page never decides presence. It shows the evidence, lets the GM rule items
 and spans under the same rules as :mod:`pipelines.npc_agent.rulings`, and saves
-a version-2 ruling file (as JSON, which is valid YAML) that ``npc_agent
+a version-3 ruling file (as JSON, which is valid YAML) that ``npc_agent
 horizon --rulings`` reads as it stands.
+
+A second view, Knowledge notes, shows every beat :func:`knowledge.find` turns up
+(one or more campaigns), and saves a knowledge ruling file that ``npc_agent
+horizon --knowledge`` and ``npc_agent leaks`` read.
 
 No model call (guarded by ``tests/test_npc_agent_no_llm.py``).
 """
@@ -21,17 +25,33 @@ from pathlib import Path
 from pipelines.npc_agent import corpus as corpus_mod
 from pipelines.npc_agent.corpus import Corpus
 from pipelines.npc_agent.dossier import Dossier
-from pipelines.npc_agent import presence
+from pipelines.npc_agent import knowledge, presence
 from pipelines.npc_agent.presence import Candidate
 from pipelines.npc_agent.rulings import VERSION
 
 TEMPLATE = Path(__file__).resolve().parent / "review" / "presence_review.html"
 DATA_SLOT = "/*__NPC_AGENT_DATA__*/null"
 #: Bumped when the bundle's shape changes; the page refuses a bundle it does not know.
-BUNDLE_VERSION = 3
+BUNDLE_VERSION = 4
 
 
-def bundle(corpus: Corpus, pairs: list[tuple[Dossier, list[Candidate]]], source: str) -> dict:
+def knowledge_campaign(campaign: str, corpus: Corpus, dossiers: list[Dossier]) -> dict:
+    """One campaign's knowledge candidates, each with its scene for context."""
+    scenes = {it.item_id: it for it in corpus.items() if it.kind == corpus_mod.SCENE}
+    titles = {ch.chapter: ch.title or f"Chapter {ch.chapter}" for ch in corpus.chapters}
+    return {
+        "campaign": campaign,
+        "subjects": sorted(d.subject for d in dossiers),
+        "cards": [
+            {"id": k.beat_id, "s": k.scene_id, "c": k.chapter, "ct": titles[k.chapter], "st": k.scene_title,
+             "f": k.source_file, "l": k.line, "ph": k.phrase, "x": k.text, "sx": scenes[k.scene_id].text}
+            for k in knowledge.find(corpus)
+        ],
+    }
+
+
+def bundle(corpus: Corpus, pairs: list[tuple[Dossier, list[Candidate]]], source: str,
+           knowledge_campaigns: list[dict] | None = None) -> dict:
     """The JSON the page renders from. Byte-deterministic for the same inputs.
 
     ``pairs`` gives each NPC with every mention (:func:`presence.mentions`). Only the
@@ -67,7 +87,9 @@ def bundle(corpus: Corpus, pairs: list[tuple[Dossier, list[Candidate]]], source:
         for d, ms in pairs
     ]
     return {"bundle": BUNDLE_VERSION, "rulings_version": VERSION, "source": source,
-            "chapters": chapters, "items": items, "npcs": npcs}
+            "chapters": chapters, "items": items, "npcs": npcs,
+            "knowledge": {"version": knowledge.VERSION, "kinds": list(knowledge.KINDS),
+                          "campaigns": knowledge_campaigns or []}}
 
 
 def render_page(data: dict) -> str:
