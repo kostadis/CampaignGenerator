@@ -326,18 +326,45 @@ npcs:
   name them.
 - Precedence: item answer, then span, then default. The horizon says which.
 
+### Being there is not knowing everything the record says
+
+The GM's first answers (2026-10-13) put Sylvira physically present at two events,
+061.05 (the interview with Daz) and 067.03 (the riddles), and mentioned at the
+other 17. Her horizon at chapter 67 placed her son's death (063.05) correctly
+outside what she witnessed, and still carried it in: the summaries are written
+from the GM's side of the screen, and 067.03, a scene she attends, has the beat
+"Sylvira is Moziqodo's mother, but does not yet know that the party killed her
+son." Her chapter-67 entry says the same thing.
+
+Two consequences, both built:
+
+- **Beats the NPC did not perceive.** A beat is a scene's `####` headline or a
+  top-level bullet with what is indented under it (6,275 beats in 419 Out of
+  the Abyss scenes; every non-blank scene line falls in exactly one). For an
+  event answered *physically present*, the GM lists beats the NPC did not take
+  in under `not_perceived` (`067.03.b04`); every other beat counts as
+  perceived. A beat of an event not answered present is refused. The tool never
+  splits a beat: 067.03.b04 also holds Sylvira's thanks to Thorin, which she
+  did perceive, so keeping it means splitting the bullet in the summary.
+- **Entries are the GM's record, not the NPC's knowledge.** The horizon now has
+  two parts. Part 1, what the NPC could know: the present events with their
+  perceived beats. Part 2, for the GM only: the NPC's entries ("the GM's notes
+  on them"), the beats left out, and the mentioned, neither and unanswered
+  events. `npc_agent horizon --for-agent` writes Part 1 alone and refuses while
+  any event naming the NPC is unanswered.
+
 ### The horizon
 
 `npc_agent horizon --npc NAME --chapter N --rulings FILE`, up to and including
 chapter N:
 
-- **Events physically present**, in order, each with its beats: what the NPC
-  could have witnessed. Span scenes that never name them are marked so.
-- **State**: their latest entry up to N, and every event naming them after it.
-  Snapshots lag (a quarter of Phandalin's cast have a latest snapshot older than
-  their latest mention, `EventOrdinalKG_proposal.md` §2.3), so current state is
-  the latest snapshot plus every mention after it.
-- Events answered *mentioned* or *neither*, and those unanswered, listed apart.
+- **Part 1, what they could know:** events physically present, in order, each
+  with the beats they perceived. Span scenes that never name them are marked so.
+- **Part 2, for the GM only:** their latest entry up to N and every event naming
+  them after it (snapshots lag: a quarter of Phandalin's cast have a latest
+  snapshot older than their latest mention, `EventOrdinalKG_proposal.md` §2.3);
+  the beats left out; events answered *mentioned* or *neither*, and those
+  unanswered.
 - Nothing after chapter N, not even a count or a first-seen chapter: the horizon
   is what an NPC agent will be given.
 

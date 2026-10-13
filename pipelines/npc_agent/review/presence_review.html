@@ -114,6 +114,11 @@ details[open] > summary::before { content: "▾ "; }
 .ans:disabled { opacity: 0.35; cursor: default; }
 .ans.clear { grid-column: 1 / -1; border-style: dashed; }
 .empty { color: var(--muted); padding-block: 24px; }
+.beats { display: grid; gap: 6px; margin-top: 6px; }
+.beat { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; align-items: start; }
+.beat.off .text { text-decoration: line-through; color: var(--muted); }
+.ans[data-beat][aria-pressed="true"] { background: var(--absent); border-color: var(--absent); color: var(--accent-ink); }
+@media (max-width: 560px) { .beat { grid-template-columns: minmax(0, 1fr); } }
 .side { margin-top: 8px; background: var(--sunk); border-radius: 6px; padding: 6px 10px; display: grid; gap: 6px; }
 .side .text { color: var(--muted); }
 .foot { margin-top: 32px; color: var(--muted); font-size: 0.85rem; max-width: 70ch; }
@@ -134,7 +139,8 @@ details[open] > summary::before { content: "▾ "; }
         <b id="question">Was this NPC physically there, or only talked about?</b> Answer <b>Physically present</b>
         or <b>Mentioned</b>; when the match is wrong or the scene does not let you say, <b>Neither / unsure</b>.
         Under each chapter, the NPC&rsquo;s own entry and the summary prose that names them are there to read,
-        not to answer.</p>
+        not to answer. The summaries are written from your side of the screen, so for a scene the NPC was
+        physically present at, open it and mark any bullet they could not have known as <b>Not perceived</b>.</p>
     </div>
     <div class="npcs" id="npcs" role="group" aria-label="NPC"></div>
   </header>
@@ -177,7 +183,7 @@ const DATA = /*__NPC_AGENT_DATA__*/null;
 (function () {
   "use strict";
   const $ = (id) => document.getElementById(id);
-  if (!DATA || DATA.bundle !== 2) { $("list").innerHTML = '<p class="empty">This page was built without its data.</p>'; return; }
+  if (!DATA || DATA.bundle !== 3) { $("list").innerHTML = '<p class="empty">This page was built without its data.</p>'; return; }
 
   const ITEMS = DATA.items;
   const CHAPTERS = DATA.chapters;
@@ -197,7 +203,7 @@ const DATA = /*__NPC_AGENT_DATA__*/null;
     show: "needs",            // needs | all | hint
     rulings: {},              // stem -> {spans: [], items: {}}
   };
-  DATA.npcs.forEach((n) => { state.rulings[n.stem] = { spans: [], items: {}, default: "" }; });
+  DATA.npcs.forEach((n) => { state.rulings[n.stem] = { spans: [], items: {}, default: "", not_perceived: [] }; });
   try {
     const t = localStorage.getItem("presence-ledger-tab");
     const i = DATA.npcs.findIndex((n) => n.stem === t);
@@ -364,11 +370,25 @@ const DATA = /*__NPC_AGENT_DATA__*/null;
       '<div class="row-main"><div class="row-top"><span class="mono">' + id + "</span>" +
       title + sigs + (hint ? '<span class="tag hint">' + esc(hint) + "</span>" : "") + "</div>" +
       (e && e.src !== "item" ? '<span class="via">' + SAY[e.v] + " (" + (e.src === "span" ? "from the span" : "unanswered events") + ")" + (own ? "" : "; answer here to change it") + "</span>" : "") +
-      "<details" + (openIds.has(id) ? " open" : "") + "><summary>" + esc(first.replace(/^[-#>*\s]+/, "").slice(0, 160)) + '</summary><p class="text">' + esc(it.x) + "</p></details></div>" +
+      "<details" + (openIds.has(id) ? " open" : "") + "><summary>" + esc(first.replace(/^[-#>*\s]+/, "").slice(0, 160)) +
+        (v === "present" ? " \u00b7 " + npCount(id) + " of " + (it.b || []).length + " bullets not perceived" : "") +
+        "</summary>" + (v === "present" ? beatsHtml(id) : '<p class="text">' + esc(it.x) + "</p>") + "</details></div>" +
       '<div class="answers" role="group" aria-label="Ruling for ' + id + '">' +
       (cand ? NAMED_ANSWERS : SPAN_ANSWERS).map(([a, l]) => '<button type="button" class="ans" data-a="' + a + '" aria-pressed="' + (own === a) + '">' +
         l + "</button>").join("") +
       '<button type="button" class="ans clear" data-a="" ' + (own ? "" : "disabled") + ">clear</button></div></div>";
+  }
+
+  const beatScene = (bid) => bid.slice(0, 6);
+  const npSet = () => new Set(rul().not_perceived || []);
+  const npCount = (id) => (rul().not_perceived || []).filter((b) => beatScene(b) === id).length;
+  function beatsHtml(id) {
+    const np = npSet();
+    return '<div class="beats">' + (ITEMS[id].b || []).map(([bid, text]) => {
+      const off = np.has(bid);
+      return '<div class="beat' + (off ? " off" : "") + '"><p class="text"><span class="mono">' + bid.slice(7) + "</span> " + esc(text) + "</p>" +
+        '<button type="button" class="ans" data-beat="' + bid + '" aria-pressed="' + off + '">' + (off ? "Not perceived" : "Mark not perceived") + "</button></div>";
+    }).join("") + "</div>";
   }
 
   function sideHtml(label, ids) {
@@ -417,9 +437,11 @@ const DATA = /*__NPC_AGENT_DATA__*/null;
         if (s.note) o.note = s.note;
         return o;
       });
-      if (spans.length || Object.keys(items).length || r.default) {
+      const np = (r.not_perceived || []).slice().sort();
+      if (spans.length || Object.keys(items).length || r.default || np.length) {
         npcs[n.subject] = { spans, items };
         if (r.default) npcs[n.subject].default = r.default;
+        if (np.length) npcs[n.subject].not_perceived = np;
       }
     }
     return { version: DATA.rulings_version, npcs };
@@ -440,6 +462,7 @@ const DATA = /*__NPC_AGENT_DATA__*/null;
       const ks = Object.keys(b.items);
       out.push(ks.length ? "    items:" : "    items: {}");
       for (const k of ks) out.push("      " + q(k) + ": " + b.items[k]);
+      if (b.not_perceived) { out.push("    not_perceived:"); for (const x of b.not_perceived) out.push("      - " + q(x)); }
     }
     return out.join("\n") + "\n";
   }
@@ -450,7 +473,7 @@ const DATA = /*__NPC_AGENT_DATA__*/null;
 
   function bodyFor(stem) {
     const r = state.rulings[stem], n = DATA.npcs.find((x) => x.stem === stem);
-    return { subject: n.subject, rulings_version: DATA.rulings_version, spans: r.spans, items: r.items, default: r.default || "" };
+    return { subject: n.subject, rulings_version: DATA.rulings_version, spans: r.spans, items: r.items, default: r.default || "", not_perceived: r.not_perceived || [] };
   }
 
   function saveDraftLocally() {
@@ -487,7 +510,7 @@ const DATA = /*__NPC_AGENT_DATA__*/null;
       const raw = localStorage.getItem("presence-ledger-draft-v3");
       if (raw) {
         const draft = JSON.parse(raw);
-        for (const n of DATA.npcs) if (draft[n.stem]) state.rulings[n.stem] = { spans: draft[n.stem].spans || [], items: draft[n.stem].items || {}, default: draft[n.stem].default || "" };
+        for (const n of DATA.npcs) if (draft[n.stem]) state.rulings[n.stem] = { spans: draft[n.stem].spans || [], items: draft[n.stem].items || {}, default: draft[n.stem].default || "", not_perceived: draft[n.stem].not_perceived || [] };
       }
     } catch (e) { /* no draft */ }
     render();
@@ -503,7 +526,7 @@ const DATA = /*__NPC_AGENT_DATA__*/null;
         if (snap.metadata.hasPendingWrites || pending.has(n.stem)) return;
         if (snap.exists) {
           const d = snap.data();
-          state.rulings[n.stem] = { spans: JSON.parse(JSON.stringify(d.spans || [])), items: Object.assign({}, d.items || {}), default: d.default || "" };
+          state.rulings[n.stem] = { spans: JSON.parse(JSON.stringify(d.spans || [])), items: Object.assign({}, d.items || {}), default: d.default || "", not_perceived: (d.not_perceived || []).slice() };
         }
         render();
         if (first) { first = false; setStatus(canWrite ? "Saved rulings loaded" : "Read only: you can view these rulings but not change them.", !canWrite); }
@@ -521,10 +544,19 @@ const DATA = /*__NPC_AGENT_DATA__*/null;
       render(); return;
     }
     if (t.dataset.show) { state.show = t.dataset.show; render(); return; }
+    if (t.dataset.beat) {
+      const r = rul(), bid = t.dataset.beat, np = new Set(r.not_perceived || []);
+      if (np.has(bid)) np.delete(bid); else np.add(bid);
+      r.not_perceived = [...np].sort();
+      const y = window.scrollY; render(); window.scrollTo(0, y);
+      changed(npc().stem); return;
+    }
     if (t.dataset.a !== undefined && t.closest(".row")) {
       const id = t.closest(".row").dataset.id, a = t.dataset.a, r = rul();
       if (a && !allowed(id, a)) return;
       if (a) r.items[id] = a; else delete r.items[id];
+      const eff = effective(npc().stem);
+      r.not_perceived = (r.not_perceived || []).filter((b) => eff[beatScene(b)] && eff[beatScene(b)].v === "present");
       const y = window.scrollY; render(); window.scrollTo(0, y);
       changed(npc().stem); return;
     }

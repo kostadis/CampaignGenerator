@@ -18,6 +18,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+from pipelines.npc_agent import corpus as corpus_mod
 from pipelines.npc_agent.corpus import Corpus
 from pipelines.npc_agent.dossier import Dossier
 from pipelines.npc_agent import presence
@@ -27,7 +28,7 @@ from pipelines.npc_agent.rulings import VERSION
 TEMPLATE = Path(__file__).resolve().parent / "review" / "presence_review.html"
 DATA_SLOT = "/*__NPC_AGENT_DATA__*/null"
 #: Bumped when the bundle's shape changes; the page refuses a bundle it does not know.
-BUNDLE_VERSION = 2
+BUNDLE_VERSION = 3
 
 
 def bundle(corpus: Corpus, pairs: list[tuple[Dossier, list[Candidate]]], source: str) -> dict:
@@ -50,6 +51,8 @@ def bundle(corpus: Corpus, pairs: list[tuple[Dossier, list[Candidate]]], source:
         for it in ch.items:
             items[it.item_id] = {"k": it.kind, "c": it.chapter, "t": it.title, "x": it.text,
                                  "l": it.line}
+            if it.kind == corpus_mod.SCENE:
+                items[it.item_id]["b"] = [[b.beat_id, b.text] for b in corpus_mod.beats(it)]
     npcs = [
         {
             "subject": d.subject,

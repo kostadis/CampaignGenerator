@@ -16,8 +16,11 @@ Shape (version 3)::
         default: mentioned            # every event naming her that is left empty
         items:
           "061.05": present
+          "067.03": present
           "058.05": mentioned
           "063.06":                   # empty: unanswered
+        not_perceived:                # beats of a present event she did not take in
+          - "067.03.b04"
 
 **Answers are about events.** An event is a scene, ``NNN.SS``, in the order the
 summaries author. Version 2 let the GM answer summary paragraphs, memorable
@@ -51,6 +54,16 @@ An item answer always overrides a span. Spans of one NPC may not overlap.
 ``follows`` names the character the NPC stays with; the review page uses it as a
 hint and it changes no answer.
 
+**Not perceived.** Being at a scene is not knowing everything its text says.
+The summaries are written from the GM's side of the screen: scene 067.03, which
+Sylvira attends, has the beat "Sylvira is Moziqodo's mother, but does not yet
+know that the party killed her son." ``not_perceived`` lists the beats of a
+*present* event that the NPC did not take in; every other beat of that event
+counts as perceived. A beat is the scene's ``####`` headline or a top-level
+bullet with what is indented under it (:func:`corpus.beats`), so the GM rules
+on what the summary wrote as one point and nothing smaller. A beat of an event
+not answered present is refused: there is nothing to perceive.
+
 **Default.** ``default: mentioned`` answers every event naming the NPC that no
 span or item answer reaches. It is the mirror of a companion's span: an NPC
 present in a few of the scenes that name them is answered by marking those few.
@@ -70,7 +83,7 @@ from pathlib import Path
 
 import yaml
 
-from pipelines.npc_agent.corpus import SCENE, Corpus
+from pipelines.npc_agent.corpus import SCENE, Corpus, beats
 
 PRESENT = "present"
 MENTIONED = "mentioned"
@@ -110,6 +123,7 @@ class NpcRulings:
     items: dict[str, str] = field(default_factory=dict)
     spans: tuple[Span, ...] = ()
     default: str | None = None
+    not_perceived: frozenset[str] = frozenset()
 
 
 def _key(scene_id: str) -> tuple[int, int]:
@@ -194,6 +208,7 @@ def load_rulings(
     """
     npcs = _read(path)
     scene_ids = {it.item_id for it in corpus.items() if it.kind == SCENE}
+    beat_ids = {b.beat_id: b.scene_id for it in corpus.items() for b in beats(it)}
     corpus_text = "\n".join(t for it in corpus.items() for _, t in it.lines)
     problems: list[str] = []
     out: dict[str, NpcRulings] = {}
@@ -202,8 +217,10 @@ def load_rulings(
             problems.append(f"{subject!r}: not an NPC with a published dossier in this campaign")
             continue
         block = block or {}
-        if not isinstance(block, dict) or set(block) - {"spans", "items", "default"}:
-            problems.append(f"{subject!r}: expected a mapping with 'spans', 'items' and/or 'default'")
+        if not isinstance(block, dict) or set(block) - {"spans", "items", "default", "not_perceived"}:
+            problems.append(
+                f"{subject!r}: expected a mapping with 'spans', 'items', 'default' and/or 'not_perceived'"
+            )
             continue
         default = block.get("default")
         if default is not None and default not in DEFAULT_VALUES:
@@ -240,7 +257,25 @@ def load_rulings(
                 )
             else:
                 kept[item_id] = value
-        out[subject] = NpcRulings(items=kept, spans=spans, default=default)
+        npc = NpcRulings(items=kept, spans=spans, default=default)
+        np_raw = block.get("not_perceived") or []
+        if not isinstance(np_raw, list):
+            problems.append(f"{subject!r}: not_perceived must be a list of beat ids (NNN.SS.bKK)")
+            np_raw = []
+        if np_raw:
+            eff = effective(npc, corpus, candidate_ids[subject])
+            for beat_id in map(str, np_raw):
+                scene_id = beat_ids.get(beat_id)
+                if scene_id is None:
+                    problems.append(f"{subject!r} not_perceived {beat_id}: not a beat (NNN.SS.bKK) of any scene")
+                elif eff.get(scene_id, (None,))[0] != PRESENT:
+                    problems.append(
+                        f"{subject!r} not_perceived {beat_id}: scene {scene_id} is not answered "
+                        "'present', so there is nothing to perceive"
+                    )
+            npc = NpcRulings(items=kept, spans=spans, default=default,
+                             not_perceived=frozenset(map(str, np_raw)))
+        out[subject] = npc
     if problems:
         raise RulingError(f"{path}: {len(problems)} problem(s):\n  " + "\n  ".join(problems))
     return out

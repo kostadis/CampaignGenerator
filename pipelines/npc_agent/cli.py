@@ -1,7 +1,7 @@
 """``npc_agent`` — Prototype 1: presence candidates and the knowledge horizon.
 
     npc_agent candidates --campaign-dir DIR (--npc NAME ... | --all) --out-dir OUT
-    npc_agent horizon    --campaign-dir DIR --npc NAME --chapter N --rulings FILE [--out FILE]
+    npc_agent horizon    --campaign-dir DIR --npc NAME --chapter N --rulings FILE [--for-agent] [--out FILE]
 
 ``--campaign-dir`` accepts either layout: the published one
 (``<dir>/summaries`` + ``<dir>/npcs``, as in ``campaigns-public/<campaign>``) or
@@ -143,9 +143,16 @@ def cmd_horizon(args) -> int:
         ruled = rulings.load_rulings(args.rulings, {d.subject: cand_ids}, corpus)
     except rulings.RulingError as e:
         raise Refusal(str(e)) from None
-    eff = rulings.effective(ruled.get(d.subject, rulings.NpcRulings()), corpus, cand_ids)
-    h = horizon_mod.build_horizon(d, cands, eff, args.chapter, items, presence.snapshots(ms))
-    text = horizon_mod.render_horizon(h)
+    npc = ruled.get(d.subject, rulings.NpcRulings())
+    eff = rulings.effective(npc, corpus, cand_ids)
+    h = horizon_mod.build_horizon(d, cands, eff, args.chapter, items, presence.snapshots(ms),
+                                  npc.not_perceived)
+    if args.for_agent and h.unruled:
+        raise Refusal(
+            f"{len(h.unruled)} event(s) naming {d.subject} up to chapter {args.chapter} are unanswered; "
+            "an agent is never given an incomplete horizon. Answer them, or run without --for-agent."
+        )
+    text = horizon_mod.render_horizon(h, for_agent=args.for_agent)
     if args.out is None:
         sys.stdout.write(text)
     else:
@@ -206,6 +213,8 @@ def build_parser() -> argparse.ArgumentParser:
     h.add_argument("--chapter", type=int, required=True)
     h.add_argument("--rulings", type=Path, required=True, help="the GM's presence ruling file")
     h.add_argument("--out", type=Path, default=None, help="default: stdout")
+    h.add_argument("--for-agent", action="store_true",
+                   help="only what the NPC could know; refused while any event is unanswered")
     h.set_defaults(func=cmd_horizon)
     return parser
 
