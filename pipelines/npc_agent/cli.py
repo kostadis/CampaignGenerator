@@ -113,13 +113,15 @@ def cmd_candidates(args) -> int:
     out_dir.mkdir(parents=True, exist_ok=True)
     checks, pairs = [], []
     for d in chosen:
-        cands = presence.candidates(corpus, d, table)
-        check = presence.check_against_dossier(corpus, d, cands, table)
+        ms = presence.mentions(corpus, d, table)
+        evs = presence.events(ms)
+        check = presence.check_against_dossier(corpus, d, ms, table)
         checks.append(check)
-        pairs.append((d, cands))
-        atomic_write_text(out_dir / f"{d.stem}.candidates.md", report.candidates_md(d, cands, check))
-        atomic_write_text(out_dir / f"{d.stem}.candidates.json", report.candidates_json(d, cands))
-        print(f"{d.subject}: {len(cands)} candidate(s); check {'ok' if check.ok else 'MISMATCH'}")
+        pairs.append((d, evs))
+        atomic_write_text(out_dir / f"{d.stem}.candidates.md", report.candidates_md(d, ms, check))
+        atomic_write_text(out_dir / f"{d.stem}.candidates.json", report.candidates_json(d, ms))
+        print(f"{d.subject}: {len(evs)} event(s) to answer, {len(ms)} mention(s); "
+              f"check {'ok' if check.ok else 'MISMATCH'}")
     atomic_write_text(out_dir / CHECK_REPORT, report.check_report_md(checks, corpus.findings))
     atomic_write_text(out_dir / RULING_TEMPLATE, presence.ruling_template(pairs))
     print(f"wrote {len(chosen) * 2 + 2} file(s) to {out_dir}")
@@ -133,7 +135,8 @@ def cmd_horizon(args) -> int:
     if args.out is not None:
         _refuse_inside(Path(args.out), (summaries, npcs))
     d = chosen[0]
-    cands = presence.candidates(corpus, d, table)
+    ms = presence.mentions(corpus, d, table)
+    cands = presence.events(ms)
     items = {it.item_id: it for it in corpus.items()}
     cand_ids = {c.item.item_id for c in cands}
     try:
@@ -141,7 +144,7 @@ def cmd_horizon(args) -> int:
     except rulings.RulingError as e:
         raise Refusal(str(e)) from None
     eff = rulings.effective(ruled.get(d.subject, rulings.NpcRulings()), corpus, cand_ids)
-    h = horizon_mod.build_horizon(d, cands, eff, args.chapter, items)
+    h = horizon_mod.build_horizon(d, cands, eff, args.chapter, items, presence.snapshots(ms))
     text = horizon_mod.render_horizon(h)
     if args.out is None:
         sys.stdout.write(text)
@@ -156,13 +159,13 @@ def cmd_review(args) -> int:
     summaries, npcs, corpus, chosen, table = _load(args)
     out = Path(args.out)
     _refuse_inside(out, (summaries, npcs))
-    pairs = [(d, presence.candidates(corpus, d, table)) for d in chosen]
+    pairs = [(d, presence.mentions(corpus, d, table)) for d in chosen]
     source = args.source or str(summaries.parent.name)
     page = review.render_page(review.bundle(corpus, pairs, source))
     out.parent.mkdir(parents=True, exist_ok=True)
     atomic_write_text(out, page)
-    for d, cands in pairs:
-        print(f"{d.subject}: {len(cands)} candidate(s)")
+    for d, ms in pairs:
+        print(f"{d.subject}: {len(presence.events(ms))} event(s) to answer")
     print(f"wrote {out} ({len(page.encode('utf-8')) // 1024} KiB)")
     return 0
 

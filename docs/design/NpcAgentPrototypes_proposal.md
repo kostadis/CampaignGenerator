@@ -128,7 +128,7 @@ neither tape nor summary; they come from GM prep.
 
 `campaigns-public` holds the complete published set: Out of the Abyss ch2–71
 (68 files; there is no 033 or 066), Obelisk ch1–12, and the published NPC
-dossiers (27 for Out of the Abyss, 41 for Obelisk). Its sync script copies each
+dossiers (27 for Out of the Abyss, 38 for Obelisk). Its sync script copies each
 session's reviewed `session-summary.md` through the publisher, **skipping the
 refactor step**. Measured against `campaigns/<campaign>/docs/summaries/`:
 
@@ -205,7 +205,7 @@ such a check can be tested against.
 
 | # | Prototype | Model? | Answers |
 |---|---|---|---|
-| 1 | **Presence candidates and the knowledge horizon** | no | For an NPC with a published dossier: which scenes, prose paragraphs, moments and entries name them, what evidence each carries, and, given the GM's presence ruling, what the NPC had witnessed by chapter N |
+| 1 | **Events and the knowledge horizon** | no | For an NPC with a published dossier: which events (scenes) name them, the GM's answer for each, and from those what the NPC had witnessed by chapter N, with their state |
 | 2 | Consistency checks | no | An NPC acting after their death chapter; a name confusion matching a known `transcript_corrections` pair |
 | 3 | Leak test | no (scoring) | Given an NPC's horizon at chapter N and a candidate line, does the line use something outside the horizon? First case: Sylvira and her son |
 | 4 | Backtest | yes | Freeze at chapter N, ask the agent what the NPC does at their next appearance, compare with what happened. Scored by leaks (code) and the GM's blind ranking |
@@ -215,72 +215,146 @@ such a check can be tested against.
 Prototypes 4 and 5 need GM prep (hidden state), which for most NPCs is private.
 They run against `campaigns`, not `campaigns-public`.
 
-## Prototype 1 — presence candidates and the knowledge horizon
+## Prototype 1 — events, and the knowledge horizon
 
 Implemented in `pipelines/npc_agent/` as the `npc_agent` console script. No
 model call (AST-guarded in `tests/test_npc_agent_no_llm.py`). Nothing is written
 outside the output directory; the GM's ruling file is read, never written.
 
-### Items
+### The first build made the survey's mistake
 
-From each summary in the public layout:
+The first build asked the GM a presence question about every summary *element*
+that named the NPC: each scene, each `## Summary` paragraph, each memorable
+moment, each `## NPCs` entry. The GM, reading the answers back: "we are making
+the same mistake we made before — trying to extract events from elements." It is
+the mistake the grounding survey (*Grounding Documents for Long-Running Tabletop
+Campaigns*, October 2026) records twice:
 
-| Item | Id | Level | Text |
-|---|---|---|---|
-| scene | `NNN.SS` (declared, or by position, verified above) | scene | the scene's own heading, `####` headline and bullets |
-| prose | `NNN.pK` | chapter | the K-th paragraph of `## Summary` |
-| moment | `NNN.mK` | chapter | the K-th block of `## Memorable Moments` (cut the way `npc-link` cuts them) |
-| entry | `NNN.eK` | chapter | the K-th `## NPCs` observation whose heading is one of the NPC's forms |
+- **Atomisation (survey F2, approach 4).** One event became several fragments,
+  each asked separately. Sylvira's interview with Daz (061.05) was one scene,
+  several summary paragraphs, two moments and an entry; she had 75 "passages"
+  to answer where 19 scenes name her.
+- **Undoing a rendering step (F10).** `## Summary` prose is a rendering of the
+  scenes, and in the private copy which scene a paragraph sits under was decided
+  by a similarity heuristic. Five of the scenes linked to her were linked only
+  through such prose.
+- **A presence question asked of non-events.** An `## NPCs` entry is a snapshot
+  of state ("absent from the council meeting due to a lingering illness"), not
+  an occasion anyone could attend. The question had no right answer there, and
+  the wording churned (present/mentioned/unsure/absent, then in the scene/not in
+  the scene/can't tell) because of it.
 
-An item is a candidate when one of the NPC's name forms (the dossier's
-`aliases_used`) appears in it, by `npc-link`'s rules, reused from its own
-code rather than restated:
+The GM cleared every answer, and the prototype was rebuilt on the structure the
+summaries already author (survey approaches 11 and 12, `EventOrdinalKG_proposal.md`).
 
-- **Exact, case-sensitive, word-bounded**, through `npc_forms`' compiled pattern.
-- **One matcher over every published NPC's forms, longest first.** `Manshoon`
-  inside `— Manshoon (Simulacrum)` belongs to the Simulacrum's dossier.
-- **A form owned by two NPCs is ambiguous and withheld.**
-- **A single word in `npc-link`'s word list is generic and withheld** unless
-  `canon.yaml link_rulings` says `safe`. The published layout carries no
-  `canon.yaml`, so `--canon` takes one (Out of the Abyss rules `Stool` and
-  `Spanner` safe; Obelisk has none, so `Droop`, `Thistle`, `Tuck` and `Wick`
-  stay withheld, as they were for `npc-link`).
-- An NPC's own `## NPCs` observation is theirs by its heading, whatever the
-  form's status.
+### Events, beats, snapshots, context
 
-Each candidate carries its **signals**:
+| Element | What it is | In Prototype 1 |
+|---|---|---|
+| A scene, `NNN.SS` | an **event**, in authored order | **answered**: was the NPC physically present? |
+| A scene's bullets | its **beats** | shown with the event; carried into the horizon |
+| The NPC's own `## NPCs` entry | a **snapshot** of their state | shown as state, never answered; feeds the horizon's State |
+| `## Summary` prose, memorable moments, other NPCs' entries naming them | a **rendering** or highlight of events | shown as context, never answered |
 
-- `quoted`: a quote in the item is attributed to the NPC (`> — <form>`)
-- `headline`: the NPC is named in a scene's `####` headline (the GM's recap)
-- `named`: the NPC is named anywhere else
+An event is a *candidate* when one of the NPC's exact name forms appears in its
+heading, its `####` headline (the GM's recap) or its beats. Matching is
+`npc-link`'s rule, reused from its own code: exact, case-sensitive, word-bounded;
+one matcher over every published NPC's forms, longest first (`Manshoon` inside
+`— Manshoon (Simulacrum)` belongs to the Simulacrum); a form owned by two NPCs is
+ambiguous and withheld; a single word in `npc-link`'s word list is withheld
+unless `canon.yaml link_rulings` says `safe` (`--canon`; Out of the Abyss rules
+`Stool` and `Spanner` safe, Obelisk has no `canon.yaml`).
 
-Signals are evidence for the GM's ruling. None of them marks an item present.
+| | Elements naming them | Events to answer |
+|---|---|---|
+| Sylvira Savikas | 75 | **19** |
+| Glabbagool | 282 | **91**, inside a span of 238 scenes |
 
 ### Check against the published dossier
 
-The candidate list is checked against the dossier's own frontmatter, written
-by `npc-link` from the private copy:
+The check still reads every element that names the NPC, because that is what
+`npc-link` linked: the chapter set, the number of moments and of the NPC's own
+entries must match the dossier exactly, and the dossier's scene count may exceed
+the events here only by scenes in chapters whose prose names the NPC (the
+refactor placed that prose under one of them). A mismatch is reported, never
+repaired, and the run exits 3. **All 65 published dossiers check out** (27 Out of
+the Abyss with its `canon.yaml`, 38 Obelisk).
 
-- the set of `chapters` must match exactly;
-- the number of moments and of the NPC's own entries must match exactly;
-- the dossier's scene count may exceed the scene candidates here only by
-  scenes in chapters where a prose candidate names the NPC (the refactor's
-  heuristic placed that prose under one of them), and every scene the dossier
-  body cites must be one of those two.
+### Answers
 
-A mismatch is reported, never repaired, and the run exits 3.
+Three, settled by the GM (2026-10-12): "There are two possibilities: she is
+physically present, or she is mentioned", and "because you will make mistakes it
+is also necessary for us to have a unsure or neither present nor mentioned".
 
-**Result on the published data:** all **68** published dossiers check out
-(27 Out of the Abyss with its `canon.yaml`, 41 Obelisk). Two mismatch kinds
-turned up on the way and became rules above: per-NPC matching (Manshoon picked
-up a Simulacrum quote) and generic words (the four Obelisk names). Without
-`--canon`, Out of the Abyss reports `Stool` and `Spanner` as withheld and
-mismatched, which is the expected answer.
+- **Physically present** (`present`)
+- **Mentioned** (`mentioned`): the scene names the NPC, who was not there
+- **Neither / unsure** (`neither`): the name match is wrong, or the scene does
+  not let the GM say. It counts as answered, is kept out of both other answers,
+  and the horizon lists it as a possible linking error.
 
-Sylvira, for scale: 75 candidates (19 scenes, 23 prose paragraphs, 8 moments,
-25 entries, 7 of them her own). Only 2 carry a `quoted` signal and 2 a
-`headline` one; the other 70 name her in passing. That is the ruling burden for
-one NPC, and why it belongs in a review artifact rather than chat.
+### The ruling file (version 3)
+
+GM-authored YAML, or JSON (the review page saves JSON, which is YAML). Answers
+are keyed by scene id only; a version-2 file (element answers) is refused rather
+than half-read.
+
+```yaml
+version: 3
+npcs:
+  Glabbagool:
+    spans:
+      - from: "034.03"
+        to: "071.10"
+        follows: Zalthir
+        note: in the bag of holding counts as present
+    items:
+      "039.04": absent        # cut the span around a scene that never names him
+  Sylvira Savikas:
+    default: mentioned        # every event naming her that is left empty
+    items:
+      "061.05": present
+```
+
+- **Spans** answer a run of events at once, for a companion (GM rulings
+  2026-10-12: Glabbagool in the bag of holding counts as present; when the party
+  splits he is with Zalthir). A span covers scenes and nothing else; `present`
+  may also be given to a scene that never names the NPC. `absent` exists only to
+  cut a span around such a scene; it is not an answer. `follows` is a review hint
+  ("Check splits" lists span scenes that do not name that character).
+- **Default** `mentioned` answers every event naming the NPC that nothing else
+  reaches: the mirror of a span, for an NPC present at a few of the scenes that
+  name them.
+- Precedence: item answer, then span, then default. The horizon says which.
+
+### The horizon
+
+`npc_agent horizon --npc NAME --chapter N --rulings FILE`, up to and including
+chapter N:
+
+- **Events physically present**, in order, each with its beats: what the NPC
+  could have witnessed. Span scenes that never name them are marked so.
+- **State**: their latest entry up to N, and every event naming them after it.
+  Snapshots lag (a quarter of Phandalin's cast have a latest snapshot older than
+  their latest mention, `EventOrdinalKG_proposal.md` §2.3), so current state is
+  the latest snapshot plus every mention after it.
+- Events answered *mentioned* or *neither*, and those unanswered, listed apart.
+- Nothing after chapter N, not even a count or a first-seen chapter: the horizon
+  is what an NPC agent will be given.
+
+It is a floor, not a mind: it claims neither what the NPC was told nor that they
+saw a whole scene.
+
+### The review page
+
+`npc_agent review --npc ... --out page.html` writes one self-contained page
+(template `pipelines/npc_agent/review/presence_review.html`, data embedded). One
+row per event, with the three answers; under each chapter, the NPC's entry
+(state) and the summary prose and moments that name them (context), collapsed and
+never answered; spans and the default per NPC; a tally and filters (unanswered,
+quote or headline, everything, check splits). Answers are saved in the artifact's
+database (`rulings/<stem>`, one document per NPC) so Claude can read them back,
+and can be exported as `presence.json` or copied as YAML. `npc_agent horizon`
+re-validates whatever it is given.
 
 ### Usage
 
@@ -290,128 +364,12 @@ npc_agent candidates --campaign-dir ~/campaigns-public/out-of-the-abyss \
     --npc "Sylvira Savikas" --out-dir /tmp/p1
 #  → sylvira-savikas.candidates.{md,json}, check_report.md, presence.template.yaml
 
-# The GM copies presence.template.yaml, rules what they can, then:
+npc_agent review --campaign-dir ~/campaigns-public/out-of-the-abyss \
+    --npc Sylvira --npc Glabbagool --out ledger.html
+
 npc_agent horizon --campaign-dir ~/campaigns-public/out-of-the-abyss \
-    --npc "Sylvira Savikas" --chapter 67 --rulings presence.yaml
+    --npc "Sylvira Savikas" --chapter 67 --rulings presence.json
 ```
-
-### The ruling file
-
-GM-authored, version 2. YAML, or JSON (which is YAML): the review page saves
-JSON and `npc_agent horizon --rulings` reads it as it stands. The tool writes a
-template beside its report and never touches the real file.
-
-```yaml
-version: 2
-npcs:
-  Glabbagool:
-    spans:
-      - from: "034.03"
-        to: "071.10"
-        value: present
-        follows: Zalthir
-        note: in the bag of holding counts as present
-    items:
-      "039.04": absent        # an exception inside the span
-  Sylvira Savikas:
-    default: mentioned        # every candidate no span or item ruling reaches
-    items:
-      "061.05": present
-```
-
-Values, and which items take them:
-
-- `present` (physically present): any candidate, **or any scene in the corpus**. This is
-  for companions: Glabbagool is named in only 91 of the 240 scenes of his span,
-  and a horizon limited to those would miss most of what he witnessed. In the
-  horizon such a scene is marked "not named in the text".
-- `mentioned`: candidates only. An item that does not name the NPC cannot be
-  about them.
-- `absent`: a scene that does not name the NPC, to make an exception inside a
-  span. For a candidate, `mentioned` says the same thing.
-
-**Spans** rule a run of scenes at once, which is how a companion is ruled. A
-span covers every scene from `from` to `to`, plus the summary paragraphs and
-memorable moments of every chapter whose scenes all lie inside it, plus the
-NPC's own entries there. An item ruling always overrides a span; spans of one
-NPC may not overlap. `follows` names who the NPC stays with when the party
-splits. It is a review hint only: the page flags span scenes that do not name
-that character ("Check splits"), and the GM decides.
-
-**GM rulings, 2026-10-12.** Glabbagool in the bag of holding counts as present.
-When the party splits, he is with Zalthir. The span seeded in the review page
-(034.03 to 071.10, following Zalthir) encodes both; its two ends were proposed
-from the data (his first named scene, the last scene of chapter 71) and are the
-GM's to confirm. With that one span, 268 of his 282 candidates are ruled; the
-other 14 are chapter 34's summary paragraphs and entries, because the span
-starts inside chapter 34. 104 of the 238 scenes in the span do not name
-Zalthir; most are probably whole-party scenes, but those are the ones to check.
-
-**Default.** `default: mentioned` rules every candidate that no
-span or item ruling reaches. It is the mirror of a companion's span, added
-after the GM's first pass at Sylvira: most of the 75 passages naming her are
-mentions where she was not there, and marking each one was the burden. With the
-default set, the GM marks only the few she was present for; the page's "Quote or
-headline" filter lists the 4 most likely (061.05, 061.m12, 061.m14, 067.03),
-as a place to start, not a ruling. Precedence is item ruling, then span, then
-default, and the horizon labels what the default ruled.
-
-An unknown NPC, any other item id, value or key, any answer other than
-`present`, `mentioned` or `neither` (or `absent` on a span scene), a default other than
-`mentioned`, a span end that is not a
-scene, a span that runs backwards, overlapping spans, or a `follows` name that
-appears nowhere in the summaries are all refused.
-
-### The review page
-
-`npc_agent review --npc ... --out page.html` writes one self-contained page
-(template `pipelines/npc_agent/review/presence_review.html`, data embedded) for
-ruling presence at the GM's own pace, which the campaign rules ask for once a
-queue passes about a dozen rulings. It shows, per NPC:
-
-- every candidate, by chapter, with its evidence tags and full text;
-- the spans, editable, with the same checks as the loader;
-- the scenes a span reaches that never name the NPC, so they can be excepted;
-- a tally, filters (needs a ruling, everything, check splits; by kind).
-
-**Answers.** The first versions offered *present / mentioned / unsure / absent*,
-then *In the scene / Not in the scene / Can't tell*. Neither matched how the GM
-thinks about it. The GM's rulings (2026-10-12): "There are two possibilities:
-she is physically present, or she is mentioned", and then, "because you will
-make mistakes it is also necessary for us to have a unsure or neither present
-nor mentioned". So every passage that names the NPC has three answers:
-
-- **Physically present** (`present`)
-- **Mentioned** (`mentioned`): named, not physically there
-- **Neither / unsure** (`neither`): the name match is wrong, or the passage
-  does not let the GM say. It counts as answered, is kept out of both other
-  answers, and the horizon lists it as a possible linking error.
-
-Nothing else is accepted. The one other stored value, `absent`, is not an
-answer: it is how a span is cut around a scene that never names the NPC,
-offered on those rows as "Remove from span". The GM's answers were cleared at
-their request twice while the wording settled.
-
-Rulings are saved in the artifact's own database (`rulings/<stem>`, one
-document per NPC), so Claude can read them back, and can be exported as
-`presence.json` or copied as YAML. The page applies the loader's rules but is
-not the authority: `npc_agent horizon` re-validates whatever it is given.
-
-### The horizon
-
-`npc_agent horizon --npc NAME --chapter N` lists, for chapters up to N:
-
-- **witnessed**: items ruled `present`, with their text and citation;
-- **mentioned only**: items ruled `mentioned` (things that happened *about*
-  the NPC, which they may not know);
-- **unanswered**: candidates with no answer, kept separate so nothing is
-  guessed;
-- the NPC's **first and last chapter named**, up to the horizon's chapter.
-
-An NPC's knowledge includes more than what they witnessed (what they were
-told), and less than the whole scene (they may have left). Prototype 1 does not
-claim either; it gives the leak test (Prototype 3) a cited, GM-ruled floor to
-work from.
 
 ## Non-goals
 

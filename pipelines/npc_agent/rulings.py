@@ -1,58 +1,60 @@
 """The GM's presence ruling file: read, validated, never written.
 
-Shape (version 2)::
+Shape (version 3)::
 
-    version: 2
+    version: 3
     npcs:
       Glabbagool:
         spans:
-          - from: "034.03"            # first scene of the span
-            to: "071.10"              # last scene of the span
-            value: present            # optional; a span can only say present
+          - from: "034.03"            # first event of the span
+            to: "071.10"              # last event of the span
             follows: Zalthir          # optional: a review hint, never a ruling
             note: rides in the bag of holding; counts as present
         items:
           "039.04": absent            # an exception inside the span
       Sylvira Savikas:
-        default: mentioned            # every candidate not otherwise ruled
+        default: mentioned            # every event naming her that is left empty
         items:
           "061.05": present
           "058.05": mentioned
           "063.06":                   # empty: unanswered
+
+**Answers are about events.** An event is a scene, ``NNN.SS``, in the order the
+summaries author. Version 2 let the GM answer summary paragraphs, memorable
+moments and ``## NPCs`` entries too; that split one event into several fragments
+and asked a presence question of things that are not events (a paragraph is a
+rendering of scenes, an entry is a snapshot of state). Version 3 takes scene ids
+only, and a version-2 file is refused rather than half-read.
 
 **Three answers** (GM rulings 2026-10-12: "There are two possibilities: she is
 physically present, or she is mentioned", and then "because you will make
 mistakes it is also necessary for us to have a unsure or neither present nor
 mentioned").
 
-- ``present``: the NPC was physically in the scene. Any candidate, or any scene in
-  the corpus: a companion is in most scenes nobody names him in (Glabbagool,
-  riding in the bag of holding, is named in 91 of the 240 scenes of his span).
-- ``mentioned``: the passage names the NPC, who was not physically there. A
-  candidate only; an item that does not name them cannot mention them.
-- ``neither``: neither present nor mentioned, or the GM cannot say. It is for the
-  tool's mistakes: a name match that is not this NPC, or a passage too thin to
-  answer. A candidate only. It counts as answered, and the horizon lists it
-  apart from both other answers, so it can be fed back as a linking error.
+- ``present``: the NPC was physically in the scene. Any event naming them, or any
+  scene at all: a companion is in most scenes nobody names him in (Glabbagool,
+  riding in the bag of holding, is named in 91 of the 238 scenes of his span).
+- ``mentioned``: the scene names the NPC, who was not physically there. An event
+  naming them only.
+- ``neither``: neither present nor mentioned, or the GM cannot say: a name match
+  that is not this NPC, or a scene too thin to answer. An event naming them only.
+  It counts as answered, and the horizon lists it apart, as a possible linking
+  error.
 
-``absent`` is not a third answer. It is how a span is cut short around a scene
-that does not name the NPC (he was not there, and nobody mentioned him), so it is
-allowed only there.
+``absent`` is not an answer. It is how a span is cut short around a scene that
+does not name the NPC, so it is allowed only there.
 
-**Spans.** A span rules a run of scenes at once (GM ruling 2026-10-12: Glabbagool
-in the bag of holding counts as present, and when the party splits he is with
-Zalthir). It covers every scene from ``from`` to ``to`` inclusive, and every prose
-paragraph and memorable moment of a chapter whose scenes are *all* inside it; an
-``## NPCs`` entry only if it names the NPC. An item ruling always overrides a span.
-Spans of one NPC may not overlap. ``follows`` names the character the NPC stays
-with; it is shown to the GM as a hint at review and changes no ruling.
+**Spans** answer a run of events at once (GM ruling 2026-10-12: Glabbagool in the
+bag of holding counts as present, and when the party splits he is with Zalthir).
+A span covers every scene from ``from`` to ``to`` inclusive, and nothing else.
+An item answer always overrides a span. Spans of one NPC may not overlap.
+``follows`` names the character the NPC stays with; the review page uses it as a
+hint and it changes no answer.
 
-**Default.** ``default: mentioned`` rules every *candidate* that no
-span or item ruling reaches. It is the mirror of a companion's span: Sylvira is
-present in a handful of the 75 passages that name her and talked about in the
-rest, so the GM marks the few and says once what the others are. It is the GM's
-ruling, applied mechanically, and the horizon labels what it covers. Order of
-precedence: item ruling, then span, then default.
+**Default.** ``default: mentioned`` answers every event naming the NPC that no
+span or item answer reaches. It is the mirror of a companion's span: an NPC
+present in a few of the scenes that name them is answered by marking those few.
+Precedence: item answer, then span, then default; the horizon labels which.
 
 Anything the tool cannot apply is refused, because a ruling it silently ignores
 is a ruling the GM believes was applied.
@@ -68,7 +70,7 @@ from pathlib import Path
 
 import yaml
 
-from pipelines.npc_agent.corpus import ENTRY, MOMENT, PROSE, SCENE, Corpus
+from pipelines.npc_agent.corpus import SCENE, Corpus
 
 PRESENT = "present"
 MENTIONED = "mentioned"
@@ -76,7 +78,7 @@ ABSENT = "absent"
 NEITHER = "neither"
 VALUES = (PRESENT, MENTIONED, NEITHER, ABSENT)
 SPAN_VALUES = (PRESENT,)
-VERSION = 2
+VERSION = 3
 
 #: Where an effective ruling came from.
 FROM_ITEM = "item"
@@ -215,9 +217,9 @@ def load_rulings(
         for item_id, value in raw_items.items():
             item_id = str(item_id)
             named = item_id in candidate_ids[subject]
-            if not named and item_id not in scene_ids:
+            if item_id not in scene_ids:
                 problems.append(
-                    f"{subject!r} {item_id}: neither one of this NPC's candidate items nor a scene in the corpus"
+                    f"{subject!r} {item_id}: not a scene; answers are about events (NNN.SS) only"
                 )
             elif value is None:
                 continue
@@ -225,16 +227,16 @@ def load_rulings(
                 problems.append(f"{subject!r} {item_id}: {value!r} is not one of {', '.join(VALUES)}")
             elif value == NEITHER and not named:
                 problems.append(
-                    f"{subject!r} {item_id}: 'neither' is for a passage that names the NPC; "
+                    f"{subject!r} {item_id}: 'neither' is for an event that names the NPC; "
                     "to take this scene out of a span, use 'absent'"
                 )
             elif value == MENTIONED and not named:
                 problems.append(
-                    f"{subject!r} {item_id}: 'mentioned' needs an item that names the NPC; this scene does not"
+                    f"{subject!r} {item_id}: 'mentioned' needs an event that names the NPC; this scene does not"
                 )
             elif value == ABSENT and named:
                 problems.append(
-                    f"{subject!r} {item_id}: this item names the NPC; rule it 'mentioned', not 'absent'"
+                    f"{subject!r} {item_id}: this event names the NPC; answer it 'mentioned', not 'absent'"
                 )
             else:
                 kept[item_id] = value
@@ -247,27 +249,20 @@ def load_rulings(
 def effective(
     npc: NpcRulings, corpus: Corpus, candidate_ids: set[str]
 ) -> dict[str, tuple[str, str]]:
-    """``{item_id: (value, source)}``: item rulings win, then spans, then the default."""
+    """``{scene_id: (value, source)}``: item answers win, then spans, then the default.
+
+    ``candidate_ids`` is the NPC's events (scenes naming them).
+    """
     out: dict[str, tuple[str, str]] = {}
     if npc.default:
         for item_id in candidate_ids:
             out[item_id] = (npc.default, FROM_DEFAULT)
-    if npc.spans:
-        for ch in corpus.chapters:
-            scenes = [it for it in ch.items if it.kind == SCENE]
-            for span in npc.spans:
-                whole = bool(scenes) and all(span.covers_scene(s.item_id) for s in scenes)
-                for it in ch.items:
-                    if it.kind == SCENE:
-                        hit = span.covers_scene(it.item_id)
-                    elif it.kind in (PROSE, MOMENT):
-                        hit = whole
-                    elif it.kind == ENTRY:
-                        hit = whole and it.item_id in candidate_ids
-                    else:
-                        hit = False
-                    if hit:
-                        out[it.item_id] = (span.value, FROM_SPAN)
+    for it in corpus.items():
+        if it.kind != SCENE:
+            continue
+        for span in npc.spans:
+            if span.covers_scene(it.item_id):
+                out[it.item_id] = (span.value, FROM_SPAN)
     for item_id, value in npc.items.items():
         out[item_id] = (value, FROM_ITEM)
     return out

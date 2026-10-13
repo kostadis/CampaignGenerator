@@ -20,19 +20,24 @@ from pathlib import Path
 
 from pipelines.npc_agent.corpus import Corpus
 from pipelines.npc_agent.dossier import Dossier
+from pipelines.npc_agent import presence
 from pipelines.npc_agent.presence import Candidate
 from pipelines.npc_agent.rulings import VERSION
 
 TEMPLATE = Path(__file__).resolve().parent / "review" / "presence_review.html"
 DATA_SLOT = "/*__NPC_AGENT_DATA__*/null"
 #: Bumped when the bundle's shape changes; the page refuses a bundle it does not know.
-BUNDLE_VERSION = 1
+BUNDLE_VERSION = 2
 
 
 def bundle(corpus: Corpus, pairs: list[tuple[Dossier, list[Candidate]]], source: str) -> dict:
-    """The JSON the page renders from. Byte-deterministic for the same inputs."""
-    firsts = [min(c.item.chapter for c in cands) for _, cands in pairs if cands]
-    lasts = [max(c.item.chapter for c in cands) for _, cands in pairs if cands]
+    """The JSON the page renders from. Byte-deterministic for the same inputs.
+
+    ``pairs`` gives each NPC with every mention (:func:`presence.mentions`). Only the
+    events among them are answered; their state entries and context are shown.
+    """
+    firsts = [min(c.item.chapter for c in ms) for _, ms in pairs if ms]
+    lasts = [max(c.item.chapter for c in ms) for _, ms in pairs if ms]
     lo, hi = (min(firsts), max(lasts)) if firsts else (0, -1)
     chapters, items = [], {}
     for ch in corpus.chapters:
@@ -50,11 +55,13 @@ def bundle(corpus: Corpus, pairs: list[tuple[Dossier, list[Candidate]]], source:
             "subject": d.subject,
             "stem": d.stem,
             "forms": list(d.forms),
-            "first": min((c.item.chapter for c in cands), default=None),
-            "last": max((c.item.chapter for c in cands), default=None),
-            "candidates": {c.item.item_id: list(c.signals) for c in cands},
+            "first": min((c.item.chapter for c in ms), default=None),
+            "last": max((c.item.chapter for c in ms), default=None),
+            "candidates": {c.item.item_id: list(c.signals) for c in presence.events(ms)},
+            "snapshots": [c.item.item_id for c in presence.snapshots(ms)],
+            "context": [c.item.item_id for c in presence.context(ms)],
         }
-        for d, cands in pairs
+        for d, ms in pairs
     ]
     return {"bundle": BUNDLE_VERSION, "rulings_version": VERSION, "source": source,
             "chapters": chapters, "items": items, "npcs": npcs}

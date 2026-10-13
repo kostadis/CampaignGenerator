@@ -114,6 +114,8 @@ details[open] > summary::before { content: "▾ "; }
 .ans:disabled { opacity: 0.35; cursor: default; }
 .ans.clear { grid-column: 1 / -1; border-style: dashed; }
 .empty { color: var(--muted); padding-block: 24px; }
+.side { margin-top: 8px; background: var(--sunk); border-radius: 6px; padding: 6px 10px; display: grid; gap: 6px; }
+.side .text { color: var(--muted); }
 .foot { margin-top: 32px; color: var(--muted); font-size: 0.85rem; max-width: 70ch; }
 @media (max-width: 560px) {
   .row { grid-template-columns: minmax(0, 1fr); }
@@ -128,10 +130,11 @@ details[open] > summary::before { content: "▾ "; }
     <div>
       <div class="label" id="source"></div>
       <h1>Presence Ledger</h1>
-      <p class="lede">Each passage below comes from the session summaries and was matched to this NPC by name.
+      <p class="lede">Each row is an event: a scene from the session summaries that names this NPC.
         <b id="question">Was this NPC physically there, or only talked about?</b> Answer <b>Physically present</b>
-        or <b>Mentioned</b>. When the match is wrong, or the passage does not let you say, answer
-        <b>Neither / unsure</b>. The tags under each passage are evidence, never an answer.</p>
+        or <b>Mentioned</b>; when the match is wrong or the scene does not let you say, <b>Neither / unsure</b>.
+        Under each chapter, the NPC&rsquo;s own entry and the summary prose that names them are there to read,
+        not to answer.</p>
     </div>
     <div class="npcs" id="npcs" role="group" aria-label="NPC"></div>
   </header>
@@ -147,7 +150,7 @@ details[open] > summary::before { content: "▾ "; }
   <div class="filters" id="filters" role="group" aria-label="Show" style="margin-top:10px"></div>
 
   <section class="spans" aria-labelledby="default-h">
-    <div class="row-top"><h2 id="default-h">Unmarked passages</h2><span class="via">the answer for every passage you leave unanswered, for this NPC</span></div>
+    <div class="row-top"><h2 id="default-h">Unanswered events</h2><span class="via">the answer for every event you leave unanswered, for this NPC</span></div>
     <div class="actions">
       <label for="default-v" class="via">Count them as</label>
       <select id="default-v" class="btn">
@@ -159,7 +162,7 @@ details[open] > summary::before { content: "▾ "; }
   </section>
 
   <section class="spans" id="spans" aria-labelledby="spans-h">
-    <div class="row-top"><h2 id="spans-h">Spans</h2><span class="via">a run of scenes where a companion who travels with the party was physically present; an answer on a passage below always wins</span></div>
+    <div class="row-top"><h2 id="spans-h">Spans</h2><span class="via">a run of scenes where a companion who travels with the party was physically present; an answer on an event below always wins</span></div>
     <div id="span-list"></div>
     <div class="actions"><button class="btn" id="add-span" type="button">Add a span</button></div>
     <ul class="problems" id="span-problems"></ul>
@@ -174,11 +177,10 @@ const DATA = /*__NPC_AGENT_DATA__*/null;
 (function () {
   "use strict";
   const $ = (id) => document.getElementById(id);
-  if (!DATA || DATA.bundle !== 1) { $("list").innerHTML = '<p class="empty">This page was built without its data.</p>'; return; }
+  if (!DATA || DATA.bundle !== 2) { $("list").innerHTML = '<p class="empty">This page was built without its data.</p>'; return; }
 
   const ITEMS = DATA.items;
   const CHAPTERS = DATA.chapters;
-  const KIND_LABEL = { scene: "Scene", prose: "Summary paragraph", moment: "Memorable moment", entry: "NPC entry" };
   const SIG_LABEL = { quoted: "quote attributed", headline: "in the GM headline", own_entry: "own entry", named: "named" };
   // Three answers (GM rulings 2026-10-12): physically present, mentioned, or
   // neither/unsure, the last for the matcher's mistakes.
@@ -193,7 +195,6 @@ const DATA = /*__NPC_AGENT_DATA__*/null;
   const state = {
     npc: 0,
     show: "needs",            // needs | all | hint
-    kinds: new Set(["scene", "prose", "moment", "entry"]),
     rulings: {},              // stem -> {spans: [], items: {}}
   };
   DATA.npcs.forEach((n) => { state.rulings[n.stem] = { spans: [], items: {}, default: "" }; });
@@ -238,19 +239,7 @@ const DATA = /*__NPC_AGENT_DATA__*/null;
     const r = state.rulings[stem], n = DATA.npcs.find((x) => x.stem === stem), out = {};
     if (r.default) for (const id of Object.keys(n.candidates)) out[id] = { v: r.default, src: "default" };
     const valid = spanProblems(r.spans).length === 0 ? r.spans : [];
-    for (const ch of CHAPTERS) {
-      const scenes = ch.items.filter((i) => ITEMS[i].k === "scene");
-      for (const s of valid) {
-        const whole = scenes.length > 0 && scenes.every((i) => covers(s, i));
-        for (const id of ch.items) {
-          const k = ITEMS[id].k;
-          const hit = k === "scene" ? covers(s, id)
-            : (k === "prose" || k === "moment") ? whole
-            : k === "entry" ? whole && Object.prototype.hasOwnProperty.call(n.candidates, id) : false;
-          if (hit) out[id] = { v: s.value || "present", src: "span", span: s };
-        }
-      }
-    }
+    for (const id of SCENE_IDS) for (const s of valid) if (covers(s, id)) out[id] = { v: s.value || "present", src: "span", span: s };
     for (const [id, v] of Object.entries(r.items)) if (v) out[id] = { v, src: "item" };
     return out;
   }
@@ -288,7 +277,7 @@ const DATA = /*__NPC_AGENT_DATA__*/null;
   function renderTally() {
     const n = npc(), c = counts(n.stem), pct = c.total ? Math.round((100 * c.ruled) / c.total) : 100;
     $("tally").innerHTML =
-      "<span><b>" + c.ruled + "</b> of " + c.total + " passages answered</span>" +
+      "<span><b>" + c.ruled + "</b> of " + c.total + " events answered</span>" +
       '<span class="meter" aria-hidden="true"><i style="width:' + pct + '%"></i></span>' +
       "<span>physically present " + c.present + " · mentioned " + c.mentioned + " · neither / unsure " + c.neither +
       (c.bySpan ? " · " + c.bySpan + " by span" : "") + (c.byDefault ? " · " + c.byDefault + " by default" : "") + "</span>" +
@@ -305,11 +294,9 @@ const DATA = /*__NPC_AGENT_DATA__*/null;
 
   function renderFilters() {
     const f = [["needs", "Unanswered"], ["likely", "Quote or headline"], ["all", "Everything"], ["hint", "Check splits"]];
-    const kinds = ["scene", "prose", "moment", "entry"];
     $("filters").innerHTML =
       f.map(([k, l]) => '<button type="button" class="chip" data-show="' + k + '" aria-pressed="' + (state.show === k) + '">' + l + "</button>").join("") +
-      '<span class="label" style="align-self:center;margin-left:6px">Kinds</span>' +
-      kinds.map((k) => '<button type="button" class="chip" data-kind="' + k + '" aria-pressed="' + state.kinds.has(k) + '">' + KIND_LABEL[k] + "</button>").join("");
+      "";
   }
 
   function renderDefault() {
@@ -317,8 +304,8 @@ const DATA = /*__NPC_AGENT_DATA__*/null;
     $("default-v").value = r.default || "";
     const n = Object.keys(npc().candidates).length;
     $("default-note").textContent = r.default
-      ? "Every passage you leave unanswered counts as mentioned, unless a span reaches it."
-      : n + " passages to answer one by one. If this NPC is physically present in only a few of them, choose \u201cmentioned\u201d here and answer just those.";
+      ? "Every event you leave unanswered counts as mentioned, unless a span reaches it."
+      : n + " events to answer one by one. If this NPC is physically present at only a few of them, choose \u201cmentioned\u201d here and answer just those.";
   }
 
   function sceneOptions(sel) {
@@ -355,7 +342,6 @@ const DATA = /*__NPC_AGENT_DATA__*/null;
       const cand = Object.prototype.hasOwnProperty.call(n.candidates, id);
       const unnamedScene = !cand && ITEMS[id].k === "scene" && eff[id];
       if (!cand && !unnamedScene) continue;
-      if (!state.kinds.has(ITEMS[id].k)) continue;
       if (state.show === "needs" && cand && eff[id]) continue;
       if (state.show === "needs" && !cand) continue;
       if (state.show === "hint" && !hintFor(id, eff)) continue;
@@ -375,9 +361,9 @@ const DATA = /*__NPC_AGENT_DATA__*/null;
     const first = it.x.split("\n").find((l) => l.trim() && !/^###? /.test(l)) || it.x;
     const title = it.t ? "<strong>" + esc(it.t) + "</strong>" : "";
     return '<div class="row" data-id="' + id + '" data-v="' + v + '">' +
-      '<div class="row-main"><div class="row-top"><span class="mono">' + id + '</span><span class="tag">' + KIND_LABEL[it.k] + "</span>" +
+      '<div class="row-main"><div class="row-top"><span class="mono">' + id + "</span>" +
       title + sigs + (hint ? '<span class="tag hint">' + esc(hint) + "</span>" : "") + "</div>" +
-      (e && e.src !== "item" ? '<span class="via">' + SAY[e.v] + " (" + (e.src === "span" ? "from the span" : "unanswered passages") + ")" + (own ? "" : "; answer here to change it") + "</span>" : "") +
+      (e && e.src !== "item" ? '<span class="via">' + SAY[e.v] + " (" + (e.src === "span" ? "from the span" : "unanswered events") + ")" + (own ? "" : "; answer here to change it") + "</span>" : "") +
       "<details" + (openIds.has(id) ? " open" : "") + "><summary>" + esc(first.replace(/^[-#>*\s]+/, "").slice(0, 160)) + '</summary><p class="text">' + esc(it.x) + "</p></details></div>" +
       '<div class="answers" role="group" aria-label="Ruling for ' + id + '">' +
       (cand ? NAMED_ANSWERS : SPAN_ANSWERS).map(([a, l]) => '<button type="button" class="ans" data-a="' + a + '" aria-pressed="' + (own === a) + '">' +
@@ -385,17 +371,28 @@ const DATA = /*__NPC_AGENT_DATA__*/null;
       '<button type="button" class="ans clear" data-a="" ' + (own ? "" : "disabled") + ">clear</button></div></div>";
   }
 
+  function sideHtml(label, ids) {
+    if (!ids.length) return "";
+    return '<details class="side"><summary>' + esc(label) + " · " + ids.length + "</summary>" +
+      ids.map((i) => '<p class="text"><span class="mono">' + i + "</span> " + esc(ITEMS[i].x) + "</p>").join("") + "</details>";
+  }
+
   function renderList() {
     const eff = effective(npc().stem), ids = new Set(visibleIds(eff));
     let html = "";
+    const n = npc(), snaps = new Set(n.snapshots), ctx = new Set(n.context);
     for (const ch of CHAPTERS) {
       const here = ch.items.filter((i) => ids.has(i));
-      if (!here.length) continue;
+      const st = ch.items.filter((i) => snaps.has(i)), cx = ch.items.filter((i) => ctx.has(i));
+      if (!here.length && !(state.show === "all" && (st.length || cx.length))) continue;
       html += '<section class="chapter"><div class="chapter-head"><h3>' + esc(ch.title) + '</h3><span class="mono">' + esc(ch.file) + "</span></div>" +
-        '<div class="rows">' + here.map((i) => rowHtml(i, eff)).join("") + "</div></section>";
+        sideHtml("Their entry in this chapter (state, not answered)", st) +
+        sideHtml("Also in this chapter\u2019s summary (context, not answered)", cx) +
+        '<div class="rows">' + (here.length ? here.map((i) => rowHtml(i, eff)).join("") :
+          '<p class="via">No scene in this chapter names them.</p>') + "</div></section>";
     }
     $("list").innerHTML = html || '<p class="empty">' + (state.show === "needs"
-      ? "Every passage for " + esc(npc().subject) + " has an answer. Choose Everything to review them."
+      ? "Every event for " + esc(n.subject) + " has an answer. Choose Everything to review them."
       : "Nothing matches these filters.") + "</p>";
   }
 
@@ -457,7 +454,7 @@ const DATA = /*__NPC_AGENT_DATA__*/null;
   }
 
   function saveDraftLocally() {
-    try { localStorage.setItem("presence-ledger-draft", JSON.stringify(state.rulings)); } catch (e) { /* no storage */ }
+    try { localStorage.setItem("presence-ledger-draft-v3", JSON.stringify(state.rulings)); } catch (e) { /* no storage */ }
   }
 
   function changed(stem) {
@@ -487,7 +484,7 @@ const DATA = /*__NPC_AGENT_DATA__*/null;
 
   (async function connect() {
     try {
-      const raw = localStorage.getItem("presence-ledger-draft");
+      const raw = localStorage.getItem("presence-ledger-draft-v3");
       if (raw) {
         const draft = JSON.parse(raw);
         for (const n of DATA.npcs) if (draft[n.stem]) state.rulings[n.stem] = { spans: draft[n.stem].spans || [], items: draft[n.stem].items || {}, default: draft[n.stem].default || "" };
@@ -524,11 +521,6 @@ const DATA = /*__NPC_AGENT_DATA__*/null;
       render(); return;
     }
     if (t.dataset.show) { state.show = t.dataset.show; render(); return; }
-    if (t.dataset.kind) {
-      const k = t.dataset.kind;
-      if (state.kinds.has(k) && state.kinds.size > 1) state.kinds.delete(k); else state.kinds.add(k);
-      render(); return;
-    }
     if (t.dataset.a !== undefined && t.closest(".row")) {
       const id = t.closest(".row").dataset.id, a = t.dataset.a, r = rul();
       if (a && !allowed(id, a)) return;

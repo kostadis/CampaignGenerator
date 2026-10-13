@@ -1,10 +1,22 @@
-"""An NPC's knowledge horizon at a chapter, from the GM's presence ruling.
+"""An NPC's knowledge horizon at a chapter: the events they were in, and their state.
 
-The horizon is a *floor*, not a model of the NPC's mind. It says what the GM has
-ruled the NPC was present for, what is only about them, and what nobody has
-ruled on yet — every item cited, nothing after the chapter. It does not claim
-what the NPC was told (that needs a disclosure ruling) or that the NPC saw a
-whole scene (they may have left). Prototype 3, the leak test, works from it.
+Built from authored structure and the GM's answers, nothing else:
+
+- **Events** (scenes, ``NNN.SS``, in authored order) the GM answered *physically
+  present*, each with its beats: what this NPC could have witnessed.
+- Events that name the NPC answered *mentioned* (about them, while elsewhere) or
+  *neither* (a wrong match or a scene too thin to say), and those still
+  unanswered, listed apart so nothing is guessed.
+- **State**: the NPC's latest snapshot (their own ``## NPCs`` entry) up to the
+  chapter, and every event naming them after it. Snapshots lag: on Phandalin, a
+  quarter of the cast's latest snapshot is older than their latest mention, so
+  current state is the latest snapshot plus every mention after it (event-ordinal
+  proposal, section 2.3).
+
+The horizon is a floor, not a mind. It does not claim what the NPC was told, or
+that they saw a whole scene. Nothing after the chapter is shown, not even a count:
+it is what an NPC agent will be given, and a later chapter number tells it the
+future.
 
 No model call (guarded by ``tests/test_npc_agent_no_llm.py``).
 """
@@ -23,51 +35,52 @@ from pipelines.npc_agent.rulings import FROM_DEFAULT, FROM_SPAN, MENTIONED, NEIT
 class Horizon:
     subject: str
     chapter: int
-    first_seen: int | None  # first candidate chapter <= ``chapter``; None when none
-    last_seen_by_chapter: int | None  # last candidate chapter <= ``chapter``
-    witnessed: tuple[Candidate, ...]
+    first_seen: int | None  # first event naming them, up to ``chapter``
+    last_seen_by_chapter: int | None  # last event naming them, up to ``chapter``
+    witnessed: tuple[Candidate, ...]  # events answered present (named or not)
     mentioned: tuple[Candidate, ...]
-    #: answered "neither present nor mentioned, or unsure": kept out of both
     neither: tuple[Candidate, ...]
     unruled: tuple[Candidate, ...]
-    #: item ids whose ruling came from a span rather than an item ruling
+    snapshot: Item | None  # latest own ``## NPCs`` entry up to ``chapter``
+    since_snapshot: tuple[Candidate, ...]  # events naming them after the snapshot's chapter
     by_span: frozenset[str]
-    #: item ids ruled only by the NPC's default
     by_default: frozenset[str]
-    #: candidates after ``chapter``. Kept for the caller, never rendered: the
-    #: horizon is what an NPC agent will be shown, and a count of later items, or
-    #: a first chapter after this one, tells it the future.
+    #: events after ``chapter``. Kept for the caller, never rendered.
     later: int
 
 
 def build_horizon(
     dossier: Dossier,
-    cands: list[Candidate],
+    events: list[Candidate],
     rulings: dict[str, tuple[str, str]],
     chapter: int,
     items: dict[str, Item] | None = None,
+    snapshots: list[Candidate] | None = None,
 ) -> Horizon:
-    """``rulings`` is :func:`rulings.effective`'s output: ``{item_id: (value, source)}``.
+    """``events`` are the scenes naming the NPC; ``rulings`` is :func:`rulings.effective`.
 
-    ``items`` (every corpus item by id, in corpus order) lets a ruling on an item
-    that does not name the NPC (a span, or a scene ruled one by one) take effect:
-    it enters as a candidate with no signals. ``absent`` items are left out.
+    ``items`` (every corpus item by id, in corpus order) lets an answer on a scene
+    that does not name the NPC (a span, or one marked by hand) take effect: it
+    enters as an event with no signals. ``absent`` scenes are left out.
     """
     items = items or {}
-    named = {c.item.item_id for c in cands}
+    named = {c.item.item_id for c in events}
     unnamed = [
         Candidate(item=items[i], signals=(), forms_matched=(), match_lines=())
         for i, (v, _) in rulings.items()
         if i not in named and i in items and v == PRESENT
     ]
     order = {i: n for n, i in enumerate(items)}
-    every = sorted(cands + unnamed, key=lambda c: (c.item.chapter, order.get(c.item.item_id, 0)))
+    every = sorted(events + unnamed, key=lambda c: (c.item.chapter, order.get(c.item.item_id, 0)))
     upto = [c for c in every if c.item.chapter <= chapter]
     by = {PRESENT: [], MENTIONED: [], NEITHER: [], None: []}
     for c in upto:
         value = rulings.get(c.item.item_id, (None, None))[0]
         by[value if value in by else None].append(c)
     chapters = [c.item.chapter for c in upto if c.signals]
+    snaps = [s.item for s in (snapshots or []) if s.item.chapter <= chapter]
+    snap = snaps[-1] if snaps else None
+    since = tuple(c for c in upto if c.signals and snap is not None and c.item.chapter > snap.chapter)
     return Horizon(
         subject=dossier.subject,
         chapter=chapter,
@@ -77,19 +90,16 @@ def build_horizon(
         mentioned=tuple(by[MENTIONED]),
         neither=tuple(by[NEITHER]),
         unruled=tuple(by[None]),
+        snapshot=snap,
+        since_snapshot=since,
         by_span=frozenset(i for i, (_, src) in rulings.items() if src == FROM_SPAN),
         by_default=frozenset(i for i, (_, src) in rulings.items() if src == FROM_DEFAULT),
         later=len(every) - len(upto),
     )
 
 
-def _cite(c: Candidate) -> str:
-    it = c.item
+def _cite(it: Item) -> str:
     return f"[ch {it.chapter:03d} / {it.item_id}] {it.source_file}:{it.line}"
-
-
-def _signals(c: Candidate) -> str:
-    return ", ".join(c.signals) if c.signals else "not named in the text"
 
 
 def _quote(text: str) -> str:
@@ -100,33 +110,44 @@ def render_horizon(h: Horizon) -> str:
     out = [
         f"# Knowledge horizon — {h.subject}, as of chapter {h.chapter}",
         "",
-        "A floor, not a mind: the scenes the GM has said this NPC was physically present in, up to and including",
-        f"chapter {h.chapter}. Nothing after it is shown. Unanswered passages are listed, never guessed.",
+        "A floor, not a mind: the events the GM has said this NPC was physically present at, in order,",
+        f"up to and including chapter {h.chapter}, and their state. Nothing after it is shown.",
         "",
         f"- First named: chapter {h.first_seen if h.first_seen is not None else '—'}",
         f"- Last named by chapter {h.chapter}: "
         f"{h.last_seen_by_chapter if h.last_seen_by_chapter is not None else '—'}",
-        f"- Physically present: {len(h.witnessed)} · mentioned: {len(h.mentioned)} · "
+        f"- Events physically present: {len(h.witnessed)} · mentioned: {len(h.mentioned)} · "
         f"neither or unsure: {len(h.neither)} · unanswered: {len(h.unruled)}",
     ]
     if h.unruled:
         out += [
             "",
-            f"**{len(h.unruled)} passage(s) are unanswered**, so this horizon is incomplete. "
+            f"**{len(h.unruled)} event(s) are unanswered**, so this horizon is incomplete. "
             "Answer them before relying on it.",
         ]
 
-    out += ["", "## Physically present (what this NPC could have witnessed)", ""]
+    out += ["", "## State", ""]
+    if h.snapshot is None:
+        out.append("_(no entry for this NPC up to this chapter)_")
+    else:
+        out += [f"Latest entry: {_cite(h.snapshot)}", "", _quote(h.snapshot.text), ""]
+        if h.since_snapshot:
+            out.append("Events naming them since that entry (the entry may be out of date):")
+            out += [f"- {_cite(c.item)} — {c.item.title}" for c in h.since_snapshot]
+        else:
+            out.append("No event names them after that entry.")
+
+    out += ["", "## Events physically present (what this NPC could have witnessed)", ""]
     if not h.witnessed:
-        out.append("_(none answered \u201cphysically present\u201d)_")
+        out.append("_(none answered “physically present”)_")
     for c in h.witnessed:
-        tags = [t for t, on in (("not named in the text", not c.signals),
+        tags = [t for t, on in (("not named in the scene", not c.signals),
                                 ("by span", c.item.item_id in h.by_span)) if on]
-        head = f"### {_cite(c)}" + (f" — {', '.join(tags)}" if tags else "")
-        out += [head, "", _quote(c.item.text), ""]
+        out += [f"### {_cite(c.item)}" + (f" — {', '.join(tags)}" if tags else ""), "",
+                _quote(c.item.text), ""]
 
     for title, group in (
-        ("Mentioned (named, not physically there)", h.mentioned),
+        ("Events that mention them (named, not physically there)", h.mentioned),
         ("Neither present nor mentioned, or unsure (left out; possible linking errors)", h.neither),
         ("Unanswered", h.unruled),
     ):
@@ -134,7 +155,6 @@ def render_horizon(h: Horizon) -> str:
         if not group:
             out.append("_(none)_")
         for c in group:
-            label = c.item.title or c.item.text.splitlines()[0][:90]
             how = " (by default)" if c.item.item_id in h.by_default else ""
-            out.append(f"- {_cite(c)}{how} — {c.item.kind}, {_signals(c)} — {label}")
+            out.append(f"- {_cite(c.item)}{how} — {c.item.title}")
     return "\n".join(out).rstrip() + "\n"
