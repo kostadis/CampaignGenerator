@@ -118,6 +118,43 @@ def _scene_items(pf: parse.ParsedFile, chapter: int) -> list[Item]:
     return out
 
 
+@dataclass(frozen=True)
+class Beat:
+    """One authored beat of a scene: its ``####`` headline or a top-level ``- `` bullet.
+
+    Indented sub-bullets, quoted lines and loose lines belong to the beat above
+    them, so a beat is never smaller than what the summary wrote as one point.
+    """
+
+    beat_id: str  # ``NNN.SS.bKK``
+    scene_id: str
+    line: int
+    lines: tuple[tuple[int, str], ...]
+
+    @property
+    def text(self) -> str:
+        return "\n".join(t for _, t in self.lines).strip("\n")
+
+
+def beats(item: Item) -> tuple[Beat, ...]:
+    """A scene's beats in order. Empty for anything that is not a scene."""
+    if item.kind != SCENE:
+        return ()
+    groups: list[list[tuple[int, str]]] = []
+    for n, t in item.lines[1:]:  # the ``###`` heading is the scene, not a beat
+        starts = t.startswith("#### ") or t.startswith("- ")
+        if starts or (not groups and t.strip()):
+            groups.append([(n, t)])
+        elif groups:
+            groups[-1].append((n, t))
+    out = []
+    for k, g in enumerate(groups, 1):
+        while g and not g[-1][1].strip():
+            g.pop()
+        out.append(Beat(f"{item.item_id}.b{k:02d}", item.item_id, g[0][0], tuple(g)))
+    return tuple(out)
+
+
 def _paragraphs(first_line: int, body: str) -> list[list[tuple[int, str]]]:
     """Runs of non-blank lines; a run that opens with a heading is not prose."""
     paras, cur = [], []

@@ -316,7 +316,7 @@ def test_rulings_load_and_empty_means_unanswered(camp, tmp_path):
         ('    spans:\n      - {from: "057.01", to: "061.02", follows: Zalthor}\n', "appears nowhere in the summaries"),
         ('    spans:\n      - {from: "057.01", to: "061.01"}\n      - {from: "061.01", to: "063.01"}\n', "overlap"),
         ('    spans:\n      - {from: "057.01", to: "061.01", until: "x"}\n', "unknown key"),
-        ('    "061.02": present\n', "expected a mapping with 'spans', 'items' and/or 'default'"),
+        ('    "061.02": present\n', "expected a mapping with 'spans', 'items', 'default' and/or 'not_perceived'"),
     ],
 )
 def test_rulings_refuse_what_they_cannot_apply(camp, tmp_path, body, needle):
@@ -544,3 +544,69 @@ def test_review_refuses_to_write_into_its_sources(camp):
     rc = cli.main(["review", "--campaign-dir", str(camp), "--all", "--out", str(camp / "npcs" / "page.html")])
     assert rc == 2
     assert not (camp / "npcs" / "page.html").exists()
+
+
+# ── beats and what the NPC perceived ───────────────────────────────────────
+
+
+def test_beats_are_the_headline_and_top_level_bullets(camp):
+    it = {i.item_id: i for i in _corpus(camp).items()}
+    bs = corpus.beats(it["061.02"])
+    assert [b.beat_id for b in bs] == ["061.02.b01", "061.02.b02"]
+    assert bs[0].text.startswith("#### Daz, alone")
+    assert "> — Sylvira" in bs[1].text  # the quote under a bullet belongs to it
+    assert corpus.beats(it["061.p01"]) == ()
+
+
+def test_not_perceived_needs_a_beat_of_a_present_event(camp, tmp_path):
+    r = _load(camp, tmp_path, '    items:\n      "061.02": present\n    not_perceived:\n      - "061.02.b02"\n')
+    assert r.not_perceived == frozenset({"061.02.b02"})
+    with pytest.raises(rulings.RulingError, match="not answered 'present', so there is nothing to perceive"):
+        _load(camp, tmp_path, '    items:\n      "063.01": mentioned\n    not_perceived:\n      - "063.01.b01"\n')
+    with pytest.raises(rulings.RulingError, match="not a beat"):
+        _load(camp, tmp_path, '    items:\n      "061.02": present\n    not_perceived:\n      - "061.02.b09"\n')
+
+
+def _agent_view(camp, tmp_path, body, chapter):
+    r = _load(camp, tmp_path, body)
+    c, _, table, syl = _setup(camp)
+    ms = presence.mentions(c, syl, table)
+    h = horizon.build_horizon(syl, presence.events(ms), _effective(camp, r), chapter, _items(camp),
+                              presence.snapshots(ms), r.not_perceived)
+    return h
+
+
+def test_a_beat_not_perceived_never_reaches_what_the_npc_could_know(camp, tmp_path):
+    # 067.03: "Sylvira is Moziqodo's mother, but does not yet know that the party killed her son."
+    body = ('    default: mentioned\n    items:\n      "061.02": present\n'
+            '    not_perceived:\n      - "061.02.b02"\n')
+    h = _agent_view(camp, tmp_path, body, 63)
+    agent = horizon.render_horizon(h, for_agent=True)
+    assert "Honey" not in agent and "1 beat(s) of this scene left out" in agent
+    assert "Daz, alone" in agent  # the perceived beat stays
+    gm = horizon.render_horizon(h)
+    assert "Part 2 — for the GM only" in gm and "061.02.b02 —" in gm
+
+
+def test_the_agent_view_carries_nothing_but_present_events(camp, tmp_path):
+    h = _agent_view(camp, tmp_path, '    default: mentioned\n    items:\n      "061.02": present\n', 63)
+    agent = horizon.render_horizon(h, for_agent=True)
+    for gm_only in ("Bedridden with an abyssal plague", "Council in Uproar", "Battle in the Rotunda",
+                    "057-session", "mentioned", "Part 2"):
+        assert gm_only not in agent
+
+
+def test_the_cli_refuses_an_agent_view_with_unanswered_events(camp, tmp_path, capsys):
+    r = tmp_path / "r.yaml"
+    r.write_text('version: 3\nnpcs:\n  Sylvira Savikas:\n    items:\n      "061.02": present\n')
+    rc = cli.main(["horizon", "--campaign-dir", str(camp), "--npc", "Sylvira", "--chapter", "63",
+                   "--rulings", str(r), "--for-agent"])
+    assert rc == 2
+    assert "an agent is never given an incomplete horizon" in capsys.readouterr().err
+
+
+def test_the_review_bundle_carries_each_scenes_beats(camp):
+    c, _, table, syl = _setup(camp)
+    data = review.bundle(c, [(syl, presence.mentions(c, syl, table))], "test")
+    assert [b[0] for b in data["items"]["061.02"]["b"]] == ["061.02.b01", "061.02.b02"]
+    assert "b" not in data["items"]["061.p01"]
