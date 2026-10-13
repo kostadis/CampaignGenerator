@@ -20,6 +20,21 @@ from pipelines.summary_native.promotion.models import (
 )
 
 
+def synth_record_complete(record: dict[str, Any]) -> bool:
+    """A finished synth run whose own output check passed.
+
+    ``synth`` records ``check`` as ``{"complete": bool, "problems": [...]}`` (``"not run"`` while in
+    flight, ``{"complete": false, "error": ...}`` on failure). The bare string ``"passed"`` is accepted
+    for records written before that shape.
+    """
+    if record.get("step") != "synth":
+        return False
+    check = record.get("check", "passed")
+    if isinstance(check, dict):
+        return check.get("complete") is True and not check.get("problems") and "error" not in check
+    return check == "passed"
+
+
 def check_bundle_structure(campaign_dir: Path, bundle: BundleSelection) -> tuple[GateOutcome, ...]:
     root = Path(campaign_dir).resolve()
     outcomes: list[GateOutcome] = []
@@ -38,7 +53,7 @@ def check_bundle_structure(campaign_dir: Path, bundle: BundleSelection) -> tuple
                 raise ValueError("bytes changed after enumeration")
             if member in bundle.retained_records:
                 record = json.loads(data)
-                if record.get("step") != "synth" or record.get("check", "passed") != "passed":
+                if not synth_record_complete(record):
                     raise ValueError("retained run record is incomplete")
         except (OSError, ValueError) as exc:
             outcomes.append(

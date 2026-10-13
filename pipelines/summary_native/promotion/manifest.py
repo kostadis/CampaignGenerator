@@ -143,7 +143,13 @@ def _record_and_dependencies(root: Path, draft: Path, state_dir: Path) -> tuple[
     bind(root / "config/players.yaml", inputs.get("players_sha256"), "players")
 
     if "thread_registry_sha256" in inputs:
-        bind(root / "docs/thread_registry.yaml", inputs.get("thread_registry_sha256"), "thread registry")
+        thread_registry = root / "docs/thread_registry.yaml"
+        if inputs.get("thread_registry_sha256") is None:
+            # synth records null when it ran with no registry; that holds only while there still is none.
+            if thread_registry.exists() or thread_registry.is_symlink():
+                raise PromotionPathError(f"run record thread registry dependency is stale: {_identity(root, thread_registry).path}")
+        else:
+            bind(thread_registry, inputs.get("thread_registry_sha256"), "thread registry")
 
     def bind_entries(value: object, label: str) -> None:
         if not isinstance(value, list):
