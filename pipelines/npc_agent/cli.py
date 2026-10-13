@@ -14,6 +14,16 @@
                          [--target ... --prep ... --section ...] --out PAGE
     npc_agent prep-sheet --campaign-dir DIR --npc NAME --target NNN.SS --prep FILE [--section TEXT]
                          --rulings prep.json [--out FILE]
+    npc_agent replay     --campaign-dir DIR --npc NAME --rulings FILE --target NNN.SS --prep FILE [--section TEXT]
+                         --prep-rulings prep.json [--target ... --prep ... --section ...] --out-dir OUT
+                         [--knowledge FILE] [--turns-only] [--dry-run] [--force] [--model M] [--backend B]
+    npc_agent forward    --campaign-dir DIR --npc NAME --rulings FILE --chapter N --next NNN.SS
+                         --prep FILE [--section TEXT] --prep-rulings prep.json --prep-target NNN.SS
+                         [--plan FILE [--plan-section TEXT]] --out-dir OUT [--knowledge FILE] [--dry-run] [--force]
+
+``replay`` splits a scene into turns (:mod:`turns`), asks the agent each one with the real scene so far
+(earlier turns' real answers included, never later ones), and writes ``OUT/replay.html``. ``forward``
+asks once what she does between sessions; the GM's plan reaches the page, never a prompt.
 
 A beat whose sentence states what someone does not know is always left out of
 their horizon (:mod:`knowledge`); ``--knowledge`` adds the GM's ``who`` where
@@ -65,7 +75,8 @@ from pipelines.npc_agent import backtest_page
 from pipelines.npc_agent import corpus as corpus_mod
 from pipelines.npc_agent import dossier as dossier_mod
 from pipelines.npc_agent import horizon as horizon_mod
-from pipelines.npc_agent import knowledge, leakcheck, persona, prep, prep_page, presence, report, review, rulings
+from pipelines.npc_agent import (forward, knowledge, leakcheck, persona, prep, prep_page, presence, replay_page, report,
+                                 review, rulings, turns)
 from pipelines.summary_native import duplicates, npc_forms
 
 CHECK_REPORT = "check_report.md"
@@ -550,6 +561,274 @@ def cmd_prep_sheet(args) -> int:
     return 0
 
 
+# ── replay (Prototype 4) and forward (Prototype 5) ──────────────────────────
+
+_ANSWER_KEYS = ("answer_prompt_sha256", "answer_model", "answer_backend", "answer_at")
+
+
+def _flag_dicts(flags) -> list[dict]:
+    return [{"kind": f.kind, "sentence": f.sentence, "detail": f.detail, "beat_id": f.beat_id,
+             "name": f.name, "future": f.future} for f in flags]
+
+
+def _answered(args, ans_path: Path, prev: dict, sha: str, backend: str, system: str, user: str) -> tuple[str, dict]:
+    """Answer one prompt, or reuse the answer for the same prompt, model and backend.
+
+    Returns ``(status, entry)``; ``entry`` holds the ``answer_*`` fields for ``run.json``.
+    """
+    entry = {k: prev.get(k) for k in _ANSWER_KEYS}
+    reuse = (not args.force and ans_path.is_file() and entry["answer_prompt_sha256"] == sha
+             and entry["answer_model"] == args.model and entry["answer_backend"] == backend)
+    if args.dry_run:
+        return "dry run", entry
+    if reuse:
+        return "answer reused", entry
+    atomic_write_text(ans_path, agent_mod.play(args, system, user).strip() + "\n")
+    entry.update(answer_prompt_sha256=sha, answer_model=args.model, answer_backend=backend, answer_at=_now())
+    return "answered", entry
+
+
+def _prep_sheet(prep_file, section, prep_rulings, target, subject, forms) -> str:
+    """The passages ruled hers for ``target``; refuses while any is unruled."""
+    ps = _passages(prep_file, forms, section)
+    try:
+        ruled = prep.load_rulings(prep_rulings, subject, target, ps)
+        return prep.sheet(ps, ruled)
+    except prep.PrepError as e:
+        raise Refusal(str(e)) from None
+
+
+def _write_replay_page(out_dir: Path, npc: str, model: str) -> bool:
+    """Rebuild ``replay.html`` from every ``bundle.json`` under ``out_dir``; False when there is nothing to show."""
+    replay_b, forward_b, stamps = [], [], []
+    for f in sorted(out_dir.glob("*/bundle.json")):
+        b = _read_json(f)
+        if b.get("kind") == "replay":
+            replay_b.append(b)
+        elif b.get("kind") == "forward":
+            forward_b.append(b)
+        else:
+            continue
+        stamps.append(b.get("answer_at") or "")
+    if not stamps:
+        return False
+    for b in forward_b:
+        b["doc_prefix"] = "" if len(forward_b) == 1 else f"{b['freeze']}-"
+    run_id = max(stamps).replace("-", "").replace(":", "")
+    page = replay_page.render({"version": replay_page.BUNDLE_VERSION, "npc": npc, "run_id": run_id, "model": model,
+                               "replay": [{k: v for k, v in b.items() if k not in ("kind", "answer_at")} for b in replay_b],
+                               "forward": [{k: v for k, v in b.items() if k not in ("kind", "answer_at")} for b in forward_b]})
+    atomic_write_text(out_dir / "replay.html", page)
+    print(f"wrote {out_dir / 'replay.html'}")
+    return True
+
+
+def _so_far(subject: str, done: list[turns.Turn]) -> str:
+    if not done:
+        return "(Nothing yet: this is the start of the scene.)"
+    parts = []
+    for t in done:
+        if t.prompt:
+            parts.append(t.prompt)
+        parts.append(f"{subject}: {t.actual}")
+    return "\n\n".join(parts)
+
+
+def _print_split(target: str, ts: list[turns.Turn]) -> None:
+    print(f"{target}: {len(ts)} turn(s)")
+    for k, t in enumerate(ts, 1):
+        p = t.prompt.replace("\n", " ")
+        print(f"  {k:02d} prompt: {(p[:97] + '...') if len(p) > 100 else p or '(she acts first)'}")
+        print(f"     actual beats: {', '.join(b.rsplit('.', 1)[-1] for b in t.beat_ids)}")
+
+
+def cmd_replay(args) -> int:
+    summaries, npcs, corpus, chosen, table = _load(args)
+    d = chosen[0]
+    targets = list(dict.fromkeys(args.target))
+    for t in targets:
+        if not re.fullmatch(r"\d{3}\.\d{2}", t):
+            raise Refusal(f"--target {t}: expected NNN.SS")
+    scenes = {}
+    for t in targets:
+        scenes[t] = next((it for it in corpus.items() if it.item_id == t and it.kind == corpus_mod.SCENE), None)
+        if scenes[t] is None:
+            raise Refusal(f"--target {t}: not a scene in the summaries")
+    splits = {t: turns.split_turns(scenes[t], d) for t in targets}
+    for t in targets:
+        if not splits[t]:
+            raise Refusal(f"--target {t}: no sentence of the scene has {d.subject} as its subject; nothing to replay")
+    if args.turns_only:
+        for t in targets:
+            _print_split(t, splits[t])
+        return 0
+    if args.rulings is None:
+        raise Refusal("--rulings is required (only --turns-only runs without it)")
+    if not args.out_dir:
+        raise Refusal("--out-dir is required")
+    sources = [summaries, npcs] + [Path(p).expanduser().resolve().parent for p in args.prep]
+    out_dir = Path(args.out_dir)
+    _refuse_inside(out_dir, tuple(sources))
+    if len(args.prep) != len(targets):
+        raise Refusal(f"{len(targets)} --target but {len(args.prep)} --prep; give one --prep per --target")
+    sections = list(args.section or [])
+    if sections and len(sections) != len(targets):
+        raise Refusal(f"{len(targets)} --target but {len(sections)} --section; give one per --target "
+                      "(an empty \"\" for a target with none)")
+    sections = sections or [""] * len(targets)
+    pr = list(args.prep_rulings or [])
+    if len(pr) == 1:
+        pr = pr * len(targets)
+    if len(pr) != len(targets):
+        raise Refusal("give --prep-rulings once, or once per --target")
+    ms = presence.mentions(corpus, d, table)
+    npc, eff = _ruled(args, corpus, d, presence.events(ms))
+    subject, forms = d.subject, tuple(dict.fromkeys((d.subject, *d.forms)))
+    prepared = []
+    for t, pf, sec, pj in zip(targets, args.prep, sections, pr):
+        answer = eff.get(t)
+        if answer is None or answer[0] != rulings.PRESENT:
+            raise Refusal(
+                f"--target {t}: the presence rulings do not answer 'present' for {subject} here "
+                f"(effective: {answer[0] if answer else 'unanswered'}); a replay predicts what she does at "
+                "an event she attended."
+            )
+        scene = scenes[t]
+        freeze = scene.chapter - 1
+        h = _horizon(args, summaries, corpus, d, ms, npc, eff, freeze, for_agent=True)
+        horizon_md = horizon_mod.render_horizon(h, for_agent=True)
+        sentences = persona.persona([c.item for c in presence.snapshots(ms)], d, freeze)
+        persona_md = persona.render_persona(sentences, subject, freeze)
+        situation_md = agent_mod.situation(corpus, t)
+        sheet_md = _prep_sheet(pf, sec, pj, t, subject, forms)
+        built = []
+        for k, turn in enumerate(splits[t]):
+            system, user = agent_mod.build_turn_prompt(
+                subject, persona_md, horizon_md, sheet_md, situation_md,
+                _so_far(subject, splits[t][:k]), turn.prompt or "(Nothing is put to you: the moment is yours.)")
+            built.append((turn, system, user, _sha(system, user)))
+        prepared.append((t, scene, freeze, situation_md, built))
+    resolved = _knowledge(args, summaries, corpus)
+    cases = [c for c in knowledge.leak_cases(resolved, args.dossiers) if knowledge.names_dossier(c.who, d)]
+    backend = agent_mod.backend_name(args)
+    out_dir.mkdir(parents=True, exist_ok=True)
+    any_answer = False
+    for t, scene, freeze, situation_md, built in prepared:
+        tdir = out_dir / t
+        (tdir / "turns").mkdir(parents=True, exist_ok=True)
+        atomic_write_text(tdir / "prompt.system.md", built[0][1])
+        prev_turns = _read_json(tdir / "run.json").get("turns") or {}
+        run = {"npc": subject, "target": t, "freeze_chapter": freeze, "model": args.model, "backend": backend,
+               "dry_run": bool(args.dry_run), "written_at": _now(), "turns": {}}
+        page_turns, stamps = [], []
+        for n, (turn, system, user, sha) in enumerate(built, 1):
+            nn = f"{n:02d}"
+            ndir = tdir / "turns" / nn
+            ndir.mkdir(parents=True, exist_ok=True)
+            atomic_write_text(ndir / "prompt.user.md", user)
+            atomic_write_text(ndir / "actual.md", turn.actual + "\n")
+            status, entry = _answered(args, ndir / "answer.md", prev_turns.get(nn) or {}, sha, backend, system, user)
+            run["turns"][nn] = {"prompt_sha256": sha, "beat_ids": list(turn.beat_ids), **entry}
+            if args.dry_run or not (ndir / "answer.md").is_file():
+                print(f"{t} turn {nn}: {status}")
+                continue
+            answer = (ndir / "answer.md").read_text(encoding="utf-8")
+            flags = leakcheck.check(answer, given=user, cases=cases, corpus=corpus, chapter=freeze, target_scene=t)
+            atomic_write_text(ndir / "flags.json", json.dumps(_flag_dicts(flags), indent=2) + "\n")
+            stamps.append(entry["answer_at"] or run["written_at"])
+            page_turns.append({"n": n, "prompt": turn.prompt, "actual": turn.actual, "answer": answer, "sha": sha,
+                               "beat_ids": list(turn.beat_ids), "flags": _flag_dicts(flags)})
+            print(f"{t} turn {nn}: {status}; {len(flags)} flag(s)")
+        atomic_write_text(tdir / "run.json", json.dumps(run, indent=2) + "\n")
+        if page_turns and len(page_turns) == len(built):
+            any_answer = True
+            atomic_write_text(tdir / "bundle.json", json.dumps({
+                "kind": "replay", "target": t, "freeze": freeze, "scene_title": scene.title or t, "situation": situation_md,
+                "turns": page_turns, "answer_at": max(stamps)}, ensure_ascii=False) + "\n")
+    if any_answer:
+        _write_replay_page(out_dir, subject, args.model)
+    else:
+        print("dry run: prompts written, no answers and no page")
+    return 0
+
+
+def cmd_forward(args) -> int:
+    summaries, npcs, corpus, chosen, table = _load(args)
+    d = chosen[0]
+    subject, forms = d.subject, tuple(dict.fromkeys((d.subject, *d.forms)))
+    n = args.chapter
+    if not re.fullmatch(r"\d{3}\.\d{2}", args.next):
+        raise Refusal(f"--next {args.next}: expected NNN.SS")
+    if not re.fullmatch(r"\d{3}\.\d{2}", args.prep_target):
+        raise Refusal(f"--prep-target {args.prep_target}: expected NNN.SS")
+    nxt = next((it for it in corpus.items() if it.item_id == args.next and it.kind == corpus_mod.SCENE), None)
+    if nxt is None:
+        raise Refusal(f"--next {args.next}: not a scene in the summaries")
+    if nxt.chapter <= n:
+        raise Refusal(f"--next {args.next}: is not after the freeze chapter {n}")
+    sources = [summaries, npcs] + [Path(p).expanduser().resolve().parent for p in (args.prep, args.plan) if p]
+    out_dir = Path(args.out_dir)
+    _refuse_inside(out_dir, tuple(sources))
+    ms = presence.mentions(corpus, d, table)
+    npc, eff = _ruled(args, corpus, d, presence.events(ms))
+    answer = eff.get(args.next)
+    if answer is None or answer[0] != rulings.PRESENT:
+        raise Refusal(f"--next {args.next}: the presence rulings do not answer 'present' for {subject} here "
+                      f"(effective: {answer[0] if answer else 'unanswered'}); the comparison is a scene she attended.")
+    h = _horizon(args, summaries, corpus, d, ms, npc, eff, n, for_agent=True)
+    horizon_md = horizon_mod.render_horizon(h, for_agent=True)
+    sentences = persona.persona([c.item for c in presence.snapshots(ms)], d, n)
+    persona_md = persona.render_persona(sentences, subject, n)
+    sheet_md = _prep_sheet(args.prep, args.section, args.prep_rulings, args.prep_target, subject, forms)
+    attended = any(it.kind == corpus_mod.SCENE and it.chapter == n and (eff.get(it.item_id) or ("",))[0] == rulings.PRESENT
+                   for it in corpus.items())
+    standing_md = forward.standing(corpus, n, attended)
+    system, user = agent_mod.build_forward_prompt(subject, persona_md, horizon_md, sheet_md, standing_md)
+    sha = _sha(system, user)
+    plan_md = ""
+    if args.plan:
+        ps = _passages(args.plan, forms, args.plan_section)
+        body = prep.sheet(ps, {p.pid: prep.HERS for p in ps}, require_complete=False)
+        plan_md = "# The GM's plan\n\n" + (body or "(No passages.)\n")
+    resolved = _knowledge(args, summaries, corpus)
+    cases = [c for c in knowledge.leak_cases(resolved, args.dossiers) if knowledge.names_dossier(c.who, d)]
+    backend = agent_mod.backend_name(args)
+    fdir = out_dir / f"forward-{n}"
+    fdir.mkdir(parents=True, exist_ok=True)
+    for name, text in (("prompt.system.md", system), ("prompt.user.md", user), ("actual.md", nxt.text + "\n")):
+        atomic_write_text(fdir / name, text)
+    if plan_md:
+        atomic_write_text(fdir / "plan.md", plan_md)
+    prev = _read_json(fdir / "run.json")
+    run = {"npc": subject, "freeze_chapter": n, "next": args.next, "model": args.model, "backend": backend,
+           "prompt_sha256": sha, "dry_run": bool(args.dry_run), "written_at": _now()}
+    raw_path = fdir / "answer.raw.md"
+    status, entry = _answered(args, raw_path, prev, sha, backend, system, user)
+    run.update(entry)
+    if args.dry_run or not raw_path.is_file():
+        atomic_write_text(fdir / "run.json", json.dumps(run, indent=2) + "\n")
+        print(f"forward-{n}: {status}; prompts written, no answer and no page")
+        return 0
+    moves, parsed = forward.parse_moves(raw_path.read_text(encoding="utf-8"))
+    run["parsed"] = parsed
+    atomic_write_text(fdir / "run.json", json.dumps(run, indent=2) + "\n")
+    atomic_write_text(fdir / "answer.json", json.dumps([dataclasses.asdict(m) for m in moves], indent=2, ensure_ascii=False) + "\n")
+    page_moves, flag_rows = [], []
+    for i, m in enumerate(moves):
+        flags = _flag_dicts(leakcheck.check(f"{m.move} {m.why}".strip(), given=user, cases=cases, corpus=corpus, chapter=n))
+        flag_rows.append({"index": i, "flags": flags})
+        page_moves.append({"move": m.move, "why": m.why, "flags": flags})
+    atomic_write_text(fdir / "flags.json", json.dumps(flag_rows, indent=2) + "\n")
+    atomic_write_text(fdir / "bundle.json", json.dumps({
+        "kind": "forward", "freeze": n, "next": args.next, "next_title": nxt.title or args.next, "actual": nxt.text,
+        "plan": plan_md, "sha": sha, "parsed": parsed, "moves": page_moves,
+        "answer_at": run["answer_at"] or run["written_at"]}, ensure_ascii=False) + "\n")
+    print(f"forward-{n}: {status}; {len(moves)} move(s){'' if parsed else ' (reply was not JSON; kept raw)'}; "
+          f"{sum(len(r['flags']) for r in flag_rows)} flag(s)")
+    _write_replay_page(out_dir, subject, args.model)
+    return 0
+
+
 def _common(p: argparse.ArgumentParser) -> None:
     p.add_argument("--campaign-dir", type=Path, default=None,
                    help="campaigns-public/<campaign>, or a campaign root")
@@ -657,12 +936,54 @@ def build_parser() -> argparse.ArgumentParser:
     ps.add_argument("--rulings", type=Path, required=True, help="prep.json saved from the page")
     ps.add_argument("--out", type=Path, default=None, help="default: stdout")
     ps.set_defaults(func=cmd_prep_sheet)
+
+    rp = sub.add_parser("replay", help="replay an NPC turn by turn at scenes she attended, with the real scene so far, and score it")
+    _common(rp)
+    rp.add_argument("--npc", action="append", required=True)
+    rp.add_argument("--rulings", type=Path, default=None, help="the GM's presence ruling file (not needed with --turns-only)")
+    rp.add_argument("--knowledge", type=Path, default=None,
+                    help="the GM's who rulings, for beats whose sentence gives a description, not a name")
+    rp.add_argument("--campaign", default=None, help="this campaign's name in --knowledge (default: --campaign-dir's name)")
+    rp.add_argument("--target", action="append", required=True, help="NNN.SS, a scene she attended (repeatable)")
+    rp.add_argument("--prep", action="append", type=Path, default=[], help="a prep markdown file, one per --target")
+    rp.add_argument("--section", action="append", default=None,
+                    help="heading-text prefix for that --target's prep (\"\" for none: passages naming the NPC)")
+    rp.add_argument("--prep-rulings", action="append", type=Path, default=None,
+                    help="prep.json saved from the prep page (once, or once per --target)")
+    rp.add_argument("--turns-only", action="store_true",
+                    help="print each target's turn split and stop: no rulings, prep or model needed")
+    rp.add_argument("--out-dir", type=Path, default=None)
+    rp.add_argument("--dry-run", action="store_true", help="write the prompts and answer key; call no model")
+    rp.add_argument("--force", action="store_true", help="ask the model again even if an answer for this prompt exists")
+    agent_mod.add_model_args(rp)
+    rp.set_defaults(func=cmd_replay)
+
+    fw = sub.add_parser("forward", help="ask what an NPC does between sessions, from the chapter she is frozen at")
+    _common(fw)
+    fw.add_argument("--npc", action="append", required=True)
+    fw.add_argument("--rulings", type=Path, required=True, help="the GM's presence ruling file")
+    fw.add_argument("--knowledge", type=Path, default=None,
+                    help="the GM's who rulings, for beats whose sentence gives a description, not a name")
+    fw.add_argument("--campaign", default=None, help="this campaign's name in --knowledge (default: --campaign-dir's name)")
+    fw.add_argument("--chapter", type=int, required=True, help="the freeze: what she knows as of this chapter")
+    fw.add_argument("--next", required=True, help="NNN.SS, her next attended scene: the comparison")
+    fw.add_argument("--prep", type=Path, required=True, help="the prep file her private sheet comes from")
+    fw.add_argument("--section", default="", help="heading-text prefix (\"\" for passages naming the NPC)")
+    fw.add_argument("--prep-rulings", type=Path, required=True, help="prep.json saved from the prep page")
+    fw.add_argument("--prep-target", required=True, help="NNN.SS: the target in prep.json the sheet is ruled under")
+    fw.add_argument("--plan", type=Path, default=None, help="the GM's prep for the next session: shown on the page, never sent")
+    fw.add_argument("--plan-section", default="", help="heading-text prefix for --plan (\"\" for passages naming the NPC)")
+    fw.add_argument("--out-dir", type=Path, required=True)
+    fw.add_argument("--dry-run", action="store_true", help="write the prompts and comparison; call no model")
+    fw.add_argument("--force", action="store_true", help="ask the model again even if an answer for this prompt exists")
+    agent_mod.add_model_args(fw)
+    fw.set_defaults(func=cmd_forward)
     return parser
 
 
 def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
-    if args.command in ("horizon", "persona", "leakcheck", "backtest", "prep", "prep-sheet") and len(args.npc) != 1:
+    if args.command in ("horizon", "persona", "leakcheck", "backtest", "prep", "prep-sheet", "replay", "forward") and len(args.npc) != 1:
         print(f"Error: {args.command} takes exactly one --npc", file=sys.stderr)
         return 2
     try:

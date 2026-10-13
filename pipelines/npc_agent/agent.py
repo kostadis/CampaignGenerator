@@ -62,6 +62,43 @@ def build_prompt(subject: str, persona_md: str, horizon_md: str, situation_md: s
     return system, user
 
 
+REPLAY_SYSTEM = """You are playing {subject}, a non-player character in a tabletop role-playing campaign, at one moment of a scene.
+
+You know only what is in the record you are given and in your private knowledge, which together are everything {subject} could know. Do not use or hint at any event, person or fact that is not in them. If you lack something, act from character; do not invent things about other people.
+
+The scene so far is shown, including what you already said and did. Answer only the moment under "Now": what {subject} says and does next, as the game master would run her. 40 to 150 words, in the present tense. Her actions are in the third person; her words are in quotation marks. Do not speak for other characters. No preamble and no headings."""
+
+FORWARD_SYSTEM = """You are playing {subject}, a non-player character in a tabletop role-playing campaign, between sessions.
+
+You know only what is in the record you are given and in your private knowledge, which together are everything {subject} could know. Do not use or hint at any event, person or fact that is not in them.
+
+Off-screen, {subject} acts on what she knows and wants. Propose 1 to 3 things she does before she next meets the party. Each is something she does, decides or arranges, not a thing that happens to her, with one line on why. Reply with JSON only, no other text: [{{"move": "...", "why": "..."}}]"""
+
+
+def build_turn_prompt(subject: str, persona_md: str, horizon_md: str, sheet_md: str, situation_md: str,
+                      so_far_md: str, now_md: str) -> tuple[str, str]:
+    """``(system, user)`` for one turn of a replay; the user message is these six inputs, in order."""
+    system = REPLAY_SYSTEM.format(subject=subject)
+    user = (f"## Who you are\n\n{persona_md.strip()}\n\n"
+            f"## What you know\n\n{horizon_md.strip()}\n\n"
+            f"## Your private knowledge\n\n{sheet_md.strip() or '(nothing)'}\n\n"
+            f"## The scene\n\n{situation_md.strip()}\n\n"
+            f"## So far in this scene\n\n{so_far_md.strip()}\n\n"
+            f"## Now\n\n{now_md.strip()}\n")
+    return system, user
+
+
+def build_forward_prompt(subject: str, persona_md: str, horizon_md: str, sheet_md: str,
+                         standing_md: str) -> tuple[str, str]:
+    """``(system, user)`` for a forward turn; the GM's plan is never an input."""
+    system = FORWARD_SYSTEM.format(subject=subject)
+    user = (f"## Who you are\n\n{persona_md.strip()}\n\n"
+            f"## What you know\n\n{horizon_md.strip()}\n\n"
+            f"## Your private knowledge\n\n{sheet_md.strip() or '(nothing)'}\n\n"
+            f"## Where things stand\n\n{standing_md.strip() or '(nothing)'}\n")
+    return system, user
+
+
 def add_model_args(parser) -> None:
     parser.add_argument("--model", default=DEFAULT_MODEL, help=f"default: {DEFAULT_MODEL}")
     parser.add_argument("--max-tokens", type=int, default=DEFAULT_MAX_TOKENS, help=f"default: {DEFAULT_MAX_TOKENS}")
