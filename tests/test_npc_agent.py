@@ -10,7 +10,7 @@ from pathlib import Path
 
 import pytest
 
-from pipelines.npc_agent import cli, corpus, dossier, horizon, knowledge, presence, review, rulings
+from pipelines.npc_agent import cli, corpus, dossier, horizon, knowledge, leakcheck, persona, presence, review, rulings
 
 CH57 = """# Chapter 57
 
@@ -821,3 +821,216 @@ def test_the_file_the_page_saves_is_a_knowledge_file(kcamp, tmp_path):
     f = tmp_path / "knowledge.json"
     f.write_text(json.dumps({"version": 3, "campaigns": {"camp": {"who": {"064.01.b06": ["Daral"]}}}}, indent=2))
     assert knowledge.load_knowledge(f, "camp", _corpus(kcamp)) == {"064.01.b06": ("Daral",)}
+
+
+# ── persona ─────────────────────────────────────────────────────────────────
+
+CH65 = """# Chapter 65
+
+## NPCs
+
+### Sylvira Savikas
+
+A tiefling Great Reader, bedridden with plague. Daral called attention to her absence. She was heard screaming at night. She keeps a ledger of the dead. Sylvira Savikas trusts only Wick. Her ink is red. Daral said, "She is calm. Truly." Kalan visited her chamber.
+"""
+
+CH66 = """# Chapter 66
+
+## NPCs
+
+### Sylvira
+
+She is Moziqodo's mother and does not yet know that the party killed her son.
+She still mourns him.
+"""
+
+
+@pytest.fixture
+def pcamp(camp: Path) -> Path:
+    (camp / "summaries" / "065-session-ledger.md").write_text(CH65)
+    (camp / "summaries" / "066-session-mother.md").write_text(CH66)
+    return camp
+
+
+def _entries(camp):
+    c, _, table, syl = _setup(camp)
+    return syl, [x.item for x in presence.snapshots(presence.mentions(c, syl, table))]
+
+
+def _persona(camp, chapter):
+    syl, entries = _entries(camp)
+    return syl, persona.persona(entries, syl, chapter)
+
+
+def _reason(ss, start):
+    return next(s.reason for s in ss if s.text.startswith(start))
+
+
+def test_sentences_split_on_a_capital_and_not_inside_quotes():
+    text = '### Sylvira\n\nShe said, “Wait. Stop.” Then left.\nShe sat.  Wick said "Go. Now." Done? Yes!'
+    assert persona.split_sentences(text) == [
+        "She said, “Wait. Stop.”", "Then left.", "She sat.", 'Wick said "Go. Now."', "Done?", "Yes!"]
+    assert persona.split_sentences("Dr. smith went. ok") == ["Dr. smith went. ok"]
+    assert persona.split_sentences("   \n ") == []
+
+
+def test_every_reason_in_the_persona_rule(pcamp):
+    ss = [s for s in _persona(pcamp, 65)[1] if s.entry_id == "065.e01"]
+    expect = {
+        "A tiefling Great Reader": (True, persona.REASON_FIRST),
+        "Daral called": (False, persona.REASON_OTHER),
+        "She was heard": (False, persona.REASON_REPORTED),
+        "She keeps": (True, persona.REASON_SELF),
+        "Sylvira Savikas trusts": (True, persona.REASON_SELF),
+        "Her ink": (True, persona.REASON_SELF),
+        "Daral said": (False, persona.REASON_OTHER),
+        "Kalan visited": (False, persona.REASON_OTHER),
+    }
+    for start, (kept, reason) in expect.items():
+        s = next(x for x in ss if x.text.startswith(start))
+        assert (s.kept, s.reason) == (kept, reason), start
+    assert len(ss) == 8  # the quoted "She is calm. Truly." did not split
+
+
+def test_a_report_with_her_name_is_dropped_too(pcamp):
+    syl, _ = _entries(pcamp)
+    e = corpus.parse_chapter("# Chapter 70\n\n## NPCs\n\n### Sylvira\n\nA reader. Sylvira was reportedly seen at dusk.\n", "070-x.md")[0].items[0]
+    ss = persona.persona([e], syl, 70)
+    assert [(s.kept, s.reason) for s in ss] == [(True, persona.REASON_FIRST), (False, persona.REASON_REPORTED)]
+
+
+def test_a_sentence_that_says_what_she_does_not_know_is_dropped_whoever_it_names(pcamp):
+    _, ss = _persona(pcamp, 66)
+    assert _reason(ss, "She is Moziqodo") == persona.REASON_HIDDEN
+    assert not next(s for s in ss if s.text.startswith("She is Moziqodo")).kept
+    # "does not know where" states nothing hidden: it stays, as the first-sentence/self rules decide
+    syl, _ = _entries(pcamp)
+    e = corpus.parse_chapter("# Chapter 70\n\n## NPCs\n\n### Sylvira\n\nA reader. She does not know where the key is.\n", "070-x.md")[0].items[0]
+    assert persona.persona([e], syl, 70)[1].kept
+
+
+def test_the_chapter_cut_leaves_out_later_entries_and_chapter_numbers(pcamp):
+    _, ss = _persona(pcamp, 65)
+    assert {s.chapter for s in ss} <= {57, 61, 65}
+    syl, ss = _persona(pcamp, 61)
+    assert {s.chapter for s in ss} == {57, 61}
+    text = persona.render_persona(ss, syl.subject, 61)
+    assert text.startswith("# Who Sylvira Savikas is, as of chapter 61")
+    assert "[ch 057]" in text and "[ch 061]" in text and "065" not in text and "066" not in text
+
+
+def test_render_persona_carries_kept_sentences_only_and_the_report_every_one(pcamp):
+    syl, ss = _persona(pcamp, 66)
+    text = persona.render_persona(ss, syl.subject, 66)
+    assert "She keeps a ledger" in text and "Daral called" not in text and "killed her son" not in text
+    rep = persona.render_persona_report(ss, syl.subject, 66)
+    assert f"DROPPED ({persona.REASON_HIDDEN}): She is Moziqodo" in rep
+    assert f"DROPPED ({persona.REASON_OTHER}): Daral called" in rep
+    assert f"KEPT ({persona.REASON_FIRST})" in rep
+
+
+def test_cli_persona_writes_the_persona_and_the_report(pcamp, tmp_path, capsys):
+    out, rep = tmp_path / "p.md", tmp_path / "r.md"
+    assert cli.main(["persona", "--campaign-dir", str(pcamp), "--npc", "Sylvira", "--chapter", "66",
+                     "--out", str(out), "--report", str(rep)]) == 0
+    assert "She keeps a ledger" in out.read_text() and "killed her son" not in out.read_text()
+    assert "DROPPED" in rep.read_text()
+    assert cli.main(["persona", "--campaign-dir", str(pcamp), "--npc", "Sylvira", "--chapter", "61"]) == 0
+    assert "# Who Sylvira Savikas is, as of chapter 61" in capsys.readouterr().out
+
+
+def test_cli_persona_refuses_to_write_into_its_sources(pcamp, capsys):
+    rc = cli.main(["persona", "--campaign-dir", str(pcamp), "--npc", "Sylvira", "--chapter", "61",
+                   "--out", str(pcamp / "summaries" / "x.md")])
+    assert rc == 2 and "never writes into its sources" in capsys.readouterr().err
+
+
+# ── leak check ──────────────────────────────────────────────────────────────
+
+
+def _cases(kcamp):
+    syl = dossier.select(dossier.read_dossiers(kcamp / "npcs"), ["Sylvira"])[0]
+    cases = [c for c in knowledge.leak_cases(_resolved_list(kcamp), dossier.read_dossiers(kcamp / "npcs"))
+             if knowledge.names_dossier(c.who, syl)]
+    return cases
+
+
+def _resolved_list(kcamp):
+    return knowledge.resolve(_corpus(kcamp))
+
+
+def _check(kcamp, answer, given="", chapter=64, target=None):
+    return leakcheck.check(answer, given=given, cases=_cases(kcamp), corpus=_corpus(kcamp),
+                           chapter=chapter, target_scene=target)
+
+
+def test_a_sentence_with_every_content_word_of_a_hidden_beat_is_flagged(kcamp):
+    (case,) = _cases(kcamp)
+    assert case.beat_id == "064.01.b02"
+    flags = _check(kcamp, "My son was slain. My son was slain; the party killed him.")
+    secret = [f for f in flags if f.kind == leakcheck.KIND_SECRET]
+    assert [(f.beat_id, f.sentence) for f in secret] == [("064.01.b02", "My son was slain; the party killed him.")]
+    assert "states 064.01.b02: that the party killed her son" in secret[0].detail
+
+
+def test_a_sentence_missing_two_content_words_is_not_flagged(kcamp):
+    assert _check(kcamp, "I pray for my son. The party ate.") == []
+    # one word short is flagged on purpose, even when innocent: the GM dismisses it
+    assert [f.sentence for f in _check(kcamp, "The party killed no one.")] == ["The party killed no one."]
+
+
+def test_a_case_after_the_target_scene_is_not_checked(kcamp):
+    answer = "The party killed my son."
+    assert _check(kcamp, answer, target="064.01")
+    assert not _check(kcamp, answer, target="063.09")
+    assert not _check(kcamp, answer, chapter=63)
+
+
+def test_a_name_in_the_summaries_but_not_in_what_she_was_given_is_flagged(kcamp):
+    (f,) = _check(kcamp, "I heard Asha laughing.", given="Sylvira. Daral.", chapter=64)
+    assert (f.kind, f.name, f.first_chapter, f.future) == (leakcheck.KIND_NAME, "Asha", 64, False)
+    assert f.sentence == "I heard Asha laughing." and "first in the summaries at ch 064" in f.detail
+
+
+def test_a_name_in_what_she_was_given_or_outside_the_summaries_is_not_flagged(kcamp):
+    assert _check(kcamp, "I heard Asha laughing.", given="Asha is a guard.") == []
+    assert _check(kcamp, "I heard Zorblax laughing.", given="") == []
+    assert _check(kcamp, "I am Sylvira. I'm tired.", given="Sylvira") == []
+
+
+def test_a_name_first_used_after_the_freeze_chapter_is_marked_future(kcamp):
+    (f,) = _check(kcamp, "Asha knows.", given="", chapter=61)
+    assert f.name == "Asha" and f.future and f.first_chapter == 64
+    assert "FUTURE" in leakcheck.render_flags([f])
+
+
+def test_a_sentence_initial_word_is_not_a_name_unless_it_is_one(kcamp):
+    assert _check(kcamp, "Honey is sweet. Not today.", given="") == []
+    names = [f.name for f in _check(kcamp, "Daral and Asha spoke. Then the Order of Daral left.", given="")]
+    assert names == ["Daral", "Asha"]
+
+
+def test_a_multiword_name_is_accepted_when_each_word_was_given(kcamp):
+    assert _check(kcamp, "Daz Asha came.", given="Daz and Asha") == []
+
+
+def test_cli_leakcheck(kcamp, tmp_path, capsys):
+    ans, giv, out = tmp_path / "a.txt", tmp_path / "g.txt", tmp_path / "f.md"
+    ans.write_text("The party killed my son. Asha knew.")
+    giv.write_text("Sylvira Savikas")
+    base = ["leakcheck", "--campaign-dir", str(kcamp), "--npc", "Sylvira", "--chapter", "64",
+            "--answer", str(ans), "--given", str(giv)]
+    assert cli.main(base + ["--out", str(out)]) == 0
+    text = out.read_text()
+    assert "2 flag(s)" in text and "064.01.b02" in text and "'Asha'" in text
+    assert cli.main(base + ["--target-scene", "063.01"]) == 0
+    assert "1 flag(s)" in capsys.readouterr().out
+    assert cli.main(base + ["--target-scene", "64"]) == 2
+
+
+def test_a_secret_paraphrase_missing_one_word_is_still_flagged(kcamp):
+    c = _corpus(kcamp)
+    case = knowledge.LeakCase("Sylvira", "Sylvira Savikas", "064.01.b02", "064.01", 64, "", "sentence")
+    flags = leakcheck.check("The party killed Moziqodo. I pray for my son.", given="", cases=[case],
+                            corpus=c, chapter=64, target_scene="064.01")
+    assert [f.sentence for f in flags if f.kind == leakcheck.KIND_SECRET] == ["The party killed Moziqodo."]

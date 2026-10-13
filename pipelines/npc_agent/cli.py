@@ -5,6 +5,9 @@
     npc_agent horizon    --campaign-dir DIR --npc NAME --chapter N --rulings FILE
                          [--knowledge FILE] [--for-agent] [--out FILE]
     npc_agent leaks      --campaign-dir DIR [--knowledge FILE] [--out FILE]
+    npc_agent persona    --campaign-dir DIR --npc NAME --chapter N [--out FILE] [--report FILE]
+    npc_agent leakcheck  --campaign-dir DIR --npc NAME --chapter N --answer FILE --given FILE
+                         [--knowledge FILE] [--target-scene NNN.SS] [--out FILE]
 
 A beat whose sentence states what someone does not know is always left out of
 their horizon (:mod:`knowledge`); ``--knowledge`` adds the GM's ``who`` where
@@ -17,6 +20,11 @@ the review page labels it.
 a campaign root (``<dir>/docs/summaries`` + ``<dir>/docs/npcs``).
 ``--summaries-dir`` and ``--npcs-dir`` override it.
 
+``persona`` keeps only the sentences of the NPC's own entries that are about her
+(:mod:`persona`) and reports every dropped one; ``leakcheck`` flags, for the GM
+to confirm, sentences of an agent's answer that state a hidden beat or name
+something the agent was not given (:mod:`leakcheck`). Flags are not failures.
+
 Exit codes: 0 done; 2 refused, nothing written; 3 written, but a candidate list
 does not match its published dossier (see ``check_report.md``).
 
@@ -27,6 +35,7 @@ dossiers, and never the ruling file. No model call.
 from __future__ import annotations
 
 import argparse
+import re
 import sys
 from pathlib import Path
 
@@ -34,7 +43,7 @@ from campaignlib.util import atomic_write_text
 from pipelines.npc_agent import corpus as corpus_mod
 from pipelines.npc_agent import dossier as dossier_mod
 from pipelines.npc_agent import horizon as horizon_mod
-from pipelines.npc_agent import knowledge, presence, report, review, rulings
+from pipelines.npc_agent import knowledge, leakcheck, persona, presence, report, review, rulings
 from pipelines.summary_native import duplicates, npc_forms
 
 CHECK_REPORT = "check_report.md"
@@ -265,6 +274,51 @@ def cmd_leaks(args) -> int:
     return 0
 
 
+def _write(text: str, out: Path | None, sources: tuple[Path, ...]) -> None:
+    if out is None:
+        sys.stdout.write(text)
+        return
+    _refuse_inside(out, sources)
+    out.parent.mkdir(parents=True, exist_ok=True)
+    atomic_write_text(out, text)
+    print(f"wrote {out}", file=sys.stderr)
+
+
+def cmd_persona(args) -> int:
+    summaries, npcs, corpus, chosen, table = _load(args)
+    for o in (args.out, args.report):
+        if o is not None:
+            _refuse_inside(Path(o), (summaries, npcs))
+    d = chosen[0]
+    entries = [c.item for c in presence.snapshots(presence.mentions(corpus, d, table))]
+    sentences = persona.persona(entries, d, args.chapter)
+    _write(persona.render_persona(sentences, d.subject, args.chapter), args.out, (summaries, npcs))
+    if args.report is not None:
+        _write(persona.render_persona_report(sentences, d.subject, args.chapter), args.report, (summaries, npcs))
+    return 0
+
+
+def cmd_leakcheck(args) -> int:
+    summaries, npcs, corpus, chosen, table = _load(args)
+    if args.out is not None:
+        _refuse_inside(Path(args.out), (summaries, npcs))
+    d = chosen[0]
+    texts = {}
+    for label, path in (("answer", args.answer), ("given", args.given)):
+        try:
+            texts[label] = Path(path).read_text(encoding="utf-8")
+        except OSError as e:
+            raise Refusal(f"--{label} {path}: cannot read ({e.strerror})") from None
+    if args.target_scene is not None and not re.fullmatch(r"\d{3}\.\d{2}", args.target_scene):
+        raise Refusal(f"--target-scene {args.target_scene}: expected NNN.SS")
+    cases = [c for c in knowledge.leak_cases(_knowledge(args, summaries, corpus), args.dossiers)
+             if knowledge.names_dossier(c.who, d)]
+    flags = leakcheck.check(texts["answer"], given=texts["given"], cases=cases, corpus=corpus,
+                            chapter=args.chapter, target_scene=args.target_scene)
+    _write(leakcheck.render_flags(flags), args.out, (summaries, npcs))
+    return 0
+
+
 def _common(p: argparse.ArgumentParser) -> None:
     p.add_argument("--campaign-dir", type=Path, default=None,
                    help="campaigns-public/<campaign>, or a campaign root")
@@ -318,13 +372,34 @@ def build_parser() -> argparse.ArgumentParser:
     k.add_argument("--campaign", default=None, help="this campaign's name in --knowledge (default: --campaign-dir's name)")
     k.add_argument("--out", type=Path, default=None, help="default: stdout")
     k.set_defaults(func=cmd_leaks)
+
+    pe = sub.add_parser("persona", help="who an NPC is as of a chapter: her own entries, cut to sentences about her")
+    _common(pe)
+    pe.add_argument("--npc", action="append", required=True)
+    pe.add_argument("--chapter", type=int, required=True)
+    pe.add_argument("--out", type=Path, default=None, help="default: stdout")
+    pe.add_argument("--report", type=Path, default=None, help="every sentence, kept and dropped with its reason")
+    pe.set_defaults(func=cmd_persona)
+
+    lc = sub.add_parser("leakcheck", help="flag sentences of an agent's answer for the GM to confirm")
+    _common(lc)
+    lc.add_argument("--npc", action="append", required=True)
+    lc.add_argument("--chapter", type=int, required=True)
+    lc.add_argument("--answer", type=Path, required=True, help="the agent's answer")
+    lc.add_argument("--given", type=Path, required=True, help="the exact text the agent was given")
+    lc.add_argument("--knowledge", type=Path, default=None,
+                    help="the GM's who rulings, for beats whose sentence gives a description, not a name")
+    lc.add_argument("--campaign", default=None, help="this campaign's name in --knowledge (default: --campaign-dir's name)")
+    lc.add_argument("--target-scene", default=None, help="NNN.SS: cases up to and including this scene (default: the chapter)")
+    lc.add_argument("--out", type=Path, default=None, help="default: stdout")
+    lc.set_defaults(func=cmd_leakcheck)
     return parser
 
 
 def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
-    if args.command == "horizon" and len(args.npc) != 1:
-        print("Error: horizon takes exactly one --npc", file=sys.stderr)
+    if args.command in ("horizon", "persona", "leakcheck") and len(args.npc) != 1:
+        print(f"Error: {args.command} takes exactly one --npc", file=sys.stderr)
         return 2
     try:
         return args.func(args)
