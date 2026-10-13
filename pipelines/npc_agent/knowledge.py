@@ -3,52 +3,51 @@
 The summaries are written from the GM's side of the screen, and some beats say
 outright that someone does not know a thing: "Sylvira is Moziqodo's mother, but
 does not yet know that the party killed her son" (067.03). An NPC present at
-that scene must not be given that beat as something they could know. This
-module finds such beats and reads the GM's answer on each.
+that scene must not be given that beat as something they could know.
 
-**The search finds candidates; it rules nothing.** It is a fixed list of
-phrasings (:data:`PATTERN`: "does not know", "unaware of", "has no idea", "has
-not been told", ...) matched on scene beats only, outside quoted speech and
-outside ``>`` quote lines, the first matching line of each beat.
+**The search.** A fixed list of phrasings (:data:`PATTERN`: "does not know",
+"unaware of", "has no idea", "has not been told", ...) matched on scene beats
+only, outside quoted speech and outside ``>`` quote lines, the first matching
+line of each beat (21 beats in Out of the Abyss, 7 in Obelisk).
 
-**Two questions per beat** (GM, 2026-10-13: "Most of the cards were 'the
-object of the sentence doesn't know'", e.g. "Asha doesn't know"). The first
-version asked what kind of beat it was; the GM read every card as "someone
-doesn't know" and answered accordingly. So the questions are about that someone:
+**The sentence decides what is hidden** (GM, 2026-10-13: "I already verified
+that all of the sentences are correct, so why ask me?"). The summaries are
+reviewed; the grammar of the sentence says whether the beat states the thing
+someone does not know:
 
-1. **Who doesn't know?** One or more characters, ``party``, or ``unsure``
-   (nobody in particular: "anyone who did not know which key was genuine").
-2. For characters: **does the beat give away what they don't know?**
-   ``gives_away: true`` (Sylvira's son's death, Themberchaud's egg): the beat
-   is left out of what each of them could know, wherever they were present, and
-   it is a leak case. ``gives_away: false`` (Hgraam "does not know where it
-   is"): the beat stays; not knowing is part of what they know.
+==========  =================================================  ===========================
+outcome     what follows the phrase                            example
+==========  =================================================  ===========================
+``hides``   a "that" clause, a bare clause, "about"/"of" X,    "does not yet know *that the
+            or a "has not been told" with the fact before it   party killed her son*"
+``keeps``   a question (where, which, how, ...), a name or a   "didn't know *where the
+            noun, or nothing (an answer to a question asked     secret room was*"
+            in the beat)
+==========  =================================================  ===========================
 
-The search also shows **what** they don't know: the words after the phrase, up to
-the end of the clause ("didn't know *where the secret room was*"), so question 2
-reads "Would this bullet tell Fargas where the secret room was?" A question
-(where, which, how) never answers itself; a "that …" or "about …" clause usually
-does. Nothing is decided from that: the GM answers.
+A ``keeps`` beat states nothing hidden: "Fargas didn't know where the secret
+room was" does not say where it was. It stays in what anyone present could know,
+whoever "he" is, so nobody is asked about it.
 
-The search suggests the name it finds right before the phrase ("Asha remained
-unaware", "Nym and Kaelira genuinely did not know") and any published dossier
-named in the beat. A suggestion is a button on the review page; only the GM's
-answer is read here.
+**Who does not know** matters only for a ``hides`` beat. It is read from the
+sentence when the sentence names them: the name right before the phrase ("Asha
+remained unaware"), the subject of the sentence when the phrase is its second
+verb ("Sylvira is Moziqodo's mother, but does not yet know"), or "the party".
+When the sentence gives a description ("the dragon", "the lone guard"), saying
+which character that is, is the GM's ruling, in a file (version 3)::
 
-Ruling file (version 2), one block per campaign, since beat ids repeat across
-campaigns::
-
-    version: 2
+    version: 3
     campaigns:
       out-of-the-abyss:
-        "067.03.b04": {who: [Sylvira Savikas], gives_away: true}
-        "026.04.b08": {who: [Hgraam], gives_away: false}
-        "062.06.b09": {who: party}
-        "063.06.b08": {who: unsure, note: anyone holding the fake}
+        who:
+          "014.07.b02": [Themberchaud]     # "the dragon"
+          "017.04.b22": [Themberchaud]
 
-``who`` names are the GM's, not matched: a name counts for a dossier when it is
-that dossier's subject or one of the forms it lists. A name with no published
-dossier (Themberchaud) is kept: it is still a leak case.
+A ruling also overrides a name read from the sentence. A ruling on a ``keeps``
+beat is refused: nothing in it is hidden.
+
+``who`` names count for a dossier when they are its subject or a form it lists.
+A name with no published dossier (Themberchaud, Asha) still gives a leak case.
 
 No model call (guarded by ``tests/test_npc_agent_no_llm.py``).
 """
@@ -64,14 +63,17 @@ import yaml
 from pipelines.npc_agent.corpus import SCENE, Corpus, beats
 from pipelines.npc_agent.dossier import Dossier
 
-VERSION = 2
+VERSION = 3
+HIDES = "hides"
+KEEPS = "keeps"
 PARTY = "party"
-UNSURE = "unsure"
+#: Where ``who`` came from.
+FROM_SENTENCE = "sentence"
+FROM_GM = "gm"
 
 _NEG = r"(?:n[’']t| not)"
 #: Third-person statements that someone does not know something. Widen it and
-#: the candidate list grows; it never decides anything, so a false hit costs one
-#: card on the review page and a missed phrasing costs a beat nobody reviews.
+#: the candidate list grows; a missed phrasing is a beat nobody looks at.
 PATTERN = re.compile(
     r"\b("
     rf"does{_NEG}(?: yet)? know|did{_NEG}(?: yet)? know"
@@ -86,14 +88,23 @@ PATTERN = re.compile(
 )
 _QUOTED = re.compile(r"“[^”]*”|\"[^\"]*\"")
 _NAME = r"[A-Z][\w'’-]*(?: [A-Z][\w'’-]*)*"
-#: The capitalised name(s) right before the phrase, with an optional adverb:
-#: "Asha remained", "Nym and Kaelira genuinely", "Tadric".
+#: The capitalised name(s) right before the phrase: "Asha", "Nym and Kaelira genuinely".
 _BEFORE = re.compile(rf"(?:^|[^\w'’-])({_NAME}(?: and {_NAME})?) (?:\w+ly )?$")
+#: The sentence's subject when the phrase is its second verb: "Sylvira is ..., but ".
+_SUBJECT = re.compile(rf"^[\s>*-]*({_NAME}) [^.;:!?]*(?:,? but|,? and|,? yet) (?:\w+ly )?$")
 _PARTY_BEFORE = re.compile(r"\bthe party (?:\w+ly )?$", re.I)
-#: Where "what they don't know" ends: the sentence, or a clause that moves on
-#: ("…, only that…", "… and appears to be flailing", "… and is unsure").
+_NOT_NAMES = frozenset({"He", "She", "They", "It", "The", "This", "That", "GM", "The GM", "Then", "When"})
+#: Where "what they don't know" ends: the sentence, or a clause that moves on.
 _WHAT_END = re.compile(r"[.;:!?]|,? (?:only|but|though|so)\b|,? and (?:is|was|are|were|appears?|has|had)\b")
-_NOT_NAMES = frozenset({"He", "She", "They", "It", "The", "This", "That", "GM", "The GM"})
+#: A question: it never answers itself.
+_QUESTION = re.compile(r"^(?:\w+ly )?(?:where|which|what|who|whom|whose|why|how|when|whether|if)\b", re.I)
+#: A statement: "that ...", "about X", "of X", or a bare clause ("he is being groomed").
+_STATEMENT = re.compile(
+    r"^(?:that|about|of)\b"
+    rf"|^(?:he|she|they|it|we|{_NAME}|the \w+) (?:is|was|are|were|has|had|have|will|would|did|does|can|could)\b",
+)
+#: Phrasings whose fact comes before them: "He is a simulacrum, and the party has not been told."
+_FACT_BEFORE = re.compile(r"been told|unbeknownst", re.I)
 
 
 class KnowledgeError(Exception):
@@ -115,13 +126,17 @@ class Candidate:
 
 
 @dataclass(frozen=True)
-class Note:
-    beat_id: str
-    who: tuple[str, ...] = ()  # characters; empty for party or unsure
-    party: bool = False
-    unsure: bool = False
-    gives_away: bool | None = None  # set exactly when ``who`` names characters
-    note: str | None = None
+class Resolved:
+    candidate: Candidate
+    outcome: str  # HIDES | KEEPS
+    who: tuple[str, ...]  # characters it is hidden from; empty for the party or when unknown
+    party: bool
+    source: str | None  # FROM_SENTENCE | FROM_GM; None when nobody is known
+
+    @property
+    def unresolved(self) -> bool:
+        """A beat that hides something from someone the sentence does not name."""
+        return self.outcome == HIDES and not self.who and not self.party
 
 
 def _unquoted(line: str) -> str:
@@ -129,6 +144,12 @@ def _unquoted(line: str) -> str:
     if line.lstrip().startswith(">"):
         return ""
     return _QUOTED.sub(lambda m: " " * len(m.group(0)), line)
+
+
+def _what(after: str, after_unquoted: str) -> str:
+    """The rest of the clause after the phrase; the cut is found outside quoted speech."""
+    m = _WHAT_END.search(after_unquoted)
+    return after[: m.start() if m else len(after)].strip(" ,*")
 
 
 def find(corpus: Corpus) -> list[Candidate]:
@@ -149,42 +170,40 @@ def find(corpus: Corpus) -> list[Candidate]:
     return out
 
 
-def _what(after: str, after_unquoted: str) -> str:
-    """The rest of the clause after the phrase; the cut is found outside quoted speech."""
-    m = _WHAT_END.search(after_unquoted)
-    return after[: m.start() if m else len(after)].strip(" ,*")
+def outcome(c: Candidate) -> str:
+    """HIDES when the sentence states what they don't know; KEEPS otherwise."""
+    if c.phrase.lower().endswith(" of"):  # "unaware of X": X is so
+        return HIDES if c.what else KEEPS
+    if not c.what:
+        return HIDES if _FACT_BEFORE.search(c.phrase) else KEEPS
+    if _QUESTION.match(c.what):
+        return KEEPS
+    return HIDES if _STATEMENT.match(c.what) else KEEPS
+
+
+def who_from_sentence(c: Candidate) -> tuple[tuple[str, ...], bool]:
+    """``(names, party)``: who the sentence itself says does not know, or nobody."""
+    before = c.before.rstrip(" ") + " "
+    if _PARTY_BEFORE.search(before):
+        return (), True
+    for rx in (_BEFORE, _SUBJECT):
+        m = rx.search(before)
+        if m:
+            names = tuple(x for x in m.group(1).split(" and ") if x not in _NOT_NAMES)
+            if names:
+                return names, False
+    return (), False
 
 
 def _word(form: str, text: str) -> bool:
     return re.search(rf"(?<!\w){re.escape(form)}(?!\w)", text) is not None
 
 
-def suggest(c: Candidate, dossiers: list[Dossier]) -> tuple[tuple[str, ...], bool]:
-    """``(names, party)``: who the beat seems to say does not know. A suggestion only.
+def load_knowledge(path: Path, campaign: str, corpus: Corpus) -> dict[str, tuple[str, ...]]:
+    """The GM's ``who`` rulings for ``campaign``: ``{beat_id: names}``.
 
-    Names: the capitalised name(s) right before the phrase, then each published
-    dossier one of whose forms the beat names (by subject). ``party`` when the
-    phrase follows "the party".
-    """
-    before = c.before.rstrip(" ") + " "
-    names: list[str] = []
-    m = _BEFORE.search(before)
-    if m:
-        names += [x for x in m.group(1).split(" and ") if x not in _NOT_NAMES]
-    for d in sorted(dossiers, key=lambda d: d.subject):
-        if any(_word(f, c.text) for f in (d.subject, *d.forms)) and not any(
-            x == d.subject or x in d.forms for x in names
-        ):
-            names.append(d.subject)
-    return tuple(dict.fromkeys(names)), bool(_PARTY_BEFORE.search(before))
-
-
-def load_knowledge(path: Path, campaign: str, corpus: Corpus) -> dict[str, Note]:
-    """``{beat_id: Note}`` for ``campaign``; other campaigns' blocks are not read.
-
-    Refuses anything it cannot apply: a beat not in the summaries, ``who``
-    missing or malformed, ``gives_away`` missing for characters or given for the
-    party or unsure, a name that appears nowhere in the summaries.
+    Refuses a beat that is not a candidate, a beat whose sentence hides nothing,
+    and a name that appears nowhere in the summaries.
     """
     try:
         raw = yaml.safe_load(Path(path).read_text(encoding="utf-8"))
@@ -194,76 +213,78 @@ def load_knowledge(path: Path, campaign: str, corpus: Corpus) -> dict[str, Note]
         raise KnowledgeError(f"{path}: not valid YAML ({e})") from None
     if not isinstance(raw, dict) or set(raw) - {"version", "campaigns"}:
         raise KnowledgeError(f"{path}: expected a mapping with 'version' and 'campaigns'")
-    if raw.get("version") == 1:
+    if raw.get("version") in (1, 2):
         raise KnowledgeError(
-            f"{path}: version 1 (kind: secret/party/said/unsure) is no longer read. In version 2, "
-            "'kind: party' is 'who: party', 'kind: unsure' is 'who: unsure', and 'kind: secret, "
-            "hidden_from: [X]' is 'who: [X], gives_away: true'; 'kind: said' needs who answered again"
+            f"{path}: version {raw['version']} asked the GM to sort every beat; version 3 sorts them "
+            "from the sentence and takes only 'who' for a beat whose sentence gives a description, "
+            "not a name. Write: campaigns: {<campaign>: {who: {<beat id>: [<name>]}}}"
         )
     if raw.get("version") != VERSION:
         raise KnowledgeError(f"{path}: version must be {VERSION}, got {raw.get('version')!r}")
     campaigns = raw.get("campaigns") or {}
     if not isinstance(campaigns, dict):
-        raise KnowledgeError(f"{path}: 'campaigns' must be a mapping of campaign -> notes")
+        raise KnowledgeError(f"{path}: 'campaigns' must be a mapping of campaign -> rulings")
     block = campaigns.get(campaign) or {}
-    if not isinstance(block, dict):
-        raise KnowledgeError(f"{path}: {campaign!r} must be a mapping of beat id -> note")
-    beat_ids = {b.beat_id for it in corpus.items() if it.kind == SCENE for b in beats(it)}
+    if not isinstance(block, dict) or set(block) - {"who"}:
+        raise KnowledgeError(f"{path}: {campaign!r} must be a mapping with 'who'")
+    who = block.get("who") or {}
+    if not isinstance(who, dict):
+        raise KnowledgeError(f"{path}: {campaign!r} who must be a mapping of beat id -> names")
+    found = {c.beat_id: c for c in find(corpus)}
     text = "\n".join(t for it in corpus.items() for _, t in it.lines)
     problems: list[str] = []
-    out: dict[str, Note] = {}
-    for beat_id, n in block.items():
+    out: dict[str, tuple[str, ...]] = {}
+    for beat_id, names in who.items():
         beat_id, where = str(beat_id), f"{campaign} {beat_id}"
-        if n is None:
+        if names is None:
             continue
-        if not isinstance(n, dict) or "who" not in n or set(n) - {"who", "gives_away", "note"}:
-            problems.append(f"{where}: expected a mapping with 'who', and 'gives_away' and/or 'note'")
+        c = found.get(beat_id)
+        if c is None:
+            problems.append(f"{where}: not a beat that says someone does not know something")
             continue
-        if beat_id not in beat_ids:
-            problems.append(f"{where}: not a beat (NNN.SS.bKK) of any scene in these summaries")
+        if outcome(c) == KEEPS:
+            problems.append(f"{where}: nothing in it is hidden (it says only that someone doesn't know "
+                            f"{c.what or 'something'}), so who does not matter")
             continue
-        who, gives = n["who"], n.get("gives_away")
-        note = None if n.get("note") is None else str(n["note"])
-        if who in (PARTY, UNSURE):
-            if gives is not None:
-                problems.append(f"{where}: gives_away is for characters; who is {who!r}")
-                continue
-            out[beat_id] = Note(beat_id, party=who == PARTY, unsure=who == UNSURE, note=note)
+        if not isinstance(names, list) or not names or not all(isinstance(x, str) and x.strip() for x in names):
+            problems.append(f"{where}: who must be a list of names")
             continue
-        if not isinstance(who, list) or not who or not all(isinstance(x, str) and x.strip() for x in who):
-            problems.append(f"{where}: who must be 'party', 'unsure', or a list of names")
-            continue
-        if not isinstance(gives, bool):
-            problems.append(f"{where}: gives_away must be true or false: does the beat give away what they don't know?")
-            continue
-        names = [x.strip() for x in who]
+        names = [x.strip() for x in names]
         missing = [x for x in names if not _word(x, text)]
         if missing:
             problems.append(f"{where}: {', '.join(missing)} appears nowhere in the summaries; check the spelling")
             continue
-        out[beat_id] = Note(beat_id, tuple(dict.fromkeys(names)), gives_away=gives, note=note)
+        out[beat_id] = tuple(dict.fromkeys(names))
     if problems:
         raise KnowledgeError(f"{path}: {len(problems)} problem(s):\n  " + "\n  ".join(problems))
     return out
 
 
+def resolve(corpus: Corpus, rulings: dict[str, tuple[str, ...]] | None = None) -> list[Resolved]:
+    """Every candidate beat with its outcome and, for one that hides something, from whom."""
+    rulings = rulings or {}
+    out: list[Resolved] = []
+    for c in find(corpus):
+        o = outcome(c)
+        if o == KEEPS:
+            out.append(Resolved(c, o, (), False, None))
+        elif c.beat_id in rulings:
+            out.append(Resolved(c, o, rulings[c.beat_id], False, FROM_GM))
+        else:
+            names, party = who_from_sentence(c)
+            out.append(Resolved(c, o, names, party, FROM_SENTENCE if names or party else None))
+    return out
+
+
 def names_dossier(name: str, d: Dossier) -> bool:
-    """The GM's name is this dossier's subject or a form the dossier itself lists."""
+    """The name is this dossier's subject or a form the dossier itself lists."""
     return name == d.subject or name in d.forms
 
 
-def hidden_from(notes: dict[str, Note], d: Dossier) -> frozenset[str]:
-    """Beat ids that give away what this NPC does not know."""
-    return frozenset(n.beat_id for n in notes.values() if n.gives_away and any(names_dossier(x, d) for x in n.who))
-
-
-def tally(notes: dict[str, Note]) -> dict[str, int]:
-    return {
-        "gives away (hidden)": sum(1 for n in notes.values() if n.gives_away),
-        "only says they don't know (kept)": sum(1 for n in notes.values() if n.gives_away is False),
-        "the party": sum(1 for n in notes.values() if n.party),
-        "unsure": sum(1 for n in notes.values() if n.unsure),
-    }
+def hidden_from(resolved: list[Resolved], d: Dossier) -> frozenset[str]:
+    """Beat ids that state what this NPC does not know."""
+    return frozenset(r.candidate.beat_id for r in resolved
+                     if r.outcome == HIDES and any(names_dossier(x, d) for x in r.who))
 
 
 @dataclass(frozen=True)
@@ -274,21 +295,19 @@ class LeakCase:
     scene_id: str
     chapter: int
     text: str
-    note: str | None
+    source: str
 
 
-def leak_cases(notes: dict[str, Note], corpus: Corpus, dossiers: list[Dossier]) -> list[LeakCase]:
-    """One case per beat that gives something away and name it is hidden from, in corpus order."""
-    by_beat = {b.beat_id: (it, b) for it in corpus.items() if it.kind == SCENE for b in beats(it)}
-    order = {bid: i for i, bid in enumerate(by_beat)}
+def leak_cases(resolved: list[Resolved], dossiers: list[Dossier]) -> list[LeakCase]:
+    """One case per hidden beat and character it is hidden from, in corpus order."""
     out: list[LeakCase] = []
-    for n in sorted(notes.values(), key=lambda n: order[n.beat_id]):
-        if not n.gives_away:
+    for r in resolved:
+        if r.outcome != HIDES:
             continue
-        it, b = by_beat[n.beat_id]
-        for who in n.who:
+        c = r.candidate
+        for who in r.who:
             subj = next((d.subject for d in dossiers if names_dossier(who, d)), None)
-            out.append(LeakCase(who, subj, n.beat_id, it.item_id, it.chapter, b.text, n.note))
+            out.append(LeakCase(who, subj, c.beat_id, c.scene_id, c.chapter, c.text, r.source))
     return out
 
 
@@ -298,14 +317,14 @@ def leak_cases_yaml(campaign: str, cases: list[LeakCase]) -> str:
         "campaign": campaign,
         "cases": [
             {k: v for k, v in (
-                ("who", c.who), ("dossier", c.subject), ("beat", c.beat_id), ("scene", c.scene_id),
-                ("chapter", c.chapter), ("must_not_know", c.text), ("note", c.note),
+                ("who", c.who), ("dossier", c.subject), ("from", c.source), ("beat", c.beat_id),
+                ("scene", c.scene_id), ("chapter", c.chapter), ("must_not_know", c.text),
             ) if v is not None}
             for c in cases
         ],
     }
     head = (
         "# Leak cases: as of each beat's scene, the character named must not know what it says.\n"
-        "# Generated by npc_agent leaks from the GM's knowledge rulings; regenerate, do not edit.\n"
+        "# Generated by npc_agent leaks from the summaries and the GM's who rulings; regenerate, do not edit.\n"
     )
     return head + yaml.safe_dump(body, sort_keys=False, allow_unicode=True, width=100)

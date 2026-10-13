@@ -17,8 +17,8 @@ Built from authored structure and the GM's answers, nothing else:
 Within an event answered *physically present*, a beat the GM listed as
 ``not_perceived`` is left out of what the NPC could know: the same summary that
 records Sylvira at 067.03 also says, in that scene, what she does not know.
-A beat the GM ruled gives away what this NPC does not know (:mod:`knowledge`)
-is left out the same way, wherever they were present.
+A beat whose sentence states what this NPC does not know (:mod:`knowledge`) is
+left out the same way, wherever they were present.
 
 ``render_horizon(h, for_agent=True)`` gives only what the NPC could know, the
 part an agent may be shown; everything else is for the GM.
@@ -57,6 +57,8 @@ class Horizon:
     by_default: frozenset[str]
     not_perceived: frozenset[str]  # every beat left out, from either source
     hidden_by_note: frozenset[str]  # of those, the ones a knowledge note hides
+    #: beats shown that hide something from someone nobody has named yet
+    unresolved: frozenset[str]
     #: events after ``chapter``. Kept for the caller, never rendered.
     later: int
 
@@ -70,6 +72,7 @@ def build_horizon(
     snapshots: list[Candidate] | None = None,
     not_perceived: frozenset[str] = frozenset(),
     hidden: frozenset[str] = frozenset(),
+    unresolved: frozenset[str] = frozenset(),
 ) -> Horizon:
     """``events`` are the scenes naming the NPC; ``rulings`` is :func:`rulings.effective`.
 
@@ -115,6 +118,7 @@ def build_horizon(
         by_default=frozenset(i for i, (_, src) in rulings.items() if src == FROM_DEFAULT),
         not_perceived=(frozenset(not_perceived) | frozenset(hidden)) & seen,
         hidden_by_note=frozenset(hidden) & seen,
+        unresolved=frozenset(unresolved) & seen,
         later=len(every) - len(upto),
     )
 
@@ -159,6 +163,13 @@ def render_horizon(h: Horizon, for_agent: bool = False) -> str:
             f"neither or unsure: {len(h.neither)} · unanswered: {len(h.unruled)}",
             f"- Beats left out as not perceived: {len(h.not_perceived)}",
         ]
+        if h.unresolved:
+            head += [
+                "",
+                f"**{len(h.unresolved)} beat(s) shown say someone doesn't know something, and nobody has said "
+                f"who** ({', '.join(sorted(h.unresolved))}). If it is {h.subject}, they leak. Rule who in the "
+                "knowledge file.",
+            ]
         if h.unruled:
             head += [
                 "",
@@ -194,7 +205,7 @@ def render_horizon(h: Horizon, for_agent: bool = False) -> str:
         for c in h.witnessed:
             for b in beats(c.item):
                 if b.beat_id in h.not_perceived:
-                    why = " (knowledge note: gives away what they don't know)" if b.beat_id in h.hidden_by_note else ""
+                    why = " (the summary says they don't know this)" if b.beat_id in h.hidden_by_note else ""
                     out.append(f"- {b.beat_id}{why} — {b.text.splitlines()[0][:160]}")
     for title, group in (
         ("Events that mention them (named, not physically there)", h.mentioned),

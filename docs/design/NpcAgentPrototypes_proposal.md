@@ -362,56 +362,65 @@ Out of the Abyss and 7 in Obelisk**. The same phrasings turn up in 30 summary
 paragraphs, 16 NPC entries and 6 memorable moments, which are not beats and are
 not candidates.
 
-**Two questions, about the person** (GM, 2026-10-13). The first page asked what
-kind of beat each was (a secret, about the party, said in the scene, unsure). The
-GM marked 19 of 21 "secret" and named nobody: "Most of the cards were 'the object
-of the sentence doesn't know' … for example 'Asha doesn't know'." Every card does
-say someone doesn't know; the kind was the wrong question. So each card asks:
+**The sentence decides; the GM names.** This took three rounds on 2026-10-13:
 
-1. **Who doesn't know?** Characters, `party`, or `unsure` (nobody in particular:
-   "anyone who did not know which key was genuine"). The page offers the name just
-   before the phrase ("Asha remained unaware", "Nym and Kaelira genuinely did not
-   know") and any NPC with a published dossier the beat names, as buttons; a
-   pronoun gets no suggestion. A suggestion is only a button: the answer is the
-   GM's.
-2. For characters: **does the beat give away what they don't know?** Sylvira's
-   names her son's death, so `gives_away: true`: the beat is hidden from her and
-   is a leak case. Hgraam's says only that he "does not know where it is", so
-   `gives_away: false`: it stays, because not knowing is part of what he knows.
+1. The first page asked what kind of beat each was (a secret, about the party,
+   said in the scene, unsure). The GM marked 19 of 21 "secret" and named nobody:
+   "Most of the cards were 'the object of the sentence doesn't know'".
+2. The second asked who doesn't know, and whether the beat gives it away. On
+   028.04.b27 ("Fargas didn't know where the secret room was, only that other
+   visitors hadn't known about it") the GM asked: "What am I saying he doesn't
+   know?" The card never showed it.
+3. Shown what follows the phrase, the answer was plain, and so was the GM's next
+   question: "I already verified that all of the sentences are correct, so why
+   ask me?"
 
-The **knowledge ruling file** (version 2, one block per campaign because beat ids
-repeat across campaigns):
+The summaries are reviewed, so the grammar of the sentence is the answer:
+
+| what follows the phrase | outcome | examples |
+|---|---|---|
+| a "that" clause, a bare clause, "about" or "of" X, or "has not been told" after the fact | **hides**: the beat states what they don't know | "that the party killed her son"; "he is being groomed for replacement"; "about the egg"; "unaware of the party's presence"; "He is a simulacrum, and the party has not been told" |
+| a question (where, which, how, …), a name or a noun, or nothing | **keeps**: it says only that they lack it | "where the secret room was"; "which spells"; "Manshoon's lair"; "Tadric does not know." |
+
+A beat that keeps is in what anyone present could know, whoever "he" is, so
+nobody is asked about it. Out of the Abyss: 5 of 21 hide, 16 keep; Obelisk: 1 of
+7 hides.
+
+**Who** matters only for a beat that hides. Code reads it from the sentence when
+the sentence names them: the name right before the phrase ("Asha remained
+unaware"), the subject when the phrase is its second verb ("Sylvira is
+Moziqodo's mother, but does not yet know"), or "the party". When the sentence
+gives a description, which character it is, is the GM's ruling: "the dragon" in
+014.07.b02 and 017.04.b22 is Themberchaud (GM, 2026-10-13). Obelisk's 010.07.b12
+("the lone guard") is the one beat still unnamed. The **knowledge file** (version
+3) holds only those rulings, and may override a name read from the sentence:
 
 ```yaml
-version: 2
+version: 3
 campaigns:
   out-of-the-abyss:
-    "067.03.b04": {who: [Sylvira Savikas], gives_away: true}
-    "026.04.b08": {who: [Hgraam], gives_away: false}
-    "062.06.b09": {who: party}
-    "063.06.b08": {who: unsure}
+    who:
+      "014.07.b02": [Themberchaud]   # "the dragon"
+      "017.04.b22": [Themberchaud]
 ```
 
-The GM's first two answers were `party` for 062.06.b09 (the horrors' three
-immunities) and 068.05.b06 (Manshoon is a simulacrum). A version-1 file is refused
-with the conversion; the page carries version-1 `party`, `unsure` and named
-`secret` answers over and drops a secret with nobody named, which was never an
-answer.
+A ruling on a beat that keeps is refused (nothing in it is hidden), as is a
+version-1 or version-2 file.
 
-- **`who` names are the GM's, not a match.** A name counts for an NPC when it
-  is their dossier subject or a name form their dossier lists. A name with no
-  published dossier (Themberchaud, Asha) is kept: it is still a leak case. A
-  name that appears nowhere in the summaries is refused as a likely misspelling.
-- **`npc_agent horizon --knowledge FILE`** leaves a beat that gives something
-  away out of each named NPC's Part 1 exactly as `not_perceived` does, and Part 2
-  labels it "(knowledge note …)". Only beats of events shown count: a beat at a
-  scene the NPC missed, or after the chapter, changes nothing and is not counted.
-  On Sylvira at chapter 67, the knowledge note alone gives a byte-identical agent
-  view to the hand-marked `not_perceived`.
-- **`npc_agent leaks --knowledge FILE`** writes the leak cases: one per hidden
-  beat and name, "as of this beat's scene, this character must not know what it
-  says", with the beat's text. They are the cases Prototype 3 (the leak test)
-  scores: an NPC agent's move that states one of them is a leak.
+- **`npc_agent horizon`** always leaves a hiding beat out of each named NPC's
+  Part 1, as `not_perceived` does, and Part 2 labels it "(the summary says they
+  don't know this)". `--knowledge` adds the GM's who rulings. A hiding beat with
+  nobody named, in an event the NPC attended, is listed in Part 2 and makes
+  `--for-agent` refuse: it may be hidden from them. On Sylvira at chapter 67 the
+  sentence alone gives a byte-identical agent view to the hand-marked
+  `not_perceived`.
+- **`npc_agent leaks`** writes one case per hiding beat and character (with
+  `from: sentence` or `from: gm`), "as of this beat's scene, this character must
+  not know what it says". Out of the Abyss: Themberchaud ×2, Asha, Sylvira. They
+  are the cases Prototype 3 (the leak test) scores.
+- A name counts for an NPC when it is their dossier subject or a form their
+  dossier lists. A name with no published dossier (Themberchaud, Asha) is kept:
+  it is still a leak case.
 
 A hidden beat is hidden whole, so 067.03.b04 still takes Sylvira's thanks to
 Thorin with it; the fix stays a split of the bullet in the summary.
@@ -446,13 +455,13 @@ database (`rulings/<stem>`, one document per NPC) so Claude can read them back,
 and can be exported as `presence.json` or copied as YAML. `npc_agent horizon`
 re-validates whatever it is given.
 
-A second view, **Knowledge notes**, has one card per candidate beat (from this
-campaign and any `--also-campaign-dir`, each on its own tab): the beat's text
-with the matched words marked, the whole scene collapsed beneath it, and the two
-questions, with the suggested names as buttons and a warning on a name that is
-neither a dossier subject nor in the scene. A card with a name and question 2
-unanswered stays unanswered and is left out of the file. A beat hidden from an
-NPC shows on the Presence view as "Hidden by a knowledge note". Saved per campaign in the database (`knowledge/<campaign>`), exported as
+A second view, **Knowledge notes** (this campaign and any `--also-campaign-dir`,
+each on its own tab), shows the sort: the beats that need a name (with a name
+box, warning on a name that is neither a dossier subject nor in the scene), the
+hidden beats with who and whether that came from the sentence or the GM (each
+can be changed), and a collapsed list of the beats that stay, each saying what
+they lack. The phrase and what follows it are marked in the text. A beat hidden
+from an NPC shows on the Presence view as "Hidden by a knowledge note". Saved per campaign in the database (`knowledge/<campaign>`), exported as
 `knowledge.json` or copied as YAML.
 
 ### Usage
@@ -472,7 +481,7 @@ npc_agent horizon --campaign-dir ~/campaigns-public/out-of-the-abyss \
     --knowledge knowledge.json [--for-agent]
 
 npc_agent leaks --campaign-dir ~/campaigns-public/out-of-the-abyss \
-    --knowledge knowledge.json --out leaks.yaml
+    [--knowledge knowledge.json] --out leaks.yaml
 ```
 
 A knowledge file's campaign key is the `--campaign-dir` name (`--campaign`
