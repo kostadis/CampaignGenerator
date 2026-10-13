@@ -1,0 +1,291 @@
+<title>Prep sheet</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Spectral:wght@500;600&family=Source+Sans+3:wght@400;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one tab per target scene; one card per prep passage with Hers / GM only. */
+:root {
+  --bg: #f3f5f4;
+  --surface: #ffffff;
+  --sunk: #e8edeb;
+  --fg: #1c2624;
+  --muted: #5b6966;
+  --line: #d3dcd9;
+  --accent: #2a6b64;
+  --accent-ink: #ffffff;
+  --gm: #7a4d1c;
+  --gm-bg: #f3e4cf;
+  --warn: #8c4646;
+  --font-display: "Spectral", "Iowan Old Style", Georgia, serif;
+  --font-body: "Source Sans 3", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #121918; --surface: #1a2321; --sunk: #222d2b; --fg: #e3ebe8; --muted: #9aaba6;
+    --line: #33413e; --accent: #62b3a9; --accent-ink: #0d1514; --gm: #e0b274; --gm-bg: #3b2d1a;
+    --warn: #e08a8a; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #121918; --surface: #1a2321; --sunk: #222d2b; --fg: #e3ebe8; --muted: #9aaba6;
+  --line: #33413e; --accent: #62b3a9; --accent-ink: #0d1514; --gm: #e0b274; --gm-bg: #3b2d1a;
+  --warn: #e08a8a; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--fg); font: 15px/1.5 var(--font-body); margin: 0; }
+.wrap { max-width: 860px; margin: 0 auto; padding-inline: 16px; padding-block: 20px 64px; }
+h1, h2 { font-family: var(--font-display); font-weight: 600; text-wrap: balance; margin: 0; }
+h1 { font-size: 1.9rem; letter-spacing: -0.01em; }
+h2 { font-size: 1.2rem; }
+.lede { color: var(--muted); max-width: 65ch; margin: 6px 0 0; overflow-wrap: anywhere; }
+.lede strong { color: var(--fg); }
+.mono { font-family: var(--font-mono); font-size: 0.82rem; }
+.label { font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+button, textarea { font: inherit; color: inherit; }
+button { cursor: pointer; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.bar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--bg);
+  border-bottom: 1px solid var(--line); padding-block: 10px; margin-top: 16px; display: flex; flex-wrap: wrap;
+  gap: 8px; align-items: center; }
+.bar .status { flex: 1 1 200px; color: var(--muted); min-width: 0; overflow-wrap: anywhere; }
+.status.warn { color: var(--warn); }
+.btn { border: 1px solid var(--line); background: var(--surface); border-radius: 8px; padding: 6px 12px; }
+.btn.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.btn.danger { border-color: var(--warn); color: var(--warn); }
+
+.tabs { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 16px; }
+.tab { border: 1px solid var(--line); background: var(--surface); border-radius: 999px; padding: 5px 14px; }
+.tab[aria-selected="true"] { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.tab .chip { font-family: var(--font-mono); font-size: 0.78rem; opacity: 0.85; margin-left: 6px; }
+
+.head { margin-top: 18px; display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: baseline; }
+.head .src { color: var(--muted); overflow-wrap: anywhere; min-width: 0; }
+.tools { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 10px; }
+.tally { flex: 1 1 200px; font-family: var(--font-mono); font-size: 0.85rem; color: var(--muted); }
+.filters { display: flex; gap: 6px; }
+.filters button { border: 1px solid var(--line); background: var(--surface); border-radius: 999px; padding: 3px 12px; }
+.filters button[aria-pressed="true"] { background: var(--sunk); border-color: var(--accent); font-weight: 600; }
+
+.card { background: var(--surface); border: 1px solid var(--line); border-left-width: 4px; border-radius: 10px;
+  padding: 12px 14px; margin-top: 12px; min-width: 0; }
+.card[data-v="hers"] { border-left-color: var(--accent); }
+.card[data-v="gm"] { border-left-color: var(--gm); }
+.path { color: var(--muted); font-size: 0.82rem; overflow-wrap: anywhere; }
+.text { white-space: pre-wrap; overflow-wrap: anywhere; margin-top: 6px; }
+.pick { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; align-items: center; }
+.pick button { border: 1px solid var(--line); background: var(--surface); border-radius: 999px; padding: 4px 16px; }
+.pick button[data-v="hers"][aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.pick button[data-v="gm"][aria-pressed="true"] { background: var(--gm); color: var(--bg); border-color: var(--gm); }
+.pick .clear { border: 0; background: none; color: var(--muted); text-decoration: underline; padding: 4px 6px; }
+.empty { color: var(--muted); margin-top: 16px; }
+textarea { width: 100%; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 8px; margin-top: 10px; }
+@media (max-width: 560px) { h1 { font-size: 1.5rem; } }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+<div class="wrap">
+  <h1>Prep sheet</h1>
+  <p class="lede">Your prep is written from your side of the screen. Mark each passage <strong>Hers</strong> if she knows or believes it and may act on it, or <strong>GM only</strong> for anything she must not know: stage directions, other characters' secrets, mechanics. Only Hers passages reach the agent.</p>
+  <div class="bar">
+    <span class="status" id="status" role="status">Loading…</span>
+    <button class="btn primary" id="save-file">Save prep.json</button>
+    <button class="btn" id="copy-yaml">Copy as YAML</button>
+  </div>
+  <div class="tabs" id="tabs" role="tablist"></div>
+  <div id="panel"></div>
+</div>
+<script>
+"use strict";
+const DATA = /*__NPC_AGENT_DATA__*/null;
+(function () {
+  const $ = (id) => document.getElementById(id);
+  const esc = (s) => String(s == null ? "" : s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  if (!DATA || DATA.version !== 1) {
+    $("panel").innerHTML = '<p class="empty">This page was written by a different version of npc_agent prep. Run it again.</p>';
+    $("status").textContent = "";
+    return;
+  }
+  const DRAFT_KEY = "prep-draft-" + DATA.npc;
+  const VALUES = ["hers", "gm"];
+  // rulings[target] = { pid: "hers" | "gm" }
+  const rulings = {};
+  for (const t of DATA.targets) rulings[t.target] = {};
+  let current = DATA.targets.length ? DATA.targets[0].target : null;
+  let filter = "unanswered";
+  let visible = new Set();   // pids shown while filtering Unanswered; answered-this-visit cards stay
+  let confirming = false;
+
+  const byTarget = (id) => DATA.targets.find((t) => t.target === id);
+  function tally(t) {
+    let h = 0, g = 0;
+    for (const p of t.passages) { const v = rulings[t.target][p.pid]; if (v === "hers") h++; else if (v === "gm") g++; }
+    return { h, g, k: t.passages.length - h - g };
+  }
+  function resetVisible() {
+    const t = byTarget(current);
+    visible = new Set(t ? t.passages.filter((p) => !rulings[t.target][p.pid]).map((p) => p.pid) : []);
+  }
+
+  const docPath = (target) => "prep/" + target;
+  const bodyFor = (t) => ({ npc: DATA.npc, version: 1, passages: Object.assign({}, rulings[t]) });
+
+  function renderTabs() {
+    $("tabs").innerHTML = DATA.targets.map((t) => {
+      const k = tally(t).k;
+      return '<button type="button" class="tab" role="tab" data-tab="' + esc(t.target) + '" aria-selected="' + (t.target === current) +
+        '">' + esc(t.target) + '<span class="chip">' + (k ? k + " left" : "done") + "</span></button>";
+    }).join("");
+  }
+  function renderPanel() {
+    const t = byTarget(current);
+    if (!t) { $("panel").innerHTML = '<p class="empty">No targets.</p>'; return; }
+    const n = tally(t);
+    const cards = t.passages.filter((p) => filter === "all" || visible.has(p.pid) || !rulings[t.target][p.pid]).map((p) => {
+      const v = rulings[t.target][p.pid] || "";
+      return '<div class="card" data-v="' + v + '" data-pid="' + esc(p.pid) + '">' +
+        '<div class="path">' + (p.heading.length ? esc(p.heading.join(" › ")) : "(no heading)") + ' · <span class="mono">line ' + p.line + "</span></div>" +
+        '<div class="text">' + esc(p.text) + "</div>" +
+        '<div class="pick"><button type="button" data-set="hers" data-v="hers" aria-pressed="' + (v === "hers") + '">Hers</button>' +
+        '<button type="button" data-set="gm" data-v="gm" aria-pressed="' + (v === "gm") + '">GM only</button>' +
+        (v ? '<button type="button" class="clear" data-set="">clear</button>' : "") + "</div></div>";
+    }).join("");
+    $("panel").innerHTML =
+      '<div class="head"><h2>' + esc(t.target) + " · " + esc(t.scene_title) + '</h2><span class="src mono">' + esc(t.source) +
+      (t.section ? " · " + esc(t.section) : " · passages naming " + esc(DATA.npc)) + "</span></div>" +
+      '<div class="tools"><span class="tally" id="tally">hers ' + n.h + " · gm " + n.g + " · unanswered " + n.k + "</span>" +
+      '<span class="filters"><button type="button" data-filter="unanswered" aria-pressed="' + (filter === "unanswered") + '">Unanswered</button>' +
+      '<button type="button" data-filter="all" aria-pressed="' + (filter === "all") + '">Everything</button></span>' +
+      (confirming
+        ? '<button type="button" class="btn danger" id="rest-yes">Yes, mark ' + n.k + " GM only</button><button type=\"button\" class=\"btn\" id=\"rest-no\">Cancel</button>"
+        : '<button type="button" class="btn" id="rest"' + (n.k ? "" : " disabled") + ">Mark the rest GM only</button>") + "</div>" +
+      (cards || '<p class="empty">' + (t.passages.length ? "Nothing unanswered here." : "No passages were found for this target.") + "</p>");
+  }
+  function render() { renderTabs(); renderPanel(); }
+
+  // ── persistence ─────────────────────────────────────────────────────────
+  let db = null, canWrite = true, pending = new Set(), writing = false, timer = null;
+  const setStatus = (t, warn) => { $("status").textContent = t; $("status").classList.toggle("warn", !!warn); };
+  function saveDraftLocally() {
+    try { localStorage.setItem(DRAFT_KEY, JSON.stringify(rulings)); } catch (e) { /* no storage */ }
+  }
+  function changed(target) {
+    saveDraftLocally();
+    if (!db || !canWrite) return;
+    pending.add(target);
+    clearTimeout(timer);
+    timer = setTimeout(flush, 700);
+    setStatus("Saving…");
+  }
+  async function flush() {
+    if (writing || !pending.size) return;
+    writing = true;
+    const ts = [...pending]; pending.clear();
+    try {
+      for (const t of ts) await db.doc(docPath(t)).set(bodyFor(t));
+      setStatus("Saved");
+    } catch (e) {
+      if (e && e.code === "invalid_argument") { canWrite = false; setStatus("This view can read the rulings but not change them.", true); }
+      else { ts.forEach((t) => pending.add(t)); setStatus("Not saved yet. Retrying…", true); setTimeout(flush, 2500); }
+    } finally {
+      writing = false;
+      if (pending.size) flush();
+    }
+  }
+  function adopt(target, d) {
+    const t = byTarget(target), known = new Set(t.passages.map((p) => p.pid)), out = {};
+    for (const [pid, v] of Object.entries((d && d.passages) || {})) if (known.has(pid) && VALUES.includes(v)) out[pid] = v;
+    rulings[target] = out;
+  }
+
+  (async function connect() {
+    try {
+      const raw = localStorage.getItem(DRAFT_KEY);
+      if (raw) { const d = JSON.parse(raw); for (const t of DATA.targets) if (d[t.target]) adopt(t.target, { passages: d[t.target] }); }
+    } catch (e) { /* no draft */ }
+    resetVisible(); render();
+    setStatus("Connecting…");
+    const c = window.claude && window.claude.use ? window.claude : null;
+    try { db = c ? await c.use("db") : null; } catch (e) { db = null; }
+    if (!db) { setStatus("Rulings stay in this browser. Save prep.json to keep them.", true); return; }
+    try {
+      const user = await c.use("user");
+      if (user && user.can && (await user.can("data.write")) === false) canWrite = false;
+    } catch (e) { /* assume writable */ }
+    let first = true;
+    for (const t of DATA.targets) {
+      db.doc(docPath(t.target)).onSnapshot((snap) => {
+        if (snap.metadata.hasPendingWrites || pending.has(t.target)) return;
+        if (snap.exists) { adopt(t.target, snap.data()); if (t.target === current) resetVisible(); render(); }
+        if (first) { first = false; setStatus(canWrite ? "Saved rulings loaded" : "Read only: you can view these rulings but not change them.", !canWrite); }
+      }, () => setStatus("Lost the connection to saved rulings. Save prep.json to keep your work.", true));
+    }
+  })();
+
+  // ── export ──────────────────────────────────────────────────────────────
+  function rulingFile() {
+    const targets = {};
+    for (const t of DATA.targets) {
+      const passages = {};
+      for (const p of t.passages) if (rulings[t.target][p.pid]) passages[p.pid] = rulings[t.target][p.pid];
+      targets[t.target] = { source: t.source, section: t.section || "", passages };
+    }
+    return { version: 1, npc: DATA.npc, targets };
+  }
+  const q = (s) => JSON.stringify(String(s));  // a JSON string is a valid YAML string
+  function asYaml(f) {
+    const L = ["version: 1", "npc: " + q(f.npc), "targets:"];
+    for (const [t, b] of Object.entries(f.targets)) {
+      L.push("  " + q(t) + ":", "    source: " + q(b.source), "    section: " + q(b.section));
+      const ks = Object.keys(b.passages);
+      if (!ks.length) L.push("    passages: {}");
+      else { L.push("    passages:"); for (const k of ks) L.push("      " + q(k) + ": " + b.passages[k]); }
+    }
+    return L.join("\n") + "\n";
+  }
+
+  document.addEventListener("click", async (ev) => {
+    const b = ev.target.closest("button");
+    if (!b) return;
+    if (b.dataset.tab) { current = b.dataset.tab; confirming = false; resetVisible(); render(); return; }
+    if (b.dataset.filter) { filter = b.dataset.filter; confirming = false; resetVisible(); renderPanel(); return; }
+    if (b.dataset.set !== undefined) {
+      const pid = b.closest(".card").dataset.pid, r = rulings[current], v = b.dataset.set;
+      if (!v || r[pid] === v) delete r[pid]; else r[pid] = v;
+      visible.add(pid);
+      render(); changed(current); return;
+    }
+    if (b.id === "rest") { confirming = true; renderPanel(); return; }
+    if (b.id === "rest-no") { confirming = false; renderPanel(); return; }
+    if (b.id === "rest-yes") {
+      const t = byTarget(current);
+      for (const p of t.passages) if (!rulings[current][p.pid]) { rulings[current][p.pid] = "gm"; visible.add(p.pid); }
+      confirming = false; render(); changed(current); return;
+    }
+    if (b.id === "save-file") {
+      let dl = null;
+      try { dl = window.claude && window.claude.use ? await window.claude.use("downloads") : null; } catch (e) { dl = null; }
+      if (!dl) { setStatus("Saving files is not available in this view. Use Copy as YAML.", true); return; }
+      try {
+        await dl.save({ filename: "prep.json", data: JSON.stringify(rulingFile(), null, 2) + "\n" });
+        setStatus("prep.json saved");
+      } catch (e) {
+        if (e && e.code === "declined") setStatus("Save cancelled");
+        else if (e && e.code === "rate_limited") setStatus("A save prompt is already open.", true);
+        else setStatus("Could not save the file. Use Copy as YAML.", true);
+      }
+      return;
+    }
+    if (b.id === "copy-yaml") {
+      const text = asYaml(rulingFile());
+      try { await navigator.clipboard.writeText(text); setStatus("YAML copied"); }
+      catch (e) {
+        const old = $("yaml-fallback"); if (old) old.remove();
+        const ta = document.createElement("textarea"); ta.value = text; ta.rows = 12; ta.id = "yaml-fallback";
+        document.querySelector(".wrap").insertBefore(ta, $("tabs")); ta.select();
+        setStatus("Copying is blocked here; the YAML is selected below.", true);
+      }
+    }
+  });
+})();
+</script>

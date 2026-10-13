@@ -10,6 +10,10 @@
                          [--knowledge FILE] [--target-scene NNN.SS] [--out FILE]
     npc_agent backtest   --campaign-dir DIR --npc NAME --rulings FILE --target NNN.SS [--target ...]
                          --out-dir OUT [--knowledge FILE] [--dry-run] [--force] [--model M] [--backend B]
+    npc_agent prep       --campaign-dir DIR --npc NAME --target NNN.SS --prep FILE [--section TEXT]
+                         [--target ... --prep ... --section ...] --out PAGE
+    npc_agent prep-sheet --campaign-dir DIR --npc NAME --target NNN.SS --prep FILE [--section TEXT]
+                         --rulings prep.json [--out FILE]
 
 A beat whose sentence states what someone does not know is always left out of
 their horizon (:mod:`knowledge`); ``--knowledge`` adds the GM's ``who`` where
@@ -31,6 +35,10 @@ something the agent was not given (:mod:`leakcheck`). Flags are not failures.
 asks the model (:mod:`agent`, the only model step) what she does there, then
 leak-checks the answer and writes a scoring page for the GM. The scene's own
 text is written beside it as the answer key and is never in the prompt.
+
+``prep`` cuts the GM's prep files into passages (:mod:`prep`) and writes a page where the
+GM marks each one hers (she knows it) or gm (only the GM does); ``prep-sheet`` renders the
+hers passages, with no line numbers or file names, once every passage is ruled.
 
 Exit codes: 0 done; 2 refused, nothing written; 3 written, but a candidate list
 does not match its published dossier (see ``check_report.md``).
@@ -57,7 +65,7 @@ from pipelines.npc_agent import backtest_page
 from pipelines.npc_agent import corpus as corpus_mod
 from pipelines.npc_agent import dossier as dossier_mod
 from pipelines.npc_agent import horizon as horizon_mod
-from pipelines.npc_agent import knowledge, leakcheck, persona, presence, report, review, rulings
+from pipelines.npc_agent import knowledge, leakcheck, persona, prep, prep_page, presence, report, review, rulings
 from pipelines.summary_native import duplicates, npc_forms
 
 CHECK_REPORT = "check_report.md"
@@ -471,6 +479,77 @@ def cmd_backtest(args) -> int:
     return 0
 
 
+def _npc_forms(args) -> tuple[str, tuple[str, ...]]:
+    summaries, npcs = _layout(args)
+    try:
+        d = dossier_mod.select(dossier_mod.read_dossiers(npcs), args.npc)[0]
+    except dossier_mod.DossierError as e:
+        raise Refusal(str(e)) from None
+    return d.subject, tuple(dict.fromkeys((d.subject, *d.forms)))
+
+
+def _passages(path: Path, forms, section: str | None) -> list[prep.Passage]:
+    try:
+        text = Path(path).expanduser().read_text(encoding="utf-8")
+    except OSError as e:
+        raise Refusal(f"--prep {path}: cannot read ({e.strerror})") from None
+    try:
+        return prep.extract(text, forms, section or None, file=str(path))
+    except prep.PrepError as e:
+        raise Refusal(str(e)) from None
+
+
+def _scene_titles(summaries: Path) -> dict[str, str]:
+    c = corpus_mod.load_corpus(summaries)
+    return {it.item_id: it.title for it in c.items() if it.kind == corpus_mod.SCENE and it.title}
+
+
+def cmd_prep(args) -> int:
+    summaries, npcs = _layout(args)
+    subject, forms = _npc_forms(args)
+    targets = list(args.target)
+    if len(set(targets)) != len(targets):
+        raise Refusal("--target given twice")
+    if len(args.prep) != len(targets):
+        raise Refusal(f"{len(targets)} --target but {len(args.prep)} --prep; give one --prep per --target")
+    sections = list(args.section or [])
+    if sections and len(sections) != len(targets):
+        raise Refusal(f"{len(targets)} --target but {len(sections)} --section; give one per --target "
+                      "(an empty \"\" for a target with none)")
+    sections = sections or [""] * len(targets)
+    out = Path(args.out)
+    _refuse_inside(out, (summaries, npcs, *(Path(p).expanduser().resolve().parent for p in args.prep)))
+    titles = _scene_titles(summaries)
+    bundle_targets = []
+    for t, pf, sec in zip(targets, args.prep, sections):
+        ps = _passages(pf, forms, sec)
+        bundle_targets.append({
+            "target": t, "scene_title": titles.get(t, t), "source": Path(pf).name, "section": sec,
+            "passages": [{"pid": p.pid, "line": p.line, "heading": list(p.heading), "text": p.text} for p in ps],
+        })
+        how = f"section {sec!r}" if sec else f"passages naming {subject}"
+        print(f"{t}: {len(ps)} passage(s) ({how}) from {Path(pf).name}")
+    page = prep_page.render({"version": prep_page.BUNDLE_VERSION, "npc": subject, "targets": bundle_targets})
+    out.parent.mkdir(parents=True, exist_ok=True)
+    atomic_write_text(out, page)
+    print(f"wrote {out} ({len(page.encode('utf-8')) // 1024} KiB)")
+    return 0
+
+
+def cmd_prep_sheet(args) -> int:
+    summaries, npcs = _layout(args)
+    subject, forms = _npc_forms(args)
+    target = args.target
+    ps = _passages(args.prep, forms, args.section)
+    try:
+        ruled = prep.load_rulings(args.rulings, subject, target, ps)
+        text = prep.sheet(ps, ruled)
+    except prep.PrepError as e:
+        raise Refusal(str(e)) from None
+    _write(text, args.out, (summaries, npcs, Path(args.prep).expanduser().resolve().parent))
+    return 0
+
+
 def _common(p: argparse.ArgumentParser) -> None:
     p.add_argument("--campaign-dir", type=Path, default=None,
                    help="campaigns-public/<campaign>, or a campaign root")
@@ -558,12 +637,32 @@ def build_parser() -> argparse.ArgumentParser:
     bt.add_argument("--force", action="store_true", help="ask the model again even if an answer for this prompt exists")
     agent_mod.add_model_args(bt)
     bt.set_defaults(func=cmd_backtest)
+
+    pr = sub.add_parser("prep", help="write the prep sheet page: the GM marks each prep passage hers or GM only")
+    _common(pr)
+    pr.add_argument("--npc", action="append", required=True)
+    pr.add_argument("--target", action="append", required=True, help="NNN.SS (repeatable, parallel to --prep)")
+    pr.add_argument("--prep", action="append", type=Path, required=True, help="a prep markdown file, one per --target")
+    pr.add_argument("--section", action="append", default=None,
+                    help="heading-text prefix: every passage under it (\"\" for none: passages naming the NPC)")
+    pr.add_argument("--out", type=Path, required=True, help="the HTML page to write")
+    pr.set_defaults(func=cmd_prep)
+
+    ps = sub.add_parser("prep-sheet", help="the passages ruled hers, as the agent sees them; refused while any is unruled")
+    _common(ps)
+    ps.add_argument("--npc", action="append", required=True)
+    ps.add_argument("--target", required=True)
+    ps.add_argument("--prep", type=Path, required=True)
+    ps.add_argument("--section", default="")
+    ps.add_argument("--rulings", type=Path, required=True, help="prep.json saved from the page")
+    ps.add_argument("--out", type=Path, default=None, help="default: stdout")
+    ps.set_defaults(func=cmd_prep_sheet)
     return parser
 
 
 def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
-    if args.command in ("horizon", "persona", "leakcheck", "backtest") and len(args.npc) != 1:
+    if args.command in ("horizon", "persona", "leakcheck", "backtest", "prep", "prep-sheet") and len(args.npc) != 1:
         print(f"Error: {args.command} takes exactly one --npc", file=sys.stderr)
         return 2
     try:

@@ -25,7 +25,7 @@ def _modules():
 
 
 def test_the_package_exists_and_is_covered():
-    assert {"corpus", "dossier", "presence", "rulings", "horizon", "report", "knowledge", "persona", "leakcheck", "cli"} <= {n for n, _ in _modules()}
+    assert {"corpus", "dossier", "presence", "rulings", "horizon", "report", "knowledge", "persona", "leakcheck", "cli", "prep", "prep_page"} <= {n for n, _ in _modules()}
 
 
 @pytest.mark.parametrize("name,path", _modules(), ids=lambda v: v if isinstance(v, str) else "")
