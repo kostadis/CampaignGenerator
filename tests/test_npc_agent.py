@@ -663,7 +663,7 @@ def test_the_search_suggests_who_does_not_know_and_rules_nothing(kcamp):
 
 def test_a_suggestion_takes_two_names_and_skips_pronouns():
     def cand(before):
-        return knowledge.Candidate("1.01.b01", "001.01", 1, "f", 1, "did not know", before + "did not know", "", before)
+        return knowledge.Candidate("1.01.b01", "001.01", 1, "f", 1, "did not know", before + "did not know", "", before, "")
     assert knowledge.suggest(cand("- The party learned that Nym and Kaelira genuinely "), []) == (("Nym", "Kaelira"), False)
     assert knowledge.suggest(cand("- He "), []) == ((), False)
     assert knowledge.suggest(cand("- Asha "), []) == (("Asha",), False)  # "Asha remained unaware": the verb is in the phrase
@@ -800,3 +800,14 @@ def test_the_file_the_page_saves_is_a_knowledge_file(kcamp, tmp_path):
     f.write_text(json.dumps(saved, indent=2))
     notes = knowledge.load_knowledge(f, "camp", _corpus(kcamp))
     assert notes["064.01.b02"].who == ("Sylvira Savikas",) and notes["064.01.b04"].party
+
+
+def test_the_search_shows_what_they_do_not_know_up_to_the_end_of_the_clause(kcamp):
+    found = {k.beat_id: k for k in knowledge.find(_corpus(kcamp))}
+    assert found["064.01.b02"].what == "that the party killed her son"
+    assert found["064.01.b03"].what == ""  # "Sylvira does not know." says not what
+    assert found["064.01.b04"].what == "of the trap under the rug"  # the phrase is "is unaware"
+    assert knowledge._what(" where the secret room was, only that others had not", " where the secret room was, only that others had not") \
+        == "where the secret room was"
+    assert knowledge._what(" how to open the door and appears to be flailing", " how to open the door and appears to be flailing") \
+        == "how to open the door"

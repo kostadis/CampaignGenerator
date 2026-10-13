@@ -44,7 +44,7 @@ def knowledge_campaign(campaign: str, corpus: Corpus, dossiers: list[Dossier]) -
         names, party = knowledge.suggest(k, dossiers)
         cards.append({"id": k.beat_id, "s": k.scene_id, "c": k.chapter, "ct": titles[k.chapter], "st": k.scene_title,
                       "f": k.source_file, "l": k.line, "ph": k.phrase, "x": k.text, "sx": scenes[k.scene_id].text,
-                      "sg": list(names), "sp": party})
+                      "sg": list(names), "sp": party, "w": k.what})
     return {"campaign": campaign, "subjects": sorted(d.subject for d in dossiers), "cards": cards}
 
 
