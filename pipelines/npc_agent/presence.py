@@ -1,11 +1,22 @@
-"""Presence candidates: every item that names an NPC, and the evidence it carries.
+"""Events, snapshots and context for an NPC: what the GM answers, and what they don't.
 
-A candidate is an item (see :mod:`pipelines.npc_agent.corpus`) in which one of
+The record is already authored (approaches 11 and 12 of the grounding survey): a
+summary's ``## Scenes`` are its **events**, in order, keyed ``NNN.SS``; each
+scene's bullets are its **beats**; its ``## NPCs`` entries are **snapshots** of
+state; its ``## Summary`` prose is a *rendering* of the scenes and its memorable
+moments are highlights of them. Presence is a fact about an event, so the GM
+answers it once per event and nowhere else. Asking it of a prose paragraph, a
+moment or an entry atomises one event into several fragments (survey F2) and
+re-derives structure from a rendered layer (F10); the first build of this
+prototype did exactly that, and gave the GM 75 "passages" for Sylvira where 19
+scenes name her.
+
+A *mention* is an element (see :mod:`pipelines.npc_agent.corpus`) in which one of
 the NPC's exact name forms appears. Matching is ``npc-link``'s rule — exact,
 case-sensitive, word-bounded — through its own compiled pattern, so the two can
 never drift apart.
 
-**A candidate is a mention, never presence** (spec 032 FR-005, and the
+**A mention is never presence** (spec 032 FR-005, and the
 narrator-eligibility lesson in ``CLAUDE.md``: the GM narrates *about* absent
 characters). The signals below are evidence laid out for the GM's ruling; none of
 them marks anything present:
@@ -29,6 +40,7 @@ from dataclasses import dataclass
 
 from pipelines.npc_agent.corpus import ENTRY, MOMENT, PROSE, SCENE, Corpus, Item
 from pipelines.npc_agent.dossier import Dossier
+from pipelines.npc_agent.rulings import VERSION
 
 # npc-link's matcher and generic-word test, reused rather than restated so the scope cannot drift.
 from pipelines.summary_native.npc_forms import _compile as compile_forms
@@ -151,14 +163,39 @@ def _signals(item: Item, d: Dossier, table: FormTable) -> Candidate | None:
     )
 
 
-def candidates(corpus: Corpus, dossier: Dossier, table: FormTable) -> list[Candidate]:
-    """Every item naming the NPC, in corpus order (chapter, then scene/prose/moment/entry)."""
+def mentions(corpus: Corpus, dossier: Dossier, table: FormTable) -> list[Candidate]:
+    """Every element naming the NPC, in corpus order (chapter, then scene/prose/moment/entry).
+
+    The check against the published dossier reads this whole list, because it is
+    what ``npc-link`` linked. Only :func:`events` is answered.
+    """
     out = []
     for item in corpus.items():
         c = _signals(item, dossier, table)
         if c is not None:
             out.append(c)
     return out
+
+
+def events(ms: list[Candidate]) -> list[Candidate]:
+    """The scenes among the mentions: the only elements the GM answers."""
+    return [c for c in ms if c.item.kind == SCENE]
+
+
+def snapshots(ms: list[Candidate]) -> list[Candidate]:
+    """The NPC's own ``## NPCs`` entries: state at a chapter, not events."""
+    return [c for c in ms if c.item.kind == ENTRY and OWN_ENTRY in c.signals]
+
+
+def context(ms: list[Candidate]) -> list[Candidate]:
+    """Summary prose, memorable moments and other NPCs' entries naming the NPC: shown, never answered."""
+    return [c for c in ms if c.item.kind in (PROSE, MOMENT)
+            or (c.item.kind == ENTRY and OWN_ENTRY not in c.signals)]
+
+
+def candidates(corpus: Corpus, dossier: Dossier, table: FormTable) -> list[Candidate]:
+    """The events naming the NPC: what the GM answers, in event order."""
+    return events(mentions(corpus, dossier, table))
 
 
 # ── Check against the published dossier ─────────────────────────────────────
@@ -174,6 +211,7 @@ class Check:
 def check_against_dossier(
     corpus: Corpus, dossier: Dossier, cands: list[Candidate], table: FormTable
 ) -> Check:
+    # ``cands`` here is every mention (:func:`mentions`), not just the events.
     """Compare the candidate list with the counts ``npc-link`` wrote into the dossier.
 
     ``npc-link`` ran on the refactored private copy, where prose sits inside scenes.
@@ -246,23 +284,23 @@ def _yaml_str(s: str) -> str:
 
 
 def ruling_template(dossiers_and_cands: list[tuple[Dossier, list[Candidate]]]) -> str:
-    """A ruling file with every candidate listed and unruled, for the GM to fill in.
+    """A ruling file with every event listed and unanswered, for the GM to fill in.
 
-    An empty value is *unruled*. The tool never writes the real ruling file; this
-    template is written beside the report for the GM to copy from.
+    ``dossiers_and_cands`` pairs each dossier with its events (:func:`events`). The
+    tool never writes the real ruling file; this template sits beside the report.
     """
     out = [
         "# NPC presence rulings — GM-authored. npc_agent reads this file and never writes it.",
-        "# items: one answer per passage; leave it empty to keep it unanswered.",
+        "# One answer per event (a scene, NNN.SS); leave it empty to keep it unanswered.",
         "#   present    the NPC was physically in the scene",
-        "#   mentioned  the passage names the NPC, who was not physically there",
-        "#   neither    neither present nor mentioned, or unsure (a wrong match, a thin passage)",
-        "# default: mentioned answers every passage you leave empty.",
-        "# spans: a run of scenes where the NPC was physically present (a companion);",
-        "#   cut one short around a scene with  \"NNN.SS\": absent  under items.",
+        "#   mentioned  the scene names the NPC, who was not physically there",
+        "#   neither    neither present nor mentioned, or unsure (a wrong match, a thin scene)",
+        "# default: mentioned answers every event you leave empty.",
+        "# spans: a run of events where the NPC was physically present (a companion);",
+        "#   cut one short around a scene that never names them with  \"NNN.SS\": absent",
         "#   spans:",
         "#     - {from: \"034.03\", to: \"071.10\", follows: Zalthir}",
-        "version: 2",
+        f"version: {VERSION}",
         "npcs:",
     ]
     for d, cands in dossiers_and_cands:
@@ -274,7 +312,6 @@ def ruling_template(dossiers_and_cands: list[tuple[Dossier, list[Candidate]]]) -
         out.append("    items:")
         for c in cands:
             it = c.item
-            label = it.title or it.text.splitlines()[0][:70]
-            note = f"{it.kind} · {','.join(c.signals)} · {label}".replace("\n", " ")
+            note = f"{','.join(c.signals)} · {it.title or ''}".replace("\n", " ")
             out.append(f"      {_yaml_str(it.item_id)}:   # {note}")
     return "\n".join(out) + "\n"

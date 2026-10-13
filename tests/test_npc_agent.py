@@ -188,18 +188,30 @@ def test_item_lines_point_at_the_file(camp):
             assert lines[n - 1] == text, (it.item_id, n)
 
 
-# ── candidates ─────────────────────────────────────────────────────────────
+# ── mentions, events, snapshots, context ──────────────────────────────────
+
+
+def _mentions(camp):
+    c, _, table, syl = _setup(camp)
+    return presence.mentions(c, syl, table)
+
+
+def test_only_scenes_are_events_to_answer(camp):
+    # One event, one answer. Prose renders the scenes and an entry is a snapshot;
+    # asking presence of either atomises an event (survey F2, F10).
+    ms = _mentions(camp)
+    assert [c.item.item_id for c in presence.events(ms)] == ["057.01", "061.02", "063.01"]
+    assert [c.item.item_id for c in presence.snapshots(ms)] == ["057.e01", "061.e01"]
+    assert [c.item.item_id for c in presence.context(ms)] == ["057.p01", "057.e02", "061.p01", "061.m01"]
 
 
 def test_matching_is_exact_case_sensitive_and_word_bounded(camp):
-    c, _, table, syl = _setup(camp)
-    ids = [x.item.item_id for x in presence.candidates(c, syl, table)]
+    ids = [c.item.item_id for c in _mentions(camp)]
     assert "057.02" not in ids  # "Sylviran" and lower-case "sylvira" do not name her
 
 
 def test_signals(camp):
-    c, _, table, syl = _setup(camp)
-    by_id = {x.item.item_id: x for x in presence.candidates(c, syl, table)}
+    by_id = {c.item.item_id: c for c in _mentions(camp)}
     assert by_id["061.02"].signals == (presence.QUOTED, presence.HEADLINE, presence.NAMED)
     assert by_id["061.m01"].signals == (presence.QUOTED,)
     assert by_id["057.e01"].signals == (presence.OWN_ENTRY,)
@@ -221,17 +233,17 @@ def test_a_longer_form_of_another_npc_wins_the_match(tmp_path):
     c = corpus.load_corpus(tmp_path / "s")
     ds = dossier.read_dossiers(tmp_path / "n")
     table = presence.build_form_table(ds, frozenset(), {})
-    got = {d.subject: len(presence.candidates(c, d, table)) for d in ds}
+    got = {d.subject: len(presence.mentions(c, d, table)) for d in ds}
     assert got == {"Manshoon": 0, "Manshoon (Simulacrum)": 1}
 
 
 def test_a_generic_form_is_withheld_until_ruled_safe(camp):
     c, ds, table, _ = _setup(camp)
     wick = dossier.select(ds, ["Wick"])[0]
-    assert presence.candidates(c, wick, table) == []
+    assert presence.mentions(c, wick, table) == []
     assert table.withheld_for(wick) == (("Wick", presence.GENERIC),)
     safe = presence.build_form_table(ds, frozenset({"wick"}), {"Wick": "safe"})
-    assert [x.item.item_id for x in presence.candidates(c, wick, safe)] == ["061.m02"]
+    assert [x.item.item_id for x in presence.mentions(c, wick, safe)] == ["061.m02"]
 
 
 def test_a_form_owned_by_two_npcs_is_ambiguous_and_withheld(tmp_path):
@@ -245,24 +257,22 @@ def test_a_form_owned_by_two_npcs_is_ambiguous_and_withheld(tmp_path):
 # ── check against the dossier ──────────────────────────────────────────────
 
 
-def test_check_passes_when_counts_agree(camp):
+def test_the_check_reads_every_mention_and_passes(camp):
     c, _, table, syl = _setup(camp)
-    cands = presence.candidates(c, syl, table)
-    chk = presence.check_against_dossier(c, syl, cands, table)
+    chk = presence.check_against_dossier(c, syl, presence.mentions(c, syl, table), table)
     assert chk.ok, chk.lines
 
 
-def test_check_reports_a_mismatch_and_repairs_nothing(camp):
+def test_the_check_reports_a_mismatch_and_repairs_nothing(camp):
     c, _, table, syl = _setup(camp)
-    cands = presence.candidates(c, syl, table)
     wrong = dossier.Dossier(**{**syl.__dict__, "chapters": (57, 61), "n_moments": 4})
-    chk = presence.check_against_dossier(c, wrong, cands, table)
+    chk = presence.check_against_dossier(c, wrong, presence.mentions(c, syl, table), table)
     assert not chk.ok
     assert any(ln.startswith("MISMATCH chapters") for ln in chk.lines)
     assert any(ln.startswith("MISMATCH moments") for ln in chk.lines)
 
 
-# ── rulings ────────────────────────────────────────────────────────────────
+# ── rulings (version 3: answers are about events) ──────────────────────────
 
 
 def _ids(camp):
@@ -276,11 +286,15 @@ def _corpus(camp):
 
 def _load(camp, tmp_path, body):
     f = tmp_path / "r.yaml"
-    f.write_text("version: 2\nnpcs:\n  Sylvira Savikas:\n" + body)
+    f.write_text("version: 3\nnpcs:\n  Sylvira Savikas:\n" + body)
     return rulings.load_rulings(f, _ids(camp), _corpus(camp))["Sylvira Savikas"]
 
 
-def test_rulings_load_and_empty_means_unruled(camp, tmp_path):
+def _effective(camp, r):
+    return rulings.effective(r, _corpus(camp), _ids(camp)["Sylvira Savikas"])
+
+
+def test_rulings_load_and_empty_means_unanswered(camp, tmp_path):
     r = _load(camp, tmp_path, '    items:\n      "061.02": present\n      "063.01":\n')
     assert r == rulings.NpcRulings(items={"061.02": "present"}, spans=())
 
@@ -289,12 +303,16 @@ def test_rulings_load_and_empty_means_unruled(camp, tmp_path):
     "body, needle",
     [
         ('    items:\n      "061.02": there\n', "is not one of"),
-        ('    items:\n      "057.p02": present\n', "nor a scene in the corpus"),
-        ('    items:\n      "061.01": mentioned\n', "'mentioned' needs an item that names"),
-        ('    items:\n      "061.02": absent\n', "rule it 'mentioned', not 'absent'"),
+        ('    items:\n      "057.p01": mentioned\n', "not a scene; answers are about events"),
+        ('    items:\n      "061.e01": present\n', "not a scene; answers are about events"),
+        ('    items:\n      "061.01": mentioned\n', "'mentioned' needs an event that names the NPC"),
+        ('    items:\n      "061.01": neither\n', "'neither' is for an event that names the NPC"),
+        ('    items:\n      "061.02": absent\n', "answer it 'mentioned', not 'absent'"),
+        ('    items:\n      "061.02": unsure\n', "is not one of present, mentioned, neither, absent"),
+        ('    default: present\n', "default 'present' is not one of"),
         ('    spans:\n      - {from: "061.02", to: "057.01"}\n', "is after to"),
         ('    spans:\n      - {from: "061.09", to: "063.01"}\n', "'061.09' is not a scene"),
-        ('    spans:\n      - {from: "057.01", to: "061.02", value: mentioned}\n', "value 'mentioned'"),
+        ('    spans:\n      - {from: "057.01", to: "061.02", value: unsure}\n', "value 'unsure' is not one of present"),
         ('    spans:\n      - {from: "057.01", to: "061.02", follows: Zalthor}\n', "appears nowhere in the summaries"),
         ('    spans:\n      - {from: "057.01", to: "061.01"}\n      - {from: "061.01", to: "063.01"}\n', "overlap"),
         ('    spans:\n      - {from: "057.01", to: "061.01", until: "x"}\n', "unknown key"),
@@ -306,39 +324,12 @@ def test_rulings_refuse_what_they_cannot_apply(camp, tmp_path, body, needle):
         _load(camp, tmp_path, body)
 
 
-@pytest.mark.parametrize("answer", ["unsure", "can't tell", "maybe"])
-def test_there_are_three_answers_and_no_others(camp, tmp_path, answer):
-    # GM rulings 2026-10-12: physically present, mentioned, or neither/unsure.
-    with pytest.raises(rulings.RulingError, match="is not one of present, mentioned, neither, absent"):
-        _load(camp, tmp_path, f'    items:\n      "061.02": "{answer}"\n')
-
-
-def test_neither_is_for_a_passage_that_names_the_npc(camp, tmp_path):
-    with pytest.raises(rulings.RulingError, match="'neither' is for a passage that names the NPC"):
-        _load(camp, tmp_path, '    items:\n      "061.01": neither\n')
-
-
-def test_neither_is_kept_out_of_both_other_answers(camp, tmp_path):
-    # "because you will make mistakes": a wrong name match is answered, not forced.
-    r = _load(camp, tmp_path, '    default: mentioned\n    items:\n      "057.e02": neither\n      "061.02": present\n')
-    c, _, table, syl = _setup(camp)
-    h = horizon.build_horizon(syl, presence.candidates(c, syl, table), _effective(camp, r), 63, _items(camp))
-    assert [x.item.item_id for x in h.neither] == ["057.e02"]
-    assert "057.e02" not in [x.item.item_id for x in h.witnessed + h.mentioned + h.unruled]
-    assert "possible linking errors" in horizon.render_horizon(h)
-
-
-def test_a_span_says_present_and_nothing_else(camp, tmp_path):
-    with pytest.raises(rulings.RulingError, match="value 'unsure' is not one of present"):
-        _load(camp, tmp_path, '    spans:\n      - {from: "057.01", to: "061.02", value: unsure}\n')
-
-
 @pytest.mark.parametrize(
     "text, needle",
     [
-        ('version: 2\nnpcs:\n  Ilvara:\n    items: {}\n', "not an NPC with a published dossier"),
-        ('version: 1\nnpcs: {}\n', "version must be 2"),
-        ('version: 2\nnpcs: {}\nextra: 1\n', "unknown top-level key"),
+        ('version: 3\nnpcs:\n  Ilvara:\n    items: {}\n', "not an NPC with a published dossier"),
+        ('version: 2\nnpcs: {}\n', "version must be 3"),  # element-based answers are not half-read
+        ('version: 3\nnpcs: {}\nextra: 1\n', "unknown top-level key"),
     ],
 )
 def test_the_file_itself_is_refused_when_it_cannot_be_applied(camp, tmp_path, text, needle):
@@ -348,36 +339,22 @@ def test_the_file_itself_is_refused_when_it_cannot_be_applied(camp, tmp_path, te
         rulings.load_rulings(f, _ids(camp), _corpus(camp))
 
 
-def _effective(camp, r):
-    return rulings.effective(r, _corpus(camp), _ids(camp)["Sylvira Savikas"])
-
-
-def test_a_span_covers_its_scenes_and_the_prose_of_chapters_wholly_inside_it(camp, tmp_path):
+def test_a_span_covers_scenes_and_nothing_else(camp, tmp_path):
     # GM ruling 2026-10-12: Glabbagool in the bag of holding counts as present.
-    r = _load(camp, tmp_path, '    spans:\n      - {from: "061.01", to: "063.01"}\n')
-    eff = _effective(camp, r)
+    eff = _effective(camp, _load(camp, tmp_path, '    spans:\n      - {from: "061.01", to: "063.01"}\n'))
     assert eff["061.01"] == ("present", rulings.FROM_SPAN)  # names nobody; covered anyway
-    assert eff["061.p01"] == ("present", rulings.FROM_SPAN)  # ch61 is wholly inside
-    assert eff["061.m02"] == ("present", rulings.FROM_SPAN)  # a moment that does not name her
-    assert eff["061.e01"] == ("present", rulings.FROM_SPAN)  # her own entry
-    assert "057.p01" not in eff  # ch57 is outside
+    assert set(eff) == {"061.01", "061.02", "063.01"}
 
 
-def test_a_span_starting_mid_chapter_does_not_cover_that_chapters_prose(camp, tmp_path):
-    eff = _effective(camp, _load(camp, tmp_path, '    spans:\n      - {from: "057.02", to: "063.01"}\n'))
-    assert eff["057.02"][0] == "present"
-    assert "057.01" not in eff and "057.p01" not in eff and "057.m01" not in eff
-
-
-def test_an_item_ruling_overrides_the_span(camp, tmp_path):
+def test_an_item_answer_overrides_the_span(camp, tmp_path):
     body = ('    spans:\n      - {from: "057.01", to: "063.01", note: "in the bag"}\n'
-            '    items:\n      "061.01": absent\n      "061.02": present\n')
+            '    items:\n      "061.01": absent\n      "061.02": mentioned\n')
     r = _load(camp, tmp_path, body)
     assert r.spans[0].note == "in the bag"
     eff = _effective(camp, r)
     assert eff["061.01"] == ("absent", rulings.FROM_ITEM)
-    assert eff["061.02"] == ("present", rulings.FROM_ITEM)
-    assert eff["057.01"] == ("present", rulings.FROM_SPAN)
+    assert eff["061.02"] == ("mentioned", rulings.FROM_ITEM)
+    assert eff["057.02"] == ("present", rulings.FROM_SPAN)
 
 
 def test_follows_is_kept_as_a_hint(camp, tmp_path):
@@ -387,6 +364,15 @@ def test_follows_is_kept_as_a_hint(camp, tmp_path):
     assert r.spans[0].follows == "Zalthir"
 
 
+def test_a_default_answers_every_event_nothing_else_reaches(camp, tmp_path):
+    r = _load(camp, tmp_path, '    default: mentioned\n    spans:\n      - {from: "061.01", to: "061.02"}\n'
+              '    items:\n      "063.01": neither\n')
+    eff = _effective(camp, r)
+    assert eff["057.01"] == ("mentioned", rulings.FROM_DEFAULT)
+    assert eff["061.02"] == ("present", rulings.FROM_SPAN)
+    assert eff["063.01"] == ("neither", rulings.FROM_ITEM)
+
+
 # ── horizon ────────────────────────────────────────────────────────────────
 
 
@@ -394,69 +380,63 @@ def _items(camp):
     return {it.item_id: it for it in _corpus(camp).items()}
 
 
+def _horizon(camp, eff, chapter):
+    c, _, table, syl = _setup(camp)
+    ms = presence.mentions(c, syl, table)
+    return horizon.build_horizon(syl, presence.events(ms), eff, chapter, _items(camp), presence.snapshots(ms))
+
+
 def _item_rulings(d):
     return {k: (v, rulings.FROM_ITEM) for k, v in d.items()}
 
 
-def test_a_companion_may_be_ruled_present_in_a_scene_that_never_names_him(camp, tmp_path):
-    # Glabbagool, in the bag of holding, is named in 91 of the 240 scenes of his span.
-    r = _load(camp, tmp_path, '    items:\n      "061.01": present\n      "061.02": present\n')
-    c, _, table, syl = _setup(camp)
-    h = horizon.build_horizon(syl, presence.candidates(c, syl, table), _effective(camp, r), 61, _items(camp))
-    assert [x.item.item_id for x in h.witnessed] == ["061.01", "061.02"]
-    assert h.witnessed[0].signals == ()
-    assert "[ch 061 / 061.01] 061-session-colloquium.md:9 — not named in the text" in horizon.render_horizon(h)
+def test_nothing_is_present_without_an_answer(camp):
+    h = _horizon(camp, {}, 63)
+    assert h.witnessed == () and [c.item.item_id for c in h.unruled] == ["057.01", "061.02", "063.01"]
 
 
-def test_a_span_fills_the_horizon_and_says_so(camp, tmp_path):
+def test_the_horizon_sorts_events_by_answer_and_cuts_at_the_chapter(camp):
+    h = _horizon(camp, _item_rulings({"061.02": "present", "057.01": "mentioned", "063.01": "mentioned"}), 61)
+    assert [x.item.item_id for x in h.witnessed] == ["061.02"]
+    assert [x.item.item_id for x in h.mentioned] == ["057.01"]
+    assert h.later == 1
+    text = horizon.render_horizon(h)
+    assert "Moziqodo" not in text and "[ch 061 / 061.02]" in text
+
+
+def test_state_is_the_latest_entry_and_every_event_naming_them_after_it(camp):
+    h = _horizon(camp, {}, 63)
+    assert h.snapshot.item_id == "061.e01"
+    assert [c.item.item_id for c in h.since_snapshot] == ["063.01"]
+    text = horizon.render_horizon(h)
+    assert "Bedridden with an abyssal plague" in text
+    assert "Events naming them since that entry" in text
+
+
+def test_neither_is_kept_out_of_both_other_answers(camp, tmp_path):
+    r = _load(camp, tmp_path, '    default: mentioned\n    items:\n      "057.01": neither\n      "061.02": present\n')
+    h = _horizon(camp, _effective(camp, r), 63)
+    assert [x.item.item_id for x in h.neither] == ["057.01"]
+    assert "possible linking errors" in horizon.render_horizon(h)
+    assert "(by default)" in horizon.render_horizon(h)
+
+
+def test_a_companion_may_be_present_at_an_event_that_never_names_him(camp, tmp_path):
     r = _load(camp, tmp_path, '    spans:\n      - {from: "061.01", to: "061.02"}\n')
-    c, _, table, syl = _setup(camp)
-    h = horizon.build_horizon(syl, presence.candidates(c, syl, table), _effective(camp, r), 61, _items(camp))
-    ids = [x.item.item_id for x in h.witnessed]
-    assert ids[:2] == ["061.01", "061.02"] and "061.p01" in ids
-    assert "— not named in the text, by span" in horizon.render_horizon(h)
+    h = _horizon(camp, _effective(camp, r), 61)
+    assert [x.item.item_id for x in h.witnessed] == ["061.01", "061.02"]
+    assert "[ch 061 / 061.01] 061-session-colloquium.md:9 — not named in the scene, by span" in horizon.render_horizon(h)
 
 
 def test_an_absent_scene_is_left_out(camp, tmp_path):
     r = _load(camp, tmp_path, '    spans:\n      - {from: "061.01", to: "061.02"}\n    items:\n      "061.01": absent\n')
-    c, _, table, syl = _setup(camp)
-    h = horizon.build_horizon(syl, presence.candidates(c, syl, table), _effective(camp, r), 61, _items(camp))
-    assert "061.01" not in [x.item.item_id for x in h.witnessed + h.unruled + h.mentioned]
-
-
-def test_an_unnamed_scene_after_the_chapter_stays_hidden(camp):
-    c, _, table, syl = _setup(camp)
-    h = horizon.build_horizon(syl, presence.candidates(c, syl, table), _item_rulings({"061.01": "present"}), 57,
-                              _items(camp))
-    assert h.witnessed == ()
-    assert "Reunion" not in horizon.render_horizon(h)
-
-
-def test_nothing_is_present_without_a_ruling(camp):
-    c, _, table, syl = _setup(camp)
-    cands = presence.candidates(c, syl, table)
-    h = horizon.build_horizon(syl, cands, {}, 63)
-    assert h.witnessed == () and len(h.unruled) == len(cands)
-
-
-def test_horizon_cuts_at_the_chapter_and_sorts_by_ruling(camp):
-    c, _, table, syl = _setup(camp)
-    cands = presence.candidates(c, syl, table)
-    ruled = _item_rulings({"061.02": "present", "057.01": "mentioned", "063.01": "mentioned"})
-    h = horizon.build_horizon(syl, cands, ruled, 61)
-    assert [x.item.item_id for x in h.witnessed] == ["061.02"]
-    assert [x.item.item_id for x in h.mentioned] == ["057.01"]
-    assert "061.p01" in [x.item.item_id for x in h.unruled]
-    assert h.later == 1  # chapter 63 is withheld, ruled or not
-    text = horizon.render_horizon(h)
-    assert "Moziqodo" not in text
-    assert "[ch 061 / 061.02]" in text
+    h = _horizon(camp, _effective(camp, r), 61)
+    assert "061.01" not in [x.item.item_id for x in h.witnessed + h.unruled + h.mentioned + h.neither]
 
 
 def test_a_horizon_before_the_npc_appears_says_nothing_about_the_future(camp):
-    c, _, table, syl = _setup(camp)
-    h = horizon.build_horizon(syl, presence.candidates(c, syl, table), {}, 40)
-    assert h.first_seen is None and h.later > 0
+    h = _horizon(camp, {}, 40)
+    assert h.first_seen is None and h.snapshot is None and h.later > 0
     text = horizon.render_horizon(h)
     for future in ("57", "61", "63", str(h.later)):
         assert future not in text.replace("chapter 40", "")
@@ -475,10 +455,11 @@ def test_cli_candidates_writes_reports_and_a_template(camp, tmp_path):
         "sylvira-savikas.candidates.json", "sylvira-savikas.candidates.md",
     ]
     tmpl = (out / "presence.template.yaml").read_text()
-    assert '"061.02":   # scene' in tmpl
-    # The template, filled in by nobody, is a valid ruling file with nothing ruled.
+    assert '"061.02":   # quoted,headline,named' in tmpl and "057.p01" not in tmpl
     loaded = rulings.load_rulings(out / "presence.template.yaml", _ids(camp), _corpus(camp))
     assert loaded == {"Sylvira Savikas": rulings.NpcRulings()}
+    md = (out / "sylvira-savikas.candidates.md").read_text()
+    assert "Events to answer: 3" in md and "State (their entry, not answered)" in md
 
 
 def test_cli_exits_3_on_a_mismatch(camp, tmp_path):
@@ -502,9 +483,8 @@ def test_cli_refuses_an_npc_without_a_published_dossier(camp, tmp_path, capsys):
 
 def test_cli_horizon(camp, tmp_path, capsys):
     r = tmp_path / "r.yaml"
-    r.write_text('version: 2\nnpcs:\n  Sylvira Savikas:\n    items:\n      "061.02": present\n')
-    rc = cli.main(["horizon", "--campaign-dir", str(camp), "--npc", "Sylvira",
-                   "--chapter", "61", "--rulings", str(r)])
+    r.write_text('version: 3\nnpcs:\n  Sylvira Savikas:\n    items:\n      "061.02": present\n')
+    rc = cli.main(["horizon", "--campaign-dir", str(camp), "--npc", "Sylvira", "--chapter", "61", "--rulings", str(r)])
     assert rc == 0
     out = capsys.readouterr().out
     assert "Knowledge horizon — Sylvira Savikas, as of chapter 61" in out
@@ -513,7 +493,7 @@ def test_cli_horizon(camp, tmp_path, capsys):
 
 def test_the_ruling_file_is_never_written(camp, tmp_path):
     r = tmp_path / "r.yaml"
-    r.write_text('version: 2\nnpcs: {}\n')
+    r.write_text("version: 3\nnpcs: {}\n")
     before = r.read_bytes()
     cli.main(["horizon", "--campaign-dir", str(camp), "--npc", "Sylvira", "--chapter", "63", "--rulings", str(r),
               "--out", str(tmp_path / "h.md")])
@@ -523,14 +503,15 @@ def test_the_ruling_file_is_never_written(camp, tmp_path):
 # ── review page ────────────────────────────────────────────────────────────
 
 
-def test_review_bundle_carries_candidates_and_every_item_of_their_chapters(camp):
+def test_review_bundle_answers_events_and_shows_state_and_context(camp):
     c, _, table, syl = _setup(camp)
-    data = review.bundle(c, [(syl, presence.candidates(c, syl, table))], "test")
+    data = review.bundle(c, [(syl, presence.mentions(c, syl, table))], "test")
+    n = data["npcs"][0]
+    assert list(n["candidates"]) == ["057.01", "061.02", "063.01"]
+    assert n["snapshots"] == ["057.e01", "061.e01"]
+    assert n["context"] == ["057.p01", "057.e02", "061.p01", "061.m01"]
     assert [ch["n"] for ch in data["chapters"]] == [57, 61, 63]
-    assert data["chapters"][0]["title"] == "Chapter 57"
-    assert "057.02" in data["items"]  # names nobody, but a span may still reach it
-    assert data["npcs"][0]["candidates"]["061.02"] == ["quoted", "headline", "named"]
-    assert data["rulings_version"] == rulings.VERSION
+    assert data["rulings_version"] == rulings.VERSION == 3
 
 
 def test_review_page_embeds_its_data_safely_and_loads_nothing_but_fonts(camp, tmp_path):
@@ -541,7 +522,7 @@ def test_review_page_embeds_its_data_safely_and_loads_nothing_but_fonts(camp, tm
     assert cli.main(["review", "--campaign-dir", str(camp), "--npc", "Sylvira", "--out", str(out)]) == 0
     page = out.read_text()
     assert review.DATA_SLOT not in page
-    assert page.count("</script>") == 1  # the data cannot close its own script block
+    assert page.count("</script>") == 1
     hosts = set(re.findall(r"https?://([^/\"' ]+)", page))
     assert hosts <= {"fonts.googleapis.com", "fonts.gstatic.com"}
 
@@ -549,48 +530,17 @@ def test_review_page_embeds_its_data_safely_and_loads_nothing_but_fonts(camp, tm
 def test_the_file_the_page_saves_is_a_ruling_file(camp, tmp_path):
     import json
 
-    saved = {"version": 2, "npcs": {"Sylvira Savikas": {
+    saved = {"version": 3, "npcs": {"Sylvira Savikas": {
+        "default": "mentioned",
         "spans": [{"from": "061.01", "to": "063.01", "value": "present", "follows": "Daz"}],
-        "items": {"057.01": "mentioned"}}}}
+        "items": {"057.01": "neither"}}}}
     f = tmp_path / "presence.json"
     f.write_text(json.dumps(saved, indent=2))
     r = rulings.load_rulings(f, _ids(camp), _corpus(camp))["Sylvira Savikas"]
-    assert r.spans[0].follows == "Daz" and r.items == {"057.01": "mentioned"}
+    assert r.spans[0].follows == "Daz" and r.items == {"057.01": "neither"} and r.default == "mentioned"
 
 
-def test_review_refuses_to_write_into_its_sources(camp, capsys):
+def test_review_refuses_to_write_into_its_sources(camp):
     rc = cli.main(["review", "--campaign-dir", str(camp), "--all", "--out", str(camp / "npcs" / "page.html")])
     assert rc == 2
     assert not (camp / "npcs" / "page.html").exists()
-
-
-# ── NPC default ────────────────────────────────────────────────────────────
-
-
-def test_a_default_rules_every_candidate_nothing_else_reaches(camp, tmp_path):
-    # Sylvira: present in a few of the passages naming her, talked about in the rest.
-    r = _load(camp, tmp_path, '    default: mentioned\n    items:\n      "061.02": present\n')
-    eff = _effective(camp, r)
-    assert eff["061.02"] == ("present", rulings.FROM_ITEM)
-    assert eff["057.01"] == ("mentioned", rulings.FROM_DEFAULT)
-    assert "061.01" not in eff  # not a candidate: a default never reaches it
-
-
-def test_a_span_outranks_the_default(camp, tmp_path):
-    r = _load(camp, tmp_path, '    default: mentioned\n    spans:\n      - {from: "061.01", to: "061.02"}\n')
-    eff = _effective(camp, r)
-    assert eff["061.02"] == ("present", rulings.FROM_SPAN)
-    assert eff["057.01"] == ("mentioned", rulings.FROM_DEFAULT)
-
-
-def test_a_default_cannot_be_present(camp, tmp_path):
-    with pytest.raises(rulings.RulingError, match="default 'present' is not one of"):
-        _load(camp, tmp_path, '    default: present\n')
-
-
-def test_the_horizon_labels_what_the_default_ruled(camp, tmp_path):
-    r = _load(camp, tmp_path, '    default: mentioned\n    items:\n      "061.02": present\n')
-    c, _, table, syl = _setup(camp)
-    h = horizon.build_horizon(syl, presence.candidates(c, syl, table), _effective(camp, r), 61, _items(camp))
-    assert h.unruled == ()
-    assert "[ch 057 / 057.01] 057-session-council.md:13 (by default) — scene" in horizon.render_horizon(h)
