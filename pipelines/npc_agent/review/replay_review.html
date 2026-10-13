@@ -87,6 +87,7 @@ summary { cursor: pointer; font-weight: 600; }
 .cols { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 10px; }
 .cols > div { min-width: 0; }
 .sha { color: var(--muted); }
+.target.free { border-left: 4px solid var(--accent); }
 @media (max-width: 700px) { .side, .cols { grid-template-columns: minmax(0, 1fr); } }
 </style>
 <div class="wrap">
@@ -110,6 +111,8 @@ const DATA = /*__NPC_AGENT_DATA__*/null;
     return;
   }
   const REPLAY = DATA.replay || [], FORWARD = DATA.forward || [];
+  const isFree = (t) => t.mode === "free";
+  const rp = (t, u) => "replay/" + DATA.run_id + "--" + (isFree(t) ? "free--" : "") + t.target + "--" + String(u.n).padStart(2, "0");
   const MATCH = [["same", "Same substance"], ["partly", "Partly"], ["different", "Different"]];
   const VERDICT = [["approve", "Approve"], ["reject", "Reject"]];
   const DRAFT_KEY = "replay-draft-" + DATA.run_id;
@@ -118,16 +121,15 @@ const DATA = /*__NPC_AGENT_DATA__*/null;
   const recs = {};   // path -> record
   const meta = {};   // path -> function returning the fixed fields stored with it
   for (const t of REPLAY) for (const u of t.turns) {
-    const p = "replay/" + DATA.run_id + "--" + t.target + "--" + String(u.n).padStart(2, "0");
+    const p = rp(t, u);
     recs[p] = { match: "", note: "" };
-    meta[p] = () => ({ kind: "replay", npc: DATA.npc, run_id: DATA.run_id, model: DATA.model, target: t.target, turn: u.n, prompt_sha256: u.sha });
+    meta[p] = () => ({ kind: "replay", mode: t.mode || "teacher_forced", npc: DATA.npc, run_id: DATA.run_id, model: DATA.model, target: t.target, turn: u.n, prompt_sha256: u.sha });
   }
   for (const f of FORWARD) f.moves.forEach((m, i) => {
     const p = "forward/" + DATA.run_id + "--" + f.doc_prefix + i;
     recs[p] = { verdict: "", note: "" };
     meta[p] = () => ({ kind: "forward", npc: DATA.npc, run_id: DATA.run_id, model: DATA.model, freeze: f.freeze, index: i, move: m.move, why: m.why, prompt_sha256: f.sha });
   });
-  const rp = (t, u) => "replay/" + DATA.run_id + "--" + t.target + "--" + String(u.n).padStart(2, "0");
   const fp = (f, i) => "forward/" + DATA.run_id + "--" + f.doc_prefix + i;
 
   $("lede").textContent = DATA.npc + " · model " + DATA.model + " · run " + DATA.run_id +
@@ -164,11 +166,15 @@ const DATA = /*__NPC_AGENT_DATA__*/null;
       '<div class="side"><div><h3>What she actually did</h3><div class="box answer">' + esc(u.actual) + "</div></div>" +
       '<div><h3>What the agent did</h3><div class="box answer">' + mark(u.answer, u.flags) + "</div></div></div>" + flagList(u.flags) +
       '<div class="q"><strong>Does the agent match what she did?</strong>' + pick(p, "match", r.match, MATCH) + "</div>" +
-      note(p, "n-" + t.target.replace(/\W/g, "") + "-" + u.n) + "</div>";
+      note(p, "n-" + (isFree(t) ? "free-" : "") + t.target.replace(/\W/g, "") + "-" + u.n) + "</div>";
   }
   function replaySection(t) {
-    return '<section class="target"><header><h2>' + esc(t.target) + " · " + esc(t.scene_title) + '</h2><span class="label">frozen at chapter ' +
-      t.freeze + "</span></header><h3>The scene she was given</h3><div class=\"box\">" + esc(t.situation) + "</div>" +
+    const free = isFree(t);
+    return '<section class="target' + (free ? " free" : "") + '"><header><h2>' + esc(t.target) + " · " + esc(t.scene_title) + '</h2><span class="label">' +
+      (free ? "Free-running: she sees only her own earlier answers" : "Teacher-forced: she sees the real scene so far") +
+      " · frozen at chapter " + t.freeze + "</span></header>" +
+      (free ? '<p class="lede">The party\'s lines are real, and may react to things this ' + esc(DATA.npc) + ' never said.</p>' : "") +
+      "<h3>The scene she was given</h3><div class=\"box\">" + esc(t.situation) + "</div>" +
       t.turns.map((u) => turn(t, u)).join("") + "</section>";
   }
   function forwardSection(f) {
@@ -186,7 +192,8 @@ const DATA = /*__NPC_AGENT_DATA__*/null;
   }
   function render() {
     const active = document.activeElement && document.activeElement.id;
-    $("targets").innerHTML = REPLAY.map(replaySection).join("") + FORWARD.map(forwardSection).join("") ||
+    $("targets").innerHTML = REPLAY.filter((t) => !isFree(t)).flatMap((t) => [t, ...REPLAY.filter((f) => isFree(f) && f.target === t.target)])
+      .concat(REPLAY.filter((f) => isFree(f) && !REPLAY.some((t) => !isFree(t) && t.target === f.target))).map(replaySection).join("") + FORWARD.map(forwardSection).join("") ||
       '<p class="empty">Nothing to score yet.</p>';
     if (active && $(active)) $(active).focus();
   }
@@ -244,7 +251,7 @@ const DATA = /*__NPC_AGENT_DATA__*/null;
     const replay = [], forward = [];
     for (const t of REPLAY) for (const u of t.turns) {
       const p = rp(t, u);
-      replay.push({ target: t.target, turn: u.n, prompt_sha256: u.sha, match: recs[p].match, note: recs[p].note });
+      replay.push({ target: t.target, mode: t.mode || "teacher_forced", turn: u.n, prompt_sha256: u.sha, match: recs[p].match, note: recs[p].note });
     }
     for (const f of FORWARD) f.moves.forEach((m, i) => {
       const p = fp(f, i);
@@ -257,7 +264,7 @@ const DATA = /*__NPC_AGENT_DATA__*/null;
   function asYaml(f) {
     const L = ["npc: " + q(f.npc), "run_id: " + q(f.run_id), "model: " + q(f.model)];
     L.push(f.replay.length ? "replay:" : "replay: []");
-    for (const r of f.replay) L.push("  - target: " + q(r.target), "    turn: " + r.turn, "    prompt_sha256: " + q(r.prompt_sha256), "    match: " + q(r.match), "    note: " + q(r.note));
+    for (const r of f.replay) L.push("  - target: " + q(r.target), "    mode: " + q(r.mode), "    turn: " + r.turn, "    prompt_sha256: " + q(r.prompt_sha256), "    match: " + q(r.match), "    note: " + q(r.note));
     L.push(f.forward.length ? "forward:" : "forward: []");
     for (const r of f.forward) L.push("  - freeze: " + r.freeze, "    index: " + r.index, "    move: " + q(r.move), "    why: " + q(r.why),
       "    prompt_sha256: " + q(r.prompt_sha256), "    model: " + q(r.model), "    verdict: " + q(r.verdict), "    note: " + q(r.note));

@@ -16,7 +16,7 @@
                          --rulings prep.json [--out FILE]
     npc_agent replay     --campaign-dir DIR --npc NAME --rulings FILE --target NNN.SS --prep FILE [--section TEXT]
                          --prep-rulings prep.json [--target ... --prep ... --section ...] --out-dir OUT
-                         [--knowledge FILE] [--turns-only] [--dry-run] [--force] [--model M] [--backend B]
+                         [--knowledge FILE] [--turns-only] [--free] [--dry-run] [--force] [--model M] [--backend B]
     npc_agent forward    --campaign-dir DIR --npc NAME --rulings FILE --chapter N --next NNN.SS
                          --prep FILE [--section TEXT] --prep-rulings prep.json --prep-target NNN.SS
                          [--plan FILE [--plan-section TEXT]] --out-dir OUT [--knowledge FILE] [--dry-run] [--force]
@@ -24,6 +24,11 @@
 ``replay`` splits a scene into turns (:mod:`turns`), asks the agent each one with the real scene so far
 (earlier turns' real answers included, never later ones), and writes ``OUT/replay.html``. ``forward``
 asks once what she does between sessions; the GM's plan reaches the page, never a prompt.
+
+``replay --free`` runs free: each earlier turn's real answer in "So far in this scene" is replaced by the
+agent's own answer for that turn (the party's lines stay real), so turns run in order and a changed
+earlier answer changes every later prompt's sha. It writes to ``OUT/<target>/free/`` and the page shows it as
+its own section beside the teacher-forced one, which is left untouched.
 
 A beat whose sentence states what someone does not know is always left out of
 their horizon (:mod:`knowledge`); ``--knowledge`` adds the GM's ``who`` where
@@ -601,7 +606,7 @@ def _prep_sheet(prep_file, section, prep_rulings, target, subject, forms) -> str
 def _write_replay_page(out_dir: Path, npc: str, model: str) -> bool:
     """Rebuild ``replay.html`` from every ``bundle.json`` under ``out_dir``; False when there is nothing to show."""
     replay_b, forward_b, stamps = [], [], []
-    for f in sorted(out_dir.glob("*/bundle.json")):
+    for f in sorted([*out_dir.glob("*/bundle.json"), *out_dir.glob("*/free/bundle.json")]):
         b = _read_json(f)
         if b.get("kind") == "replay":
             replay_b.append(b)
@@ -623,14 +628,15 @@ def _write_replay_page(out_dir: Path, npc: str, model: str) -> bool:
     return True
 
 
-def _so_far(subject: str, done: list[turns.Turn]) -> str:
+def _so_far(subject: str, done: list[turns.Turn], answers: list[str] | None = None) -> str:
+    """The scene so far; ``answers`` (free mode) replaces each turn's real answer with the agent's."""
     if not done:
         return "(Nothing yet: this is the start of the scene.)"
     parts = []
-    for t in done:
+    for i, t in enumerate(done):
         if t.prompt:
             parts.append(t.prompt)
-        parts.append(f"{subject}: {t.actual}")
+        parts.append(f"{subject}: {t.actual if answers is None else answers[i]}")
     return "\n\n".join(parts)
 
 
@@ -701,27 +707,35 @@ def cmd_replay(args) -> int:
         persona_md = persona.render_persona(sentences, subject, freeze)
         situation_md = agent_mod.situation(corpus, t)
         sheet_md = _prep_sheet(pf, sec, pj, t, subject, forms)
-        built = []
-        for k, turn in enumerate(splits[t]):
+        def build(k, answers=None, *, t=t, persona_md=persona_md, horizon_md=horizon_md, sheet_md=sheet_md,
+                  situation_md=situation_md):
+            turn = splits[t][k]
             system, user = agent_mod.build_turn_prompt(
                 subject, persona_md, horizon_md, sheet_md, situation_md,
-                _so_far(subject, splits[t][:k]), turn.prompt or "(Nothing is put to you: the moment is yours.)")
-            built.append((turn, system, user, _sha(system, user)))
-        prepared.append((t, scene, freeze, situation_md, built))
+                _so_far(subject, splits[t][:k], answers), turn.prompt or "(Nothing is put to you: the moment is yours.)")
+            return turn, system, user, _sha(system, user)
+        prepared.append((t, scene, freeze, situation_md, build))
     resolved = _knowledge(args, summaries, corpus)
     cases = [c for c in knowledge.leak_cases(resolved, args.dossiers) if knowledge.names_dossier(c.who, d)]
     backend = agent_mod.backend_name(args)
     out_dir.mkdir(parents=True, exist_ok=True)
     any_answer = False
-    for t, scene, freeze, situation_md, built in prepared:
-        tdir = out_dir / t
+    mode = "free" if args.free else "teacher_forced"
+    for t, scene, freeze, situation_md, build in prepared:
+        tdir = out_dir / t / "free" if args.free else out_dir / t
         (tdir / "turns").mkdir(parents=True, exist_ok=True)
-        atomic_write_text(tdir / "prompt.system.md", built[0][1])
+        n_turns = len(splits[t])
+        fixed = None if args.free else [build(k) for k in range(n_turns)]
+        atomic_write_text(tdir / "prompt.system.md", (fixed[0] if fixed else build(0))[1])
         prev_turns = _read_json(tdir / "run.json").get("turns") or {}
-        run = {"npc": subject, "target": t, "freeze_chapter": freeze, "model": args.model, "backend": backend,
-               "dry_run": bool(args.dry_run), "written_at": _now(), "turns": {}}
-        page_turns, stamps = [], []
-        for n, (turn, system, user, sha) in enumerate(built, 1):
+        run = {"npc": subject, "target": t, "mode": mode, "freeze_chapter": freeze, "model": args.model,
+               "backend": backend, "dry_run": bool(args.dry_run), "written_at": _now(), "turns": {}}
+        page_turns, stamps, own = [], [], []
+        for n in range(1, n_turns + 1):
+            if fixed:
+                turn, system, user, sha = fixed[n - 1]
+            else:  # free: she sees her own earlier answers; before one exists (dry run) the slot says so
+                turn, system, user, sha = build(n - 1, own)
             nn = f"{n:02d}"
             ndir = tdir / "turns" / nn
             ndir.mkdir(parents=True, exist_ok=True)
@@ -731,8 +745,12 @@ def cmd_replay(args) -> int:
             run["turns"][nn] = {"prompt_sha256": sha, "beat_ids": list(turn.beat_ids), **entry}
             if args.dry_run or not (ndir / "answer.md").is_file():
                 print(f"{t} turn {nn}: {status}")
+                if args.free:
+                    own.append(((ndir / "answer.md").read_text(encoding="utf-8").strip() if (ndir / "answer.md").is_file()
+                                else "(not yet answered: dry run)"))
                 continue
             answer = (ndir / "answer.md").read_text(encoding="utf-8")
+            own.append(answer.strip())
             flags = leakcheck.check(answer, given=user, cases=cases, corpus=corpus, chapter=freeze, target_scene=t)
             atomic_write_text(ndir / "flags.json", json.dumps(_flag_dicts(flags), indent=2) + "\n")
             stamps.append(entry["answer_at"] or run["written_at"])
@@ -740,10 +758,10 @@ def cmd_replay(args) -> int:
                                "beat_ids": list(turn.beat_ids), "flags": _flag_dicts(flags)})
             print(f"{t} turn {nn}: {status}; {len(flags)} flag(s)")
         atomic_write_text(tdir / "run.json", json.dumps(run, indent=2) + "\n")
-        if page_turns and len(page_turns) == len(built):
+        if page_turns and len(page_turns) == n_turns:
             any_answer = True
             atomic_write_text(tdir / "bundle.json", json.dumps({
-                "kind": "replay", "target": t, "freeze": freeze, "scene_title": scene.title or t, "situation": situation_md,
+                "kind": "replay", "mode": mode, "target": t, "freeze": freeze, "scene_title": scene.title or t, "situation": situation_md,
                 "turns": page_turns, "answer_at": max(stamps)}, ensure_ascii=False) + "\n")
     if any_answer:
         _write_replay_page(out_dir, subject, args.model)
@@ -952,6 +970,8 @@ def build_parser() -> argparse.ArgumentParser:
                     help="prep.json saved from the prep page (once, or once per --target)")
     rp.add_argument("--turns-only", action="store_true",
                     help="print each target's turn split and stop: no rulings, prep or model needed")
+    rp.add_argument("--free", action="store_true",
+                    help="free-running: she sees her own earlier answers, not the real ones (writes OUT/<target>/free/)")
     rp.add_argument("--out-dir", type=Path, default=None)
     rp.add_argument("--dry-run", action="store_true", help="write the prompts and answer key; call no model")
     rp.add_argument("--force", action="store_true", help="ask the model again even if an answer for this prompt exists")

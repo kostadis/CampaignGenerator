@@ -428,3 +428,80 @@ def test_the_scores_a_page_exports_keep_the_move_text_and_prompt_sha():
     page = (Path(replay_page.__file__).parent / "review" / "replay_review.html").read_text()
     for needle in ("prompt_sha256: f.sha", "move: m.move", "why: m.why", "verdict:", "scores.json"):
         assert needle in page
+
+
+# ── free-running replay ─────────────────────────────────────────────────────
+
+
+@pytest.fixture
+def numbered(monkeypatch):
+    """A fake model whose answer to every call is distinct and recognisable."""
+    calls = []
+
+    def play(args, system, user):
+        calls.append(user)
+        return f"FAKE-ANSWER-{len(calls)} she nods."
+
+    monkeypatch.setattr(agent, "play", play)
+    return calls
+
+
+def _free(camp, tmp_path, *extra, **kw):
+    return _replay(camp, tmp_path, "--free", *extra, **kw)
+
+
+def test_free_turn_two_sees_the_agents_turn_one_answer_not_the_real_one(camp, tmp_path, numbered):
+    rc, out = _free(camp, tmp_path)
+    assert rc == 0 and len(numbered) == 4
+    ts = turns.split_turns(*_scene(camp))
+    u2 = numbered[1]
+    so_far = u2.split("## So far in this scene")[1].split("## Now")[0]
+    assert "FAKE-ANSWER-1 she nods." in so_far and ts[0].actual not in u2
+    assert ts[1].prompt in u2.split("## Now")[1]
+    assert ts[2].prompt in numbered[2].split("## So far in this scene")[1]  # the party's lines stay real
+    assert "FAKE-ANSWER-1" not in numbered[0] and "FAKE-ANSWER-2" not in u2
+
+
+def test_teacher_forced_output_is_unchanged_by_the_free_mode_existing(camp, tmp_path, fake):
+    rc, out = _replay(camp, tmp_path)
+    ts = turns.split_turns(*_scene(camp))
+    u2 = (out / "064.01" / "turns" / "02" / "prompt.user.md").read_text()
+    assert ts[0].actual in u2.split("## So far in this scene")[1]
+    run = json.loads((out / "064.01" / "run.json").read_text())
+    assert run["mode"] == "teacher_forced" and not (out / "064.01" / "free").exists()
+    assert json.loads((out / "064.01" / "bundle.json").read_text())["mode"] == "teacher_forced"
+
+
+def test_free_outputs_land_in_the_free_subtree_and_leave_the_forced_run_alone(camp, tmp_path, fake):
+    _, out = _replay(camp, tmp_path)
+    before = {p: p.read_bytes() for p in (out / "064.01").rglob("*") if p.is_file()}
+    rc, _ = _free(camp, tmp_path)
+    assert rc == 0
+    f = out / "064.01" / "free"
+    for name in ("prompt.system.md", "run.json", "bundle.json"):
+        assert (f / name).is_file(), name
+    for name in ("prompt.user.md", "answer.md", "actual.md", "flags.json"):
+        assert (f / "turns" / "02" / name).is_file(), name
+    assert json.loads((f / "run.json").read_text())["mode"] == "free"
+    assert all(p.read_bytes() == b for p, b in before.items())
+    data = json.loads(re.search(r"const DATA = (.*?);\n", (out / "replay.html").read_text()).group(1).replace("<\\/", "</"))
+    assert sorted(t["mode"] for t in data["replay"]) == ["free", "teacher_forced"]
+    page = (out / "replay.html").read_text()
+    assert "Free-running: she sees only her own earlier answers" in page and "may react to things" in page
+    assert '"free--"' in page
+
+
+def test_changing_turn_one_answer_invalidates_turn_twos_reuse(camp, tmp_path, numbered):
+    _, out = _free(camp, tmp_path)
+    assert len(numbered) == 4 and _free(camp, tmp_path)[0] == 0 and len(numbered) == 4  # all reused
+    a1 = out / "064.01" / "free" / "turns" / "01" / "answer.md"
+    a1.write_text("A different first answer.\n")
+    _free(camp, tmp_path)
+    assert len(numbered) == 7  # turn 1 reused; turns 2, 3 and 4 asked again
+    assert "A different first answer." in numbered[4]
+
+
+def test_free_dry_run_writes_prompts_only(camp, tmp_path, fake):
+    rc, out = _free(camp, tmp_path, "--dry-run")
+    assert rc == 0 and not fake and (out / "064.01" / "free" / "turns" / "02" / "prompt.user.md").is_file()
+    assert not (out / "replay.html").exists()
