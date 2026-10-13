@@ -546,9 +546,9 @@ the same, 1 to 3 left unscored; 067.03, both turns the same. No leak flags.
 
 Where it parts from the table is pacing: at turn 5, just after "Daz persuades
 her of his sincerity", she shows the bite and tells all of it (plague, lover,
-the ultimatum over Moziqodo, the Cursed Tower). The prep says her truth is
-"earned, if pressed honestly", so the agent applied the GM's own rule at the
-first moment it was met; at the table it came out four turns later. From there
+the ultimatum over Moziqodo, the Cursed Tower). The prep makes her truth conditional
+on sincere questioning, so the agent applied the GM's own rule at the first
+moment it was met; at the table it came out four turns later. From there
 the party's real lines lag her, a limit of replaying a fixed script against a
 player who has changed. At 067.03 she gives both clues and stays behind ("I
 cannot go with you"), where the real Sylvira came along.
