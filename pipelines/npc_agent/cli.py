@@ -4,10 +4,13 @@
     npc_agent review     --campaign-dir DIR (--npc NAME ... | --all) --out PAGE [--also-campaign-dir DIR ...]
     npc_agent horizon    --campaign-dir DIR --npc NAME --chapter N --rulings FILE
                          [--knowledge FILE] [--for-agent] [--out FILE]
-    npc_agent leaks      --campaign-dir DIR --knowledge FILE [--out FILE]
+    npc_agent leaks      --campaign-dir DIR [--knowledge FILE] [--out FILE]
 
-A knowledge ruling file holds one block per campaign; the campaign is the
-``--campaign-dir`` name (``--campaign`` overrides it), as the review page labels it.
+A beat whose sentence states what someone does not know is always left out of
+their horizon (:mod:`knowledge`); ``--knowledge`` adds the GM's ``who`` where
+the sentence gives a description, not a name. It holds one block per campaign;
+the campaign is the ``--campaign-dir`` name (``--campaign`` overrides it), as
+the review page labels it.
 
 ``--campaign-dir`` accepts either layout: the published one
 (``<dir>/summaries`` + ``<dir>/npcs``, as in ``campaigns-public/<campaign>``) or
@@ -103,9 +106,11 @@ def _campaign(args, summaries: Path) -> str:
     return summaries.resolve().parent.name
 
 
-def _knowledge(args, summaries: Path, corpus) -> dict[str, knowledge.Note]:
+def _knowledge(args, summaries: Path, corpus) -> list[knowledge.Resolved]:
+    if args.knowledge is None:
+        return knowledge.resolve(corpus)
     try:
-        return knowledge.load_knowledge(args.knowledge, _campaign(args, summaries), corpus)
+        return knowledge.resolve(corpus, knowledge.load_knowledge(args.knowledge, _campaign(args, summaries), corpus))
     except knowledge.KnowledgeError as e:
         raise Refusal(str(e)) from None
 
@@ -171,11 +176,16 @@ def cmd_horizon(args) -> int:
         raise Refusal(str(e)) from None
     npc = ruled.get(d.subject, rulings.NpcRulings())
     eff = rulings.effective(npc, corpus, cand_ids)
-    hidden = frozenset()
-    if args.knowledge is not None:
-        hidden = knowledge.hidden_from(_knowledge(args, summaries, corpus), d)
+    resolved = _knowledge(args, summaries, corpus)
+    unresolved = frozenset(r.candidate.beat_id for r in resolved if r.unresolved)
     h = horizon_mod.build_horizon(d, cands, eff, args.chapter, items, presence.snapshots(ms),
-                                  npc.not_perceived, hidden)
+                                  npc.not_perceived, knowledge.hidden_from(resolved, d), unresolved)
+    if args.for_agent and h.unresolved:
+        raise Refusal(
+            f"{', '.join(sorted(h.unresolved))}: in an event {d.subject} attended, the summary says someone "
+            "doesn't know something without naming who; an agent is never given a beat that may be hidden "
+            "from it. Rule who in --knowledge."
+        )
     if args.for_agent and h.unruled:
         raise Refusal(
             f"{len(h.unruled)} event(s) naming {d.subject} up to chapter {args.chapter} are unanswered; "
@@ -214,7 +224,10 @@ def cmd_review(args) -> int:
     for d, ms in pairs:
         print(f"{d.subject}: {len(presence.events(ms))} event(s) to answer")
     for c in camps:
-        print(f"knowledge notes, {c['campaign']}: {len(c['cards'])} beat(s) to answer")
+        hides = [k for k in c["cards"] if k["o"] == knowledge.HIDES]
+        open_ = [k for k in hides if not k["wh"] and not k["pa"]]
+        print(f"knowledge notes, {c['campaign']}: {len(c['cards'])} beat(s), {len(hides)} hidden from someone, "
+              f"{len(open_)} need a name")
     print(f"wrote {out} ({len(page.encode('utf-8')) // 1024} KiB)")
     return 0
 
@@ -228,8 +241,8 @@ def cmd_leaks(args) -> int:
         raise Refusal(str(e)) from None
     if args.out is not None:
         _refuse_inside(Path(args.out), (summaries, npcs))
-    notes = _knowledge(args, summaries, corpus)
-    cases = knowledge.leak_cases(notes, corpus, dossiers)
+    resolved = _knowledge(args, summaries, corpus)
+    cases = knowledge.leak_cases(resolved, dossiers)
     text = knowledge.leak_cases_yaml(_campaign(args, summaries), cases)
     if args.out is None:
         sys.stdout.write(text)
@@ -237,10 +250,18 @@ def cmd_leaks(args) -> int:
         Path(args.out).parent.mkdir(parents=True, exist_ok=True)
         atomic_write_text(Path(args.out), text)
         print(f"wrote {args.out}: {len(cases)} leak case(s)")
-    print("notes: " + ", ".join(f"{k} {v}" for k, v in knowledge.tally(notes).items()), file=sys.stderr)
+    hides = [r for r in resolved if r.outcome == knowledge.HIDES]
+    print(f"{len(resolved)} beat(s) say someone doesn't know: {len(hides)} state what, "
+          f"{len(resolved) - len(hides)} do not", file=sys.stderr)
     for c in cases:
         if c.subject is None:
             print(f"{c.beat_id}: {c.who} has no published dossier; kept as a leak case", file=sys.stderr)
+    for r in hides:
+        if r.party:
+            print(f"{r.candidate.beat_id}: hidden from the party; no NPC case", file=sys.stderr)
+        elif r.unresolved:
+            print(f"{r.candidate.beat_id}: hidden from someone the sentence does not name "
+                  f"({r.candidate.before.strip()[-40:]!r}); rule who in --knowledge", file=sys.stderr)
     return 0
 
 
@@ -286,13 +307,14 @@ def build_parser() -> argparse.ArgumentParser:
     h.add_argument("--for-agent", action="store_true",
                    help="only what the NPC could know; refused while any event is unanswered")
     h.add_argument("--knowledge", type=Path, default=None,
-                   help="the GM's knowledge ruling file: beats giving away what this NPC does not know are left out")
+                   help="the GM's who rulings, for beats whose sentence gives a description, not a name")
     h.add_argument("--campaign", default=None, help="this campaign's name in --knowledge (default: --campaign-dir's name)")
     h.set_defaults(func=cmd_horizon)
 
     k = sub.add_parser("leaks", help="leak cases from the GM's knowledge rulings: who must not know what")
     _common(k)
-    k.add_argument("--knowledge", type=Path, required=True, help="the GM's knowledge ruling file")
+    k.add_argument("--knowledge", type=Path, default=None,
+                   help="the GM's who rulings, for beats whose sentence gives a description, not a name")
     k.add_argument("--campaign", default=None, help="this campaign's name in --knowledge (default: --campaign-dir's name)")
     k.add_argument("--out", type=Path, default=None, help="default: stdout")
     k.set_defaults(func=cmd_leaks)

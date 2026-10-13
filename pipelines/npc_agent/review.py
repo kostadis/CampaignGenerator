@@ -11,8 +11,10 @@ a version-3 ruling file (as JSON, which is valid YAML) that ``npc_agent
 horizon --rulings`` reads as it stands.
 
 A second view, Knowledge notes, shows every beat :func:`knowledge.find` turns up
-(one or more campaigns), and saves a knowledge ruling file that ``npc_agent
-horizon --knowledge`` and ``npc_agent leaks`` read.
+(one or more campaigns) as :func:`knowledge.resolve` sorts it: what is hidden from
+whom, and what stays. It asks only who, for a beat whose sentence gives a
+description instead of a name, and saves those answers as the knowledge file
+``npc_agent horizon --knowledge`` and ``npc_agent leaks`` read.
 
 No model call (guarded by ``tests/test_npc_agent_no_llm.py``).
 """
@@ -40,11 +42,11 @@ def knowledge_campaign(campaign: str, corpus: Corpus, dossiers: list[Dossier]) -
     scenes = {it.item_id: it for it in corpus.items() if it.kind == corpus_mod.SCENE}
     titles = {ch.chapter: ch.title or f"Chapter {ch.chapter}" for ch in corpus.chapters}
     cards = []
-    for k in knowledge.find(corpus):
-        names, party = knowledge.suggest(k, dossiers)
+    for r in knowledge.resolve(corpus):
+        k = r.candidate
         cards.append({"id": k.beat_id, "s": k.scene_id, "c": k.chapter, "ct": titles[k.chapter], "st": k.scene_title,
                       "f": k.source_file, "l": k.line, "ph": k.phrase, "x": k.text, "sx": scenes[k.scene_id].text,
-                      "sg": list(names), "sp": party, "w": k.what})
+                      "w": k.what, "o": r.outcome, "wh": list(r.who), "pa": r.party})
     return {"campaign": campaign, "subjects": sorted(d.subject for d in dossiers), "cards": cards}
 
 
