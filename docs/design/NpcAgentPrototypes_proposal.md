@@ -487,6 +487,78 @@ npc_agent leaks --campaign-dir ~/campaigns-public/out-of-the-abyss \
 A knowledge file's campaign key is the `--campaign-dir` name (`--campaign`
 overrides it), the same label the review page uses.
 
+## Prototypes 2a–5 — the agent plays Sylvira (2026-10-13)
+
+The first functional loop, on the one NPC whose presence and knowledge rulings
+were complete. Models: Opus played her through the repo's `claude-code` backend;
+the code was written by Sonnet subagents and checked here against real data.
+
+### What the agent is given
+
+| Input | Built by | Rule |
+|---|---|---|
+| **Persona** (`persona.py`) | code | Her own `## NPCs` entries up to the freeze chapter, sentence by sentence: keep the descriptive first sentence of each entry and sentences she is the subject of; drop reports of her ("She was heard …"), sentences about others ("The cat noted …"), and any that state what she doesn't know. Every drop is listed with its reason. |
+| **Horizon** | code | `horizon --for-agent` at the freeze chapter (Prototype 1). |
+| **Private sheet** (`prep.py`) | GM | The GM's prep is written from the GM's side of the screen, so code splits it into passages and the GM marks each **hers** (she knows or believes it) or **GM only** (mechanics, stage directions, other people's secrets, anything after the scene). Only hers passages reach the agent, without line numbers or file names. Prep stays private: it is read from the private campaigns repo into scratch, never into this repo. |
+| **The scene** | code | Its title and `####` headline only; the rest is the answer key. |
+
+### Leak check (`leakcheck.py`)
+
+Flags for the GM, never verdicts: an answer sentence carrying a hidden beat's
+content words (all, or all but one of three or more: "The party killed
+Moziqodo" for "that the party killed her son"), and campaign names she was not
+given, marking ones first seen after the freeze. On the first real run all 11
+flags were ordinary words opening a quotation ("And", "Standing"), so a
+capitalised word the summaries also use in lower case is not a name. A planted
+leak is still caught. No real answer has produced a flag since.
+
+### First backtest: one turn, no prep — too thin
+
+Freeze at 60 → play 061.05; freeze at 66 → play 067.03, each as one 150–300 word
+turn. The GM: "it was shorter than the scene … Sylvira offers less information."
+Three causes: the length cap (my choice, not sized to a 33-bullet interview);
+one turn with nobody asking her anything (at the table every revelation is an
+answer to Daz); and most of what she says at 061.05 is first written in that
+scene, so it lived only in the GM's prep. At 067.03 she said the riddles were
+not her field, where the real Sylvira found them "almost too easy".
+
+### Prototype 4 — replay, question by question, with the prep
+
+`turns.py` splits the scene by a fixed grammatical rule: a sentence is hers when
+its subject is her (after an optional leading clause such as "Asked who might
+want to frame her,"), including her possessive and a subject she shares ("Her
+son …", "She and Janussi …"); a turn is a run of hers sentences, and what comes
+between is its prompt. 061.05 is 9 turns, 067.03 is 2. Each turn is played with
+the real scene so far (teacher forcing), so each answer is comparable with what
+she really did next.
+
+**GM scores: 11 of 11 turns "same substance".** I had predicted most of 061.05
+would score Partly, because the agent followed the prep's cover story where the
+table had her name suspects; the GM judged the substance the same. At 067.03,
+with the clue answers ruled hers, she gives both clues as she did at the table.
+
+### Prototype 5 — the forward turn
+
+Frozen at 66, she proposes 1–3 off-screen moves before she next meets the party,
+as JSON with a reason each; shown beside her next attended scene and the GM's
+plan for her (shown to the GM only, never sent to the agent). Three moves, all
+in character, all **approved**. The first is to go back to her son, whom the
+party had already killed (063.05) without her knowing: correct for what she
+knows, and the kind of move only a horizon-bounded agent makes. The approvals
+are kept with the move text and prompt hash, the first entries of the
+preference record (Prototype 6).
+
+### What this does and does not show
+
+- With her persona, horizon and ruled prep, the agent plays her scenes with the
+  same substance as the GM did, and leaks nothing it was not given.
+- Teacher forcing makes the replay easy: each turn sees the real scene so far.
+  A replay where she sees only her own earlier answers is the harder test.
+- One NPC, two scenes, three moves. Not a measurement yet.
+- The forward turn was compared, not tested: nothing checks a move against a
+  rule the GM wrote down, because there are no written rules for Sylvira.
+  Vizeran has 53 guardrail checks; he is the natural next forward-turn subject.
+
 ## Non-goals
 
 - No RL training, no simulator, no online loop.
