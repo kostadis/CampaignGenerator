@@ -129,15 +129,23 @@ GM_DIR = "gm"
 
 
 def known_npcs(npc_range_dir: Path) -> dict[str, str]:
-    """``{stem: subject}`` for every NPC that has evidence or a draft dossier in the range."""
+    """``{stem: subject}`` for every NPC that has evidence or a draft dossier in the range.
+
+    A draft with no evidence file is kept only when no evidence stem already carries its
+    subject. Otherwise it is a stale twin left behind when a re-link renamed the stem
+    (e.g. ``npc_x_1a2b3c4d`` -> ``npc_x``). Name lookups keyed by subject would let it
+    shadow the current draft, and a default compose would build a GM dossier from it."""
     out = {e.stem: e.subject for e in npc_link.read_evidence_files(npc_range_dir)}
+    linked = {subject.casefold() for subject in out.values()}
     for p in sorted((Path(npc_range_dir) / DRAFT_DIR).glob("*.md")):
         if p.name.endswith((".incomplete.md", ".verify.md")) or p.stem in out:
             continue
         header, _ = npc_link.split_frontmatter(draft_body(p.read_text(encoding="utf-8")))
         m = re.search(r"^subject: (.+)$", header, re.MULTILINE)
         if m:
-            out[p.stem] = m.group(1).strip().strip("'\"")
+            subject = m.group(1).strip().strip("'\"")
+            if subject.casefold() not in linked:
+                out[p.stem] = subject
     return out
 
 
