@@ -14,6 +14,13 @@ library). Its subcommands:
                                           or more surface forms as aliases of
                                           an existing entity (looked up by its
                                           canonical name OR an existing alias)
+  unalias <campaign_dir> --from ... alias [alias ...] [--apply]   remove
+                                          exact alias strings from one entity
+                                          (dry run unless --apply)
+  rename  <campaign_dir> --from OLD --to NEW [--drop-old] [--apply]
+                                          change an entity's canonical name;
+                                          OLD stays an alias unless --drop-old
+                                          (dry run unless --apply)
   merge   <campaign_dir> --into ... other [other ...]   fold one or more
                                           EXISTING entities into a target (they
                                           are the same thing) — the positive
@@ -1574,6 +1581,132 @@ def cmd_alias(args: argparse.Namespace) -> int:
     return 0
 
 
+# ── unalias / rename ─────────────────────────────────────────────────────────
+#
+# The undo side of `alias`, and the sanctioned way to change a canonical name.
+# Both are dry runs unless --apply: a canonical-name change renames every
+# downstream stem and slug, so the default is to show what would change.
+# Both take EXACT strings (no norm_subject matching for the strings being
+# removed or replaced): the GM is choosing one spelling over another, and
+# norm_subject would treat "Slipper Shine" and "Slipper-Shine" as the same.
+
+def _load_or_explain(campaign_dir: Path):
+    path = find_registry(campaign_dir)
+    if path is None:
+        print(
+            f"Error: no registry at {_registry_path(campaign_dir)} — "
+            f"run `registry init {campaign_dir}` first",
+            file=sys.stderr,
+        )
+        return None, None
+    return path, load_registry(path)
+
+
+def _guard_mentions(reg: Registry, form: str) -> list[str]:
+    """distinct/rejected entries that name ``form`` by exact string."""
+    out = [f"distinct {pair!r}" for pair in reg.distinct if form in pair]
+    out += [f"rejected {group!r}" for group in reg.rejected_aliases if form in group]
+    return out
+
+
+def cmd_unalias(args: argparse.Namespace) -> int:
+    path, reg = _load_or_explain(Path(args.campaign_dir))
+    if reg is None:
+        return 1
+    idx = _find_owner(reg, norm_subject(args.from_))
+    if idx is None:
+        print(f"Error: no entity matching --from {args.from_!r} in the registry", file=sys.stderr)
+        return 1
+    entity = reg.entities[idx]
+    for alias in args.aliases:
+        if alias == entity.name:
+            print(
+                f"Error: {alias!r} is the canonical name of {entity.name!r}, not an alias — "
+                f"use `registry rename` to change it",
+                file=sys.stderr,
+            )
+            return 1
+        if alias not in entity.aliases:
+            print(
+                f"Error: {alias!r} is not an exact alias of {entity.name!r} "
+                f"(aliases: {entity.aliases!r}); nothing written",
+                file=sys.stderr,
+            )
+            return 1
+    warnings = [m for a in args.aliases for m in _guard_mentions(reg, a)]
+    remaining = [a for a in entity.aliases if a not in args.aliases]
+    print(f"{entity.name!r}: remove {args.aliases!r}; aliases become {remaining!r}")
+    for w in warnings:
+        print(f"  warning: anti-merge guard names a removed alias: {w}", file=sys.stderr)
+    if not args.apply:
+        print("(dry run — pass --apply to write)")
+        return 0
+    entity.aliases = remaining
+    try:
+        validate(reg)
+    except ValueError as exc:
+        print(f"Error: {exc}", file=sys.stderr)
+        return 1
+    save_registry(reg, path)
+    print(f"Wrote {path}")
+    return 0
+
+
+def cmd_rename(args: argparse.Namespace) -> int:
+    path, reg = _load_or_explain(Path(args.campaign_dir))
+    if reg is None:
+        return 1
+    old, new = args.from_, args.to
+    matches = [i for i, e in enumerate(reg.entities) if e.name == old]
+    if not matches:
+        owner = _find_owner(reg, norm_subject(old))
+        hint = f" (did you mean the canonical name {reg.entities[owner].name!r}?)" if owner is not None else ""
+        print(f"Error: no entity whose canonical name is exactly {old!r}{hint}", file=sys.stderr)
+        return 1
+    idx = matches[0]
+    entity = reg.entities[idx]
+    if new == old:
+        print("Nothing to do — the new name is the current name")
+        return 0
+    owner = _find_owner(reg, norm_subject(new))
+    if owner is not None and owner != idx:
+        print(
+            f"Error: {new!r} already belongs to a different entity "
+            f"{reg.entities[owner].name!r} — refusing (use `merge` if they are the same)",
+            file=sys.stderr,
+        )
+        return 1
+
+    aliases = [a for a in entity.aliases if a != new]  # NEW is promoted, not duplicated
+    if not args.drop_old and old not in aliases:
+        aliases.insert(0, old)
+    guard_rewrites = _guard_mentions(reg, old) if args.drop_old else []
+
+    print(f"rename {old!r} -> {new!r} ({entity.type})")
+    print(f"  aliases: {entity.aliases!r} -> {aliases!r}")
+    for g in guard_rewrites:
+        print(f"  anti-merge guard rewritten to the new name: {g}")
+    print("  note: downstream stems/slugs follow the canonical name; re-run `registry project`, "
+          "and re-link any pipeline that keys files by it")
+    if not args.apply:
+        print("(dry run — pass --apply to write)")
+        return 0
+
+    entity.name = new
+    entity.aliases = aliases
+    if args.drop_old:
+        reg.distinct = [[new if m == old else m for m in pair] for pair in reg.distinct]
+        reg.rejected_aliases = [[new if m == old else m for m in g] for g in reg.rejected_aliases]
+    try:
+        validate(reg)
+    except ValueError as exc:
+        print(f"Error: {exc}", file=sys.stderr)
+        return 1
+    save_registry(reg, path)
+    print(f"Wrote {path}")
+    return 0
+
+
 # ── merge ──────────────────────────────────────────────────────────────────
 #
 # The positive counterpart to `mark-distinct` / `mark-rejected`: fold one or
@@ -1845,6 +1978,28 @@ def main(argv: "list[str] | None" = None) -> int:
     pal.add_argument("variants", nargs="+", help="surface form(s) to attach as alias(es)")
     pal.set_defaults(func=cmd_alias)
 
+    pua = sub.add_parser(
+        "unalias",
+        help="remove exact alias string(s) from one entity (dry run unless --apply)",
+    )
+    pua.add_argument("campaign_dir")
+    pua.add_argument("--from", dest="from_", required=True, help="canonical name or alias of the entity")
+    pua.add_argument("aliases", nargs="+", help="exact alias string(s) to remove")
+    pua.add_argument("--apply", action="store_true", help="write the change (default: show it only)")
+    pua.set_defaults(func=cmd_unalias)
+
+    prn = sub.add_parser(
+        "rename",
+        help="change an entity's canonical name; the old name stays an alias unless "
+             "--drop-old (dry run unless --apply)",
+    )
+    prn.add_argument("campaign_dir")
+    prn.add_argument("--from", dest="from_", required=True, help="the exact current canonical name")
+    prn.add_argument("--to", required=True, help="the new canonical name")
+    prn.add_argument("--drop-old", action="store_true", help="do not keep the old name as an alias")
+    prn.add_argument("--apply", action="store_true", help="write the change (default: show it only)")
+    prn.set_defaults(func=cmd_rename)
+
     pmg = sub.add_parser(
         "merge",
         help="fold one or more EXISTING entities into a target entity (they are "
@@ -1876,7 +2031,7 @@ def main(argv: "list[str] | None" = None) -> int:
     writers = {
         "init", "add", "project", "import-inventory", "import-dedup",
         "import-frontmatter", "import-alias-decisions", "mark-distinct",
-        "mark-rejected", "alias", "merge",
+        "mark-rejected", "alias", "merge", "unalias", "rename",
     }
     if args.cmd == "init":
         # init creates the campaign; the lock lives inside it.
