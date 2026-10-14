@@ -20,6 +20,7 @@ from campaignlib.registry import (  # noqa: E402
     dump_registry,
     load_registry,
     save_registry,
+    validate,
 )
 from pipelines.ensemble.synthesise_world_state import load_aliases  # noqa: E402
 from entity_registry.spell_canon import inventory_tokens  # noqa: E402
@@ -419,6 +420,52 @@ def test_alias_already_attached_is_idempotent(tmp_path):
 
     reg = load_registry(campaign_dir / "docs" / "entity_registry.yaml")
     assert reg.entities[0].aliases == ["Ilvara"]  # no duplicate
+
+
+def test_alias_with_same_key_but_new_spelling_is_recorded(tmp_path):
+    """A punctuation variant normalizes to the target's own key, but the linker
+    matches exact strings, so the variant must still be stored as an alias."""
+    campaign_dir = _init(tmp_path)
+    assert registry.main([
+        "add", str(campaign_dir), "--name", "Lady Tanamere Alagondar", "--type", "npc",
+        "--aliases", "Lady Alagondar S Ghost",
+    ]) == 0
+    assert registry.main(["add", str(campaign_dir), "--name", "Giles Slipper Shine", "--type", "npc"]) == 0
+
+    assert registry.main([
+        "alias", str(campaign_dir), "--to", "Lady Tanamere Alagondar", "Lady Alagondar’s Ghost",
+    ]) == 0
+    assert registry.main(["alias", str(campaign_dir), "--to", "Giles Slipper Shine", "Giles Slipper-Shine"]) == 0
+    # the exact spellings already present stay idempotent
+    assert registry.main(["alias", str(campaign_dir), "--to", "Giles Slipper Shine", "Giles Slipper-Shine"]) == 0
+
+    reg = load_registry(campaign_dir / "docs" / "entity_registry.yaml")
+    by_name = {e.name: e.aliases for e in reg.entities}
+    assert by_name["Lady Tanamere Alagondar"] == ["Lady Alagondar S Ghost", "Lady Alagondar’s Ghost"]
+    assert by_name["Giles Slipper Shine"] == ["Giles Slipper-Shine"]
+
+
+def test_merge_entity_keeps_same_key_alias_spellings():
+    """The import paths go through _merge_entity; a punctuation variant of an
+    existing form is a new surface form of the same entity, not a duplicate."""
+    reg = Registry(version=1, campaign=None, entities=[Entity(name="Spider-Man", type="npc", aliases=["Spiderman"])])
+    conflicts = registry._merge_entity(reg, name="Spider-Man", type="npc", aliases=["Spiderman", "Spider Man", "Spider Man"])
+    assert conflicts == []
+    assert reg.entities[0].aliases == ["Spiderman", "Spider Man"]
+    validate(reg)
+
+    fresh = Registry(version=1, campaign=None, entities=[])
+    registry._merge_entity(fresh, name="Don-Jon Raskin", type="npc", aliases=["Don Jon Raskin", "Don-Jon Raskin", "Don-Jon"])
+    assert fresh.entities[0].aliases == ["Don Jon Raskin", "Don-Jon"]
+
+
+def test_alias_same_key_owned_by_another_entity_is_still_refused(tmp_path):
+    campaign_dir = _init(tmp_path)
+    assert registry.main(["add", str(campaign_dir), "--name", "Don-Jon Raskin", "--type", "npc"]) == 0
+    assert registry.main(["add", str(campaign_dir), "--name", "Big Al", "--type", "npc"]) == 0
+    assert registry.main(["alias", str(campaign_dir), "--to", "Big Al", "Don Jon Raskin"]) == 1
+    reg = load_registry(campaign_dir / "docs" / "entity_registry.yaml")
+    assert all(e.aliases == [] for e in reg.entities)
 
 
 def test_alias_round_trip_still_validates(tmp_path):
