@@ -316,7 +316,7 @@ def _merge_entity(
             )
         for alias in aliases:
             alias_key = norm_subject(alias)
-            if not alias_key or alias_key == norm_subject(entity.name):
+            if not alias_key or alias in (entity.name, *entity.aliases):
                 continue
             owner_idx = _find_owner(reg, alias_key)
             if owner_idx is not None and owner_idx != existing_idx:
@@ -326,8 +326,9 @@ def _merge_entity(
                     f"{entity.name!r}"
                 )
                 continue
-            if owner_idx is None:
-                entity.aliases.append(alias)
+            # A new spelling of one of this entity's own forms (same key) is
+            # still a distinct surface form: linkers match exact strings.
+            entity.aliases.append(alias)
         if entity.provenance is None and provenance is not None:
             entity.provenance = provenance
         if entity.source is None and source is not None:
@@ -341,7 +342,10 @@ def _merge_entity(
     seen_keys = {name_key}
     for alias in aliases:
         alias_key = norm_subject(alias)
-        if not alias_key or alias_key in seen_keys:
+        if not alias_key or alias == name or alias in survivors:
+            continue
+        if alias_key in seen_keys:  # new spelling of a form already kept for this entity
+            survivors.append(alias)
             continue
         owner_idx = _find_owner(reg, alias_key)
         if owner_idx is not None:
@@ -1532,8 +1536,14 @@ def cmd_alias(args: argparse.Namespace) -> int:
     for variant in args.variants:
         key = norm_subject(variant)
         owner_idx = _find_owner(reg, key)
+        if variant in (target.name, *target.aliases, *to_append):
+            already.append(variant)  # no-op: this exact spelling is already attached
+            continue
         if owner_idx == target_idx or key in staged_keys:
-            already.append(variant)  # no-op: already the target's name/alias
+            # Same key as one of the target's own forms, but a new spelling
+            # (hyphen, apostrophe, spacing). Linkers match exact strings, so
+            # record it; it cannot collide with another entity.
+            to_append.append(variant)
             continue
         if owner_idx is not None:
             print(
