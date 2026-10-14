@@ -126,3 +126,31 @@ def test_cli_init_creates_and_never_overwrites(tmp_path, monkeypatch):
     assert not (root / OUT / "gm/npc_spider.md").exists()                      # --init composes nothing
     rc, _, err = run_cli(_args(root, "npc-compose", "--init", "Not An Npc"))
     assert rc == 2
+
+
+def _with_stale_twin(tmp_path, monkeypatch):
+    """A re-link renamed Jimjar's stem; the old run's draft is still on disk under the
+    hash-suffixed stem, with the same subject but no evidence file."""
+    root = _drafted(tmp_path, monkeypatch)
+    draft = root / OUT / "draft"
+    (draft / "npc_jimjar_deadbeef.md").write_text(
+        (draft / "npc_jimjar.md").read_text().replace("- ok", "- STALE"))
+    return root
+
+
+def test_known_npcs_prefers_the_evidence_stem_over_a_stale_draft_twin(tmp_path, monkeypatch):
+    root = _with_stale_twin(tmp_path, monkeypatch)
+    known = npc_compose.known_npcs(root / OUT)
+    assert known.get("npc_jimjar") == "Jimjar"
+    assert "npc_jimjar_deadbeef" not in known
+
+
+def test_cli_compose_by_name_ignores_a_stale_draft_twin(tmp_path, monkeypatch):
+    root = _with_stale_twin(tmp_path, monkeypatch)
+    rc, so, _ = run_cli(_args(root, "npc-compose", "--name", "Jimjar"))
+    assert rc == 0
+    assert "STALE" not in (root / OUT / "gm/npc_jimjar.md").read_text()
+    assert not (root / OUT / "gm/npc_jimjar_deadbeef.md").exists()
+    rc, so, _ = run_cli(_args(root, "npc-compose"))
+    assert rc == 0 and so.count("composed") == 1
+    assert not (root / OUT / "gm/npc_jimjar_deadbeef.md").exists()
