@@ -646,3 +646,81 @@ def test_merge_round_trip_still_validates(tmp_path):
     # load_registry runs validate(); a colliding/broken registry would raise here.
     reg = load_registry(campaign_dir / "docs" / "entity_registry.yaml")
     assert reg.alias_to_canonical()["Pliinki"] == "Plinki"
+
+
+# ── unalias / rename ─────────────────────────────────────────────────────────
+
+def _reg(campaign_dir):
+    return load_registry(campaign_dir / "docs" / "entity_registry.yaml")
+
+
+def test_unalias_is_a_dry_run_without_apply(tmp_path, capsys):
+    campaign_dir = _init(tmp_path)
+    registry.main(["add", str(campaign_dir), "--name", "Jenna", "--type", "npc",
+                   "--aliases", "Jenna Roscoe", "woman"])
+    assert registry.main(["unalias", str(campaign_dir), "--from", "Jenna", "woman"]) == 0
+    assert "dry run" in capsys.readouterr().out
+    assert _reg(campaign_dir).entities[0].aliases == ["Jenna Roscoe", "woman"]
+
+    assert registry.main(["unalias", str(campaign_dir), "--from", "Jenna Roscoe", "woman", "--apply"]) == 0
+    assert _reg(campaign_dir).entities[0].aliases == ["Jenna Roscoe"]
+
+
+def test_unalias_refuses_misses_and_canonical_names_writing_nothing(tmp_path):
+    campaign_dir = _init(tmp_path)
+    registry.main(["add", str(campaign_dir), "--name", "Giles Slipper-Shine", "--type", "npc",
+                   "--aliases", "Giles"])
+    before = (campaign_dir / "docs" / "entity_registry.yaml").read_text()
+    # exact strings only: a same-key spelling is not the stored alias
+    assert registry.main(["unalias", str(campaign_dir), "--from", "Giles", "giles", "--apply"]) == 1
+    assert registry.main(["unalias", str(campaign_dir), "--from", "Giles", "Giles", "Giles Slipper-Shine",
+                          "--apply"]) == 1
+    assert registry.main(["unalias", str(campaign_dir), "--from", "Nobody", "Giles", "--apply"]) == 1
+    assert (campaign_dir / "docs" / "entity_registry.yaml").read_text() == before
+
+
+def test_unalias_warns_when_a_guard_names_the_alias(tmp_path, capsys):
+    campaign_dir = _init(tmp_path)
+    registry.main(["add", str(campaign_dir), "--name", "Soma", "--type", "npc"])
+    registry.main(["add", str(campaign_dir), "--name", "Jenna", "--type", "npc", "--aliases", "woman"])
+    registry.main(["mark-distinct", str(campaign_dir), "Soma", "woman"])
+    capsys.readouterr()
+    assert registry.main(["unalias", str(campaign_dir), "--from", "Jenna", "woman", "--apply"]) == 0
+    assert "anti-merge guard names a removed alias" in capsys.readouterr().err
+
+
+def test_rename_promotes_an_alias_and_keeps_the_old_name(tmp_path):
+    campaign_dir = _init(tmp_path)
+    registry.main(["add", str(campaign_dir), "--name", "Jenna", "--type", "npc",
+                   "--aliases", "Jenna Roscoe", "the woman in green"])
+    assert registry.main(["rename", str(campaign_dir), "--from", "Jenna", "--to", "Jenna Roscoe"]) == 0
+    assert _reg(campaign_dir).entities[0].name == "Jenna"  # dry run
+
+    assert registry.main(["rename", str(campaign_dir), "--from", "Jenna", "--to", "Jenna Roscoe", "--apply"]) == 0
+    e = _reg(campaign_dir).entities[0]
+    assert (e.name, e.aliases) == ("Jenna Roscoe", ["Jenna", "the woman in green"])
+
+
+def test_rename_to_a_same_key_spelling_with_drop_old_rewrites_guards(tmp_path):
+    campaign_dir = _init(tmp_path)
+    registry.main(["add", str(campaign_dir), "--name", "Giles Slipper Shine", "--type", "npc", "--aliases", "Giles"])
+    registry.main(["add", str(campaign_dir), "--name", "Brin", "--type", "npc"])
+    registry.main(["mark-distinct", str(campaign_dir), "Giles Slipper Shine", "Brin"])
+    assert registry.main(["rename", str(campaign_dir), "--from", "Giles Slipper Shine",
+                          "--to", "Giles Slipper-Shine", "--drop-old", "--apply"]) == 0
+    reg = _reg(campaign_dir)
+    giles = next(e for e in reg.entities if e.name == "Giles Slipper-Shine")
+    assert giles.aliases == ["Giles"]
+    assert ["Giles Slipper-Shine", "Brin"] in reg.distinct
+
+
+def test_rename_refuses_other_entities_names_and_non_canonical_from(tmp_path, capsys):
+    campaign_dir = _init(tmp_path)
+    registry.main(["add", str(campaign_dir), "--name", "Big Al", "--type", "npc", "--aliases", "Alfonse"])
+    registry.main(["add", str(campaign_dir), "--name", "Don-Jon Raskin", "--type", "npc"])
+    before = (campaign_dir / "docs" / "entity_registry.yaml").read_text()
+    assert registry.main(["rename", str(campaign_dir), "--from", "Big Al", "--to", "Don Jon Raskin", "--apply"]) == 1
+    capsys.readouterr()
+    assert registry.main(["rename", str(campaign_dir), "--from", "Alfonse", "--to", "Al", "--apply"]) == 1
+    assert "did you mean the canonical name 'Big Al'" in capsys.readouterr().err
+    assert (campaign_dir / "docs" / "entity_registry.yaml").read_text() == before

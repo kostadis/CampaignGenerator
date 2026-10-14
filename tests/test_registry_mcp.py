@@ -122,6 +122,30 @@ def test_merge_refuses_across_distinct_guard(tmp_path):
     assert "marked distinct" in out
 
 
+# ── registry_unalias / registry_rename ──────────────────────────────────────
+
+def test_unalias_previews_then_applies(tmp_path):
+    rm.registry_init(tmp_path)
+    rm.registry_add(tmp_path, "Adabra Gwynn", "npc", aliases=["Adabra", "Adabra Adabra Gwynn"])
+
+    out = rm.registry_unalias(tmp_path, "Adabra", ["Adabra Adabra Gwynn"])
+    assert "dry run" in out
+    assert "Adabra Adabra Gwynn" in (tmp_path / "docs" / "entity_registry.yaml").read_text()
+
+    out = rm.registry_unalias(tmp_path, "Adabra", ["Adabra Adabra Gwynn"], apply=True)
+    assert "Wrote" in out
+    assert "Adabra Adabra Gwynn" not in (tmp_path / "docs" / "entity_registry.yaml").read_text()
+
+
+def test_rename_promotes_alias_and_keeps_old_name(tmp_path):
+    rm.registry_init(tmp_path)
+    rm.registry_add(tmp_path, "Jenna", "npc", aliases=["Jenna Roscoe"])
+    out = rm.registry_rename(tmp_path, "Jenna", "Jenna Roscoe", apply=True)
+    assert "Wrote" in out
+    text = (tmp_path / "docs" / "entity_registry.yaml").read_text()
+    assert "name: Jenna Roscoe" in text and "- Jenna\n" in text
+
+
 # ── registry_mark_distinct / registry_mark_rejected ─────────────────────────
 
 def test_mark_distinct_and_mark_rejected(tmp_path):
@@ -175,7 +199,8 @@ def test_build_server_registers_every_subcommand_as_a_tool(tmp_path):
 
     expected = {
         "registry_init_tool", "registry_add_tool", "registry_alias_tool",
-        "registry_merge_tool", "registry_mark_distinct_tool", "registry_mark_rejected_tool",
+        "registry_merge_tool", "registry_unalias_tool", "registry_rename_tool",
+        "registry_mark_distinct_tool", "registry_mark_rejected_tool",
         "registry_project_tool", "registry_check_tool", "registry_triage_candidates_tool",
         "registry_import_inventory_tool", "registry_import_dedup_tool",
         "registry_import_frontmatter_tool", "registry_import_alias_decisions_tool",

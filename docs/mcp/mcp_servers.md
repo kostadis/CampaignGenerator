@@ -82,8 +82,11 @@ listing itself, so it doesn't need to be re-derived from `registry.py`'s module
 docstring every session. Read-only: `registry_check_tool`,
 `registry_triage_candidates_tool`. Identity-mutating (only call after explicit
 GM confirmation): `registry_add_tool`, `registry_alias_tool`,
-`registry_merge_tool`, `registry_mark_distinct_tool`,
-`registry_mark_rejected_tool`. Plus `registry_project_tool` and the one-time
+`registry_unalias_tool`, `registry_rename_tool`, `registry_merge_tool`,
+`registry_mark_distinct_tool`, `registry_mark_rejected_tool`.
+`registry_unalias_tool` and `registry_rename_tool` only preview the change
+unless called with `apply=true`; a rename changes the canonical name (and so
+downstream stems/slugs), so it must agree with the campaign glossary. Plus `registry_project_tool` and the one-time
 bulk-migration `registry_import_*_tool`s.
 
 Requires `docs/entity_registry.yaml` to already exist (`registry_init_tool` if

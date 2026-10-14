@@ -178,6 +178,17 @@ def registry_merge(campaign_dir: Path, into: str, others: list[str]) -> str:
     return _format(*_run_main(["merge", str(campaign_dir), "--into", into, *others]))
 
 
+def registry_unalias(campaign_dir: Path, from_: str, aliases: list[str], apply: bool = False) -> str:
+    return _format(*_run_main(["unalias", str(campaign_dir), "--from", from_, *aliases,
+                               *(["--apply"] if apply else [])]))
+
+
+def registry_rename(campaign_dir: Path, old: str, new: str, drop_old: bool = False,
+                    apply: bool = False) -> str:
+    return _format(*_run_main(["rename", str(campaign_dir), "--from", old, "--to", new,
+                               *(["--drop-old"] if drop_old else []), *(["--apply"] if apply else [])]))
+
+
 def registry_mark_distinct(campaign_dir: Path, name_a: str, name_b: str) -> str:
     return _format(*_run_main(["mark-distinct", str(campaign_dir), name_a, name_b]))
 
@@ -378,6 +389,36 @@ def build_server(campaign_dir: Path):
         completely or writes nothing.
         """
         return registry_merge(campaign_dir, into, others)
+
+    @mcp.tool()
+    def registry_unalias_tool(from_entity: str, aliases: list[str], apply: bool = False) -> str:
+        """Remove exact alias strings from one entity (the undo of
+        registry_alias_tool). IDENTITY DECISION — only call with apply=true
+        after the GM has confirmed each removal.
+
+        from_entity — the entity's canonical name or any of its aliases.
+        aliases — EXACT strings (no normalization); a canonical name is refused
+        (use registry_rename_tool). With apply=false (default) it only reports
+        what would change; any miss refuses the whole call and writes nothing.
+        Warns when a distinct/rejected guard names a removed alias.
+        """
+        return registry_unalias(campaign_dir, from_entity, aliases, apply)
+
+    @mcp.tool()
+    def registry_rename_tool(old: str, new: str, drop_old: bool = False, apply: bool = False) -> str:
+        """Change an entity's canonical name. CANON DECISION — a canonical-name
+        change renames downstream stems/slugs and must match the campaign
+        glossary; only call with apply=true after explicit GM confirmation,
+        and never to swap a glossary-canonical spelling without the GM.
+
+        old — the EXACT current canonical name. new — the new canonical name;
+        refused if it belongs to a different entity (use registry_merge_tool).
+        If `new` is already an alias it is promoted. The old name stays an
+        alias unless drop_old=true (then distinct/rejected guards naming it are
+        rewritten to `new`). apply=false (default) only reports the change.
+        Run registry_project_tool afterwards.
+        """
+        return registry_rename(campaign_dir, old, new, drop_old, apply)
 
     @mcp.tool()
     def registry_mark_distinct_tool(name_a: str, name_b: str) -> str:
