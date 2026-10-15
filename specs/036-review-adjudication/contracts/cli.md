@@ -13,6 +13,8 @@ summary_native review status REVIEW
 summary_native review refresh REVIEW --expected-generation N
 summary_native review finding add REVIEW --finding FILE --expected-generation N
 summary_native review decide REVIEW --decisions FILE
+summary_native review carry REVIEW --from REVIEW [--reviewer NAME] [--write]
+summary_native review policy REVIEW --policy FILE --reviewer NAME [--write]
 summary_native review history REVIEW [--item ITEM]
 summary_native review retract REVIEW --event EVENT --expected-decision-revision N --reason TEXT
 summary_native review export REVIEW --selection FILE
@@ -30,6 +32,7 @@ summary_native review promote REVIEW --proposal ID --proposal-sha256 SHA --revie
 - Selection files contain explicit item/subject IDs and revisions, or explicit document paths for local review creation. Empty/missing selection refuses. The application materializes Select all. NPC creation calls scoped verification over selected dossiers; duplicate creation consumes explicit candidate pairs; document creation selects the existing world_state, campaign_state, party, planning drafts.
 - `refresh` checks semantic item continuity and journals a new source-manifest custody generation; it never changes an immutable item revision or transfers an exact-patch approval. See verification.md for digest exclusions.
 - `decide` consumes the exact DecisionEvent request contract in data-model.md; records decisions only. It records approved dispositions in authority v2 in the same journal. Source changes and publication require separate apply/promote.
+- `carry` and `policy` record GM-delegated approvals (unchanged approvals from an earlier review; single-code items under a policy file). Dry run by default; `--write` saves through the `decide` path; every note names the mechanism.
 - `retract` records withdrawal of the decision; applied artifacts remain tracked. The command returns required inverse-review instructions rather than undoing them.
 - `export` writes a canonical immutable bundle under the review root; contains selected items/evidence/events/sign-offs and hashes, no credentials. `import` validates campaign, item revisions, provenance and expected generation. It is a reviewed local interchange operation, not a remote arbitrary-write endpoint. Imported foreign/stale decisions refuse. Arbitrary HTML narration decisions are not auto-adopted.
 - At duplicate review creation, the local producer prepares bounded immutable canonical alternatives for the explicit pair (each eligible member as survivor), including global alias sets, full impact previews and proposal digests. The phone may select/approve one prepared alternative. New canonical identities, custom alias scope or modified actions become Discuss/blocked requests for trusted local proposal preparation, followed by fresh phone review. Intent alone is not an approved merge.

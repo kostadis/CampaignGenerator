@@ -70,6 +70,32 @@ def add_parser(subparsers: argparse._SubParsersAction) -> None:
     decide.add_argument("--decisions", required=True, metavar="FILE")
     decide.add_argument("--grant", default=None, help=argparse.SUPPRESS)
     _scope_args(decide)
+    delegated_epilog = (
+        "These record decisions the GM has delegated, so they never run implicitly: "
+        "the default is a dry run that writes nothing, --write submits through the "
+        "same path as `review decide`, and every note names the mechanism that made it."
+    )
+    carry = commands.add_parser(
+        "carry", help="carry unchanged approvals forward from an earlier review (dry run by default)",
+        description="Carry current approve decisions from --from into REVIEW for items whose claim, "
+        "findings and source path (or exact NPC draft sha256) are unchanged. " + delegated_epilog,
+    )
+    carry.add_argument("review", help="the new review that receives decisions")
+    carry.add_argument("--from", dest="source_review", required=True, metavar="REVIEW", help="the earlier review whose approvals are carried")
+    carry.add_argument("--reviewer", default=None, help="reviewer recorded on carried decisions (default: '<original reviewer> (carried)')")
+    carry.add_argument("--write", action="store_true", help="save the carried decisions (default: dry run)")
+    _scope_args(carry)
+    policy = commands.add_parser(
+        "policy", help="approve items whose only finding code is in a GM policy file (dry run by default)",
+        description="Approve (accept_no_change) items whose diagnostics carry exactly one distinct "
+        "legacy_code and that code is in --policy (a YAML map of legacy_code: note). " + delegated_epilog
+        + " --reviewer is required because the decisions are recorded on the GM's behalf.",
+    )
+    policy.add_argument("review")
+    policy.add_argument("--policy", required=True, metavar="FILE", help="YAML/JSON mapping legacy_code -> note")
+    policy.add_argument("--reviewer", required=True, help="who delegated the policy (recorded on every decision)")
+    policy.add_argument("--write", action="store_true", help="save the policy decisions (default: dry run)")
+    _scope_args(policy)
     history_parser = commands.add_parser("history", help="read immutable decision history")
     history_parser.add_argument("review")
     history_parser.add_argument("--item", default=None)
@@ -593,19 +619,55 @@ def _sign_npc_draft(root:Path,review_id:str,*,item_id:str,draft_sha256:str,expec
     item=next((value for value in items if value.item_id==item_id),None)
     if item is None or item.proposed_action.action!="signoff_npc_draft":
         raise ReviewStoreError("REVIEW_NPC_SIGNOFF_ITEM: exact NPC draft signoff item is missing","REVIEW_NPC_SIGNOFF_ITEM")
+    from pipelines.summary_native.review.delegated import npc_signoff_blocker
     details=item.proposed_action.details
-    if details.get("verification_complete") is not True:
-        raise ReviewStoreError("REVIEW_NPC_RECHECK_REQUIRED: run the complete dossier verification selection","REVIEW_NPC_RECHECK_REQUIRED")
-    if details.get("mechanical_verdict")!="pass":
-        raise ReviewStoreError("REVIEW_NPC_MECHANICAL_BLOCK: repair hard verification failures and run a real recheck","REVIEW_NPC_MECHANICAL_BLOCK")
-    if details.get("draft_sha256")!=draft_sha256:
+    if details.get("verification_complete") is True and details.get("mechanical_verdict")=="pass" and details.get("draft_sha256")!=draft_sha256:
         raise ReviewStoreError("REVIEW_NPC_SIGNOFF_STALE: requested digest differs from reviewed draft","REVIEW_NPC_SIGNOFF_STALE")
-    path=(Path(root)/str(details.get("draft_path"))).resolve()
-    try: path.relative_to(Path(root).resolve())
-    except ValueError as exc: raise ReviewStoreError("REVIEW_PATH: draft outside campaign") from exc
-    if not path.is_file() or hashlib.sha256(path.read_bytes()).hexdigest()!=draft_sha256:
-        raise ReviewStoreError("REVIEW_NPC_SIGNOFF_STALE: draft bytes changed","REVIEW_NPC_SIGNOFF_STALE")
+    blocker=npc_signoff_blocker(root,item)
+    if blocker is not None:
+        raise ReviewStoreError(f"{blocker[0]}: {blocker[1]}",blocker[0])
     return save_decisions(root,review_id,{"version":1,"request_id":f"npc-signoff-{item_id}-{expected_decision_revision}","review_generation":manifest.generation,"reviewer":reviewer,"decisions":[{"item_id":item.item_id,"item_revision":item.revision,"review_digest":item.review_digest,"expected_decision_revision":expected_decision_revision,"verdict":"approve","disposition":"document_signoff","note":"Approved exact mechanically verified NPC draft bytes."}]})
+
+
+def _run_delegated(args: argparse.Namespace, root: Path) -> int:
+    """carry/policy: plan by default; only --write saves (through save_decisions)."""
+    from pipelines.summary_native.review.delegated import load_policy, plan_carry, plan_policy, submit_decisions
+    if args.review_command == "carry":
+        plan = plan_carry(root, args.review, source_review_id=args.source_review)
+        groups: dict[str, list[dict]] = {}
+        for entry in plan["carried"]:
+            reviewer = args.reviewer or f"{entry['reviewer']} (carried)"
+            groups.setdefault(reviewer, []).append(entry["decision"])
+        prefix, label = "carry", "carried"
+        data = {key: plan[key] for key in ("review_id", "source_review_id", "needs_review", "already_decided")}
+        data["carried"] = [entry["decision"]["item_id"] for entry in plan["carried"]]
+        summary = (f"{len(plan['carried'])} approval(s) carry from {args.source_review}; "
+                   f"{len(plan['needs_review'])} item(s) need review; {len(plan['already_decided'])} already decided.")
+    else:
+        if not args.reviewer.strip():
+            raise ReviewStoreError("REVIEW_INVALID_BATCH: --reviewer must be nonblank", "REVIEW_INVALID_BATCH")
+        policy_path = Path(args.policy)
+        label = f"{policy_path.name} sha256:{hashlib.sha256(policy_path.read_bytes()).hexdigest()[:12]}"
+        plan = plan_policy(root, args.review, policy=load_policy(policy_path), policy_label=label)
+        groups = {args.reviewer: plan["approvable"]} if plan["approvable"] else {}
+        prefix, label = "policy", "approved by policy"
+        data = {key: plan[key] for key in ("review_id", "policy", "counts_by_code", "ineligible", "already_decided")}
+        data["approvable"] = [decision["item_id"] for decision in plan["approvable"]]
+        summary = (f"{len(plan['approvable'])} item(s) match the policy "
+                   f"({', '.join(f'{code} {count}' for code, count in sorted(plan['counts_by_code'].items())) or 'none'}); "
+                   f"{len(plan['ineligible'])} ineligible; {len(plan['already_decided'])} already decided.")
+    data["write"] = bool(args.write)
+    if not args.write:
+        return _emit(args, ok=True, code=f"REVIEW_{args.review_command.upper()}_PLAN",
+                     message=f"Dry run: {summary} Nothing was saved; pass --write to save.", data=data)
+    results = []
+    for reviewer, decisions in groups.items():
+        results.extend(submit_decisions(root, args.review, generation=plan["review_generation"],
+                                        reviewer=reviewer, decisions=decisions, prefix=prefix))
+    data["saved"] = results
+    saved = sum(len(result.get("events", ())) for result in results)
+    return _emit(args, ok=True, code=f"REVIEW_{args.review_command.upper()}_SAVED",
+                 message=f"{saved} decision(s) {label} and saved. {summary}", data=data)
 
 
 def run(args: argparse.Namespace) -> int:
@@ -675,6 +737,8 @@ def run(args: argparse.Namespace) -> int:
                 grant_check = lambda: validate_grant(root, args.review, args.grant, token)
             result = save_decisions(root, args.review, request, grant_check=grant_check)
             return _emit(args, ok=True, code="REVIEW_DECISIONS_SAVED", message="Review decisions saved.", data=result)
+        if args.review_command in ("carry", "policy"):
+            return _run_delegated(args, root)
         if args.review_command == "history":
             events = history(root, args.review, item_id=args.item)
             return _emit(args, ok=True, code="REVIEW_HISTORY", message="Review history loaded.", data={"events": events})

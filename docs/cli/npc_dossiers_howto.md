@@ -437,6 +437,20 @@ the same check per NPC (the `verify:` line); run `npc-verify` on its own after y
 have touched a draft, an authored file or a summary, or to gate a script on exit 5.
 Without `--name` it checks every `draft/<stem>.md` in range (not `.incomplete.md`).
 
+To check proposed edits **before** touching a draft, pass `--edits edits.json`, a
+JSON list of exact replacements:
+
+```json
+[{"stem": "npc_jimjar", "old": "a deep gnome", "new": "a svirfneblin", "count": 1}]
+```
+
+The draft directory is copied to a scratch temp dir, each `old` must occur exactly
+`count` times (default 1) at the point it is applied, and verification runs on the
+copy (by default only the edited NPCs; `--name` overrides). The real drafts,
+their `.verify.md` reports and `verify_runs/` are never touched; the scratch path
+is printed so its reports can be read. Any edit that does not apply refuses with
+exit 2 and nothing is verified. `--edits` cannot be combined with `--resume`.
+
 ```text
 Jimjar: fail (not-found 2); advisories: typography-normalised 5
 warning: Jimjar: manual edit 2 dropped — "He has a standing bet with Eldeth ..."   (stderr, only when a manual edit is dropped)
@@ -712,6 +726,8 @@ document. Re-run with `--force`, or a larger `--max-tokens`.
 | `--name X: no evidence for this NPC in range` | Check the spelling against `evidence/`. |
 | `--name X: no draft dossier in range; run summary_native npc-draft` | Not drafted yet. |
 | an authored-file message | Fix `authored/<slug>.authored.yaml`. |
+| `--edits did not apply; nothing verified: edit N (stem): old text occurs Kx, expected Cx` | Make `old` unique, or set `count`. |
+| `invalid --edits: edit N: no draft dossier 'stem' in range` | Use the draft filename stem (`draft/<stem>.md`). |
 
 ### `npc-compose`
 
