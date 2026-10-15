@@ -388,3 +388,54 @@ def test_verify_resume_refuses_changed_inputs_without_local_execution(drafted, m
     monkeypatch.setattr(npc_verify, "verify_draft", lambda *a, **k: pytest.fail("stale run executed"))
     rc, _, err = run_cli(_args(root, "npc-verify", "--name", "Jimjar", "--resume", run_id))
     assert rc == 2 and "inputs are stale" in err
+
+
+# ── --edits: verify proposed edits on a scratch copy ────────────────────────
+
+
+@pytest.fixture(autouse=True)
+def _scratch_in_tmp(tmp_path, monkeypatch):
+    import tempfile
+    monkeypatch.setattr(tempfile, "tempdir", str(tmp_path))
+
+
+def _write_edits(tmp_path, edits):
+    path = tmp_path / "edits.json"
+    path.write_text(json.dumps(edits), encoding="utf-8")
+    return str(path)
+
+
+def test_edits_verify_a_scratch_copy_and_never_touch_the_real_drafts(drafted, tmp_path):
+    root, _ = drafted
+    draft = root / OUT / "draft/npc_jimjar.md"
+    report = root / OUT / "draft/npc_jimjar.verify.md"
+    before, report_before = draft.read_bytes(), report.read_bytes()
+    runs_before = sorted((root / OUT / "verify_runs").glob("*")) if (root / OUT / "verify_runs").exists() else []
+    edits = _write_edits(tmp_path, [{"stem": "npc_jimjar", "old": "[ch 002 / 002.01]", "new": "[ch 002 / 002.99]"}])
+    rc, so, _ = run_cli(_args(root, "npc-verify", "--edits", edits))
+    assert rc == 2  # the citation occurs once per section, not once: exact-count refusal
+    count = before.decode().count("[ch 002 / 002.01]")
+    edits = _write_edits(tmp_path, [{"stem": "npc_jimjar", "old": "[ch 002 / 002.01]", "new": "[ch 002 / 002.99]", "count": count}])
+    rc, so, _ = run_cli(_args(root, "npc-verify", "--edits", edits))
+    assert rc == 5 and "Jimjar: fail (invalid" in so and "real drafts untouched" in so
+    assert draft.read_bytes() == before and report.read_bytes() == report_before
+    after_runs = sorted((root / OUT / "verify_runs").glob("*")) if (root / OUT / "verify_runs").exists() else []
+    assert after_runs == runs_before
+
+
+def test_edits_that_keep_the_draft_valid_pass(drafted, tmp_path):
+    root, _ = drafted
+    edits = _write_edits(tmp_path, {"edits": [{"stem": "npc_jimjar", "old": "- ok [ch 002 / 002.01]", "new": "- fine [ch 002 / 002.01]",
+                                               "count": (root / OUT / "draft/npc_jimjar.md").read_text().count("- ok [ch 002 / 002.01]")}]})
+    rc, so, _ = run_cli(_args(root, "npc-verify", "--edits", edits))
+    assert rc == 0 and "1 pass, 0 fail" in so
+
+
+def test_edits_refuse_unknown_stems_malformed_entries_and_resume(drafted, tmp_path):
+    root, _ = drafted
+    rc, _, err = run_cli(_args(root, "npc-verify", "--edits", _write_edits(tmp_path, [{"stem": "npc_nobody", "old": "x", "new": "y"}])))
+    assert rc == 2 and "npc_nobody" in err
+    rc, _, err = run_cli(_args(root, "npc-verify", "--edits", _write_edits(tmp_path, [{"stem": "npc_jimjar", "old": "", "new": "y"}])))
+    assert rc == 2 and "nonempty" in err
+    rc, _, err = run_cli(_args(root, "npc-verify", "--resume", "--edits", _write_edits(tmp_path, [{"stem": "npc_jimjar", "old": "ok", "new": "y"}])))
+    assert rc == 2 and "--resume" in err

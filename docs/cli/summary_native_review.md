@@ -127,6 +127,52 @@ summary_native review retract REVIEW --event EVENT --expected-decision-revision 
   --reason 'Evidence needs renewed review' --reviewer GM --campaign-dir CAMPAIGN --json
 ```
 
+## Delegated decisions: carry and policy
+
+Two commands record decisions the GM has delegated instead of making item by
+item. Because they decide on the GM's behalf they never run implicitly: each is
+a dry run by default that writes nothing, `--write` is required to save, and
+saving goes through the same validated, journaled path as `review decide`
+(batched at `max_batch_decisions`). Every note they write names the command that
+produced it, so the history shows which approvals were made by rule.
+
+`review carry` moves approvals from an earlier review to a new one. An item is
+carried only when the same item id holds a current, non-withdrawn **approve**
+decision in the source review and nothing judged has changed: the same action,
+claim text, diagnostic messages and source path. An NPC draft sign-off carries
+only when the draft sha256 is identical and the draft still passes the
+`review npc sign` guard (complete verification, mechanical pass, bytes on disk
+unchanged). Proposal-bound approvals are never carried. Everything else is
+listed under `needs_review` with a reason. The recorded reviewer defaults to
+`<original reviewer> (carried)`; `--reviewer` overrides it.
+
+```sh
+summary_native review carry NEW_REVIEW --from OLD_REVIEW --campaign-dir CAMPAIGN --json          # plan
+summary_native review carry NEW_REVIEW --from OLD_REVIEW --campaign-dir CAMPAIGN --json --write  # save
+```
+
+`review policy` approves (`accept_no_change`) items whose diagnostics carry
+exactly **one** distinct `legacy_code` and that code is in a policy file — a
+YAML map of `legacy_code: note`. Items with mixed codes are never touched;
+items whose action cannot be waived (mechanical or GM-confirmed blockers, draft
+sign-offs) are listed as `ineligible`. `--reviewer` is required. Each note names
+the policy file and its sha256 prefix plus the code and the policy note.
+
+```yaml
+# policy.yaml
+typography-normalised: Quote matches the evidence except for curly/straight marks.
+number-inconsistency: Every number on the line was checked by hand against the evidence.
+```
+
+```sh
+summary_native review policy REVIEW --policy policy.yaml --reviewer 'GM (delegated policy)' \
+  --campaign-dir CAMPAIGN --json [--write]
+```
+
+Re-running either command after a write is safe: already-decided items are
+skipped, and batch request ids derive from batch content, so a retried batch is
+an idempotent replay.
+
 ## Corrections and exact sign-off
 
 Source corrections reuse the reviewed-authority proposal and apply gates. An

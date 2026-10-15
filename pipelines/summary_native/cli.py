@@ -168,6 +168,10 @@ def build_parser() -> argparse.ArgumentParser:
             p.add_argument("--parallel", type=_positive_int, default=None, metavar="N",
                            help="local deterministic verification workers")
             p.add_argument("--resume", nargs="?", const="", default=None, metavar="RUN_ID")
+            p.add_argument("--edits", default=None, metavar="FILE",
+                           help="dry-run proposed draft edits: copy the drafts to a scratch dir, apply this JSON list of "
+                                "{stem, old, new, count (default 1)} exact replacements there, and verify the copy; "
+                                "the real drafts are never touched (default selection: the edited NPCs)")
         if name == "npc-publish":
             p.add_argument("--name", nargs="+", action="extend", default=None, metavar="NAME", help="publish these NPCs")
             p.add_argument("--all", dest="all_", action="store_true", help="every NPC with a GM dossier in range")
@@ -656,6 +660,53 @@ def _verification_inputs_or_error(root: Path, report, draft_dir: Path, evidence:
         return None, str(error)
 
 
+def _scratch_with_edits(edits_path: Path, draft_dir: Path, drafted: list[str]) -> tuple[Path, list[str]]:
+    """Copy ``draft_dir`` to a fresh scratch dir and apply exact-count edits there.
+
+    Each edit is ``{"stem", "old", "new", "count"=1}``; ``old`` must occur exactly
+    ``count`` times in the draft at the moment the edit is applied (edits apply in
+    file order).  Every problem is collected and reported together; on any
+    problem nothing is verified.  The real draft directory is only read.
+    """
+    import shutil
+    import tempfile
+
+    try:
+        raw = json.loads(edits_path.read_text(encoding="utf-8"))
+    except (OSError, ValueError) as e:
+        raise ValueError(f"--edits {edits_path}: {e}") from e
+    edits = raw.get("edits") if isinstance(raw, dict) else raw
+    if not isinstance(edits, list) or not edits:
+        raise ValueError(f"--edits {edits_path}: expected a nonempty JSON list of edits")
+    problems = []
+    for index, edit in enumerate(edits, 1):
+        if (not isinstance(edit, dict) or not isinstance(edit.get("stem"), str) or not isinstance(edit.get("old"), str)
+                or not edit["old"] or not isinstance(edit.get("new"), str)
+                or not isinstance(edit.get("count", 1), int) or edit.get("count", 1) < 1):
+            problems.append(f"edit {index}: needs string stem, nonempty string old, string new, positive int count")
+        elif edit["stem"] not in drafted:
+            problems.append(f"edit {index}: no draft dossier {edit['stem']!r} in range")
+    if problems:
+        raise ValueError("invalid --edits:\n  " + "\n  ".join(problems))
+    scratch = Path(tempfile.mkdtemp(prefix="npc-verify-edits-")) / draft_dir.name
+    shutil.copytree(draft_dir, scratch, ignore=shutil.ignore_patterns("*.verify.md"))
+    texts: dict[str, str] = {}
+    for index, edit in enumerate(edits, 1):
+        stem, count = edit["stem"], edit.get("count", 1)
+        text = texts.setdefault(stem, (scratch / f"{stem}.md").read_text(encoding="utf-8"))
+        found = text.count(edit["old"])
+        if found != count:
+            problems.append(f"edit {index} ({stem}): old text occurs {found}x, expected {count}x")
+            continue
+        texts[stem] = text.replace(edit["old"], edit["new"])
+    if problems:
+        shutil.rmtree(scratch.parent, ignore_errors=True)
+        raise ValueError("--edits did not apply; nothing verified:\n  " + "\n  ".join(problems))
+    for stem, text in texts.items():
+        atomic_write_text(scratch / f"{stem}.md", text)
+    return scratch, sorted(texts)
+
+
 def _npc_verify(args, root: Path, report, npc_range_dir: Path, aliases: dict[str, str]) -> int:
     """npc-verify: deterministic, never edits a draft (contracts/cli.md). Exit 5 on any failure."""
     if report.blocking_count:
@@ -683,11 +734,22 @@ def _npc_verify(args, root: Path, report, npc_range_dir: Path, aliases: dict[str
                 stems.append(stem)
     if not stems:
         return _err("no draft dossiers in range; run `summary_native npc-draft`")
+    verify_root = npc_range_dir / "verify_runs"
+    if args.edits is not None:
+        if args.resume is not None:
+            return _err("--edits cannot be combined with --resume")
+        try:
+            draft_dir, edited = _scratch_with_edits(Path(args.edits), draft_dir, drafted)
+        except ValueError as e:
+            return _err(str(e))
+        verify_root = draft_dir.parent / "verify_runs"
+        if not args.name:
+            stems = edited
+        print(f"verifying {len(edited)} edited draft(s) in scratch copy {draft_dir.parent}; real drafts untouched")
     input_values, input_error = _verification_inputs_or_error(root, report, draft_dir, evidence, stems)
     if input_error:
         return _err(input_error)
     manuals, ctx, item_keys = input_values
-    verify_root = npc_range_dir / "verify_runs"
     if args.resume is not None:
         candidates = []
         for path in sorted(verify_root.glob("*/record.json"), reverse=True):
