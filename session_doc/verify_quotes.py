@@ -582,11 +582,28 @@ def scan_section_conflicts(
 # also lead with a bold speaker label, `> **Zalthir:** “…”` — OOTA ch003
 # (2026-09-25) wrote all 26 of its blockquote lines that way, and without the
 # optional `label` group the verifier checked none of them and said
-# "No quotes found".
+# "No quotes found". It can also end the line with a dash attribution,
+# `> "…" — The Factor`: Phandalin ch58 (2026-10-15) wrote all 14 of its
+# blockquotes that way, and again none was checked. The dash attribution may
+# not contain a quote mark, so a line carrying several quotes still fails to
+# parse and is counted as unparsed rather than mis-split.
 _BLOCKQUOTE_QUOTE_RE = re.compile(
     r'^\s*>\s*(?:\*\*(?P<label>[^*]+?):\*\*\s*)?'
-    r'[""“](?P<q>.+?)[""”]\s*(?P<attr>\([^)]*\))?\s*$'
+    r'[""“](?P<q>.+?)[""”]\s*'
+    r'(?:(?P<attr>\([^)]*\))|[—–]\s*(?P<dash>[^""“”]+?))?\s*$'
 )
+_QUOTE_THEN_DASH_RE = re.compile(r'[""”]\s*[—–]')
+
+
+def _match_blockquote(line: str):
+    """`_BLOCKQUOTE_QUOTE_RE`, refusing a dash-attributed line whose quote
+    swallowed another quote-and-attribution pair (`> "a" — X / "b" — Y`)."""
+    m = _BLOCKQUOTE_QUOTE_RE.match(line)
+    if m and m.group("dash") and _QUOTE_THEN_DASH_RE.search(m.group("q")):
+        return None
+    return m
+
+
 # `> — Name` attribution line under a Stage 1 blockquote.
 _ATTRIBUTION_RE = re.compile(r"^\s*>\s*[—–-]\s*(?P<who>.+?)\s*$")
 # `**[Speaker]** — context` block header in Stage 2 verbatim moments.
@@ -623,7 +640,7 @@ def _parse_blockquote_quotes(
                 speaker_block = sb.group("who").strip()
                 continue
 
-        m = _BLOCKQUOTE_QUOTE_RE.match(line)
+        m = _match_blockquote(line)
         if not m:
             if line.strip() and not line.lstrip().startswith(">"):
                 speaker_block = speaker_block if speaker_from_blocks else None
@@ -633,10 +650,12 @@ def _parse_blockquote_quotes(
         attr = m.group("attr")
         if attr:
             speaker = attr.strip("() ") or speaker
+        if m.group("dash"):
+            speaker = m.group("dash").strip() or speaker
         if speaker is None:
             # Stage 1 puts attribution on the following `> — Name` line.
             for nxt in lines[idx + 1: idx + 3]:
-                if _BLOCKQUOTE_QUOTE_RE.match(nxt):
+                if _match_blockquote(nxt):
                     break
                 a = _ATTRIBUTION_RE.match(nxt)
                 if a:
@@ -1177,12 +1196,19 @@ def verify_artifact_contract(
 # Every one of the 534 quotes in the measured corpus is single-line, so the
 # parser only handles that shape — but a multi-line quote would then be
 # silently skipped, and silent non-coverage reads exactly like a pass. Counting
-# them lets the report say so instead (Principle VIII).
+# them lets the report say so instead (Principle VIII). The same holds for any
+# other blockquote line that opens a quote the parser cannot read (several
+# quotes on one line, an attribution shape it does not know): count it too.
 _UNCLOSED_QUOTE_RE = re.compile(r'^\s*>\s*(?:\*\*[^*]+?:\*\*\s*)?[""“][^""”]*$')
+_OPENS_QUOTE_RE = re.compile(r'^\s*>\s*(?:\*\*[^*]+?:\*\*\s*)?[""“]')
 
 
 def count_unparsed_quote_lines(text: str) -> int:
-    return sum(1 for ln in text.splitlines() if _UNCLOSED_QUOTE_RE.match(ln))
+    return sum(
+        1 for ln in text.splitlines()
+        if _UNCLOSED_QUOTE_RE.match(ln)
+        or (_OPENS_QUOTE_RE.match(ln) and not _match_blockquote(ln))
+    )
 
 
 def now_iso() -> str:
