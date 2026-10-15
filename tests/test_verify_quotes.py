@@ -263,6 +263,33 @@ def test_bold_speaker_label_blockquotes_are_parsed(tmp_path):
     ]
 
 
+def test_dash_attribution_blockquotes_are_parsed(tmp_path):
+    """Phandalin ch58: every blockquote was `> "…" — Speaker`, and none was checked."""
+    doc = tmp_path / "session-summary.md"
+    doc.write_text(
+        "## Memorable Moments\n\n"
+        '> "The commission through the factor is speaking to you." — The Factor\n'
+        "> “It's the factor in the room with us right now.” – Soma\n"
+        '> "Plain quote, no attribution."\n'
+        '> "Hyphen-ending quote, not an attribution -"\n'
+    )
+    quotes = parse_summary_quotes(doc.read_text(), doc)
+    assert [(q.text, q.speaker_hint) for q in quotes] == [
+        ("The commission through the factor is speaking to you.", "The Factor"),
+        ("It's the factor in the room with us right now.", "Soma"),
+        ("Plain quote, no attribution.", None),
+        ("Hyphen-ending quote, not an attribution -", None),
+    ]
+
+
+def test_multi_quote_blockquote_line_is_counted_as_unparsed():
+    from session_doc.verify_quotes import count_unparsed_quote_lines
+    line = '> "I am authentically you." — Lorniel / "the real deal, the genuine imitation." — Soma\n'
+    assert parse_summary_quotes(line, None) == []
+    assert count_unparsed_quote_lines(line) == 1
+    assert count_unparsed_quote_lines('> "Fine." — The Factor\n') == 0
+
+
 def test_bold_label_unclosed_quote_is_counted_as_unparsed():
     from session_doc.verify_quotes import count_unparsed_quote_lines
     assert count_unparsed_quote_lines("> **Gyrgum:** “I cast cure wounds\n") == 1

@@ -184,9 +184,10 @@ def main() -> int:
 
     if unparsed:
         # Non-coverage must be stated, not inferred from a clean-looking report.
-        msg = (f"{unparsed} blockquote line(s) opened a quote without closing it "
-               f"on the same line and were NOT checked — the parser handles "
-               f"single-line quotes only.")
+        msg = (f"{unparsed} blockquote line(s) opened a quote the parser could "
+               f"not read (unclosed on the line, or several quotes on one line) "
+               f"and were NOT checked — the parser handles one single-line quote "
+               f"per line.")
         report.not_checked.append(msg)
         print(f"  warning: {msg}", file=sys.stderr)
         if args.verbose:
