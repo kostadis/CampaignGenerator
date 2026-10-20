@@ -145,15 +145,45 @@ def _perceived(c: Candidate, h: Horizon) -> list[str]:
     return out
 
 
-def render_horizon(h: Horizon, for_agent: bool = False) -> str:
-    """The horizon for the GM, or (``for_agent``) only what the NPC could know."""
+def _headline(c: Candidate, h: Horizon) -> str:
+    """The text of the scene's first ``####`` headline, without the marker; "" if it has none.
+
+    A headline is a beat (``b01``), so one left out as not perceived is left out
+    of the recap too.
+    """
+    for b in beats(c.item):
+        if b.text.startswith("#### "):
+            return "" if b.beat_id in h.not_perceived else b.text.splitlines()[0][len("#### "):].strip()
+    return ""
+
+
+def _recap(c: Candidate, h: Horizon) -> str:
+    """One line for an event that does not name the NPC: its title, then its headline."""
+    it = c.item
+    cite = f"[ch {it.chapter:03d} / {it.item_id}]"
+    head, title = _headline(c, h), it.title or ""
+    return f"- {cite} {title}: {head}" if head and title else f"- {cite} {head or title}".rstrip()
+
+
+def render_horizon(h: Horizon, for_agent: bool = False, compact: bool = False) -> str:
+    """The horizon for the GM, or (``for_agent``) only what the NPC could know.
+
+    ``compact`` is for an NPC whose horizon is most of the campaign (a companion
+    at chapter 47 attended ~278 scenes, ~170k words). An event that names the
+    NPC (``signals``) is still given in full, with its perceived beats; every
+    other present event (a span scene that does not name them) is one line, its
+    title and headline. Not-perceived and hidden beats are dropped as always,
+    and so is a headline left out of a one-line recap.
+    """
     head = [f"# What {h.subject} could know, as of chapter {h.chapter}", ""]
     if not for_agent:
         head = [
             f"# Knowledge horizon — {h.subject}, as of chapter {h.chapter}",
             "",
             "Part 1 is what this NPC could know: the events the GM answered *physically present*, in",
-            "order, with the beats they took in. Part 2 is for the GM only. Nothing after chapter",
+            "order, with the beats they took in" + (
+                " (scenes that do not name them: a one-line recap)." if compact else "."
+            ) + " Part 2 is for the GM only. Nothing after chapter",
             f"{h.chapter} is shown.",
             "",
             f"- First named: chapter {h.first_seen if h.first_seen is not None else '—'}",
@@ -178,14 +208,28 @@ def render_horizon(h: Horizon, for_agent: bool = False) -> str:
             ]
         head += ["", f"## Part 1 — what {h.subject} could know", ""]
     out = list(head)
+    if compact:
+        out += [f"Scenes that do not name {h.subject} are given by their one-line recap.", ""]
     if not h.witnessed:
         out.append("_(no event answered \u201cphysically present\u201d)_")
+    recaps: list[str] = []
+
+    def flush_recaps() -> None:
+        if recaps:
+            out.extend(recaps + [""])
+            recaps.clear()
+
     for c in h.witnessed:
+        if compact and not c.signals:
+            recaps.append(_recap(c, h))
+            continue
+        flush_recaps()
         tags = [t for t, on in (("not named in the scene", not c.signals),
                                 ("by span", c.item.item_id in h.by_span)) if on]
         cite = f"[ch {c.item.chapter:03d} / {c.item.item_id}]" if for_agent else _cite(c.item)
         out += [f"### {cite}" + (f" — {', '.join(tags)}" if tags and not for_agent else ""), ""]
         out += [_quote("\n".join(_perceived(c, h)).strip("\n")), ""]
+    flush_recaps()
     if for_agent:
         return "\n".join(out).rstrip() + "\n"
 

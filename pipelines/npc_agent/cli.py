@@ -248,7 +248,7 @@ def cmd_horizon(args) -> int:
     ms = presence.mentions(corpus, d, table)
     npc, eff = _ruled(args, corpus, d, presence.events(ms))
     h = _horizon(args, summaries, corpus, d, ms, npc, eff, args.chapter, args.for_agent)
-    text = horizon_mod.render_horizon(h, for_agent=args.for_agent)
+    text = horizon_mod.render_horizon(h, for_agent=args.for_agent, compact=args.compact_horizon)
     if args.out is None:
         sys.stdout.write(text)
     else:
@@ -316,6 +316,8 @@ def cmd_leaks(args) -> int:
     for r in hides:
         if r.party:
             print(f"{r.candidate.beat_id}: hidden from the party; no NPC case", file=sys.stderr)
+        elif r.nobody:
+            print(f"{r.candidate.beat_id}: about people no NPC agent plays; no NPC case", file=sys.stderr)
         elif r.unresolved:
             print(f"{r.candidate.beat_id}: hidden from someone the sentence does not name "
                   f"({r.candidate.before.strip()[-40:]!r}); rule who in --knowledge", file=sys.stderr)
@@ -362,7 +364,8 @@ def cmd_leakcheck(args) -> int:
     cases = [c for c in knowledge.leak_cases(_knowledge(args, summaries, corpus), args.dossiers)
              if knowledge.names_dossier(c.who, d)]
     flags = leakcheck.check(texts["answer"], given=texts["given"], cases=cases, corpus=corpus,
-                            chapter=args.chapter, target_scene=args.target_scene)
+                            chapter=args.chapter, target_scene=args.target_scene,
+                            secret_terms=args.secret_term)
     _write(leakcheck.render_flags(flags), args.out, (summaries, npcs))
     return 0
 
@@ -415,7 +418,7 @@ def _prepare_target(args, summaries, corpus, d, ms, npc, eff, target: str) -> _T
         )
     freeze = scene.chapter - 1
     h = _horizon(args, summaries, corpus, d, ms, npc, eff, freeze, for_agent=True)
-    horizon_md = horizon_mod.render_horizon(h, for_agent=True)
+    horizon_md = horizon_mod.render_horizon(h, for_agent=True, compact=args.compact_horizon)
     entries = [c.item for c in presence.snapshots(ms)]
     sentences = persona.persona(entries, d, freeze)
     persona_md = persona.render_persona(sentences, d.subject, freeze)
@@ -452,7 +455,8 @@ def cmd_backtest(args) -> int:
         run = {"npc": d.subject, "target": t.target, "freeze_chapter": t.freeze, "model": args.model,
                "backend": backend, "prompt_sha256": t.sha, "dry_run": bool(args.dry_run), "written_at": _now(),
                "answer_prompt_sha256": prev.get("answer_prompt_sha256"), "answer_model": prev.get("answer_model"),
-               "answer_backend": prev.get("answer_backend"), "answer_at": prev.get("answer_at")}
+               "answer_backend": prev.get("answer_backend"), "answer_at": prev.get("answer_at"),
+               "compact_horizon": bool(args.compact_horizon), "secret_terms": list(args.secret_term)}
         ans_path = tdir / "answer.md"
         reuse = (not args.force and ans_path.is_file() and run["answer_prompt_sha256"] == t.sha
                  and run["answer_model"] == args.model and run["answer_backend"] == backend)
@@ -471,7 +475,8 @@ def cmd_backtest(args) -> int:
             continue
         answer = ans_path.read_text(encoding="utf-8")
         given = "\n\n".join((t.persona_md, t.horizon_md, t.situation_md))
-        flags = leakcheck.check(answer, given=given, cases=cases, corpus=corpus, chapter=t.freeze, target_scene=t.target)
+        flags = leakcheck.check(answer, given=given, cases=cases, corpus=corpus, chapter=t.freeze, target_scene=t.target,
+                                secret_terms=args.secret_term)
         atomic_write_text(tdir / "flags.md", leakcheck.render_flags(flags))
         atomic_write_text(tdir / "flags.json", json.dumps([dataclasses.asdict(f) for f in flags], indent=2) + "\n")
         answered_at.append(run["answer_at"] or run["written_at"])
@@ -702,7 +707,7 @@ def cmd_replay(args) -> int:
         scene = scenes[t]
         freeze = scene.chapter - 1
         h = _horizon(args, summaries, corpus, d, ms, npc, eff, freeze, for_agent=True)
-        horizon_md = horizon_mod.render_horizon(h, for_agent=True)
+        horizon_md = horizon_mod.render_horizon(h, for_agent=True, compact=args.compact_horizon)
         sentences = persona.persona([c.item for c in presence.snapshots(ms)], d, freeze)
         persona_md = persona.render_persona(sentences, subject, freeze)
         situation_md = agent_mod.situation(corpus, t)
@@ -729,7 +734,8 @@ def cmd_replay(args) -> int:
         atomic_write_text(tdir / "prompt.system.md", (fixed[0] if fixed else build(0))[1])
         prev_turns = _read_json(tdir / "run.json").get("turns") or {}
         run = {"npc": subject, "target": t, "mode": mode, "freeze_chapter": freeze, "model": args.model,
-               "backend": backend, "dry_run": bool(args.dry_run), "written_at": _now(), "turns": {}}
+               "backend": backend, "dry_run": bool(args.dry_run), "written_at": _now(),
+               "compact_horizon": bool(args.compact_horizon), "secret_terms": list(args.secret_term), "turns": {}}
         page_turns, stamps, own = [], [], []
         for n in range(1, n_turns + 1):
             if fixed:
@@ -751,7 +757,8 @@ def cmd_replay(args) -> int:
                 continue
             answer = (ndir / "answer.md").read_text(encoding="utf-8")
             own.append(answer.strip())
-            flags = leakcheck.check(answer, given=user, cases=cases, corpus=corpus, chapter=freeze, target_scene=t)
+            flags = leakcheck.check(answer, given=user, cases=cases, corpus=corpus, chapter=freeze, target_scene=t,
+                                   secret_terms=args.secret_term)
             atomic_write_text(ndir / "flags.json", json.dumps(_flag_dicts(flags), indent=2) + "\n")
             stamps.append(entry["answer_at"] or run["written_at"])
             page_turns.append({"n": n, "prompt": turn.prompt, "actual": turn.actual, "answer": answer, "sha": sha,
@@ -794,7 +801,7 @@ def cmd_forward(args) -> int:
         raise Refusal(f"--next {args.next}: the presence rulings do not answer 'present' for {subject} here "
                       f"(effective: {answer[0] if answer else 'unanswered'}); the comparison is a scene she attended.")
     h = _horizon(args, summaries, corpus, d, ms, npc, eff, n, for_agent=True)
-    horizon_md = horizon_mod.render_horizon(h, for_agent=True)
+    horizon_md = horizon_mod.render_horizon(h, for_agent=True, compact=args.compact_horizon)
     sentences = persona.persona([c.item for c in presence.snapshots(ms)], d, n)
     persona_md = persona.render_persona(sentences, subject, n)
     sheet_md = _prep_sheet(args.prep, args.section, args.prep_rulings, args.prep_target, subject, forms)
@@ -819,7 +826,8 @@ def cmd_forward(args) -> int:
         atomic_write_text(fdir / "plan.md", plan_md)
     prev = _read_json(fdir / "run.json")
     run = {"npc": subject, "freeze_chapter": n, "next": args.next, "model": args.model, "backend": backend,
-           "prompt_sha256": sha, "dry_run": bool(args.dry_run), "written_at": _now()}
+           "prompt_sha256": sha, "dry_run": bool(args.dry_run), "written_at": _now(),
+           "compact_horizon": bool(args.compact_horizon), "secret_terms": list(args.secret_term)}
     raw_path = fdir / "answer.raw.md"
     status, entry = _answered(args, raw_path, prev, sha, backend, system, user)
     run.update(entry)
@@ -833,7 +841,8 @@ def cmd_forward(args) -> int:
     atomic_write_text(fdir / "answer.json", json.dumps([dataclasses.asdict(m) for m in moves], indent=2, ensure_ascii=False) + "\n")
     page_moves, flag_rows = [], []
     for i, m in enumerate(moves):
-        flags = _flag_dicts(leakcheck.check(f"{m.move} {m.why}".strip(), given=user, cases=cases, corpus=corpus, chapter=n))
+        flags = _flag_dicts(leakcheck.check(f"{m.move} {m.why}".strip(), given=user, cases=cases, corpus=corpus, chapter=n,
+                                                   secret_terms=args.secret_term))
         flag_rows.append({"index": i, "flags": flags})
         page_moves.append({"move": m.move, "why": m.why, "flags": flags})
     atomic_write_text(fdir / "flags.json", json.dumps(flag_rows, indent=2) + "\n")
@@ -891,6 +900,8 @@ def build_parser() -> argparse.ArgumentParser:
     h.add_argument("--knowledge", type=Path, default=None,
                    help="the GM's who rulings, for beats whose sentence gives a description, not a name")
     h.add_argument("--campaign", default=None, help="this campaign's name in --knowledge (default: --campaign-dir's name)")
+    h.add_argument("--compact-horizon", action="store_true",
+                    help="give a scene that does not name the NPC as a one-line recap, not in full")
     h.set_defaults(func=cmd_horizon)
 
     k = sub.add_parser("leaks", help="leak cases from the GM's knowledge rulings: who must not know what")
@@ -920,6 +931,8 @@ def build_parser() -> argparse.ArgumentParser:
     lc.add_argument("--campaign", default=None, help="this campaign's name in --knowledge (default: --campaign-dir's name)")
     lc.add_argument("--target-scene", default=None, help="NNN.SS: cases up to and including this scene (default: the chapter)")
     lc.add_argument("--out", type=Path, default=None, help="default: stdout")
+    lc.add_argument("--secret-term", action="append", default=[], metavar="TERM",
+                    help="flag an answer sentence that gives away this term of the NPC's own secret (repeatable)")
     lc.set_defaults(func=cmd_leakcheck)
     bt = sub.add_parser("backtest", help="replay an NPC at scenes she attended, from the chapter before, and score it")
     _common(bt)
@@ -933,6 +946,10 @@ def build_parser() -> argparse.ArgumentParser:
     bt.add_argument("--dry-run", action="store_true", help="write the prompts and answer key; call no model")
     bt.add_argument("--force", action="store_true", help="ask the model again even if an answer for this prompt exists")
     agent_mod.add_model_args(bt)
+    bt.add_argument("--compact-horizon", action="store_true",
+                    help="give a scene that does not name the NPC as a one-line recap, not in full")
+    bt.add_argument("--secret-term", action="append", default=[], metavar="TERM",
+                    help="flag an answer sentence that gives away this term of the NPC's own secret (repeatable)")
     bt.set_defaults(func=cmd_backtest)
 
     pr = sub.add_parser("prep", help="write the prep sheet page: the GM marks each prep passage hers or GM only")
@@ -976,6 +993,10 @@ def build_parser() -> argparse.ArgumentParser:
     rp.add_argument("--dry-run", action="store_true", help="write the prompts and answer key; call no model")
     rp.add_argument("--force", action="store_true", help="ask the model again even if an answer for this prompt exists")
     agent_mod.add_model_args(rp)
+    rp.add_argument("--compact-horizon", action="store_true",
+                    help="give a scene that does not name the NPC as a one-line recap, not in full")
+    rp.add_argument("--secret-term", action="append", default=[], metavar="TERM",
+                    help="flag an answer sentence that gives away this term of the NPC's own secret (repeatable)")
     rp.set_defaults(func=cmd_replay)
 
     fw = sub.add_parser("forward", help="ask what an NPC does between sessions, from the chapter she is frozen at")
@@ -997,6 +1018,10 @@ def build_parser() -> argparse.ArgumentParser:
     fw.add_argument("--dry-run", action="store_true", help="write the prompts and comparison; call no model")
     fw.add_argument("--force", action="store_true", help="ask the model again even if an answer for this prompt exists")
     agent_mod.add_model_args(fw)
+    fw.add_argument("--compact-horizon", action="store_true",
+                    help="give a scene that does not name the NPC as a one-line recap, not in full")
+    fw.add_argument("--secret-term", action="append", default=[], metavar="TERM",
+                    help="flag an answer sentence that gives away this term of the NPC's own secret (repeatable)")
     fw.set_defaults(func=cmd_forward)
     return parser
 

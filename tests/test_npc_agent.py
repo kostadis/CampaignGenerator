@@ -1422,3 +1422,212 @@ def test_cli_prep_refuses_mismatched_lists_and_writes_into_sources(camp, tmp_pat
     assert "never writes into its sources" in capsys.readouterr().err
     assert cli.main([*base, "--section", "SCENE Z", "--out", str(tmp_path / "a.html")]) == 2
     assert not (tmp_path / "a.html").exists()
+
+
+# ── private layout: placed prose, compact horizon, who words, own secret ───
+
+PRIVATE = """# Chapter 70 Private
+
+## Summary
+
+Chapter prose one.
+
+## Scenes
+
+### 070.01 Placed
+
+Placed prose about Sylvira sitting upright.
+
+Second placed paragraph.
+
+#### Sylvira sits upright.
+
+- Sylvira sits upright in bed.
+- Daz asks about the key.
+
+### 070.02 Bare
+
+- Daz nods.
+
+### 070.03 Named
+
+#### Sylvira receives Daz.
+
+- Sylvira does not yet know that the party killed her son.
+- The party leaves.
+
+### 070.04 Other
+
+#### Daz explores the cellar.
+
+- Nothing here.
+
+## NPCs
+
+### Sylvira Savikas
+
+A Great Reader.
+"""
+
+
+def test_placed_prose_becomes_a_chapter_prose_item_not_part_of_the_scene():
+    ch, _ = corpus.parse_chapter(PRIVATE, "070-x.md")
+    by = {it.item_id: it for it in ch.items}
+    assert [i for i in by if ".p" in i] == ["070.p01", "070.p02", "070.p03"]
+    assert by["070.p01"].text == "Chapter prose one."  # ## Summary first
+    assert by["070.p02"].text == "Placed prose about Sylvira sitting upright."
+    assert by["070.p03"].text == "Second placed paragraph."
+    assert by["070.p02"].kind == corpus.PROSE and by["070.p02"].line == 11
+    scene = by["070.01"]
+    assert "Placed prose" not in scene.text and "Second placed" not in scene.text
+    assert [b.text.splitlines()[0] for b in corpus.beats(scene)] == [
+        "#### Sylvira sits upright.", "- Sylvira sits upright in bed.", "- Daz asks about the key."]
+    # file lines still point at the file
+    lines = PRIVATE.splitlines()
+    for n, t in scene.lines:
+        assert lines[n - 1] == t
+
+
+def test_a_scene_without_a_headline_keeps_its_text():
+    ch, _ = corpus.parse_chapter(PRIVATE, "070-x.md")
+    bare = next(it for it in ch.items if it.item_id == "070.02")
+    assert bare.text == "### 070.02 Bare\n\n- Daz nods."
+    assert [it.item_id for it in ch.items if it.kind == corpus.PROSE] == ["070.p01", "070.p02", "070.p03"]
+
+
+def test_placed_prose_is_not_a_turn():
+    from pipelines.npc_agent import turns
+    ch, _ = corpus.parse_chapter(PRIVATE, "070-x.md")
+    scene = next(it for it in ch.items if it.item_id == "070.01")
+    ds = dossier.select(dossier.read_dossiers(_write_dossier()), ["Sylvira"])
+    ts = turns.split_turns(scene, ds[0])
+    assert len(ts) == 1 and ts[0].beat_ids == ("070.01.b02",)
+
+
+def _write_dossier() -> Path:
+    import tempfile
+    d = Path(tempfile.mkdtemp())
+    (d / "sylvira-savikas.md").write_text(SYLVIRA)
+    return d
+
+
+def _private_horizon(who=None, hide=frozenset()):
+    ch, _ = corpus.parse_chapter(PRIVATE, "070-x.md")
+    c = corpus.Corpus((ch,), ())
+    ds = dossier.read_dossiers(_write_dossier())
+    syl = dossier.select(ds, ["Sylvira"])[0]
+    table = presence.build_form_table(ds, frozenset(), {})
+    ms = presence.mentions(c, syl, table)
+    items = {it.item_id: it for it in c.items()}
+    eff = {i: (rulings.PRESENT, rulings.FROM_SPAN) for i in ("070.01", "070.02", "070.03", "070.04")}
+    h = horizon.build_horizon(syl, presence.events(ms), eff, 70, items, presence.snapshots(ms), hidden=hide)
+    return h
+
+
+def test_compact_gives_named_scenes_in_full_and_the_rest_in_a_line():
+    h = _private_horizon()
+    full = horizon.render_horizon(h, for_agent=True)
+    text = horizon.render_horizon(h, for_agent=True, compact=True)
+    assert "Daz explores the cellar" in full and "- Nothing here." in full
+    assert "- [ch 070 / 070.04] Other: Daz explores the cellar." in text
+    assert "- Nothing here." not in text
+    assert "- [ch 070 / 070.02] Bare" in text and text.count("070.02") == 1  # no headline: the title alone
+    assert "- Daz nods." not in text
+    # a scene that names her is given in full, with its beats
+    assert "> - Sylvira does not yet know that the party killed her son." in text
+    assert "> - Sylvira sits upright in bed." in text
+    assert "one-line recap" in text
+    assert "Scenes that do not name" in text and "one-line recap" in horizon.render_horizon(h, compact=True)
+    assert len(text.split()) < len(full.split())
+
+
+def test_compact_still_drops_hidden_beats_and_a_hidden_headline():
+    h = _private_horizon(hide=frozenset({"070.03.b02", "070.04.b01"}))
+    text = horizon.render_horizon(h, for_agent=True, compact=True)
+    assert "killed her son" not in text and "1 beat(s) of this scene left out" in text
+    assert "- [ch 070 / 070.04] Other" in text and "cellar" not in text
+
+
+def test_cli_compact_horizon_flag(camp, tmp_path):
+    r = tmp_path / "r.yaml"
+    r.write_text('version: 3\nnpcs:\n  Sylvira Savikas:\n    default: mentioned\n    spans:\n'
+                 '      - {from: "061.01", to: "061.02"}\n    items:\n      "057.01": mentioned\n      "063.01": mentioned\n')
+    out = tmp_path / "h.md"
+    rc = cli.main(["horizon", "--campaign-dir", str(camp), "--npc", "Sylvira", "--chapter", "61", "--rulings", str(r),
+                   "--for-agent", "--compact-horizon", "--out", str(out)])
+    text = out.read_text()
+    assert rc == 0 and "- [ch 061 / 061.01] Reunion: The party regroups." in text and "They plan the day" not in text
+
+
+@pytest.mark.parametrize("word", ["party", "nobody", " Party "])
+def test_a_who_word_resolves_the_beat_and_hides_it_from_no_npc(kcamp, tmp_path, word):
+    f = _kfile(tmp_path, f'      "064.01.b06": {word.strip()}\n      "064.01.b02": {word.strip()}\n')
+    rul = knowledge.load_knowledge(f, "camp", _corpus(kcamp))
+    assert rul["064.01.b06"] == word.strip().lower()
+    r = _resolved(kcamp, rul)
+    b6, b2 = r["064.01.b06"], r["064.01.b02"]
+    assert not b6.unresolved and not b2.unresolved and b6.who == () and b2.who == ()
+    assert (b6.party, b6.nobody, b6.source) == (word.strip().lower() == "party", word.strip().lower() == "nobody", knowledge.FROM_GM)
+    syl = dossier.select(dossier.read_dossiers(kcamp / "npcs"), ["Sylvira"])[0]
+    assert "064.01.b02" not in knowledge.hidden_from(list(r.values()), syl)
+    assert not [c for c in knowledge.leak_cases(list(r.values()), []) if c.beat_id in ("064.01.b06", "064.01.b02")]
+
+
+def test_a_who_word_on_a_beat_that_hides_nothing_or_a_bad_word_is_refused(kcamp, tmp_path):
+    with pytest.raises(knowledge.KnowledgeError, match="nothing in it is hidden"):
+        knowledge.load_knowledge(_kfile(tmp_path, '      "064.01.b03": nobody\n'), "camp", _corpus(kcamp))
+    with pytest.raises(knowledge.KnowledgeError, match="the word 'party' or 'nobody'"):
+        knowledge.load_knowledge(_kfile(tmp_path, '      "064.01.b06": everyone\n'), "camp", _corpus(kcamp))
+
+
+def test_a_nobody_ruling_lets_an_agent_horizon_through(kcamp, tmp_path, capsys):
+    r = tmp_path / "r.yaml"
+    r.write_text('version: 3\nnpcs:\n  Sylvira Savikas:\n    default: mentioned\n    items:\n      "064.01": present\n')
+    base = ["horizon", "--campaign-dir", str(kcamp), "--npc", "Sylvira", "--chapter", "64", "--rulings", str(r),
+            "--for-agent", "--campaign", "camp"]
+    assert cli.main(base) == 2 and "without naming who" in capsys.readouterr().err
+    k = _kfile(tmp_path, '      "064.01.b06": nobody\n')
+    assert cli.main([*base, "--knowledge", str(k)]) == 0
+
+
+def test_the_review_page_has_party_and_nobody_buttons():
+    page = (Path(review.__file__).parent / "review" / "presence_review.html").read_text()
+    assert "data-kparty" in page and "data-knobody" in page and "Nobody we play" in page and ">The party<" in page
+
+
+def test_a_sentence_containing_a_secret_term_is_flagged_as_giving_away_its_own_secret(kcamp):
+    answer = "I am the Dragon Queen. Nothing else. The dragonfly sings. She hides the Vault Key."
+    flags = leakcheck.check(answer, given="", cases=[], corpus=_corpus(kcamp), chapter=64,
+                            secret_terms=["dragon queen", "vault key", "queen of"])
+    own = [f for f in flags if f.kind == leakcheck.KIND_SELF]
+    assert [(f.sentence, f.detail) for f in own] == [
+        ("I am the Dragon Queen.", "gives away his own secret: 'dragon queen'"),
+        ("She hides the Vault Key.", "gives away his own secret: 'vault key'")]
+    assert "Gives away its own secret" in leakcheck.render_flags(own)
+
+
+def test_a_secret_term_is_word_bounded_and_whole():
+    c = leakcheck._self_flags
+    assert c(["The dragonfly sings.", "Dragons fly.", "Dragon, hush."], ["dragon"])[0].sentence == "Dragon, hush."
+    assert len(c(["The dragonfly sings.", "Dragons fly."], ["dragon"])) == 0
+    assert c(["A dragon queen rises."], ["dragon  queen"]) == []  # a phrase is matched whole, as written
+    assert c(["Anything."], ["", "  "]) == []
+
+
+def test_secret_terms_reach_the_check_and_run_json(kcamp, tmp_path, monkeypatch):
+    monkeypatch.setattr(agent, "play", lambda a, s, u: "Sylvira whispers about the Vault Key.")
+    out = tmp_path / "out"
+    rc = cli.main(["backtest", "--campaign-dir", str(kcamp), "--npc", "Sylvira", "--rulings", str(_rulings_file(tmp_path)),
+                   "--target", "064.01", "--out-dir", str(out), "--secret-term", "vault key", "--compact-horizon"])
+    assert rc == 0
+    run = json.loads((out / "064.01" / "run.json").read_text())
+    assert run["secret_terms"] == ["vault key"] and run["compact_horizon"] is True
+    flags = json.loads((out / "064.01" / "flags.json").read_text())
+    assert [f["kind"] for f in flags if f["kind"] == "self"] == ["self"]
+    lc = tmp_path / "ans.md"
+    lc.write_text("It is the Vault Key.")
+    g = tmp_path / "given.md"
+    g.write_text("x")
+    rc = cli.main(["leakcheck", "--campaign-dir", str(kcamp), "--npc", "Sylvira", "--chapter", "64", "--answer", str(lc),
+                   "--given", str(g), "--secret-term", "vault key"])
+    assert rc == 0

@@ -13,8 +13,12 @@ The two layouts differ in one way that matters here. In the public file a
 scene's text (its ``####`` headline from the GM's recap and its bullets) was
 written for that scene, while the prose is chapter-level. In the private file,
 which scene a prose paragraph sits under was decided by the refactor's
-heuristic. So prose is its own item, at chapter level, and is never attributed
-to a scene here.
+heuristic: the paragraph is the scene's first text, between its ``###`` heading
+and its first ``####`` headline, and it restates the bullets below it. So prose
+is its own item, at chapter level, and is never attributed to a scene here: a
+scene with a ``####`` headline gives back whatever precedes the first one as
+PROSE items, numbered ``NNN.pK`` after the ``## Summary`` paragraphs. A scene
+with no ``####`` headline is left as it is.
 
 Item ids:
 
@@ -22,7 +26,8 @@ Item ids:
 kind       id           text
 =========  ===========  ================================================
 scene      ``NNN.SS``   heading, ``####`` headline(s) and bullets
-prose      ``NNN.pK``   the K-th paragraph of ``## Summary``
+prose      ``NNN.pK``   the K-th paragraph of ``## Summary``, then those
+                        placed under scenes (private layout)
 moment     ``NNN.mK``   the K-th ``## Memorable Moments`` block (cut as
                         :func:`npc_link.iter_items` cuts them)
 entry      ``NNN.eK``   the K-th ``## NPCs`` observation
@@ -93,14 +98,30 @@ def _strip_nl(line: str) -> str:
     return line.rstrip("\n").rstrip("\r")
 
 
-def _scene_items(pf: parse.ParsedFile, chapter: int) -> list[Item]:
-    out = []
+def _scene_items(pf: parse.ParsedFile, chapter: int) -> tuple[list[Item], list[list[tuple[int, str]]]]:
+    """``(scenes, placed)``: the scene items, and the prose paragraphs found inside them.
+
+    In the private layout a ``## Summary`` paragraph sits under a scene, between
+    its ``###`` heading and its first ``####`` headline. That text is the
+    chapter's prose, placed by the refactor's heuristic, and it restates the
+    scene's bullets: left in the scene, every moment appears twice and the turn
+    splitter sees it twice. So for a scene with a ``####`` headline the text
+    before the first one leaves the scene and is returned as ``placed`` (runs of
+    non-blank lines, with their file lines) for :func:`_placed_prose_items`. A
+    scene with no ``####`` headline is unchanged, and so is a public-layout
+    scene, whose first line after the heading is its headline.
+    """
+    out, placed = [], []
     for k, sc in enumerate(pf.scenes, 1):
         sid = sc.source_scene_id or f"{chapter:03d}.{k:02d}"
         body = parse.split_lines(sc.body)
         lines = [(sc.line, f"### {sc.heading}")] + [
             (sc.line + 1 + i, _strip_nl(ln)) for i, ln in enumerate(body)
         ]
+        first_headline = next((i for i, (_, t) in enumerate(lines) if i and t.startswith("#### ")), None)
+        if first_headline is not None and first_headline > 1:
+            placed.extend(_paragraphs(lines[1][0], "\n".join(t for _, t in lines[1:first_headline])))
+            lines = lines[:1] + lines[first_headline:]
         while len(lines) > 1 and not lines[-1][1].strip():
             lines.pop()
         out.append(
@@ -115,7 +136,7 @@ def _scene_items(pf: parse.ParsedFile, chapter: int) -> list[Item]:
                 headline_lines=tuple(n for n, t in lines if t.startswith("#### ")),
             )
         )
-    return out
+    return out, placed
 
 
 @dataclass(frozen=True)
@@ -170,10 +191,15 @@ def _paragraphs(first_line: int, body: str) -> list[list[tuple[int, str]]]:
     return [p for p in paras if not p[0][1].lstrip().startswith("#")]
 
 
-def _prose_items(pf: parse.ParsedFile, chapter: int) -> list[Item]:
+def _prose_items(pf: parse.ParsedFile, chapter: int,
+                 placed: list[list[tuple[int, str]]] | None = None) -> list[Item]:
+    """The chapter's prose: ``## Summary`` paragraphs, then (private layout) the placed ones.
+
+    Numbering is ``NNN.pK`` across both, ``## Summary`` first, then the placed
+    paragraphs in file order, so an id never depends on which scene held it.
+    """
     sec = pf.section(SUMMARY_SECTION)
-    if sec is None:
-        return []
+    paras = _paragraphs(sec.line + 1, sec.body) if sec is not None else []
     return [
         Item(
             item_id=f"{chapter:03d}.p{k:02d}",
@@ -184,7 +210,7 @@ def _prose_items(pf: parse.ParsedFile, chapter: int) -> list[Item]:
             title=None,
             lines=tuple(para),
         )
-        for k, para in enumerate(_paragraphs(sec.line + 1, sec.body), 1)
+        for k, para in enumerate(paras + list(placed or []), 1)
     ]
 
 
@@ -239,7 +265,8 @@ def parse_chapter(text: str, name: str) -> tuple[Chapter | None, list[str]]:
     declared = [s.source_scene_id for s in pf.scenes]
     if any(declared) and not all(declared):
         findings.append(f"{name}: some scene headings carry an id and some do not")
-    items = _scene_items(pf, ch) + _prose_items(pf, ch) + _moment_items(pf, ch) + _entry_items(pf, ch)
+    scenes, placed = _scene_items(pf, ch)
+    items = scenes + _prose_items(pf, ch, placed) + _moment_items(pf, ch) + _entry_items(pf, ch)
     title = pf.first_h1[1:].strip() if pf.first_h1 else None
     return Chapter(chapter=ch, source_file=name, date=pf.date, items=tuple(items), title=title), findings
 

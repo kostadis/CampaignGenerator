@@ -14,7 +14,14 @@ Two deterministic checks over the answer text, given what the agent was given:
             but the agent was not given. It says where the name first appears,
             and whether that is after the freeze chapter (``future``).
 
-Both are cheap signals that miss paraphrase and over-flag coincidence; the GM
+A third check is for the reverse error, an NPC giving away its *own* secret:
+
+``self``    a sentence of the answer contains one of the terms the GM gave
+            with ``--secret-term`` (case-insensitive, word-bounded, a phrase
+            matched whole). No stems and no paraphrase: the GM names the
+            words that would give it away, so a hit is the word itself.
+
+All are cheap signals that miss paraphrase and over-flag coincidence; the GM
 reads the flag and decides. Names the summaries never use are not flagged,
 since a made-up name is style, not a leak. No model call (guarded by
 ``tests/test_npc_agent_no_llm.py``).
@@ -31,6 +38,7 @@ from pipelines.npc_agent.persona import split_sentences
 
 KIND_SECRET = "secret"
 KIND_NAME = "name"
+KIND_SELF = "self"
 
 _STOP = frozenset(
     "that the her his their they she him them about with from have has had was were are this not yet "
@@ -142,19 +150,34 @@ def _name_flags(answer_sentences: list[str], given: str, corpus: Corpus, chapter
     return out
 
 
+def _self_flags(answer_sentences: list[str], terms: list[str]) -> list[Flag]:
+    """A flag per sentence and term: the sentence contains the term, whole and word-bounded."""
+    out: list[Flag] = []
+    for term in dict.fromkeys(t.strip() for t in terms if t and t.strip()):
+        rx = re.compile(rf"(?<!\w){re.escape(term)}(?!\w)", re.I)
+        for s in answer_sentences:
+            if rx.search(s):
+                out.append(Flag(KIND_SELF, s, f"gives away his own secret: {term!r}"))
+    return out
+
+
 def check(answer: str, *, given: str, cases: list[knowledge.LeakCase], corpus: Corpus, chapter: int,
-          target_scene: str | None = None) -> list[Flag]:
-    """Flags for the GM to confirm; ``given`` is the exact text the agent was given."""
+          target_scene: str | None = None, secret_terms: list[str] | tuple[str, ...] = ()) -> list[Flag]:
+    """Flags for the GM to confirm; ``given`` is the exact text the agent was given.
+
+    ``secret_terms`` are the NPC's own secrets, as words the GM chose.
+    """
     sentences = split_sentences(answer)
     return _secret_flags(sentences, cases, corpus, chapter, target_scene) + \
-        _name_flags(sentences, given, corpus, chapter)
+        _name_flags(sentences, given, corpus, chapter) + _self_flags(sentences, list(secret_terms))
 
 
 def render_flags(flags: list[Flag]) -> str:
     """Markdown for the GM; flags are for confirming, not verdicts."""
     out = ["# Leak check", "", f"{len(flags)} flag(s). Each is for you to confirm; none is a verdict.", ""]
     for kind, title in ((KIND_SECRET, "States something she does not know"),
-                        (KIND_NAME, "Names something she was not given")):
+                        (KIND_NAME, "Names something she was not given"),
+                        (KIND_SELF, "Gives away its own secret")):
         fs = [f for f in flags if f.kind == kind]
         if not fs:
             continue

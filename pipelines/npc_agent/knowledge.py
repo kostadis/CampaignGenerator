@@ -46,6 +46,18 @@ which character that is, is the GM's ruling, in a file (version 3)::
 A ruling also overrides a name read from the sentence. A ruling on a ``keeps``
 beat is refused: nothing in it is hidden.
 
+A value may also be one of two words instead of a list::
+
+          "014.07.b03": party     # hidden from the party; no NPC case
+          "017.04.b22": nobody    # about creatures or people no NPC agent plays
+
+Either one *resolves* the beat: it is no longer unresolved, so it holds back no
+agent's horizon, and it hides the beat from no NPC and gives no leak case.
+``party`` says the sentence is about the players' side ("the party does not know
+the lich's name") when the sentence itself did not say "the party"; ``nobody``
+says whoever does not know it is nobody an agent plays (an ooze, a stranger), so
+there is no one to leak it to.
+
 ``who`` names count for a dossier when they are its subject or a form it lists.
 A name with no published dossier (Themberchaud, Asha) still gives a leak case.
 
@@ -67,6 +79,7 @@ VERSION = 3
 HIDES = "hides"
 KEEPS = "keeps"
 PARTY = "party"
+NOBODY = "nobody"
 #: Where ``who`` came from.
 FROM_SENTENCE = "sentence"
 FROM_GM = "gm"
@@ -129,14 +142,15 @@ class Candidate:
 class Resolved:
     candidate: Candidate
     outcome: str  # HIDES | KEEPS
-    who: tuple[str, ...]  # characters it is hidden from; empty for the party or when unknown
+    who: tuple[str, ...]  # characters it is hidden from; empty for the party, nobody, or when unknown
     party: bool
     source: str | None  # FROM_SENTENCE | FROM_GM; None when nobody is known
+    nobody: bool = False  # the GM ruled it is about people no NPC agent plays
 
     @property
     def unresolved(self) -> bool:
         """A beat that hides something from someone the sentence does not name."""
-        return self.outcome == HIDES and not self.who and not self.party
+        return self.outcome == HIDES and not self.who and not self.party and not self.nobody
 
 
 def _unquoted(line: str) -> str:
@@ -199,8 +213,8 @@ def _word(form: str, text: str) -> bool:
     return re.search(rf"(?<!\w){re.escape(form)}(?!\w)", text) is not None
 
 
-def load_knowledge(path: Path, campaign: str, corpus: Corpus) -> dict[str, tuple[str, ...]]:
-    """The GM's ``who`` rulings for ``campaign``: ``{beat_id: names}``.
+def load_knowledge(path: Path, campaign: str, corpus: Corpus) -> dict[str, tuple[str, ...] | str]:
+    """The GM's ``who`` rulings for ``campaign``: ``{beat_id: names}``, or ``PARTY`` / ``NOBODY``.
 
     Refuses a beat that is not a candidate, a beat whose sentence hides nothing,
     and a name that appears nowhere in the summaries.
@@ -233,7 +247,7 @@ def load_knowledge(path: Path, campaign: str, corpus: Corpus) -> dict[str, tuple
     found = {c.beat_id: c for c in find(corpus)}
     text = "\n".join(t for it in corpus.items() for _, t in it.lines)
     problems: list[str] = []
-    out: dict[str, tuple[str, ...]] = {}
+    out: dict[str, tuple[str, ...] | str] = {}
     for beat_id, names in who.items():
         beat_id, where = str(beat_id), f"{campaign} {beat_id}"
         if names is None:
@@ -246,8 +260,11 @@ def load_knowledge(path: Path, campaign: str, corpus: Corpus) -> dict[str, tuple
             problems.append(f"{where}: nothing in it is hidden (it says only that someone doesn't know "
                             f"{c.what or 'something'}), so who does not matter")
             continue
+        if isinstance(names, str) and names.strip().lower() in (PARTY, NOBODY):
+            out[beat_id] = names.strip().lower()
+            continue
         if not isinstance(names, list) or not names or not all(isinstance(x, str) and x.strip() for x in names):
-            problems.append(f"{where}: who must be a list of names")
+            problems.append(f"{where}: who must be a list of names, or the word '{PARTY}' or '{NOBODY}'")
             continue
         names = [x.strip() for x in names]
         missing = [x for x in names if not _word(x, text)]
@@ -260,7 +277,7 @@ def load_knowledge(path: Path, campaign: str, corpus: Corpus) -> dict[str, tuple
     return out
 
 
-def resolve(corpus: Corpus, rulings: dict[str, tuple[str, ...]] | None = None) -> list[Resolved]:
+def resolve(corpus: Corpus, rulings: dict[str, tuple[str, ...] | str] | None = None) -> list[Resolved]:
     """Every candidate beat with its outcome and, for one that hides something, from whom."""
     rulings = rulings or {}
     out: list[Resolved] = []
@@ -268,6 +285,8 @@ def resolve(corpus: Corpus, rulings: dict[str, tuple[str, ...]] | None = None) -
         o = outcome(c)
         if o == KEEPS:
             out.append(Resolved(c, o, (), False, None))
+        elif rulings.get(c.beat_id) in (PARTY, NOBODY):
+            out.append(Resolved(c, o, (), rulings[c.beat_id] == PARTY, FROM_GM, rulings[c.beat_id] == NOBODY))
         elif c.beat_id in rulings:
             out.append(Resolved(c, o, rulings[c.beat_id], False, FROM_GM))
         else:

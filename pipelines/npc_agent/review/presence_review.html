@@ -546,7 +546,9 @@ const DATA = /*__NPC_AGENT_DATA__*/null;
   // The sentence decides (card.o): "hides" when it states what someone doesn't
   // know, "keeps" when it only names what they lack. Who it is hidden from is
   // read from the sentence (card.wh, card.pa) when it names them; the GM rules
-  // who for the rest, and may override a name. kstate.who[campaign][beat] = [names].
+  // who for the rest, and may override a name. kstate.who[campaign][beat] = [names],
+  // or the word "party" (hidden from the party, no NPC case) or "nobody" (about people
+  // no NPC agent plays). Either word resolves the beat and hides it from no NPC.
   // K.campaigns[0] is this page's own campaign (npc_agent review puts it first),
   // so its hidden beats are the ones the Presence view shows.
   const K = DATA.knowledge || { version: 3, campaigns: [] };
@@ -563,8 +565,10 @@ const DATA = /*__NPC_AGENT_DATA__*/null;
   // {names, party, src}: who a hidden beat is hidden from, and where that came from.
   function whoOf(c, k) {
     const gm = (kstate.who[c.campaign] || {})[k.id];
-    if (gm && gm.length) return { names: gm, party: false, src: "gm" };
-    return { names: k.wh || [], party: !!k.pa, src: (k.wh || []).length || k.pa ? "sentence" : "" };
+    if (gm === "party") return { names: [], party: true, nobody: false, src: "gm" };
+    if (gm === "nobody") return { names: [], party: false, nobody: true, src: "gm" };
+    if (Array.isArray(gm) && gm.length) return { names: gm, party: false, nobody: false, src: "gm" };
+    return { names: k.wh || [], party: !!k.pa, nobody: false, src: (k.wh || []).length || k.pa ? "sentence" : "" };
   }
 
   function hiddenFor(n) {
@@ -575,11 +579,11 @@ const DATA = /*__NPC_AGENT_DATA__*/null;
   }
 
   function kCounts(c) {
-    const t = { total: c.cards.length, hidden: 0, party: 0, keeps: 0, open: 0 };
+    const t = { total: c.cards.length, hidden: 0, party: 0, nobody: 0, keeps: 0, open: 0 };
     for (const k of c.cards) {
       if (k.o !== "hides") { t.keeps++; continue; }
       const w = whoOf(c, k);
-      if (w.names.length) t.hidden++; else if (w.party) t.party++; else t.open++;
+      if (w.names.length) t.hidden++; else if (w.party) t.party++; else if (w.nobody) t.nobody++; else t.open++;
     }
     return t;
   }
@@ -612,20 +616,23 @@ const DATA = /*__NPC_AGENT_DATA__*/null;
       }).join("") + "</div>" : "") +
       '<div class="actions"><input data-kname list="k-subjects" placeholder="' + (names.length ? "someone else" : "a character") + '" aria-label="Who doesn’t know, for ' + k.id + '">' +
       '<button type="button" class="btn" data-kadd>Add</button>' +
+      '<button type="button" class="btn" data-kparty>The party</button>' +
+      '<button type="button" class="btn" data-knobody>Nobody we play</button>' +
       (kstate.editing.has(k.id) ? '<button type="button" class="btn" data-kdone>Done</button>' : "") + "</div></div>";
   }
 
   function hiddenCard(c, k) {
-    const w = whoOf(c, k), key = c.campaign + "/" + k.id, gm = kw()[k.id] || [];
-    const editing = !w.names.length && !w.party || kstate.editing.has(k.id);
+    const w = whoOf(c, k), key = c.campaign + "/" + k.id, gm = Array.isArray(kw()[k.id]) ? kw()[k.id] : [];
+    const editing = !w.names.length && !w.party && !w.nobody || kstate.editing.has(k.id);
     let line;
-    if (w.party) line = "Hidden from <b>the party</b> · no NPC is affected";
+    if (w.party) line = "Hidden from <b>the party</b> · no NPC is affected" + (w.src === "gm" ? ' <span class="via">your ruling</span>' : "");
+    else if (w.nobody) line = "About <b>nobody we play</b> · no NPC is affected" + ' <span class="via">your ruling</span>';
     else if (w.names.length) line = "Hidden from <b>" + esc(listNames(w.names)) + "</b>" +
       ' <span class="via">' + (w.src === "gm" ? "your ruling" : "named in the sentence") + "</span>";
     else line = '<span class="via warn">The sentence doesn’t name who. Until you do, an agent is never shown this scene’s horizon.</span>';
-    return '<div class="card" data-id="' + esc(key) + '" data-k="' + k.id + '" data-v="' + (w.names.length ? "hide" : w.party ? "party" : "") + '">' +
+    return '<div class="card" data-id="' + esc(key) + '" data-k="' + k.id + '" data-v="' + (w.names.length ? "hide" : w.party ? "party" : w.nobody ? "nobody" : "") + '">' +
       '<div class="row-top"><span class="mono">' + k.id + "</span><strong>" + esc(k.st) + "</strong>" +
-      (!editing ? '<button type="button" class="ans clear" data-kedit>' + (w.names.length ? "Change" : "Name someone") + "</button>" : "") + "</div>" +
+      (!editing ? '<button type="button" class="ans clear" data-kedit>' + (w.names.length || w.party || w.nobody ? "Change" : "Name someone") + "</button>" : "") + "</div>" +
       '<p class="text">' + marked(k.x, k.ph, k.w) + "</p>" +
       '<p class="kline">' + line + "</p>" + (editing ? nameEditor(c, k, gm) : "") + scene(c, k) + "</div>";
   }
@@ -657,10 +664,10 @@ const DATA = /*__NPC_AGENT_DATA__*/null;
         " <small>" + (u.open ? u.open + " need a name" : "done") + "</small></button>";
     }).join("");
     $("k-tally").innerHTML = "<span><b>" + t.total + "</b> bullets say someone doesn’t know</span>" +
-      "<span>hidden from a character " + t.hidden + " · from the party " + t.party + " · stay " + t.keeps + "</span>" +
+      "<span>hidden from a character " + t.hidden + " · from the party " + t.party + " · nobody we play " + t.nobody + " · stay " + t.keeps + "</span>" +
       (t.open ? '<span class="via warn"><b>' + t.open + "</b> need a name</span>" : '<span class="via">nothing needs you</span>');
     const hides = c.cards.filter((k) => k.o === "hides"), keeps = c.cards.filter((k) => k.o !== "hides");
-    const open = hides.filter((k) => { const w = whoOf(c, k); return !w.names.length && !w.party; });
+    const open = hides.filter((k) => { const w = whoOf(c, k); return !w.names.length && !w.party && !w.nobody; });
     const done = hides.filter((k) => !open.includes(k));
     $("k-list").innerHTML =
       (open.length ? '<h2 class="ksec">Needs a name</h2>' + chapters(c, open, hiddenCard) : "") +
@@ -678,7 +685,11 @@ const DATA = /*__NPC_AGENT_DATA__*/null;
     const campaigns = {};
     for (const c of K.campaigns) {
       const src = kstate.who[c.campaign] || {}, who = {};
-      for (const id of Object.keys(src).sort()) if ((src[id] || []).length) who[id] = src[id].slice();
+      for (const id of Object.keys(src).sort()) {
+        const v = src[id];
+        if (v === "party" || v === "nobody") who[id] = v;
+        else if (Array.isArray(v) && v.length) who[id] = v.slice();
+      }
       if (Object.keys(who).length) campaigns[c.campaign] = { who };
     }
     return { version: K.version, campaigns };
@@ -691,7 +702,7 @@ const DATA = /*__NPC_AGENT_DATA__*/null;
     out.push(cs.length ? "campaigns:" : "campaigns: {}");
     for (const c of cs) {
       out.push("  " + q(c) + ":", "    who:");
-      for (const [id, ns] of Object.entries(f.campaigns[c].who)) out.push("      " + q(id) + ": [" + ns.map(q).join(", ") + "]");
+      for (const [id, ns] of Object.entries(f.campaigns[c].who)) out.push("      " + q(id) + ": " + (typeof ns === "string" ? q(ns) : "[" + ns.map(q).join(", ") + "]"));
     }
     return out.join("\n") + "\n";
   }
@@ -803,7 +814,9 @@ const DATA = /*__NPC_AGENT_DATA__*/null;
       const id = card.dataset.k, who = kw();
       if (t.dataset.kedit !== undefined) kstate.editing.add(id);
       else if (t.dataset.kdone !== undefined) kstate.editing.delete(id);
-      else if (t.dataset.kdel !== undefined) { who[id].splice(+t.dataset.kdel, 1); if (!who[id].length) delete who[id]; }
+      else if (t.dataset.kparty !== undefined) who[id] = "party";
+      else if (t.dataset.knobody !== undefined) who[id] = "nobody";
+      else if (t.dataset.kdel !== undefined && Array.isArray(who[id])) { who[id].splice(+t.dataset.kdel, 1); if (!who[id].length) delete who[id]; }
       else if (t.dataset.kadd !== undefined) { if (!addName(card)) return; }
       else return;
       const y = window.scrollY; render(); window.scrollTo(0, y);
@@ -881,7 +894,7 @@ const DATA = /*__NPC_AGENT_DATA__*/null;
     const input = card.querySelector("[data-kname]"), name = input ? input.value.trim() : "";
     if (!name) return false;
     const who = kw(), id = card.dataset.k;
-    who[id] = who[id] || [];
+    if (!Array.isArray(who[id])) who[id] = [];  // a name replaces the word "party" / "nobody"
     if (!who[id].includes(name)) who[id].push(name);
     kstate.editing.add(id);
     return true;
