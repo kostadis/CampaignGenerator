@@ -20,10 +20,18 @@
     npc_agent forward    --campaign-dir DIR --npc NAME --rulings FILE --chapter N --next NNN.SS
                          --prep FILE [--section TEXT] --prep-rulings prep.json --prep-target NNN.SS
                          [--plan FILE [--plan-section TEXT]] --out-dir OUT [--knowledge FILE] [--dry-run] [--force]
+    npc_agent react      --campaign-dir DIR --subject NAME [--form FORM ...] --moment ID --question TEXT
+                         --freeze N --reported NNN.SS [--reported ...] --via TEXT --prep FILE --section TEXT
+                         --prep-rulings prep.json [--knowledge FILE] [--answer-key FILE ...]
+                         [--secret-term T ...] --out-dir OUT [--dry-run] [--force]
 
 ``replay`` splits a scene into turns (:mod:`turns`), asks the agent each one with the real scene so far
 (earlier turns' real answers included, never later ones), and writes ``OUT/replay.html``. ``forward``
 asks once what she does between sessions; the GM's plan reaches the page, never a prompt.
+
+``react`` asks, once, how an NPC who was never present reacts to reports of events (Prototype 6). He needs no
+published dossier. Only the reported scenes up to ``--freeze`` reach him; the ``--answer-key`` files reach the
+page, never a prompt.
 
 ``replay --free`` runs free: each earlier turn's real answer in "So far in this scene" is replaced by the
 agent's own answer for that turn (the party's lines stay real), so turns run in order and a changed
@@ -80,7 +88,8 @@ from pipelines.npc_agent import backtest_page
 from pipelines.npc_agent import corpus as corpus_mod
 from pipelines.npc_agent import dossier as dossier_mod
 from pipelines.npc_agent import horizon as horizon_mod
-from pipelines.npc_agent import (forward, knowledge, leakcheck, persona, prep, prep_page, presence, replay_page, report,
+from pipelines.npc_agent import (forward, knowledge, leakcheck, persona, prep, prep_page, presence, react, react_page,
+                                 replay_page, report,
                                  review, rulings, turns)
 from pipelines.summary_native import duplicates, npc_forms
 
@@ -856,6 +865,115 @@ def cmd_forward(args) -> int:
     return 0
 
 
+def _summaries_only(args) -> Path:
+    """The summaries directory; ``react`` needs no published dossier, so no npcs directory."""
+    if args.summaries_dir is not None:
+        s = Path(args.summaries_dir).expanduser()
+    elif args.campaign_dir is not None:
+        c = Path(args.campaign_dir).expanduser()
+        s = next((x for x in (c / "summaries", c / "docs" / "summaries") if x.is_dir()), c / "summaries")
+    else:
+        raise Refusal("pass --campaign-dir or --summaries-dir")
+    if not s.is_dir():
+        raise Refusal(f"summaries directory not found: {s}")
+    return s
+
+
+def _read_answer_key(path: Path) -> dict:
+    try:
+        return {"name": Path(path).name, "text": Path(path).expanduser().read_text(encoding="utf-8")}
+    except OSError as e:
+        raise Refusal(f"--answer-key {path}: cannot read ({e.strerror})") from None
+
+
+def _write_react_page(out_dir: Path, subject: str, model: str) -> bool:
+    """Rebuild ``react.html`` from every ``bundle.json`` under ``out_dir``; False when there is nothing to show."""
+    moments, stamps = [], []
+    for f in sorted(out_dir.glob("*/bundle.json")):
+        b = _read_json(f)
+        if b.get("kind") != "react":
+            continue
+        stamps.append(b.get("answer_at") or "")
+        moments.append({k: v for k, v in b.items() if k not in ("kind", "answer_at")})
+    if not moments:
+        return False
+    run_id = max(stamps).replace("-", "").replace(":", "")
+    page = react_page.render({"version": react_page.BUNDLE_VERSION, "npc": subject, "run_id": run_id,
+                              "model": model, "moments": moments})
+    atomic_write_text(out_dir / "react.html", page)
+    print(f"wrote {out_dir / 'react.html'}")
+    return True
+
+
+def cmd_react(args) -> int:
+    summaries = _summaries_only(args)
+    subject = args.subject
+    forms = tuple(dict.fromkeys((subject, *args.form)))
+    if not re.fullmatch(r"[\w.-]+", args.moment):
+        raise Refusal(f"--moment {args.moment}: use letters, digits, '.', '_' or '-'")
+    corpus = corpus_mod.load_corpus(summaries)
+    if not corpus.chapters:
+        raise Refusal(f"{summaries}: no summaries with a numeric chapter prefix")
+    # An unknown or future reported scene refuses before anything is written.
+    stand_in = dossier_mod.Dossier(subject, subject, Path(""), forms, (), 0, 0, 0, 0, 0, ())
+    resolved = _knowledge(args, summaries, corpus)
+    try:
+        rs = react.reports(corpus, args.reported, args.freeze, knowledge.hidden_from(resolved, stand_in))
+    except react.ReactError as e:
+        raise Refusal(str(e)) from None
+    sheet_md = _prep_sheet(args.prep, args.section, args.prep_rulings, args.moment, subject, forms)
+    keys = [_read_answer_key(p) for p in args.answer_key]
+    sources = [summaries] + [Path(p).expanduser().resolve().parent for p in (args.prep, *args.answer_key)]
+    out_dir = Path(args.out_dir)
+    _refuse_inside(out_dir, tuple(sources))
+    reports_md = react.render_reports(rs, args.via)
+    system, user = agent_mod.build_react_prompt(subject, sheet_md, reports_md, args.question)
+    sha = _sha(system, user)
+    cases = [c for c in knowledge.leak_cases(resolved, []) if knowledge.names_dossier(c.who, stand_in)]
+    backend = agent_mod.backend_name(args)
+    mdir = out_dir / args.moment
+    mdir.mkdir(parents=True, exist_ok=True)
+    atomic_write_text(mdir / "prompt.system.md", system)
+    atomic_write_text(mdir / "prompt.user.md", user)
+    prev = _read_json(mdir / "run.json")
+    run = {"subject": subject, "moment": args.moment, "freeze_chapter": args.freeze, "reported": [r.scene_id for r in rs],
+           "model": args.model, "backend": backend, "prompt_sha256": sha, "dry_run": bool(args.dry_run),
+           "written_at": _now(), "secret_terms": list(args.secret_term)}
+    raw_path = mdir / "answer.raw.md"
+    status, entry = _answered(args, raw_path, prev, sha, backend, system, user)
+    run.update(entry)
+    if args.dry_run or not raw_path.is_file():
+        atomic_write_text(mdir / "run.json", json.dumps(run, indent=2) + "\n")
+        print(f"{args.moment}: {status}; prompts written, no answer and no page")
+        return 0
+    got, parsed = react.parse_reaction(raw_path.read_text(encoding="utf-8"))
+    run["parsed"] = parsed
+    atomic_write_text(mdir / "run.json", json.dumps(run, indent=2) + "\n")
+    atomic_write_text(mdir / "answer.json", json.dumps(
+        {"reaction": got.reaction, "assessment": got.assessment,
+         "decisions": [dataclasses.asdict(d) for d in got.decisions]}, indent=2, ensure_ascii=False) + "\n")
+
+    def check(text: str) -> list[dict]:
+        return _flag_dicts(leakcheck.check(text, given=user, cases=cases, corpus=corpus, chapter=args.freeze,
+                                           secret_terms=args.secret_term)) if text.strip() else []
+
+    f_reaction, f_assess = check(got.reaction), check(got.assessment)
+    decisions = [{"decision": d.decision, "why": d.why, "flags": check(f"{d.decision} {d.why}".strip())} for d in got.decisions]
+    atomic_write_text(mdir / "flags.json", json.dumps(
+        {"reaction": f_reaction, "assessment": f_assess, "decisions": [d["flags"] for d in decisions]}, indent=2) + "\n")
+    atomic_write_text(mdir / "bundle.json", json.dumps({
+        "kind": "react", "moment": args.moment, "question": args.question, "freeze": args.freeze, "sha": sha,
+        "parsed": parsed, "reports": [{"title": r.title, "text": r.text} for r in rs], "via": args.via,
+        "reaction": got.reaction, "reaction_flags": f_reaction, "assessment": got.assessment,
+        "assessment_flags": f_assess, "decisions": decisions, "answer_keys": keys,
+        "answer_at": run["answer_at"] or run["written_at"]}, ensure_ascii=False) + "\n")
+    n_flags = len(f_reaction) + len(f_assess) + sum(len(d["flags"]) for d in decisions)
+    print(f"{args.moment}: {status}; {len(decisions)} decision(s){'' if parsed else ' (reply was not JSON; kept raw)'}; "
+          f"{n_flags} flag(s)")
+    _write_react_page(out_dir, subject, args.model)
+    return 0
+
+
 def _common(p: argparse.ArgumentParser) -> None:
     p.add_argument("--campaign-dir", type=Path, default=None,
                    help="campaigns-public/<campaign>, or a campaign root")
@@ -1023,6 +1141,32 @@ def build_parser() -> argparse.ArgumentParser:
     fw.add_argument("--secret-term", action="append", default=[], metavar="TERM",
                     help="flag an answer sentence that gives away this term of the NPC's own secret (repeatable)")
     fw.set_defaults(func=cmd_forward)
+
+    rc = sub.add_parser("react", help="ask how an NPC who was never present reacts to reports of events")
+    rc.add_argument("--campaign-dir", type=Path, default=None, help="campaigns-public/<campaign>, or a campaign root")
+    rc.add_argument("--summaries-dir", type=Path, default=None)
+    rc.add_argument("--subject", required=True, help="the NPC's name (no published dossier needed)")
+    rc.add_argument("--form", action="append", default=[], help="another name form of the NPC (repeatable)")
+    rc.add_argument("--moment", required=True, help="an id for this question; the prep target key and the output folder")
+    rc.add_argument("--question", required=True)
+    rc.add_argument("--freeze", type=int, required=True, help="nothing after this chapter reaches him")
+    rc.add_argument("--reported", action="append", required=True, metavar="NNN.SS", help="a scene reported to him (repeatable)")
+    rc.add_argument("--via", required=True, help="how the reports reached him")
+    rc.add_argument("--prep", type=Path, required=True)
+    rc.add_argument("--section", default="", help="heading-text prefix (\"\" for passages naming the NPC)")
+    rc.add_argument("--prep-rulings", type=Path, required=True, help="prep.json saved from the prep page")
+    rc.add_argument("--knowledge", type=Path, default=None,
+                    help="the GM's who rulings, for beats whose sentence gives a description, not a name")
+    rc.add_argument("--campaign", default=None, help="this campaign's name in --knowledge (default: --campaign-dir's name)")
+    rc.add_argument("--answer-key", action="append", type=Path, default=[],
+                    help="the GM's canon, shown on the page and never put in a prompt (repeatable)")
+    rc.add_argument("--secret-term", action="append", default=[], metavar="TERM",
+                    help="flag a sentence that gives away this term of his own secret (repeatable)")
+    rc.add_argument("--out-dir", type=Path, required=True)
+    rc.add_argument("--dry-run", action="store_true", help="write the prompts; call no model")
+    rc.add_argument("--force", action="store_true", help="ask the model again even if an answer for this prompt exists")
+    agent_mod.add_model_args(rc)
+    rc.set_defaults(func=cmd_react)
     return parser
 
 

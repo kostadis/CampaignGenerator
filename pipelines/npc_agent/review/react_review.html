@@ -1,0 +1,307 @@
+<title>Reactions</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Spectral:wght@500;600&family=Source+Sans+3:wght@400;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one section per moment. The question, what reached him, his reaction,
+   assessment and decisions (flagged sentences marked), then the GM's scores. */
+:root {
+  --bg: #f3f5f4;
+  --surface: #ffffff;
+  --sunk: #e8edeb;
+  --fg: #1c2624;
+  --muted: #5b6966;
+  --line: #d3dcd9;
+  --accent: #2a6b64;
+  --accent-ink: #ffffff;
+  --flag: #9a6408;
+  --flag-bg: #f7e9c8;
+  --warn: #8c4646;
+  --font-display: "Spectral", "Iowan Old Style", Georgia, serif;
+  --font-body: "Source Sans 3", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #121918; --surface: #1a2321; --sunk: #222d2b; --fg: #e3ebe8; --muted: #9aaba6;
+    --line: #33413e; --accent: #62b3a9; --accent-ink: #0d1514; --flag: #e0a63c; --flag-bg: #3b3017;
+    --warn: #e08a8a; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #121918; --surface: #1a2321; --sunk: #222d2b; --fg: #e3ebe8; --muted: #9aaba6;
+  --line: #33413e; --accent: #62b3a9; --accent-ink: #0d1514; --flag: #e0a63c; --flag-bg: #3b3017;
+  --warn: #e08a8a; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--fg); font: 15px/1.5 var(--font-body); margin: 0; }
+.wrap { max-width: 980px; margin: 0 auto; padding-inline: 16px; padding-block: 20px 64px; }
+h1, h2, h3 { font-family: var(--font-display); font-weight: 600; text-wrap: balance; margin: 0; }
+h1 { font-size: 1.9rem; letter-spacing: -0.01em; }
+h2 { font-size: 1.3rem; }
+h3 { font-size: 1.02rem; margin-top: 18px; }
+.lede { color: var(--muted); max-width: 65ch; margin: 6px 0 0; overflow-wrap: anywhere; }
+.mono { font-family: var(--font-mono); font-size: 0.82rem; }
+.label { font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+button, textarea { font: inherit; color: inherit; }
+button { cursor: pointer; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.bar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--bg);
+  border-bottom: 1px solid var(--line); padding-block: 10px; margin-top: 16px; display: flex; flex-wrap: wrap;
+  gap: 8px; align-items: center; }
+.bar .status { flex: 1 1 200px; color: var(--muted); min-width: 0; overflow-wrap: anywhere; }
+.status.warn { color: var(--warn); }
+.btn { border: 1px solid var(--line); background: var(--surface); border-radius: 8px; padding: 6px 12px; }
+.btn.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+
+.target { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 16px;
+  margin-top: 20px; min-width: 0; }
+.target > header { display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: baseline; }
+.box { background: var(--sunk); border-radius: 8px; padding: 10px 12px; white-space: pre-wrap;
+  overflow-wrap: anywhere; min-width: 0; }
+.answer { font-family: var(--font-display); font-size: 1.02rem; line-height: 1.6; }
+mark { background: var(--flag-bg); color: inherit; border-bottom: 2px solid var(--flag); border-radius: 2px; }
+.flags { list-style: none; padding: 0; margin: 10px 0 0; display: grid; gap: 8px; }
+.flags li { border-left: 3px solid var(--flag); padding: 4px 0 4px 10px; min-width: 0; overflow-wrap: anywhere; }
+.future { color: var(--warn); font-weight: 600; }
+.beat { display: grid; grid-template-columns: 5.5rem minmax(0, 1fr); gap: 4px 10px; padding-block: 6px;
+  border-top: 1px solid var(--line); }
+.beat:first-child { border-top: 0; }
+.beat .txt { white-space: pre-wrap; overflow-wrap: anywhere; }
+.pick { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+.pick button { border: 1px solid var(--line); background: var(--surface); border-radius: 999px; padding: 4px 14px; }
+.pick button[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.q { margin-top: 14px; }
+textarea { width: 100%; min-height: 4.5rem; background: var(--surface); border: 1px solid var(--line);
+  border-radius: 8px; padding: 8px; }
+details { margin-top: 14px; }
+summary { cursor: pointer; font-weight: 600; }
+.empty { color: var(--muted); }
+@media (max-width: 560px) { .beat { grid-template-columns: minmax(0, 1fr); } h1 { font-size: 1.5rem; } }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+.turn { border-top: 1px solid var(--line); margin-top: 18px; padding-top: 6px; }
+.side { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 10px; margin-top: 6px; }
+.side > div { min-width: 0; }
+.side h3 { margin-top: 8px; }
+.cols { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 10px; }
+.cols > div { min-width: 0; }
+.sha { color: var(--muted); }
+.target.free { border-left: 4px solid var(--accent); }
+@media (max-width: 700px) { .side, .cols { grid-template-columns: minmax(0, 1fr); } }
+blockquote.reaction { margin: 8px 0 0; padding: 4px 0 4px 14px; border-left: 3px solid var(--accent);
+  font-family: var(--font-display); font-size: 1.05rem; line-height: 1.6; white-space: pre-wrap; overflow-wrap: anywhere; }
+pre.canon { background: var(--sunk); border-radius: 8px; padding: 10px 12px; white-space: pre-wrap;
+  overflow-wrap: anywhere; font: 0.82rem/1.5 var(--font-mono); margin: 6px 0 0; max-width: 100%; }
+input[type="text"] { width: 100%; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 8px; font: inherit; color: inherit; }
+.decision { border-top: 1px solid var(--line); margin-top: 12px; padding-top: 6px; }
+</style>
+<div class="wrap">
+  <h1>Reactions</h1>
+  <p class="lede" id="lede"></p>
+  <div class="bar">
+    <span class="status" id="status" role="status">Loading…</span>
+    <button class="btn primary" id="save-file">Save scores.json</button>
+    <button class="btn" id="copy-yaml">Copy as YAML</button>
+  </div>
+  <div id="moments"></div>
+</div>
+<script>
+"use strict";
+const DATA = /*__NPC_AGENT_DATA__*/null;
+(function () {
+  const $ = (id) => document.getElementById(id);
+  const esc = (s) => String(s == null ? "" : s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  if (!DATA || DATA.version !== 1) {
+    $("moments").innerHTML = '<p class="empty">This page was written by a different version of npc_agent. Run it again.</p>';
+    return;
+  }
+  const MOMENTS = DATA.moments || [];
+  const CHAR = [["yes", "Yes"], ["partly", "Partly"], ["no", "No"]];
+  const CANON = [["yes", "Yes"], ["partly", "Partly"], ["no", "No"], ["silent", "Canon silent"]];
+  const VERDICT = [["approve", "Approve"], ["reject", "Reject"]];
+  const DRAFT_KEY = "react-draft-" + DATA.run_id;
+  const path = (m) => "react/" + DATA.run_id + "--" + m.moment;
+
+  // One record per moment. Decision verdicts and notes are flat (d0_verdict, d0_note, ...).
+  const recs = {}, meta = {};
+  for (const m of MOMENTS) {
+    const r = { in_character: "", matches_canon: "", guardrail: "", note: "" };
+    m.decisions.forEach((d, i) => { r["d" + i + "_verdict"] = ""; r["d" + i + "_note"] = ""; });
+    recs[path(m)] = r;
+    meta[path(m)] = () => ({ kind: "react", npc: DATA.npc, run_id: DATA.run_id, model: DATA.model, moment: m.moment, prompt_sha256: m.sha });
+  }
+
+  $("lede").textContent = DATA.npc + " · model " + DATA.model + " · run " + DATA.run_id +
+    ". How he reacts to news of events he was never present at, from the reports alone.";
+
+  function mark(text, flags) {
+    const spans = [];
+    flags.forEach((f, i) => { const at = text.indexOf(f.sentence); if (at >= 0) spans.push([at, at + f.sentence.length, i]); });
+    spans.sort((a, b) => a[0] - b[0]);
+    let out = "", pos = 0;
+    for (const [a, b, i] of spans) {
+      if (a < pos) continue;
+      out += esc(text.slice(pos, a)) + '<mark title="flag ' + (i + 1) + '">' + esc(text.slice(a, b)) + "</mark>";
+      pos = b;
+    }
+    return out + esc(text.slice(pos));
+  }
+  function flagList(flags) {
+    if (!flags.length) return "";
+    return '<ul class="flags">' + flags.map((f, i) => "<li><strong>" + (i + 1) + ".</strong> " + esc(f.detail) +
+      (f.future ? ' <span class="future">FUTURE: after the freeze chapter</span>' : "") + "</li>").join("") + "</ul>";
+  }
+  function pick(p, field, cur, opts) {
+    return '<div class="pick">' + opts.map(([v, l]) => '<button type="button" data-p="' + esc(p) + '" data-f="' + field +
+      '" data-v="' + v + '" aria-pressed="' + (cur === v) + '">' + esc(l) + "</button>").join("") + "</div>";
+  }
+  const textarea = (p, field, id, label) => '<div class="q"><label for="' + id + '"><strong>' + label + '</strong></label><textarea id="' + id +
+    '" data-p="' + esc(p) + '" data-f="' + field + '">' + esc(recs[p][field]) + "</textarea></div>";
+
+  function section(m, k) {
+    const p = path(m), r = recs[p];
+    const allFlags = m.reaction_flags.length + m.assessment_flags.length + m.decisions.reduce((n, d) => n + d.flags.length, 0);
+    const decisions = m.decisions.map((d, i) => '<div class="decision"><h3>Decision ' + (i + 1) + "</h3>" +
+      '<div class="box answer">' + mark(d.decision, d.flags) + "</div>" +
+      (d.why ? '<div class="label">Why</div><div class="box">' + mark(d.why, d.flags) + "</div>" : "") + flagList(d.flags) +
+      '<div class="q"><strong>Would you let him do this?</strong>' + pick(p, "d" + i + "_verdict", r["d" + i + "_verdict"], VERDICT) + "</div>" +
+      '<div class="q"><label for="dn-' + k + "-" + i + '"><strong>Note</strong></label><textarea id="dn-' + k + "-" + i + '" data-p="' + esc(p) +
+      '" data-f="d' + i + '_note">' + esc(r["d" + i + "_note"]) + "</textarea></div></div>").join("") ||
+      '<p class="empty">No decisions were read from the reply.</p>';
+    const keys = (m.answer_keys || []).length
+      ? '<details><summary>Your canon (answer key)</summary>' + m.answer_keys.map((a) =>
+        '<h3 class="mono">' + esc(a.name) + '</h3><pre class="canon">' + esc(a.text) + "</pre>").join("") + "</details>"
+      : "";
+    return '<section class="target"><header><h2>' + esc(m.moment) + '</h2><span class="label">frozen at chapter ' + m.freeze +
+      " · " + allFlags + " flag(s)</span></header>" +
+      "<h3>The question</h3><div class=\"box\">" + esc(m.question) + "</div>" +
+      "<details><summary>What reached him (" + m.reports.length + ")</summary>" +
+      '<p class="lede">Reported via ' + esc(m.via) + ".</p>" +
+      m.reports.map((x) => '<div class="box" style="margin-top:8px">' + esc(x.text) + "</div>").join("") + "</details>" +
+      (m.parsed ? "" : '<p class="future">The reply was not valid JSON; the raw text is kept as his reaction.</p>') +
+      "<h3>His reaction</h3><blockquote class=\"reaction\">" + mark(m.reaction, m.reaction_flags) + "</blockquote>" + flagList(m.reaction_flags) +
+      "<h3>His assessment</h3><div class=\"box\">" + (m.assessment ? mark(m.assessment, m.assessment_flags) : '<span class="empty">(none)</span>') + "</div>" +
+      flagList(m.assessment_flags) + decisions + keys +
+      '<div class="q"><strong>In character?</strong>' + pick(p, "in_character", r.in_character, CHAR) + "</div>" +
+      '<div class="q"><strong>Matches your canon?</strong>' + pick(p, "matches_canon", r.matches_canon, CANON) + "</div>" +
+      '<div class="q"><label for="g-' + k + '"><strong>Any guardrail broken?</strong></label><input type="text" id="g-' + k + '" data-p="' + esc(p) +
+      '" data-f="guardrail" value="' + esc(r.guardrail) + '"></div>' +
+      textarea(p, "note", "n-" + k, "Note") + "</section>";
+  }
+  function render() {
+    const active = document.activeElement && document.activeElement.id;
+    const pos = active && document.activeElement.selectionStart;
+    const open = Array.from(document.querySelectorAll("details")).map((d) => d.open);
+    $("moments").innerHTML = MOMENTS.map(section).join("") || '<p class="empty">Nothing to score yet.</p>';
+    document.querySelectorAll("details").forEach((d, i) => { if (open[i]) d.open = true; });
+    if (active && $(active)) { $(active).focus(); try { if (pos != null) $(active).setSelectionRange(pos, pos); } catch (e) { /* not a text field */ } }
+  }
+
+  // ── persistence: artifact db, with a local draft behind it ──────────────
+  let db = null, canWrite = true, pending = new Set(), writing = false, timer = null;
+  const setStatus = (t, warn) => { $("status").textContent = t; $("status").classList.toggle("warn", !!warn); };
+  const body = (p) => Object.assign({}, meta[p](), recs[p]);
+  function saveDraftLocally() { try { localStorage.setItem(DRAFT_KEY, JSON.stringify(recs)); } catch (e) { /* no storage */ } }
+  function changed(p) {
+    saveDraftLocally();
+    if (!db || !canWrite) return;
+    pending.add(p); clearTimeout(timer); timer = setTimeout(flush, 700); setStatus("Saving…");
+  }
+  async function flush() {
+    if (writing || !pending.size) return;
+    writing = true;
+    const ps = [...pending]; pending.clear();
+    try { for (const p of ps) await db.doc(p).set(body(p)); setStatus("Saved"); }
+    catch (e) {
+      if (e && e.code === "invalid_argument") { canWrite = false; setStatus("This view can read the scores but not change them.", true); }
+      else { ps.forEach((p) => pending.add(p)); setStatus("Not saved yet. Retrying…", true); setTimeout(flush, 2500); }
+    } finally { writing = false; if (pending.size) flush(); }
+  }
+  function adopt(p, d) {
+    const r = recs[p];
+    for (const k of Object.keys(r)) r[k] = typeof d[k] === "string" ? d[k] : "";
+  }
+  (async function connect() {
+    try {
+      const raw = localStorage.getItem(DRAFT_KEY);
+      if (raw) { const d = JSON.parse(raw); for (const p of Object.keys(recs)) if (d && d[p]) adopt(p, d[p]); }
+    } catch (e) { /* no draft */ }
+    render();
+    setStatus("Connecting…");
+    const c = window.claude && window.claude.use ? window.claude : null;
+    try { db = c ? await c.use("db") : null; } catch (e) { db = null; }
+    if (!db) { setStatus("Scores stay in this browser. Save scores.json to keep them.", true); return; }
+    try {
+      const user = await c.use("user");
+      if (user && user.can && (await user.can("data.write")) === false) canWrite = false;
+    } catch (e) { /* assume writable */ }
+    let first = true;
+    for (const p of Object.keys(recs)) {
+      db.doc(p).onSnapshot((snap) => {
+        if (snap.metadata.hasPendingWrites || pending.has(p)) return;
+        if (snap.exists) { adopt(p, snap.data()); render(); }
+        if (first) { first = false; setStatus(canWrite ? "Saved scores loaded" : "Read only: you can view these scores but not change them.", !canWrite); }
+      }, () => setStatus("Lost the connection to saved scores. Save scores.json to keep your work.", true));
+    }
+  })();
+
+  // ── export ──────────────────────────────────────────────────────────────
+  function scoresFile() {
+    return { npc: DATA.npc, run_id: DATA.run_id, model: DATA.model, moments: MOMENTS.map((m) => {
+      const r = recs[path(m)];
+      return { moment: m.moment, prompt_sha256: m.sha, in_character: r.in_character, matches_canon: r.matches_canon,
+        guardrail: r.guardrail, note: r.note,
+        decisions: m.decisions.map((d, i) => ({ decision: d.decision, why: d.why, verdict: r["d" + i + "_verdict"], note: r["d" + i + "_note"] })) };
+    }) };
+  }
+  const q = (s) => JSON.stringify(String(s));  // a JSON string is a valid YAML string
+  function asYaml(f) {
+    const L = ["npc: " + q(f.npc), "run_id: " + q(f.run_id), "model: " + q(f.model)];
+    L.push(f.moments.length ? "moments:" : "moments: []");
+    for (const r of f.moments) {
+      L.push("  - moment: " + q(r.moment), "    prompt_sha256: " + q(r.prompt_sha256), "    in_character: " + q(r.in_character),
+        "    matches_canon: " + q(r.matches_canon), "    guardrail: " + q(r.guardrail), "    note: " + q(r.note));
+      L.push(r.decisions.length ? "    decisions:" : "    decisions: []");
+      for (const d of r.decisions) L.push("      - decision: " + q(d.decision), "        why: " + q(d.why), "        verdict: " + q(d.verdict), "        note: " + q(d.note));
+    }
+    return L.join("\n") + "\n";
+  }
+
+  document.addEventListener("click", async (ev) => {
+    const b = ev.target.closest("button");
+    if (!b) return;
+    if (b.dataset.v !== undefined && b.dataset.p) {
+      const r = recs[b.dataset.p], f = b.dataset.f, v = b.dataset.v;
+      r[f] = r[f] === v ? "" : v;
+      render(); changed(b.dataset.p); return;
+    }
+    if (b.id === "save-file") {
+      let dl = null;
+      try { dl = window.claude && window.claude.use ? await window.claude.use("downloads") : null; } catch (e) { dl = null; }
+      if (!dl) { setStatus("Saving files is not available in this view. Use Copy as YAML.", true); return; }
+      try { await dl.save({ filename: "scores.json", data: JSON.stringify(scoresFile(), null, 2) + "\n" }); setStatus("scores.json saved"); }
+      catch (e) {
+        if (e && e.code === "declined") setStatus("Save cancelled");
+        else if (e && e.code === "rate_limited") setStatus("A save prompt is already open.", true);
+        else setStatus("Could not save the file. Use Copy as YAML.", true);
+      }
+      return;
+    }
+    if (b.id === "copy-yaml") {
+      const text = asYaml(scoresFile());
+      try { await navigator.clipboard.writeText(text); setStatus("YAML copied"); }
+      catch (e) {
+        const ta = document.createElement("textarea"); ta.value = text; ta.rows = 12; ta.id = "yaml-fallback";
+        const old = $("yaml-fallback"); if (old) old.remove();
+        document.querySelector(".wrap").insertBefore(ta, $("moments")); ta.select();
+        setStatus("Copying is blocked here; the YAML is selected below.", true);
+      }
+    }
+  });
+  document.addEventListener("input", (ev) => {
+    const t = ev.target, p = t.dataset && t.dataset.p;
+    if (p && recs[p] && t.dataset.f && t.dataset.v === undefined) { recs[p][t.dataset.f] = t.value; changed(p); }
+  });
+})();
+</script>

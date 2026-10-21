@@ -99,6 +99,23 @@ def build_forward_prompt(subject: str, persona_md: str, horizon_md: str, sheet_m
     return system, user
 
 
+REACT_SYSTEM = """You are {subject}, a non-player character in a tabletop campaign. You were not present at any of these events; you know of them only through the reports below, and through your own private knowledge. Use nothing else. Answer the question in character. Reply with JSON only:
+{{"reaction": "his immediate reaction, in his own voice, 80-200 words", "assessment": "what he concludes, in plain words, 2-5 sentences", "decisions": [{{"decision": "...", "why": "..."}}]}}
+with 1 to 4 decisions."""
+
+
+def build_react_prompt(subject: str, sheet_md: str, reports_md: str, question: str) -> tuple[str, str]:
+    """``(system, user)`` for a reaction; the user message is these three inputs, in order.
+
+    The GM's answer key is never an input.
+    """
+    system = REACT_SYSTEM.format(subject=subject)
+    user = (f"## Who you are and what you hold privately\n\n{sheet_md.strip() or '(nothing)'}\n\n"
+            f"## What has reached you\n\n{reports_md.strip() or '(nothing)'}\n\n"
+            f"## The question\n\n{question.strip()}\n")
+    return system, user
+
+
 def add_model_args(parser) -> None:
     parser.add_argument("--model", default=DEFAULT_MODEL, help=f"default: {DEFAULT_MODEL}")
     parser.add_argument("--max-tokens", type=int, default=DEFAULT_MAX_TOKENS, help=f"default: {DEFAULT_MAX_TOKENS}")
