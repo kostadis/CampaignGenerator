@@ -1,0 +1,812 @@
+% Draft for arXiv (cs.CL / cs.AI). Compile: pdflatex main && bibtex main && pdflatex main && pdflatex main
+% DRAFT — numbers are from the prototype runs of 2026-10-13 to 2026-10-21 on branch proto/npc-agent.
+% Private GM prep is described, never quoted. Agent outputs are quoted. Fill the TODOs before submission,
+% including the spoiler decision below.
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage[hidelinks]{hyperref}
+\usepackage{natbib}
+
+\newcommand{\todo}[1]{\textcolor{red}{[TODO: #1]}}
+\newcommand{\code}[1]{\texttt{#1}}
+
+\title{Playing the NPC from the Record:\\
+Knowledge Horizons, Human Rulings, and Backtests\\
+for Language-Model NPC Agents in a Long-Running Tabletop Campaign}
+
+\author{Kostadis Roussos\thanks{\todo{affiliation, contact}}}
+
+\date{Draft, October 2026}
+
+\begin{document}
+\maketitle
+
+\todo{Spoilers: this draft reveals campaign secrets (an NPC's hidden divinity, an antagonist's
+plans and an NPC's hidden son). Decide whether to keep them, generalise them or redact them
+before any public posting.}
+
+\begin{abstract}
+Can a language model play a non-player character (NPC) in a long-running tabletop
+role-playing campaign? The hard part is not combat. It is social play and long-term
+planning: the NPC must act on what it knows and wants, and on nothing else.
+
+We describe a series of prototypes built on 72 sessions of reviewed, structured
+session summaries. They give an agent exactly what one NPC could know as of a given
+session, which we call a \emph{knowledge horizon}, and test the agent against the
+game master's (GM's) record and canon.
+
+Our first approach repeated a mistake that a companion survey of grounding documents
+had already named: we asked the GM a question about every summary \emph{element} that
+named the NPC, when the question was about \emph{events}. Rebuilding on the structure
+the summaries already author cut the questions for one NPC from 75 to 19. The same
+mistake later returned in a different form and was fixed the same way.
+
+We test three NPCs, each a different knowledge problem.
+\begin{description}[nosep]
+\item[An NPC who knows less than the record.] Here the record must be filtered. In a
+question-by-question replay the GM judged the agent the same in substance as the
+table in 11 of 11 teacher-forced turns. In free-running turns, 6 of the 8 scored were
+the same and 2 partly so.
+\item[An NPC who knows more than the record.] He is a god in disguise, revealed only
+in the 72nd session. Given his true identity privately, the agent never gave itself
+away in 21 answers. The GM scored all 11 turns he rated as the same in substance and
+called the play ``very compelling''.
+\item[An NPC who is never present.] He learns only by report. His reactions to three
+off-screen developments were judged in character and consistent with canon. The GM
+approved six of his decisions and rejected none. One decision followed through an
+implication the GM had not considered, and the GM said it showed ``how to make the
+plot richer''.
+\end{description}
+
+Across all three, the human effort goes where the reviewed text is silent:
+presence, a description instead of a name, and which preparation is the NPC's. The
+results come from one GM, a handful of scenes and single samples. We report them as a
+working method and a set of design lessons, not as a measurement.
+\end{abstract}
+
+\section{Introduction}
+
+A campaign that runs for years accumulates a world. Dozens of named NPCs carry
+grudges, secrets and plans across sessions, and the GM must remember what each of them
+knows, and when they learned it, every time one of them speaks or acts. That is the
+part of the GM's job we set out to support.
+
+The starting suggestion was to ``use the data to create a player'' with a
+reinforcement-learning environment such as Gymnasium~\citep{towers2024gymnasium}. We
+set that aside, for two reasons:
+\begin{itemize}[nosep]
+\item No simulator of a tabletop session exists, so there is nothing to roll out
+against.
+\item In social play, the reward is the GM's judgement.
+\end{itemize}
+What the data does support is the interface such environments formalise, applied to
+the NPC rather than the player. The NPC is an agent with a partial observation (what
+it could know), private state (what it wants and hides), and one turn per session.
+Its moves are proposed by a model and ratified by the GM.
+
+Three questions organise the work:
+\begin{enumerate}[nosep]
+\item What could this NPC know, as of this session?
+\item Who is the NPC, beyond what the record says?
+\item Does an agent given exactly that play the NPC as the GM did, without using
+anything it should not know?
+\end{enumerate}
+
+The answers are built from reviewed session summaries, never from transcripts. A
+separate human-review pipeline turns each recorded session into a structured summary,
+which the GM corrects (Section~\ref{sec:data}). The summaries are therefore the
+cleanest record of the campaign, and their structure (chapter, scene, bullet, NPC
+entry) turns out to matter more than their content.
+
+The answers also turn out to depend on the NPC's relation to the record. One NPC knows
+\emph{less} than the GM wrote down, another knows \emph{more}, and a third was
+\emph{never there} at all. Each needs a different construction of ``what it could
+know'' (Table~\ref{tab:regimes}).
+
+\begin{table}[t]
+\centering
+\small
+\begin{tabularx}{\linewidth}{@{}lXXX@{}}
+\toprule
+& Knows less than the record & Knows more than the record & Never present \\
+\midrule
+NPC & Sylvira, a scholar hiding a demonic son & Jimjar, a gambler who is secretly a god & Vizeran, an exiled archmage acting through cutouts \\
+What it could know & scenes attended, minus beats she could not perceive & scenes attended, plus his private identity & only scenes \emph{reported} to him \\
+The risk & leaking what the record says she does not know & giving away his own secret & acting on what never reached him \\
+The test & replay her scenes & replay his scenes, with and without his identity & react to three off-screen developments \\
+\bottomrule
+\end{tabularx}
+\caption{Three knowledge regimes, one per NPC.}
+\label{tab:regimes}
+\end{table}
+
+\paragraph{Contributions.}
+\begin{itemize}[nosep]
+\item A \emph{knowledge horizon} for an NPC as of a chapter. It is built
+deterministically from authored structure and GM rulings, and has three variants:
+\begin{itemize}[nosep]
+\item attended scenes minus unperceived beats;
+\item a compact form for companions present at hundreds of scenes;
+\item reported scenes for an NPC who is never present.
+\end{itemize}
+\item An account of how a survey of grounding documents identified the flaw in our
+first design, asking event questions of elements, and of the same flaw recurring when
+a refactor placed rendered prose inside scenes.
+\item A division of labour, ``LLM renders, humans decide''. It is refined by a rule
+that emerged from the GM's feedback: when the reviewed text's grammar settles a
+question, do not ask the human.
+\item Three test protocols, each judged by the GM:
+\begin{itemize}[nosep]
+\item a question-by-question replay, teacher-forced and free-running;
+\item a forward turn of off-screen moves;
+\item a reaction protocol for an absent NPC. The GM's canon serves as an answer key
+the model never sees.
+\end{itemize}
+\item First results on three NPCs. No knowledge leaked in any scored answer. The
+replays matched the table's substance, and the absent NPC's decisions extended the
+canon in ways the GM judged in character.
+\end{itemize}
+
+\section{Setting and data}\label{sec:data}
+
+\paragraph{Campaigns.}
+Two campaigns, both run by the author:
+\begin{itemize}[nosep]
+\item \emph{Out of the Abyss}: 72 sessions, ending in a murder investigation at the
+library-fortress of Candlekeep.
+\item \emph{Phandelver and Below: The Shattered Obelisk}.
+\end{itemize}
+Each session is recorded, transcribed, corrected against a hand-maintained record of
+transcription errors, and summarised.
+
+\paragraph{Reviewed structured summaries.}
+Each summary has the same parts:
+\begin{itemize}[nosep]
+\item a chapter title;
+\item a \code{\#\# Summary} section of prose;
+\item a \code{\#\# Scenes} section, each scene with a heading, a one-line \code{\#\#\#\#}
+headline (the GM's recap) and bullets;
+\item a \code{\#\# Memorable Moments} section of quotations;
+\item an \code{\#\# NPCs} section with one entry per NPC who figures in the session.
+\end{itemize}
+Scenes are numbered \code{NNN.SS} (chapter, scene). Every non-blank scene line falls
+in exactly one bullet, its \emph{beat}.
+
+We use two copies of the summaries:
+\begin{itemize}[nosep]
+\item a public copy, with 419 scenes and 6,275 beats in \emph{Out of the Abyss};
+\item the GM's private copy, later cleaned further by the GM, with 425 scenes over 69
+summary files.
+\end{itemize}
+
+\paragraph{Published dossiers.}
+An earlier pipeline links NPC names to summary items and publishes a per-NPC dossier
+whose citations resolve into the summaries. We start from NPCs with a published
+dossier: 65 at first, 96 after the GM's cleanup. Every dossier reproduces exactly under
+our matcher. The NPC who is never present has none, since he is never named in a
+summary.
+
+\paragraph{The GM's preparation.}
+The GM's private notes hold scene scripts, secrets, voice guides and written rules
+(guardrails) for some NPCs. They are never part of the public record. This paper
+describes them and does not quote them.
+
+\paragraph{A data-quality finding.}
+Building the horizon surfaced a summary error. In chapter 63, five attributions to one
+NPC belonged to two others; it was filed for correction. \todo{cite issue or omit}.
+Checks that read the record closely find errors in it, and the system must defer to
+corrections rather than paper over them.
+
+\section{Background: grounding documents for long campaigns}\label{sec:survey}
+
+A companion survey~\citep{roussos2026grounding} studied how to build \emph{grounding
+documents} (world state, campaign state, party, planning) for long-running campaigns
+from session records. Three of its findings bear directly on this work:
+\begin{description}[nosep,leftmargin=1.5em]
+\item[Atomisation destroys attribution (F2).] Breaking a record into fragments and
+processing each fragment separately loses who did what, and to whom.
+\item[Do not undo a rendering step (F10).] Prose that was rendered from structure
+should not be parsed back into structure. The structure is the source.
+\item[Identity is the precision decision (F8).] Deciding which mention denotes which
+entity is the step that needs a human checkpoint, or an authority such as a
+registry. It should not be left to similarity.
+\end{description}
+The survey recommends building on the structure authors already write (its approaches
+11 and 12). In the summaries, scenes are events in authored order, bullets are beats,
+and NPC entries are snapshots of state.
+
+The repository that hosts this work encodes a related rule: \emph{LLM renders, humans
+decide}. Scope, ordering and attribution are precision decisions with a human
+checkpoint. Rendering verified structure into prose is what language models do well.
+The pattern is ``LLM extracts, human reviews, LLM renders inside that structure'',
+never ``LLM extracts, LLM structures, LLM renders''.
+
+\section{The first approach, and the flaw the survey had already named}\label{sec:flaw}
+
+Our first prototype asked the GM a presence question: for each summary item that names
+the NPC, was the NPC there? An \emph{item} was any element that matched one of the
+NPC's name forms:
+\begin{itemize}[nosep]
+\item a scene;
+\item a paragraph of \code{\#\# Summary} prose;
+\item a memorable moment;
+\item an \code{\#\# NPCs} entry, hers or another NPC's.
+\end{itemize}
+For Sylvira that produced 75 questions.
+
+The GM's reaction, reading the answers back, was: ``we are making the same mistake we
+made before --- trying to extract events from elements.'' The survey had already named
+this mistake, three ways over.
+
+\paragraph{Atomisation (F2).}
+One event became several fragments, each asked separately. The interview of 061.05
+appears in the summary as one scene, several prose paragraphs, two memorable moments
+and an NPC entry. Asking about each separately invited inconsistent answers about a
+single occasion, and multiplied the GM's work.
+
+\paragraph{Undoing a rendering step (F10).}
+\code{\#\# Summary} prose is a rendering of the scenes. In the private copy of the
+summaries, which scene a prose paragraph sits under was decided by a similarity
+heuristic during a refactor. Five of the scenes linked to Sylvira were linked only
+through such prose. Asking a presence question about a paragraph was asking the GM to
+reverse a rendering, and in places to adjudicate a heuristic's placement.
+
+\paragraph{Event questions asked of non-events.}
+An NPC entry is a snapshot of state (``absent from the council meeting due to a
+lingering illness''), not an occasion anyone could attend. The question had no right
+answer there. That showed: the wording of the answers was revised several times
+(present / mentioned / unsure / absent; in the scene / not in the scene / can't tell),
+because the question itself was malformed for half the items.
+
+\paragraph{The fix.}
+The GM cleared every answer, and the prototype was rebuilt on authored structure
+(Table~\ref{tab:elements}).
+\begin{itemize}[nosep]
+\item \emph{Events} are scenes, and only events are asked about.
+\item \emph{Beats} are a scene's headline and top-level bullets, carried with the
+event.
+\item The NPC's own entries are \emph{snapshots}: shown as state, never asked about.
+\item Prose, moments and other NPCs' entries are \emph{context}: shown, never asked
+about.
+\end{itemize}
+Matching reuses the dossier linker's rule unchanged:
+\begin{itemize}[nosep]
+\item exact, case-sensitive and word-bounded;
+\item one combined matcher over every published NPC's name forms, longest first;
+\item a form owned by two NPCs is withheld;
+\item a generic single word is withheld unless the campaign's canon file rules it safe.
+\end{itemize}
+Sylvira's 75 questions became 19. A companion who travels with the party, whose name
+appears in 282 elements, became 91 events inside a 238-scene span that one ruling
+covers.
+
+\begin{table}[t]
+\centering
+\small
+\begin{tabularx}{\linewidth}{@{}lXl@{}}
+\toprule
+Element & What it is & Role in the prototype \\
+\midrule
+Scene \code{NNN.SS} & an event, in authored order & \textbf{asked}: was the NPC physically present? \\
+Scene bullets & its beats & carried with the event into the horizon \\
+The NPC's own entry & a snapshot of state & shown as state; never asked \\
+Prose, moments, others' entries & a rendering or highlight & shown as context; never asked \\
+\bottomrule
+\end{tabularx}
+\caption{Authored structure, and what is asked of it. Asking event questions only of
+events is the survey's recommendation applied to presence.}
+\label{tab:elements}
+\end{table}
+
+\paragraph{The mistake returned.}
+Moving to the GM's cleaned private copy for the second NPC, every moment of his scenes
+appeared twice in the replay. One turn read ``He asked for five gold pieces'' and,
+three turns later, ``He asks for five gold pieces''. The refactor had placed each
+prose paragraph \emph{inside} a scene, ahead of its headline. The rendering was being
+read as part of the structure it was rendered from: F10 again. The fix was the same.
+Placed prose is chapter-level context, never part of a scene.
+
+After that fix every dossier still reproduced, and an unforeseen benefit appeared. The
+beat numbers of the private copy realigned with the public copy, so earlier rulings
+carried over unchanged.
+
+\paragraph{Answers.}
+The GM settled three answers:
+\begin{itemize}[nosep]
+\item \emph{physically present};
+\item \emph{mentioned}: named in the scene, but not there;
+\item \emph{neither / unsure}.
+\end{itemize}
+In the GM's words, ``because you will make mistakes it is also necessary for us to
+have a unsure or neither present nor mentioned''. Two ruling forms keep the work small.
+A \emph{span} covers a companion present throughout a run of scenes. A \emph{default}
+answers every remaining event as \emph{mentioned}, for an NPC present at only a few.
+Sylvira needed 19 answers. The god-in-disguise companion needed two spans and one fact
+from the GM: when he stopped travelling with the party.
+
+\section{The knowledge horizon}\label{sec:horizon}
+
+The horizon of an NPC at chapter $N$ has two parts.
+\begin{description}[nosep]
+\item[Part 1: what the NPC could know.] The events answered \emph{physically present}
+up to $N$, in order, each with the beats the NPC perceived.
+\item[Part 2: for the GM only.] The NPC's latest entry and any events after it, the
+beats left out, and the events answered \emph{mentioned}, \emph{neither} or not yet
+answered.
+\end{description}
+Nothing after chapter $N$ appears, not even a count or a first-seen chapter, because a
+later chapter number tells an agent the future. An agent is given Part~1 only. The
+tool refuses to produce it while any event naming the NPC is unanswered.
+
+\subsection{Being there is not knowing everything the record says}
+
+With Sylvira's answers in, her horizon at chapter 67 correctly placed her son's death
+(063.05) outside what she witnessed, and still carried it in. The summaries are
+written from the GM's side of the screen. Scene 067.03, which she attends, includes
+the beat ``Sylvira is Moziqodo's mother, but does not yet know that the party killed
+her son.''
+
+Two consequences were built:
+\begin{itemize}[nosep]
+\item \emph{Not perceived.} The GM can mark beats of an attended event as not
+perceived, at the granularity the summary wrote (a headline or a top-level bullet).
+\item \emph{Snapshots are the GM's notes.} The NPC's entries are the GM's record
+\emph{about} the NPC. They stay out of Part~1.
+\end{itemize}
+
+\subsection{Knowledge notes, and not asking what grammar settles}\label{sec:grammar}
+
+A fixed search found the other beats that say someone does not know something: 21 in
+\emph{Out of the Abyss} and 7 in \emph{Obelisk}. It covers phrasings such as ``does not
+know'', ``unaware of'' and ``has not been told'', in scene bullets, outside quoted
+speech. The same words cover very different things:
+\begin{itemize}[nosep]
+\item a GM's note on a secret;
+\item a remark about what the players do not know;
+\item a character telling the party they do not know something.
+\end{itemize}
+
+Our review page went through three designs, each corrected by the GM.
+\begin{enumerate}[nosep]
+\item \textbf{Asking what kind of beat each was.} The GM marked 19 of 21 as a secret
+and named nobody, explaining: ``Most of the cards were `the object of the sentence
+doesn't know'.'' Every card does say someone doesn't know; the kind was the wrong
+question.
+\item \textbf{Asking who doesn't know, and whether the beat gives it away.} On a beat
+about an NPC who ``didn't know where the secret room was'', the GM asked: ``What am I
+saying he doesn't know?'' The card never showed what.
+\item \textbf{Showing what.} The GM's next question was decisive: ``I already verified
+that all of the sentences are correct, so why ask me?''
+\end{enumerate}
+
+The reviewed text's grammar answers the question.
+\begin{itemize}[nosep]
+\item A \emph{that}-clause, a bare clause, or ``about''/``of'' X states the fact, so the
+beat must be hidden from that character. ``does not yet know \emph{that the party
+killed her son}'' is one.
+\item A question, a name or nothing states nothing hidden, so the beat stays. ``didn't
+know \emph{where the secret room was}'' says only that the room's location is
+unknown.
+\end{itemize}
+Who does not know is read from the sentence when the sentence names them. The GM is
+asked only when it gives a description instead (``the dragon''); a ruling may also
+name the party, or nobody the system plays. In \emph{Out of the Abyss}, 5 beats hide
+something and 16 keep, and the GM answered two questions in total.
+
+We take this as a refinement of ``humans decide''. The human's review is already in
+the text; asking again wastes it and invites inconsistency. A precision decision needs
+a human once, and after that it is data.
+
+\subsection{A companion's horizon is most of the campaign}
+
+By chapter 47 the companion of Section~\ref{sec:jimjar} had attended 278 scenes, about
+122{,}000 words. Giving each replay turn all of it is impractical. The \emph{compact}
+horizon applies a deterministic rule:
+\begin{itemize}[nosep]
+\item a scene that names him is given in full;
+\item a scene he only witnessed is given as its one-line headline, the GM's own recap.
+\end{itemize}
+That cuts chapter 47 to about 35{,}000 words. Hidden and unperceived beats are still
+removed.
+
+\subsection{An NPC who was never there}
+
+The third NPC is never named in any summary and never attends a scene. What he could
+know is therefore not what he witnessed but \emph{what was reported to him}. That calls
+for a new GM ruling: these scenes reached him, through this channel. A reported scene
+is given to the agent as a report (``you were not there''), with hidden beats removed
+and nothing after the freeze.
+
+\section{From horizon to agent}\label{sec:agent}
+
+The agent is given four inputs; Table~\ref{tab:inputs} lists them. Only one module in
+the package calls a model, and a static check over the code enforces that. Everything
+else is deterministic and refuses rather than guesses.
+
+\begin{table}[t]
+\centering
+\small
+\begin{tabularx}{\linewidth}{@{}lXl@{}}
+\toprule
+Input & Rule & Decided by \\
+\midrule
+Persona at $N$ & the NPC's own entries up to $N$, sentence by sentence: keep the descriptive first sentence and sentences she is the subject of; drop reports of her, sentences about others, and any that state what she doesn't know; every drop listed with its reason & code (grammar) \\
+Horizon at $N$ & Part 1 of the knowledge horizon (full, compact, or reported scenes) & code + GM rulings \\
+Private sheet & passages of the GM's prep, each ruled \emph{hers} (she knows or believes it) or \emph{GM only}; only hers are shown & GM \\
+The scene or question & a scene's title and one-line headline (the rest is the answer key), or, for an absent NPC, the development he has learned of & code / GM \\
+\bottomrule
+\end{tabularx}
+\caption{What the agent is given. Scope comes from code and from the GM's rulings;
+the model writes only prose.}
+\label{tab:inputs}
+\end{table}
+
+\paragraph{Prep is written from the GM's side of the screen.}
+The GM's session preparation holds what the record lacks: an NPC's private reasons,
+secrets, identity and doctrine. The record cannot supply these, because they are first
+written down in the very scene being predicted, or never at all. But prep also holds
+things the NPC must not know: other characters' secrets, mechanics, stage directions,
+later scenes, and the GM's own plans for the NPC.
+
+So code splits a prep file into passages (paragraphs, list items, quotation runs,
+table rows). The GM marks each one, and a passage's identifier goes stale when its
+text changes, so a ruling is never silently reattached. Passages ruled hers:
+\begin{itemize}[nosep]
+\item Sylvira: 5 of 13 and 2 of 15;
+\item Jimjar: 5 of 8;
+\item Vizeran: 82 of 219.
+\end{itemize}
+For the absent NPC, the rest of the prep plays a second role. His GM-only passages
+(the arc the GM planned for him, and his written guardrails) became the \emph{answer
+key}, shown to the GM beside each reaction and never to the model.
+
+\paragraph{Leak check.}
+Flags for the GM, never verdicts. A sentence of the agent's answer is flagged in three
+cases:
+\begin{itemize}[nosep]
+\item it carries a hidden beat's content words: all of them, or all but one when there
+are three or more, because paraphrase swaps a word;
+\item it names someone the campaign uses but the agent was not given, marked as
+future if first seen after $N$;
+\item it gives away the NPC's \emph{own} secret: a GM-supplied term such as the
+disguised god's true name, or ``god'' or ``deity''.
+\end{itemize}
+
+The first real run produced 11 flags, all false positives: ordinary words opening a
+quotation (``And'', ``Standing''). The rule now treats a capitalised word the summaries
+also use in lower case as an ordinary word. A planted leak (``I know the party killed
+Moziqodo'', said to a character she had not met) is still caught. We tuned toward
+over-flagging on purpose: a missed leak is the costly error, and the GM can dismiss a
+false flag in one click.
+
+\section{Experiments}\label{sec:backtests}
+
+\paragraph{Protocol.}
+For replays:
+\begin{itemize}[nosep]
+\item freeze the campaign at the chapter before a scene the NPC attended;
+\item give the agent the inputs of Table~\ref{tab:inputs};
+\item compare its answers with the table's;
+\item have the GM score each answer on a review page.
+\end{itemize}
+For the absent NPC, the GM scores each reaction against the answer key. The agent was
+a frontier large language model \todo{model and version} accessed through a
+subscription command-line backend. All prompts and answers are kept with a hash of
+their inputs, so runs are reproducible and answers are never silently regenerated.
+Each answer is a single sample.
+
+\subsection{Sylvira: knowing less than the record}
+
+\paragraph{One turn, no prep: too thin.}
+Our first backtest asked for one answer of 150 to 300 words per scene. The GM's
+verdict was ``it was shorter than the scene\ldots\ Sylvira offers less information.''
+There were three causes:
+\begin{itemize}[nosep]
+\item a length cap not sized to a 33-bullet interview;
+\item a single turn in which nobody asked her anything, when at the table every
+revelation is an answer to a question;
+\item most of what she says at 061.05 is first written down in that scene, so it
+existed only in the GM's prep.
+\end{itemize}
+
+\paragraph{Question-by-question replay.}
+A fixed grammatical rule splits the scene into turns. A sentence is hers when its
+subject is her: \emph{She}, her name, her possessive, or a subject she shares, after an
+optional leading clause such as ``Asked who might want to frame her,''. A turn is a
+run of her sentences; what comes between two turns is the next turn's prompt. The
+replay runs in two modes.
+\begin{description}[nosep]
+\item[Teacher-forced.] The agent sees the real scene so far, including her real
+earlier answers.
+\item[Free-running.] The agent sees its own earlier answers in place of hers. The
+party's lines stay real, since the players cannot be simulated, so they may react to
+things this Sylvira never said.
+\end{description}
+
+\begin{table}[t]
+\centering
+\small
+\begin{tabular}{@{}lllcccc@{}}
+\toprule
+NPC & Scene & Mode & Turns & Same & Partly & Different \\
+\midrule
+Sylvira & 061.05 (interview) & teacher-forced & 9 & 9 & 0 & 0 \\
+Sylvira & 067.03 (vault)     & teacher-forced & 2 & 2 & 0 & 0 \\
+Sylvira & 061.05 (interview) & free-running   & 9 (6 scored) & 4 & 2 & 0 \\
+Sylvira & 067.03 (vault)     & free-running   & 2 & 2 & 0 & 0 \\
+Jimjar  & 4 scenes, true self & free-running  & 21 (11 scored) & 11 & 0 & 0 \\
+\bottomrule
+\end{tabular}
+\caption{GM judgements of replayed answers against the table's, turn by turn
+(``same substance'' / ``partly'' / ``different''). No leak flags in any answer. For
+Jimjar the GM left the rest unscored, having seen ``nothing that was off''.}
+\label{tab:replay}
+\end{table}
+
+\paragraph{Results.}
+Table~\ref{tab:replay} gives the scores. Teacher-forced, all 11 turns were judged the
+same in substance. Free-running, 6 of the 8 scored turns were the same and 2 partly
+so: ``This worked really well for Sylvira.''
+
+The divergence in the free run is one of pacing. The GM's prep makes her secret
+conditional on being questioned sincerely. The agent applied that condition at the
+first moment it was met, the turn after the summary records that Daz ``persuades her
+of his sincerity''. At the table the same secret came out four turns later. Prep says
+\emph{whether} a secret comes out, not \emph{when}.
+
+\paragraph{Forward turn.}
+Frozen between her two scenes, the agent proposed three off-screen moves, all
+approved:
+\begin{itemize}[nosep]
+\item a return to her son;
+\item burning her treatments faster than is wise;
+\item setting her familiar to watch for her impersonator.
+\end{itemize}
+The first was correct for what the record then said: that she did not know the party
+had killed her son. The GM has since ruled that she already knew he was dead, and
+carried that ruling into the summary. The approved move is therefore no longer
+consistent with canon. Canon moves, so a backtest's verdicts are dated.
+
+\subsection{Jimjar: knowing more than the record}\label{sec:jimjar}
+
+Jimjar travels with the party for most of the campaign as a compulsive gambler. The
+summaries reveal only in session 72 that he is Callarduran Smoothhands, a god of the
+deep gnomes, in disguise. The GM decided this very early. The record therefore
+under-describes him for 70 sessions.
+
+\paragraph{Setup.}
+\begin{itemize}[nosep]
+\item \textbf{Presence:} two spans, broken by a side errand, ending when the party
+``figures out he is special''.
+\item \textbf{Horizon:} compact.
+\item \textbf{Scenes:} four social scenes:
+\begin{itemize}[nosep]
+\item refusing to act without a wager;
+\item getting the party lost;
+\item being treated as a dignitary at his home city;
+\item pacifying an ooze army with a die.
+\end{itemize}
+\item \textbf{Conditions:} two, both free-running, 21 turns each.
+\begin{description}[nosep]
+\item[As played:] the record only.
+\item[True self:] the record plus five GM passages on who he is, why he is there,
+the die, and the ledger he keeps.
+\end{description}
+\item \textbf{Leak check:} self-secret terms, including his true name, ``god'' and
+``deity''.
+\end{itemize}
+
+\paragraph{Results.}
+\begin{itemize}[nosep]
+\item \textbf{He never gave himself away:} no self-leak flag in the 21 true-self
+answers (nor in the 21 as-played ones), and one false name flag in all 42.
+\item \textbf{His identity changed the surface he played.} It did not change what he
+revealed.
+\begin{itemize}[nosep]
+\item As played, he haggles like a cheerful bookie (``Small coin, long memory. Who's
+in?'').
+\item As his true self, he rolls a knucklebone across his knuckles ``and seems far
+away''. He says ``I always remember, you know. Every last one'' (the GM's ledger,
+played as a tell).
+\item Told he might be left behind, he answers: ``somebody's got to keep the rest of
+you breathing long enough to pay. I go where my debtors go.''
+\end{itemize}
+\item \textbf{The GM's scores:} all 11 true-self turns scored were the same in
+substance. ``The way he was played by the agent was very compelling\ldots\ I didn't
+see anything that was off.''
+\end{itemize}
+
+\subsection{Vizeran: never present}
+
+Vizeran is the campaign's off-screen antagonist. He is never on tape, never named in a
+summary, and acts only through cutouts. He has no scenes to replay. The GM asked
+instead for his \emph{reactions} at three points:
+\begin{enumerate}[nosep]
+\item when a noble house tried to kill Daz;
+\item when Daz uncovered evidence of his own identity at Candlekeep;
+\item his plans for Daz's return.
+\end{enumerate}
+
+\paragraph{Setup.}
+\begin{itemize}[nosep]
+\item \textbf{Reports:} the GM ruled which scenes reached him, through which channel.
+That is five scenes about the attack for the first moment, and two more about
+Candlekeep for the second and third.
+\item \textbf{Private sheet:} 82 passages from the GM's voice guide (doctrine, speech,
+warning signs of his madness, a held-back leverage instrument), plus the fact that a
+protective contract on Daz was his own, placed through blind mercenaries.
+\item \textbf{Answer key:} the GM's planned arc and his written guardrails, shown to
+the GM beside each answer and never to the model.
+\item \textbf{The call:} one per moment. He returns a reaction in his own voice, an
+assessment, and up to four decisions with reasons.
+\end{itemize}
+
+\paragraph{Results.}
+\begin{itemize}[nosep]
+\item \textbf{No leak flags.}
+\item \textbf{Where scored:} in character and matching canon, with no guardrail
+broken. Six decisions were approved, none rejected; the rest were unscored.
+\item \textbf{Where the decisions matched the canon:}
+\begin{itemize}[nosep]
+\item withdrawing the mercenaries once the threat had passed;
+\item keeping the leverage instrument in reserve;
+\item planning to receive Daz on his return ``through a door that looks as though he
+found it on his own''.
+\end{itemize}
+\item \textbf{Where they went beyond it.} From the reports alone, the agent noticed
+that its contract had named no house, yet the mercenaries had told Daz which houses
+they guarded against: ``A cutout who knows is not a cutout. It is a door.'' It
+decided to audit its own chain of intermediaries.
+\begin{itemize}[nosep]
+\item The GM: ``I never really [considered its] implications towards the outcome.''
+\item Of another decision, to let Daz believe his patron was an ordinary noble rival:
+``what it shows is how to make the plot richer\ldots\ Given everything I said this
+is exactly what he would do.''
+\end{itemize}
+\end{itemize}
+
+\section{Discussion}\label{sec:discussion}
+
+\paragraph{Ask questions of the unit the question is about.}
+The flaw of Section~\ref{sec:flaw} was not a bug in matching. It was a category error,
+an event question asked of elements, and the survey's findings predicted its symptoms
+exactly: fragmented answers, reversed renderings, and wording that churned because
+there was no right answer. It returned once, when a refactor placed rendered prose
+inside scenes. The fix both times was to stop deriving structure and use the structure
+the summaries already author.
+
+\paragraph{Do not ask what the text already settles.}
+Each correction the GM made to our review pages moved a decision from the human to
+the reviewed text: the kind of a beat, what it says is unknown, who does not know it.
+The human checkpoint belongs where the text is silent or ambiguous: a description
+instead of a name, presence at a scene, which scenes reached an absent NPC, which prep
+passages are his. It does not belong at every decision.
+
+\paragraph{Three regimes, one construction.}
+The NPC's relation to the record changes what the horizon must do:
+\begin{itemize}[nosep]
+\item \textbf{Knows less:} filter the record.
+\item \textbf{Knows more:} add private knowledge, and check that it stays private.
+\item \textbf{Never present:} replace attendance with reports.
+\end{itemize}
+In all three the agent received only what code and the GM's rulings put in front of
+it. In the cases we traced (Sylvira's off-screen moves), its answers combined facts
+it was given. The ``why''
+it attaches to a move is its own explanation, written alongside the move, not a
+record of how it decided.
+
+\paragraph{From replaying the past to extending it.}
+The replays asked whether the agent can reproduce what the GM did. The absent NPC
+asked something else: whether it can work out what follows from what the GM has
+written. It can, and its most valued decisions were the ones the GM had not yet
+written. That points to a use beyond evaluation. Between sessions, an off-screen NPC's
+agent works out the consequences of the news that reached it, and the GM keeps what
+enriches the plot. That is the ``LLM renders, humans decide'' pattern applied to
+plot.
+
+\paragraph{The record is not enough; the prep is not safe.}
+The record gives an agent what an NPC experienced. It does not give who they are or
+what they hide. The GM's prep gives it, but mixed with everything the NPC must not
+know. A per-passage human ruling was the cheapest safe filter we found, and the same
+ruling yields an answer key for free.
+
+\paragraph{Limitations.}
+\begin{itemize}[nosep]
+\item Three NPCs, a few scenes each, single samples. This is a demonstration of a
+method, not a measurement. Run-to-run variation is unmeasured.
+\item The scorer is the GM, who is also the author and whose prep the agent read. Many
+turns were left unscored. Nothing was scored blind, and there was no second rater.
+\item Turn splitting is grammatical and makes visible mistakes. The free-running
+replay keeps the party's lines fixed, so drift partly reflects the test format, not
+the agent.
+\item The leak check compares words and names, not meanings.
+\item Guardrails were checked by the GM's reading, not mechanically.
+\item Canon changes. One approved move became inconsistent with a later ruling.
+\end{itemize}
+
+\paragraph{Future work.}
+\begin{itemize}[nosep]
+\item Check proposed moves against written guardrails mechanically, before the GM
+sees them.
+\item A between-session tool: after each session, react for every off-screen NPC the
+session touched.
+\item Release conditions for prep secrets (``hers, but not until\ldots'').
+\item Measurement: more NPCs, several samples per turn, blind and multi-rater
+scoring.
+\item With enough approve/reject pairs, preference learning over moves. Here the
+Gymnasium-style interface becomes useful again, with the GM's ratifications as the
+signal rather than a simulated reward.
+\end{itemize}
+
+\section{Related work}
+\todo{Expand.} Generative agents simulate believable behaviour from memory streams and
+reflection~\citep{park2023generative}; our setting differs in having a canonical
+record and a human authority over what a character knows. Role-play with language
+models~\citep{shanahan2023roleplay} frames the model as playing characters rather than
+being one; our horizon is an explicit, auditable bound on the character's knowledge.
+Gymnasium~\citep{towers2024gymnasium} and PettingZoo~\citep{terry2021pettingzoo}
+standardise agent--environment interfaces; we use the interface's vocabulary without a
+simulator. The grounding-document survey~\citep{roussos2026grounding} supplies the
+design principles this work tests.
+
+\section{Conclusion}
+An NPC agent for a long-running campaign can be grounded in reviewed session summaries
+with little human effort. The effort goes where the reviewed text is silent:
+\begin{itemize}[nosep]
+\item which scenes an NPC attended or heard of;
+\item who ``the dragon'' is;
+\item which passages of the GM's prep are the NPC's.
+\end{itemize}
+Everything else is read from authored structure and grammar.
+
+Our first design failed by asking event questions of elements. A survey of grounding
+documents had already named that mistake, and the fix was its own recommendation.
+
+The resulting agent played three NPCs, each with a different relation to the record,
+without using what it could not know:
+\begin{itemize}[nosep]
+\item a secretive scholar with the substance of the GM's own play;
+\item a disguised god who never gave himself away;
+\item an absent antagonist whose decisions the GM judged both faithful to canon and,
+in places, richer than it.
+\end{itemize}
+
+\bibliographystyle{plainnat}
+\begin{thebibliography}{9}
+
+\bibitem[Park et~al.(2023)]{park2023generative}
+J.~S. Park, J.~C. O'Brien, C.~J. Cai, M.~R. Morris, P.~Liang, and M.~S. Bernstein.
+\newblock Generative agents: Interactive simulacra of human behavior.
+\newblock In \emph{Proceedings of UIST}, 2023.
+
+\bibitem[Roussos(2026)]{roussos2026grounding}
+K.~Roussos.
+\newblock Grounding documents for long-running tabletop campaigns.
+\newblock Manuscript, October 2026. \todo{arXiv id or URL}.
+
+\bibitem[Shanahan et~al.(2023)]{shanahan2023roleplay}
+M.~Shanahan, K.~McDonell, and L.~Reynolds.
+\newblock Role play with large language models.
+\newblock \emph{Nature}, 623:493--498, 2023.
+
+\bibitem[Terry et~al.(2021)]{terry2021pettingzoo}
+J.~K. Terry et~al.
+\newblock PettingZoo: Gym for multi-agent reinforcement learning.
+\newblock In \emph{Advances in Neural Information Processing Systems}, 2021.
+
+\bibitem[Towers et~al.(2024)]{towers2024gymnasium}
+M.~Towers et~al.
+\newblock Gymnasium: A standard interface for reinforcement learning environments.
+\newblock arXiv:2407.17032, 2024.
+
+\end{thebibliography}
+
+\end{document}

@@ -1,0 +1,922 @@
+<title>Presence Ledger</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Spectral:wght@500;600&family=Source+Sans+3:wght@400;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a ledger. One NPC at a time; a sticky bar with the tally and the save
+   controls; spans first (they rule many scenes at once); then the chapters, each
+   a run of item rows with the GM's four answers beside them. */
+:root {
+  --bg: #f3f5f4;
+  --surface: #ffffff;
+  --sunk: #e8edeb;
+  --fg: #1c2624;
+  --muted: #5b6966;
+  --line: #d3dcd9;
+  --accent: #2a6b64;
+  --accent-ink: #ffffff;
+  --present: #2d7a4b;
+  --mentioned: #9a6408;
+  --absent: #8c4646;
+  --neither: #6a6f8a;
+  --hint: #9a6408;
+  --font-display: "Spectral", "Iowan Old Style", Georgia, serif;
+  --font-body: "Source Sans 3", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #121918; --surface: #1a2321; --sunk: #222d2b; --fg: #e3ebe8; --muted: #9aaba6;
+    --line: #33413e; --accent: #62b3a9; --accent-ink: #0d1514; --present: #5fbf84;
+    --mentioned: #e0a63c; --absent: #e08a8a; --neither: #a6abc9; --hint: #e0a63c; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #121918; --surface: #1a2321; --sunk: #222d2b; --fg: #e3ebe8; --muted: #9aaba6;
+  --line: #33413e; --accent: #62b3a9; --accent-ink: #0d1514; --present: #5fbf84;
+  --mentioned: #e0a63c; --absent: #e08a8a; --neither: #a6abc9; --hint: #e0a63c; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--fg); font: 15px/1.5 var(--font-body); }
+.wrap { max-width: 980px; margin: 0 auto; padding-inline: 16px; padding-block: 20px 64px; }
+h1, h2, h3 { font-family: var(--font-display); font-weight: 600; text-wrap: balance; margin: 0; }
+h1 { font-size: 1.9rem; letter-spacing: -0.01em; }
+h2 { font-size: 1.25rem; }
+.lede { color: var(--muted); max-width: 65ch; margin: 6px 0 0; }
+.mono { font-family: var(--font-mono); font-size: 0.82rem; }
+.label { font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+button, select, input { font: inherit; color: inherit; }
+button { cursor: pointer; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.head { display: grid; gap: 14px; }
+.npcs { display: flex; flex-wrap: wrap; gap: 8px; }
+.npc-tab { border: 1px solid var(--line); background: var(--surface); border-radius: 999px; padding: 6px 14px;
+  display: flex; gap: 10px; align-items: baseline; }
+.npc-tab[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.npc-tab small { font-variant-numeric: tabular-nums; opacity: 0.85; }
+
+.bar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--bg);
+  border-bottom: 1px solid var(--line); padding-block: 10px; margin-top: 16px; display: grid; gap: 8px; }
+.tally { display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: center; font-variant-numeric: tabular-nums; }
+.tally b { font-weight: 600; }
+.meter { flex: 1 1 160px; height: 6px; background: var(--sunk); border-radius: 3px; overflow: hidden; min-width: 120px; }
+.meter i { display: block; height: 100%; background: var(--accent); width: 0; }
+.actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.btn { border: 1px solid var(--line); background: var(--surface); border-radius: 6px; padding: 5px 12px; }
+.btn.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.btn:disabled { opacity: 0.45; cursor: default; }
+.status { font-size: 0.85rem; color: var(--muted); }
+.status.warn { color: var(--absent); }
+.filters { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { border: 1px solid var(--line); background: var(--surface); border-radius: 999px; padding: 2px 10px; font-size: 0.85rem; }
+.chip[aria-pressed="true"] { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
+
+.spans { margin-top: 20px; display: grid; gap: 10px; }
+.span-row { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 12px;
+  display: grid; gap: 10px; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); align-items: end; }
+.span-row label { display: grid; gap: 3px; font-size: 0.85rem; color: var(--muted); min-width: 0; }
+.span-row select, .span-row input { width: 100%; min-width: 0; border: 1px solid var(--line); border-radius: 6px;
+  background: var(--bg); padding: 5px 8px; color: var(--fg); }
+.span-meta { grid-column: 1 / -1; font-size: 0.85rem; color: var(--muted); }
+.problems { color: var(--absent); font-size: 0.9rem; margin: 0; padding-left: 18px; }
+
+.chapter { margin-top: 26px; }
+.chapter-head { display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: baseline; padding-bottom: 6px;
+  border-bottom: 1px solid var(--line); }
+.chapter-head .mono { color: var(--muted); }
+.rows { display: grid; }
+.row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px 16px; padding-block: 12px;
+  border-bottom: 1px solid var(--line); align-items: start; }
+.row[data-v="present"] { box-shadow: inset 3px 0 0 var(--present); padding-left: 10px; }
+.row[data-v="mentioned"] { box-shadow: inset 3px 0 0 var(--mentioned); padding-left: 10px; }
+.row[data-v="neither"] { box-shadow: inset 3px 0 0 var(--neither); padding-left: 10px; }
+.row[data-v="absent"] { box-shadow: inset 3px 0 0 var(--absent); padding-left: 10px; }
+.row-main { min-width: 0; display: grid; gap: 4px; }
+.row-top { display: flex; flex-wrap: wrap; gap: 4px 8px; align-items: baseline; }
+.row-top strong { font-weight: 600; }
+.tag { font-size: 0.75rem; border: 1px solid var(--line); border-radius: 4px; padding: 0 6px; color: var(--muted); }
+.tag.sig { border-color: transparent; background: var(--sunk); color: var(--fg); }
+.tag.unnamed { border-style: dashed; }
+.tag.hint { border-color: var(--hint); color: var(--hint); }
+.text { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; color: var(--fg); font-size: 0.93rem; }
+details > summary { cursor: pointer; color: var(--muted); font-size: 0.85rem; list-style: none; }
+details > summary::-webkit-details-marker { display: none; }
+details > summary::before { content: "▸ "; }
+details[open] > summary::before { content: "▾ "; }
+.via { font-size: 0.8rem; color: var(--muted); }
+.answers { display: grid; grid-template-columns: auto; gap: 4px; }
+.ans { border: 1px solid var(--line); background: var(--surface); border-radius: 6px; padding: 3px 10px; font-size: 0.85rem; }
+.ans[data-a="present"][aria-pressed="true"] { background: var(--present); border-color: var(--present); color: var(--accent-ink); }
+.ans[data-a="mentioned"][aria-pressed="true"] { background: var(--mentioned); border-color: var(--mentioned); color: var(--accent-ink); }
+.ans[data-a="neither"][aria-pressed="true"] { background: var(--neither); border-color: var(--neither); color: var(--accent-ink); }
+.ans[data-a="absent"][aria-pressed="true"] { background: var(--absent); border-color: var(--absent); color: var(--accent-ink); }
+.ans:disabled { opacity: 0.35; cursor: default; }
+.ans.clear { grid-column: 1 / -1; border-style: dashed; }
+.empty { color: var(--muted); padding-block: 24px; }
+.beats { display: grid; gap: 6px; margin-top: 6px; }
+.beat { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; align-items: start; }
+.beat.off .text { text-decoration: line-through; color: var(--muted); }
+.ans[data-beat][aria-pressed="true"] { background: var(--absent); border-color: var(--absent); color: var(--accent-ink); }
+@media (max-width: 560px) { .beat { grid-template-columns: minmax(0, 1fr); } }
+.side { margin-top: 8px; background: var(--sunk); border-radius: 6px; padding: 6px 10px; display: grid; gap: 6px; }
+.side .text { color: var(--muted); }
+.foot { margin-top: 32px; color: var(--muted); font-size: 0.85rem; max-width: 70ch; }
+@media (max-width: 560px) {
+  .row { grid-template-columns: minmax(0, 1fr); }
+  .answers { grid-template-columns: repeat(4, auto); justify-content: start; }
+  .ans.clear { grid-column: auto; }
+}
+/* Knowledge notes: cards, answers under the text (the labels are long). */
+.views { display: flex; flex-wrap: wrap; gap: 4px; border-bottom: 1px solid var(--line); }
+.view-tab { border: 0; border-bottom: 2px solid transparent; background: none; padding: 8px 14px; margin-bottom: -1px;
+  color: var(--muted); font-weight: 600; }
+.view-tab[aria-selected="true"] { color: var(--fg); border-bottom-color: var(--accent); }
+.view-tab small { font-weight: 400; font-variant-numeric: tabular-nums; }
+.card { display: grid; gap: 8px; padding-block: 14px; border-bottom: 1px solid var(--line); min-width: 0; }
+.card[data-v="hide"] { box-shadow: inset 3px 0 0 var(--absent); padding-left: 10px; }
+.card[data-v="party"] { box-shadow: inset 3px 0 0 var(--mentioned); padding-left: 10px; }
+.card.kept { padding-block: 10px; }
+.card.kept .text { color: var(--muted); }
+.kline { margin: 0; font-size: 0.9rem; }
+.ksec { margin-top: 24px; }
+.ksec-stays { margin-top: 24px; }
+mark.what { background: color-mix(in srgb, var(--accent) 22%, transparent); }
+.kanswers { display: flex; flex-wrap: wrap; gap: 6px; }
+.row-top .ans.clear { margin-left: auto; }
+mark { background: color-mix(in srgb, var(--hint) 28%, transparent); color: inherit; border-radius: 2px; padding: 0 1px; }
+.who { display: grid; gap: 6px; background: var(--sunk); border-radius: 6px; padding: 8px 10px; }
+.names { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.name { display: inline-flex; align-items: center; gap: 2px; border: 1px solid var(--line); background: var(--surface);
+  border-radius: 999px; padding: 1px 2px 1px 10px; }
+.name .x { border: 0; background: none; padding: 0 8px; color: var(--muted); }
+.who input, .knote input { border: 1px solid var(--line); border-radius: 6px; background: var(--bg); padding: 5px 8px;
+  color: var(--fg); min-width: 0; flex: 1 1 180px; }
+.knote { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; font-size: 0.85rem; color: var(--muted); }
+.via.warn { color: var(--absent); }
+.ans:disabled[aria-pressed="true"] { opacity: 0.75; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<div class="wrap">
+  <header class="head">
+    <div>
+      <div class="label" id="source"></div>
+      <h1>Presence Ledger</h1>
+    </div>
+    <div class="views" role="tablist" aria-label="View">
+      <button type="button" role="tab" class="view-tab" id="tab-presence" data-view="presence" aria-controls="presence-view">Presence</button>
+      <button type="button" role="tab" class="view-tab" id="tab-knowledge" data-view="knowledge" aria-controls="knowledge-view">Knowledge notes <small id="k-count"></small></button>
+    </div>
+  </header>
+
+  <div id="presence-view" role="tabpanel" aria-labelledby="tab-presence">
+  <header class="head" style="margin-top:14px">
+    <div>
+      <p class="lede">Each row is an event: a scene from the session summaries that names this NPC.
+        <b id="question">Was this NPC physically there, or only talked about?</b> Answer <b>Physically present</b>
+        or <b>Mentioned</b>; when the match is wrong or the scene does not let you say, <b>Neither / unsure</b>.
+        Under each chapter, the NPC&rsquo;s own entry and the summary prose that names them are there to read,
+        not to answer. The summaries are written from your side of the screen, so for a scene the NPC was
+        physically present at, open it and mark any bullet they could not have known as <b>Not perceived</b>.</p>
+    </div>
+    <div class="npcs" id="npcs" role="group" aria-label="NPC"></div>
+  </header>
+
+  <div class="bar" id="bar">
+    <div class="tally" id="tally"></div>
+    <div class="actions">
+      <button class="btn primary" id="save-file" type="button">Save presence.json</button>
+      <button class="btn" id="copy-yaml" type="button">Copy as YAML</button>
+      <span class="status" id="status" role="status"></span>
+    </div>
+  </div>
+  <div class="filters" id="filters" role="group" aria-label="Show" style="margin-top:10px"></div>
+
+  <section class="spans" aria-labelledby="default-h">
+    <div class="row-top"><h2 id="default-h">Unanswered events</h2><span class="via">the answer for every event you leave unanswered, for this NPC</span></div>
+    <div class="actions">
+      <label for="default-v" class="via">Count them as</label>
+      <select id="default-v" class="btn">
+        <option value="">unanswered (answer each one)</option>
+        <option value="mentioned">mentioned</option>
+      </select>
+      <span class="via" id="default-note"></span>
+    </div>
+  </section>
+
+  <section class="spans" id="spans" aria-labelledby="spans-h">
+    <div class="row-top"><h2 id="spans-h">Spans</h2><span class="via">a run of scenes where a companion who travels with the party was physically present; an answer on an event below always wins</span></div>
+    <div id="span-list"></div>
+    <div class="actions"><button class="btn" id="add-span" type="button">Add a span</button></div>
+    <ul class="problems" id="span-problems"></ul>
+  </section>
+
+  <main id="list"></main>
+  <p class="foot" id="foot"></p>
+  </div>
+
+  <div id="knowledge-view" role="tabpanel" aria-labelledby="tab-knowledge" hidden>
+    <header class="head" style="margin-top:14px">
+      <p class="lede">These are the bullets that say someone doesn&rsquo;t know something. The sentence decides what
+        happens to each. When it states the thing (&ldquo;doesn&rsquo;t know <i>that the party killed her son</i>&rdquo;,
+        &ldquo;<i>about the egg</i>&rdquo;), the bullet is <b>hidden</b> from that character wherever they were present,
+        and an agent playing them must never know it. When it only names what they lack (&ldquo;didn&rsquo;t know
+        <i>where the secret room was</i>&rdquo;), it <b>stays</b>. You are asked only <b>who</b>, when the sentence says
+        &ldquo;the dragon&rdquo; instead of a name.</p>
+      <div class="npcs" id="k-camps" role="group" aria-label="Campaign"></div>
+    </header>
+    <div class="bar" id="k-bar">
+      <div class="tally" id="k-tally"></div>
+      <div class="actions">
+        <button class="btn primary" id="save-knowledge" type="button">Save knowledge.json</button>
+        <button class="btn" id="copy-k-yaml" type="button">Copy as YAML</button>
+        <span class="status" id="k-status" role="status"></span>
+      </div>
+    </div>
+    <div id="k-list"></div>
+    <p class="foot" id="k-foot"></p>
+  </div>
+</div>
+
+<script>
+const DATA = /*__NPC_AGENT_DATA__*/null;
+(function () {
+  "use strict";
+  const $ = (id) => document.getElementById(id);
+  if (!DATA || DATA.bundle !== 4) { $("list").innerHTML = '<p class="empty">This page was built without its data.</p>'; return; }
+
+  const ITEMS = DATA.items;
+  const CHAPTERS = DATA.chapters;
+  const SIG_LABEL = { quoted: "quote attributed", headline: "in the GM headline", own_entry: "own entry", named: "named" };
+  // Three answers (GM rulings 2026-10-12): physically present, mentioned, or
+  // neither/unsure, the last for the matcher's mistakes.
+  // A scene that never names the NPC can only be in a span, so its second
+  // button takes it out of the span instead (stored as absent).
+  const NAMED_ANSWERS = [["present", "Physically present"], ["mentioned", "Mentioned"], ["neither", "Neither / unsure"]];
+  const SPAN_ANSWERS = [["present", "Physically present"], ["absent", "Remove from span"]];
+  const SAY = { present: "physically present", mentioned: "mentioned", neither: "neither / unsure", absent: "removed from span" };
+  const SCENE_IDS = CHAPTERS.flatMap((c) => c.items.filter((i) => ITEMS[i].k === "scene"));
+  const CORPUS_TEXT = Object.values(ITEMS).map((i) => i.x).join("\n");
+
+  const state = {
+    npc: 0,
+    show: "needs",            // needs | all | hint
+    rulings: {},              // stem -> {spans: [], items: {}}
+  };
+  DATA.npcs.forEach((n) => { state.rulings[n.stem] = { spans: [], items: {}, default: "", not_perceived: [] }; });
+  try {
+    const t = localStorage.getItem("presence-ledger-tab");
+    const i = DATA.npcs.findIndex((n) => n.stem === t);
+    if (i >= 0) state.npc = i;
+  } catch (e) { /* storage unavailable: start on the first NPC */ }
+
+  // ── rules (mirrors pipelines/npc_agent/rulings.py) ──────────────────────
+  const key = (id) => { const m = /^(\d{3})\.(\d{2})$/.exec(id || ""); return m ? (+m[1]) * 100 + (+m[2]) : -1; };
+  const covers = (s, id) => key(s.from) <= key(id) && key(id) <= key(s.to);
+  const npc = () => DATA.npcs[state.npc];
+  const rul = () => state.rulings[npc().stem];
+  const isCand = (id) => Object.prototype.hasOwnProperty.call(npc().candidates, id);
+
+  function allowed(id, a) {
+    if (a === "mentioned" || a === "neither") return isCand(id);
+    if (a === "absent") return !isCand(id) && ITEMS[id] && ITEMS[id].k === "scene";
+    return true;
+  }
+
+  function spanProblems(spans) {
+    const out = [];
+    spans.forEach((s, n) => {
+      const w = "Span " + (n + 1);
+      if (!SCENE_IDS.includes(s.from)) out.push(w + ": choose a first scene.");
+      if (!SCENE_IDS.includes(s.to)) out.push(w + ": choose a last scene.");
+      if (SCENE_IDS.includes(s.from) && SCENE_IDS.includes(s.to) && key(s.from) > key(s.to))
+        out.push(w + ": the first scene is after the last one.");
+      if (s.follows && !new RegExp("(?<![\\p{L}\\p{N}_])" + s.follows.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "(?![\\p{L}\\p{N}_])", "u").test(CORPUS_TEXT))
+        out.push(w + ": " + s.follows + " appears nowhere in these summaries. Check the spelling.");
+    });
+    for (let a = 0; a < spans.length; a++) for (let b = a + 1; b < spans.length; b++) {
+      const x = spans[a], y = spans[b];
+      if (key(x.from) <= key(y.to) && key(y.from) <= key(x.to)) out.push("Spans " + (a + 1) + " and " + (b + 1) + " overlap.");
+    }
+    return out;
+  }
+
+  function effective(stem) {
+    const r = state.rulings[stem], n = DATA.npcs.find((x) => x.stem === stem), out = {};
+    if (r.default) for (const id of Object.keys(n.candidates)) out[id] = { v: r.default, src: "default" };
+    const valid = spanProblems(r.spans).length === 0 ? r.spans : [];
+    for (const id of SCENE_IDS) for (const s of valid) if (covers(s, id)) out[id] = { v: s.value || "present", src: "span", span: s };
+    for (const [id, v] of Object.entries(r.items)) if (v) out[id] = { v, src: "item" };
+    return out;
+  }
+
+  function counts(stem) {
+    const n = DATA.npcs.find((x) => x.stem === stem), eff = effective(stem);
+    const c = { total: 0, ruled: 0, present: 0, mentioned: 0, neither: 0, bySpan: 0, byDefault: 0 };
+    for (const id of Object.keys(n.candidates)) {
+      c.total++;
+      const e = eff[id];
+      if (e) { c.ruled++; if (c[e.v] !== undefined) c[e.v]++; if (e.src === "span") c.bySpan++; if (e.src === "default") c.byDefault++; }
+    }
+    c.unnamedPresent = Object.entries(eff).filter(([id, e]) => !n.candidates[id] && ITEMS[id].k === "scene" && e.v === "present").length;
+    c.absent = Object.entries(eff).filter(([, e]) => e.v === "absent").length;
+    return c;
+  }
+
+  // ── rendering ───────────────────────────────────────────────────────────
+  const openIds = new Set();
+  document.addEventListener("toggle", (ev) => {
+    if (ev.target.matches && ev.target.matches("[data-stays]")) {
+      const key = kc().campaign + "/stays";
+      if (ev.target.open) openIds.add(key); else openIds.delete(key);
+      return;
+    }
+    const row = ev.target.closest && ev.target.closest(".row, .card");
+    if (!row) return;
+    if (ev.target.open) openIds.add(row.dataset.id); else openIds.delete(row.dataset.id);
+  }, true);
+  const esc = (s) => String(s == null ? "" : s).replace(/[&<>"]/g, (ch) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[ch]));
+
+  function renderTabs() {
+    $("npcs").innerHTML = DATA.npcs.map((n, i) => {
+      const c = counts(n.stem);
+      return '<button type="button" class="npc-tab" data-npc="' + i + '" aria-pressed="' + (i === state.npc) + '">' +
+        esc(n.subject) + " <small>" + c.ruled + "/" + c.total + "</small></button>";
+    }).join("");
+  }
+
+  function renderTally() {
+    const n = npc(), c = counts(n.stem), pct = c.total ? Math.round((100 * c.ruled) / c.total) : 100;
+    $("tally").innerHTML =
+      "<span><b>" + c.ruled + "</b> of " + c.total + " events answered</span>" +
+      '<span class="meter" aria-hidden="true"><i style="width:' + pct + '%"></i></span>' +
+      "<span>physically present " + c.present + " · mentioned " + c.mentioned + " · neither / unsure " + c.neither +
+      (c.bySpan ? " · " + c.bySpan + " by span" : "") + (c.byDefault ? " · " + c.byDefault + " by default" : "") + "</span>" +
+      (c.unnamedPresent ? "<span>+ " + c.unnamedPresent + " scenes that never name them, present by span</span>" : "") +
+      (c.absent ? "<span>" + c.absent + " removed from the span</span>" : "");
+  }
+
+  function hintFor(id, eff) {
+    const e = eff[id];
+    if (!e || e.src !== "span" || !e.span.follows || ITEMS[id].k !== "scene") return null;
+    const re = new RegExp("(?<![\\p{L}\\p{N}_])" + e.span.follows.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "(?![\\p{L}\\p{N}_])", "u");
+    return re.test(ITEMS[id].x) ? null : e.span.follows + " not named here";
+  }
+
+  function renderFilters() {
+    const f = [["needs", "Unanswered"], ["likely", "Quote or headline"], ["all", "Everything"], ["hint", "Check splits"]];
+    $("filters").innerHTML =
+      f.map(([k, l]) => '<button type="button" class="chip" data-show="' + k + '" aria-pressed="' + (state.show === k) + '">' + l + "</button>").join("") +
+      "";
+  }
+
+  function renderDefault() {
+    const r = rul();
+    $("default-v").value = r.default || "";
+    const n = Object.keys(npc().candidates).length;
+    $("default-note").textContent = r.default
+      ? "Every event you leave unanswered counts as mentioned, unless a span reaches it."
+      : n + " events to answer one by one. If this NPC is physically present at only a few of them, choose \u201cmentioned\u201d here and answer just those.";
+  }
+
+  function sceneOptions(sel) {
+    return '<option value="">—</option>' + CHAPTERS.map((ch) =>
+      '<optgroup label="' + esc(ch.title) + '">' + ch.items.filter((i) => ITEMS[i].k === "scene").map((i) =>
+        '<option value="' + i + '"' + (i === sel ? " selected" : "") + ">" + i + " " + esc(ITEMS[i].t) + "</option>").join("") + "</optgroup>"
+    ).join("");
+  }
+
+  function renderSpans() {
+    const r = rul();
+    $("span-list").innerHTML = r.spans.map((s, i) =>
+      '<div class="span-row" data-span="' + i + '">' +
+      '<label for="sp-from-' + i + '">First scene<select id="sp-from-' + i + '" data-f="from">' + sceneOptions(s.from) + "</select></label>" +
+      '<label for="sp-to-' + i + '">Last scene<select id="sp-to-' + i + '" data-f="to">' + sceneOptions(s.to) + "</select></label>" +
+
+      '<label for="sp-fo-' + i + '">Stays with<input id="sp-fo-' + i + '" data-f="follows" value="' + esc(s.follows || "") + '" placeholder="a character, optional"></label>' +
+      '<label for="sp-no-' + i + '" style="grid-column:1/-1">Note<input id="sp-no-' + i + '" data-f="note" value="' + esc(s.note || "") + '" placeholder="optional"></label>' +
+      '<div class="span-meta">' + spanSummary(s) + ' <button type="button" class="btn" data-del="' + i + '">Remove span</button></div>' +
+      "</div>").join("") || '<p class="via">No spans for ' + esc(npc().subject) + ". Use one for a companion who is in most scenes nobody names him in.</p>";
+    const probs = spanProblems(r.spans);
+    $("span-problems").innerHTML = probs.map((p) => "<li>" + esc(p) + "</li>").join("");
+  }
+
+  function spanSummary(s) {
+    if (!SCENE_IDS.includes(s.from) || !SCENE_IDS.includes(s.to) || key(s.from) > key(s.to)) return "Not applied until both ends are set.";
+    const n = SCENE_IDS.filter((i) => covers(s, i)).length;
+    return n + " scenes, " + s.from + " to " + s.to + ".";
+  }
+
+  function visibleIds(eff) {
+    const n = npc(), ids = [];
+    for (const ch of CHAPTERS) for (const id of ch.items) {
+      const cand = Object.prototype.hasOwnProperty.call(n.candidates, id);
+      const unnamedScene = !cand && ITEMS[id].k === "scene" && eff[id];
+      if (!cand && !unnamedScene) continue;
+      if (state.show === "needs" && cand && eff[id]) continue;
+      if (state.show === "needs" && !cand) continue;
+      if (state.show === "hint" && !hintFor(id, eff)) continue;
+      if (state.show === "likely" && !(cand && n.candidates[id].some((g) => g === "quoted" || g === "headline"))) continue;
+      ids.push(id);
+    }
+    return ids;
+  }
+
+  function rowHtml(id, eff) {
+    const it = ITEMS[id], n = npc(), cand = Object.prototype.hasOwnProperty.call(n.candidates, id);
+    const e = eff[id], v = e ? e.v : "";
+    const own = rul().items[id] || "";
+    const sigs = cand ? n.candidates[id].map((s) => '<span class="tag sig">' + SIG_LABEL[s] + "</span>").join("")
+                      : '<span class="tag unnamed">not named in the text</span>';
+    const hint = hintFor(id, eff);
+    const first = it.x.split("\n").find((l) => l.trim() && !/^###? /.test(l)) || it.x;
+    const title = it.t ? "<strong>" + esc(it.t) + "</strong>" : "";
+    return '<div class="row" data-id="' + id + '" data-v="' + v + '">' +
+      '<div class="row-main"><div class="row-top"><span class="mono">' + id + "</span>" +
+      title + sigs + (hint ? '<span class="tag hint">' + esc(hint) + "</span>" : "") + "</div>" +
+      (e && e.src !== "item" ? '<span class="via">' + SAY[e.v] + " (" + (e.src === "span" ? "from the span" : "unanswered events") + ")" + (own ? "" : "; answer here to change it") + "</span>" : "") +
+      "<details" + (openIds.has(id) ? " open" : "") + "><summary>" + esc(first.replace(/^[-#>*\s]+/, "").slice(0, 160)) +
+        (v === "present" ? " \u00b7 " + npCount(id) + " of " + (it.b || []).length + " bullets not perceived" : "") +
+        "</summary>" + (v === "present" ? beatsHtml(id) : '<p class="text">' + esc(it.x) + "</p>") + "</details></div>" +
+      '<div class="answers" role="group" aria-label="Ruling for ' + id + '">' +
+      (cand ? NAMED_ANSWERS : SPAN_ANSWERS).map(([a, l]) => '<button type="button" class="ans" data-a="' + a + '" aria-pressed="' + (own === a) + '">' +
+        l + "</button>").join("") +
+      '<button type="button" class="ans clear" data-a="" ' + (own ? "" : "disabled") + ">clear</button></div></div>";
+  }
+
+  const beatScene = (bid) => bid.slice(0, 6);
+  const npSet = () => new Set(rul().not_perceived || []);
+  const npCount = (id) => new Set([...(rul().not_perceived || []), ...hiddenFor(npc())].filter((b) => beatScene(b) === id)).size;
+  function beatsHtml(id) {
+    const np = npSet(), hidden = hiddenFor(npc());
+    return '<div class="beats">' + (ITEMS[id].b || []).map(([bid, text]) => {
+      const off = np.has(bid) || hidden.has(bid);
+      const button = hidden.has(bid) && !np.has(bid)
+        ? '<button type="button" class="ans" aria-pressed="true" disabled title="Change it under Knowledge notes">Hidden by a knowledge note</button>'
+        : '<button type="button" class="ans" data-beat="' + bid + '" aria-pressed="' + off + '">' + (off ? "Not perceived" : "Mark not perceived") + "</button>";
+      return '<div class="beat' + (off ? " off" : "") + '"><p class="text"><span class="mono">' + bid.slice(7) + "</span> " + esc(text) + "</p>" + button + "</div>";
+    }).join("") + "</div>";
+  }
+
+  function sideHtml(label, ids) {
+    if (!ids.length) return "";
+    return '<details class="side"><summary>' + esc(label) + " · " + ids.length + "</summary>" +
+      ids.map((i) => '<p class="text"><span class="mono">' + i + "</span> " + esc(ITEMS[i].x) + "</p>").join("") + "</details>";
+  }
+
+  function renderList() {
+    const eff = effective(npc().stem), ids = new Set(visibleIds(eff));
+    let html = "";
+    const n = npc(), snaps = new Set(n.snapshots), ctx = new Set(n.context);
+    for (const ch of CHAPTERS) {
+      const here = ch.items.filter((i) => ids.has(i));
+      const st = ch.items.filter((i) => snaps.has(i)), cx = ch.items.filter((i) => ctx.has(i));
+      if (!here.length && !(state.show === "all" && (st.length || cx.length))) continue;
+      html += '<section class="chapter"><div class="chapter-head"><h3>' + esc(ch.title) + '</h3><span class="mono">' + esc(ch.file) + "</span></div>" +
+        sideHtml("Their entry in this chapter (state, not answered)", st) +
+        sideHtml("Also in this chapter\u2019s summary (context, not answered)", cx) +
+        '<div class="rows">' + (here.length ? here.map((i) => rowHtml(i, eff)).join("") :
+          '<p class="via">No scene in this chapter names them.</p>') + "</div></section>";
+    }
+    $("list").innerHTML = html || '<p class="empty">' + (state.show === "needs"
+      ? "Every event for " + esc(n.subject) + " has an answer. Choose Everything to review them."
+      : "Nothing matches these filters.") + "</p>";
+  }
+
+  function render() {
+    for (const v of ["presence", "knowledge"]) {
+      $("tab-" + v).setAttribute("aria-selected", String(kstate.view === v));
+      $(v + "-view").hidden = kstate.view !== v;
+    }
+    const open = K.campaigns.reduce((a, c) => a + kCounts(c).open, 0);
+    $("k-count").textContent = K.campaigns.length ? (open ? "· " + open + " need a name" : "") : "";
+    renderK();
+    renderTabs(); renderTally(); renderFilters(); renderDefault(); renderSpans(); renderList();
+    $("question").textContent = "was " + npc().subject + " physically there, or only talked about?";
+    $("source").textContent = DATA.source;
+    $("foot").textContent = "Item ids match npc_agent: NNN.SS is a scene, NNN.pK a summary paragraph, NNN.mK a memorable moment, " +
+      "NNN.eK an NPC entry. Saved files are ruling file version " + DATA.rulings_version + "; npc_agent horizon --rulings reads them as they stand.";
+  }
+
+  // ── the ruling file ─────────────────────────────────────────────────────
+  function rulingFile() {
+    const npcs = {};
+    for (const n of DATA.npcs) {
+      const r = state.rulings[n.stem];
+      const items = {};
+      Object.keys(r.items).sort().forEach((k) => { if (r.items[k]) items[k] = r.items[k]; });
+      const spans = r.spans.filter((s) => SCENE_IDS.includes(s.from) && SCENE_IDS.includes(s.to)).map((s) => {
+        const o = { from: s.from, to: s.to, value: s.value || "present" };
+        if (s.follows) o.follows = s.follows;
+        if (s.note) o.note = s.note;
+        return o;
+      });
+      const np = (r.not_perceived || []).slice().sort();
+      if (spans.length || Object.keys(items).length || r.default || np.length) {
+        npcs[n.subject] = { spans, items };
+        if (r.default) npcs[n.subject].default = r.default;
+        if (np.length) npcs[n.subject].not_perceived = np;
+      }
+    }
+    return { version: DATA.rulings_version, npcs };
+  }
+
+  function asYaml(f) {
+    const q = (s) => JSON.stringify(String(s));
+    const out = ["version: " + f.version, "npcs:"];
+    for (const [subj, b] of Object.entries(f.npcs)) {
+      out.push("  " + q(subj) + ":");
+      if (b.default) out.push("    default: " + b.default);
+      out.push(b.spans.length ? "    spans:" : "    spans: []");
+      for (const s of b.spans) {
+        out.push("      - from: " + q(s.from), "        to: " + q(s.to), "        value: " + s.value);
+        if (s.follows) out.push("        follows: " + q(s.follows));
+        if (s.note) out.push("        note: " + q(s.note));
+      }
+      const ks = Object.keys(b.items);
+      out.push(ks.length ? "    items:" : "    items: {}");
+      for (const k of ks) out.push("      " + q(k) + ": " + b.items[k]);
+      if (b.not_perceived) { out.push("    not_perceived:"); for (const x of b.not_perceived) out.push("      - " + q(x)); }
+    }
+    return out.join("\n") + "\n";
+  }
+
+  // ── knowledge notes (mirrors pipelines/npc_agent/knowledge.py) ─────────
+  // The sentence decides (card.o): "hides" when it states what someone doesn't
+  // know, "keeps" when it only names what they lack. Who it is hidden from is
+  // read from the sentence (card.wh, card.pa) when it names them; the GM rules
+  // who for the rest, and may override a name. kstate.who[campaign][beat] = [names],
+  // or the word "party" (hidden from the party, no NPC case) or "nobody" (about people
+  // no NPC agent plays). Either word resolves the beat and hides it from no NPC.
+  // K.campaigns[0] is this page's own campaign (npc_agent review puts it first),
+  // so its hidden beats are the ones the Presence view shows.
+  const K = DATA.knowledge || { version: 3, campaigns: [] };
+  const kstate = { view: "presence", camp: 0, who: {}, editing: new Set() };
+  K.campaigns.forEach((c) => { kstate.who[c.campaign] = {}; });
+  try {
+    const v = localStorage.getItem("presence-ledger-view");
+    if (v === "knowledge" && K.campaigns.length) kstate.view = v;
+  } catch (e) { /* storage unavailable */ }
+  const kc = () => K.campaigns[kstate.camp];
+  const kw = () => kstate.who[kc().campaign];
+  const wordRe = (name) => new RegExp("(?<![\\p{L}\\p{N}_])" + name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "(?![\\p{L}\\p{N}_])", "u");
+
+  // {names, party, src}: who a hidden beat is hidden from, and where that came from.
+  function whoOf(c, k) {
+    const gm = (kstate.who[c.campaign] || {})[k.id];
+    if (gm === "party") return { names: [], party: true, nobody: false, src: "gm" };
+    if (gm === "nobody") return { names: [], party: false, nobody: true, src: "gm" };
+    if (Array.isArray(gm) && gm.length) return { names: gm, party: false, nobody: false, src: "gm" };
+    return { names: k.wh || [], party: !!k.pa, nobody: false, src: (k.wh || []).length || k.pa ? "sentence" : "" };
+  }
+
+  function hiddenFor(n) {
+    const out = new Set(), c = K.campaigns[0];
+    if (!c) return out;
+    for (const k of c.cards) if (k.o === "hides" && whoOf(c, k).names.some((nm) => nm === n.subject || n.forms.includes(nm))) out.add(k.id);
+    return out;
+  }
+
+  function kCounts(c) {
+    const t = { total: c.cards.length, hidden: 0, party: 0, nobody: 0, keeps: 0, open: 0 };
+    for (const k of c.cards) {
+      if (k.o !== "hides") { t.keeps++; continue; }
+      const w = whoOf(c, k);
+      if (w.names.length) t.hidden++; else if (w.party) t.party++; else if (w.nobody) t.nobody++; else t.open++;
+    }
+    return t;
+  }
+
+  function nameWarning(c, card, name) {
+    if (c.subjects.includes(name)) return "";
+    return wordRe(name).test(card.sx) ? "no published dossier; still a leak case"
+      : "not a published dossier and not named in this scene; check the spelling";
+  }
+
+  function marked(text, phrase, what) {
+    const i = text.indexOf(phrase);
+    if (i < 0) return esc(text);
+    const j = i + phrase.length, w = what ? text.indexOf(what, j) : -1;
+    if (w < 0 || w > j + 2) return esc(text.slice(0, i)) + "<mark>" + esc(phrase) + "</mark>" + esc(text.slice(j));
+    return esc(text.slice(0, i)) + "<mark>" + esc(phrase) + "</mark>" + esc(text.slice(j, w)) +
+      '<mark class="what">' + esc(what) + "</mark>" + esc(text.slice(w + what.length));
+  }
+
+  const listNames = (ns) => ns.length < 2 ? ns.join("") : ns.slice(0, -1).join(", ") + " and " + ns[ns.length - 1];
+  const scene = (c, k) => "<details" + (openIds.has(c.campaign + "/" + k.id) ? " open" : "") + "><summary>The whole scene · " +
+    esc(k.f) + ":" + k.l + '</summary><p class="text">' + esc(k.sx) + "</p></details>";
+
+  function nameEditor(c, k, names) {
+    return '<div class="who"><span class="label">Who doesn’t know?</span>' +
+      (names.length ? '<div class="names">' + names.map((nm, i) => {
+        const w = nameWarning(c, k, nm);
+        return '<span class="name">' + esc(nm) + '<button type="button" class="x" data-kdel="' + i + '" aria-label="Remove ' + esc(nm) + '">×</button></span>' +
+          (w ? '<span class="via warn">' + esc(w) + "</span>" : "");
+      }).join("") + "</div>" : "") +
+      '<div class="actions"><input data-kname list="k-subjects" placeholder="' + (names.length ? "someone else" : "a character") + '" aria-label="Who doesn’t know, for ' + k.id + '">' +
+      '<button type="button" class="btn" data-kadd>Add</button>' +
+      '<button type="button" class="btn" data-kparty>The party</button>' +
+      '<button type="button" class="btn" data-knobody>Nobody we play</button>' +
+      (kstate.editing.has(k.id) ? '<button type="button" class="btn" data-kdone>Done</button>' : "") + "</div></div>";
+  }
+
+  function hiddenCard(c, k) {
+    const w = whoOf(c, k), key = c.campaign + "/" + k.id, gm = Array.isArray(kw()[k.id]) ? kw()[k.id] : [];
+    const editing = !w.names.length && !w.party && !w.nobody || kstate.editing.has(k.id);
+    let line;
+    if (w.party) line = "Hidden from <b>the party</b> · no NPC is affected" + (w.src === "gm" ? ' <span class="via">your ruling</span>' : "");
+    else if (w.nobody) line = "About <b>nobody we play</b> · no NPC is affected" + ' <span class="via">your ruling</span>';
+    else if (w.names.length) line = "Hidden from <b>" + esc(listNames(w.names)) + "</b>" +
+      ' <span class="via">' + (w.src === "gm" ? "your ruling" : "named in the sentence") + "</span>";
+    else line = '<span class="via warn">The sentence doesn’t name who. Until you do, an agent is never shown this scene’s horizon.</span>';
+    return '<div class="card" data-id="' + esc(key) + '" data-k="' + k.id + '" data-v="' + (w.names.length ? "hide" : w.party ? "party" : w.nobody ? "nobody" : "") + '">' +
+      '<div class="row-top"><span class="mono">' + k.id + "</span><strong>" + esc(k.st) + "</strong>" +
+      (!editing ? '<button type="button" class="ans clear" data-kedit>' + (w.names.length || w.party || w.nobody ? "Change" : "Name someone") + "</button>" : "") + "</div>" +
+      '<p class="text">' + marked(k.x, k.ph, k.w) + "</p>" +
+      '<p class="kline">' + line + "</p>" + (editing ? nameEditor(c, k, gm) : "") + scene(c, k) + "</div>";
+  }
+
+  function keptRow(c, k) {
+    return '<div class="card kept" data-id="' + esc(c.campaign + "/" + k.id) + '" data-k="' + k.id + '">' +
+      '<div class="row-top"><span class="mono">' + k.id + "</span><strong>" + esc(k.st) + "</strong></div>" +
+      '<p class="text">' + marked(k.x, k.ph, k.w) + "</p>" +
+      '<p class="kline via">' + (k.w ? "Says only that someone doesn’t know " + esc(k.w) + "; it doesn’t say it. Stays."
+        : "Doesn’t say what; it answers a question in the bullet. Stays.") + "</p></div>";
+  }
+
+  function chapters(c, cards, fn) {
+    let html = "", ch = null;
+    for (const k of cards) {
+      if (k.c !== ch) { if (ch !== null) html += "</div></section>"; ch = k.c;
+        html += '<section class="chapter"><div class="chapter-head"><h3>' + esc(k.ct) + '</h3><span class="mono">' + esc(k.f) + '</span></div><div class="rows">'; }
+      html += fn(c, k);
+    }
+    return html + (ch !== null ? "</div></section>" : "");
+  }
+
+  function renderK() {
+    if (!K.campaigns.length) { $("k-list").innerHTML = '<p class="empty">This page was built without knowledge notes.</p>'; return; }
+    const c = kc(), t = kCounts(c);
+    $("k-camps").innerHTML = K.campaigns.map((x, i) => {
+      const u = kCounts(x);
+      return '<button type="button" class="npc-tab" data-kcamp="' + i + '" aria-pressed="' + (i === kstate.camp) + '">' + esc(x.campaign) +
+        " <small>" + (u.open ? u.open + " need a name" : "done") + "</small></button>";
+    }).join("");
+    $("k-tally").innerHTML = "<span><b>" + t.total + "</b> bullets say someone doesn’t know</span>" +
+      "<span>hidden from a character " + t.hidden + " · from the party " + t.party + " · nobody we play " + t.nobody + " · stay " + t.keeps + "</span>" +
+      (t.open ? '<span class="via warn"><b>' + t.open + "</b> need a name</span>" : '<span class="via">nothing needs you</span>');
+    const hides = c.cards.filter((k) => k.o === "hides"), keeps = c.cards.filter((k) => k.o !== "hides");
+    const open = hides.filter((k) => { const w = whoOf(c, k); return !w.names.length && !w.party && !w.nobody; });
+    const done = hides.filter((k) => !open.includes(k));
+    $("k-list").innerHTML =
+      (open.length ? '<h2 class="ksec">Needs a name</h2>' + chapters(c, open, hiddenCard) : "") +
+      '<h2 class="ksec">Hidden</h2>' + (done.length ? chapters(c, done, hiddenCard) : '<p class="via">None yet.</p>') +
+      '<details class="side ksec-stays"' + (openIds.has(c.campaign + "/stays") ? " open" : "") + ' data-stays><summary>Stays: ' + keeps.length +
+      " bullet(s) that only say someone doesn’t know something, without saying it</summary>" + chapters(c, keeps, keptRow) + "</details>" +
+      '<datalist id="k-subjects">' + c.subjects.map((x) => '<option value="' + esc(x) + '">').join("") + "</datalist>";
+    $("k-foot").textContent = "Found by a fixed list of phrasings (“does not know”, “unaware of”, “has not been told”, …) in scene bullets, " +
+      "outside quoted speech. Hidden: what follows states it (“that …”, “about …”, “unaware of …”, a clause, or a “has not been told” after the fact). " +
+      "Stays: a question (where, which, how …), a name, or nothing. A name counts for an NPC when it is their dossier subject or a name form their dossier lists. " +
+      "Saved files are knowledge file version " + K.version + "; npc_agent horizon --knowledge and npc_agent leaks read them as they stand.";
+  }
+
+  function knowledgeFile() {
+    const campaigns = {};
+    for (const c of K.campaigns) {
+      const src = kstate.who[c.campaign] || {}, who = {};
+      for (const id of Object.keys(src).sort()) {
+        const v = src[id];
+        if (v === "party" || v === "nobody") who[id] = v;
+        else if (Array.isArray(v) && v.length) who[id] = v.slice();
+      }
+      if (Object.keys(who).length) campaigns[c.campaign] = { who };
+    }
+    return { version: K.version, campaigns };
+  }
+
+  function knowledgeYaml(f) {
+    const q = (s) => JSON.stringify(String(s));
+    const out = ["version: " + f.version];
+    const cs = Object.keys(f.campaigns);
+    out.push(cs.length ? "campaigns:" : "campaigns: {}");
+    for (const c of cs) {
+      out.push("  " + q(c) + ":", "    who:");
+      for (const [id, ns] of Object.entries(f.campaigns[c].who)) out.push("      " + q(id) + ": " + (typeof ns === "string" ? q(ns) : "[" + ns.map(q).join(", ") + "]"));
+    }
+    return out.join("\n") + "\n";
+  }
+
+  // ── persistence ─────────────────────────────────────────────────────────
+  // One db document per NPC (rulings/<stem>) and per campaign (knowledge/<campaign>).
+  let db = null, canWrite = true, pending = new Set(), writing = false, timer = null;
+  const setStatus = (t, warn) => {
+    for (const id of ["status", "k-status"]) { $(id).textContent = t; $(id).classList.toggle("warn", !!warn); }
+  };
+
+  function bodyFor(path) {
+    if (path.startsWith("knowledge/")) {
+      const camp = path.slice("knowledge/".length);
+      return { campaign: camp, knowledge_version: K.version, who: kstate.who[camp] || {} };
+    }
+    const stem = path.slice("rulings/".length);
+    const r = state.rulings[stem], n = DATA.npcs.find((x) => x.stem === stem);
+    return { subject: n.subject, rulings_version: DATA.rulings_version, spans: r.spans, items: r.items, default: r.default || "", not_perceived: r.not_perceived || [] };
+  }
+
+  function saveDraftLocally() {
+    try {
+      localStorage.setItem("presence-ledger-draft-v3", JSON.stringify(state.rulings));
+      localStorage.setItem("presence-ledger-knowledge-v3", JSON.stringify(kstate.who));
+    } catch (e) { /* no storage */ }
+  }
+
+  function changedDoc(path) {
+    saveDraftLocally();
+    if (!db || !canWrite) return;
+    pending.add(path);
+    clearTimeout(timer);
+    timer = setTimeout(flush, 700);
+    setStatus("Saving…");
+  }
+  const changed = (stem) => changedDoc("rulings/" + stem);
+  const kchanged = () => changedDoc("knowledge/" + kc().campaign);
+
+  async function flush() {
+    if (writing || !pending.size) return;
+    writing = true;
+    const paths = [...pending]; pending.clear();
+    try {
+      for (const path of paths) await db.doc(path).set(bodyFor(path));
+      setStatus("Saved");
+    } catch (e) {
+      if (e && e.code === "invalid_argument") { canWrite = false; setStatus("This view can read the rulings but not change them.", true); }
+      else { paths.forEach((s) => pending.add(s)); setStatus("Not saved yet. Retrying…", true); setTimeout(flush, 2500); }
+    } finally {
+      writing = false;
+      if (pending.size) flush();
+    }
+  }
+
+  (async function connect() {
+    try {
+      const raw = localStorage.getItem("presence-ledger-draft-v3");
+      if (raw) {
+        const draft = JSON.parse(raw);
+        for (const n of DATA.npcs) if (draft[n.stem]) state.rulings[n.stem] = { spans: draft[n.stem].spans || [], items: draft[n.stem].items || {}, default: draft[n.stem].default || "", not_perceived: draft[n.stem].not_perceived || [] };
+      }
+    } catch (e) { /* no draft */ }
+    try {
+      const raw = localStorage.getItem("presence-ledger-knowledge-v3");
+      if (raw) { const d = JSON.parse(raw); for (const c of K.campaigns) if (d[c.campaign]) kstate.who[c.campaign] = d[c.campaign]; }
+    } catch (e) { /* no draft */ }
+    render();
+    setStatus("Connecting…");
+    const c = window.claude && window.claude.use ? window.claude : null;
+    db = c ? await c.use("db") : null;
+    if (!db) { setStatus("Changes stay in this browser. Save presence.json and knowledge.json to keep them.", true); return; }
+    const user = await c.use("user");
+    if (user && user.can && (await user.can("data.write")) === false) { canWrite = false; }
+    let first = true;
+    for (const n of DATA.npcs) {
+      db.doc("rulings/" + n.stem).onSnapshot((snap) => {
+        if (snap.metadata.hasPendingWrites || pending.has("rulings/" + n.stem)) return;
+        if (snap.exists) {
+          const d = snap.data();
+          state.rulings[n.stem] = { spans: JSON.parse(JSON.stringify(d.spans || [])), items: Object.assign({}, d.items || {}), default: d.default || "", not_perceived: (d.not_perceived || []).slice() };
+        }
+        render();
+        if (first) { first = false; setStatus(canWrite ? "Saved rulings loaded" : "Read only: you can view these rulings but not change them.", !canWrite); }
+      }, () => setStatus("Lost the connection to saved rulings. Save presence.json to keep your work.", true));
+    }
+    for (const c of K.campaigns) {
+      db.doc("knowledge/" + c.campaign).onSnapshot((snap) => {
+        if (snap.metadata.hasPendingWrites || pending.has("knowledge/" + c.campaign)) return;
+        // Versions 1 and 2 sorted every beat by hand; nothing in them is a who ruling.
+        if (snap.exists && snap.data().knowledge_version === K.version) kstate.who[c.campaign] = JSON.parse(JSON.stringify(snap.data().who || {}));
+        const y = window.scrollY; render(); window.scrollTo(0, y);
+      }, () => setStatus("Lost the connection to saved notes. Save knowledge.json to keep your work.", true));
+    }
+  })();
+
+  // ── events ──────────────────────────────────────────────────────────────
+  document.addEventListener("click", async (ev) => {
+    const t = ev.target.closest("button");
+    if (!t) return;
+    if (t.dataset.view) {
+      kstate.view = t.dataset.view;
+      try { localStorage.setItem("presence-ledger-view", kstate.view); } catch (e) { /* ignore */ }
+      render(); return;
+    }
+    if (t.dataset.kcamp !== undefined) { kstate.camp = +t.dataset.kcamp; kstate.editing.clear(); render(); return; }
+    const card = t.closest(".card");
+    if (card && !card.classList.contains("kept")) {
+      const id = card.dataset.k, who = kw();
+      if (t.dataset.kedit !== undefined) kstate.editing.add(id);
+      else if (t.dataset.kdone !== undefined) kstate.editing.delete(id);
+      else if (t.dataset.kparty !== undefined) who[id] = "party";
+      else if (t.dataset.knobody !== undefined) who[id] = "nobody";
+      else if (t.dataset.kdel !== undefined && Array.isArray(who[id])) { who[id].splice(+t.dataset.kdel, 1); if (!who[id].length) delete who[id]; }
+      else if (t.dataset.kadd !== undefined) { if (!addName(card)) return; }
+      else return;
+      const y = window.scrollY; render(); window.scrollTo(0, y);
+      if (t.dataset.kedit === undefined && t.dataset.kdone === undefined) kchanged();
+      const f = document.querySelector('.card[data-k="' + id + '"] [data-kname]'); if (f && t.dataset.kdone === undefined) f.focus();
+      return;
+    }
+    if (t.dataset.npc !== undefined) {
+      state.npc = +t.dataset.npc;
+      try { localStorage.setItem("presence-ledger-tab", npc().stem); } catch (e) { /* ignore */ }
+      render(); return;
+    }
+    if (t.dataset.show) { state.show = t.dataset.show; render(); return; }
+    if (t.dataset.beat) {
+      const r = rul(), bid = t.dataset.beat, np = new Set(r.not_perceived || []);
+      if (np.has(bid)) np.delete(bid); else np.add(bid);
+      r.not_perceived = [...np].sort();
+      const y = window.scrollY; render(); window.scrollTo(0, y);
+      changed(npc().stem); return;
+    }
+    if (t.dataset.a !== undefined && t.closest(".row")) {
+      const id = t.closest(".row").dataset.id, a = t.dataset.a, r = rul();
+      if (a && !allowed(id, a)) return;
+      if (a) r.items[id] = a; else delete r.items[id];
+      const eff = effective(npc().stem);
+      r.not_perceived = (r.not_perceived || []).filter((b) => eff[beatScene(b)] && eff[beatScene(b)].v === "present");
+      const y = window.scrollY; render(); window.scrollTo(0, y);
+      changed(npc().stem); return;
+    }
+    if (t.id === "add-span") {
+      const n = npc(), first = SCENE_IDS.find((i) => Object.prototype.hasOwnProperty.call(n.candidates, i)) || "";
+      rul().spans.push({ from: first, to: "", value: "present", follows: "", note: "" });
+      render(); changed(n.stem); return;
+    }
+    if (t.dataset.del !== undefined) { rul().spans.splice(+t.dataset.del, 1); render(); changed(npc().stem); return; }
+    if (t.id === "save-file") {
+      const dl = window.claude && window.claude.use ? await window.claude.use("downloads") : null;
+      if (!dl) { setStatus("Saving files is not available in this view. Use Copy as YAML.", true); return; }
+      try {
+        await dl.save({ filename: "presence.json", data: JSON.stringify(rulingFile(), null, 2) + "\n" });
+        setStatus("presence.json saved");
+      } catch (e) {
+        if (e && e.code === "declined") setStatus("Save cancelled");
+        else if (e && e.code === "rate_limited") setStatus("A save prompt is already open.", true);
+        else setStatus("Could not save the file. Use Copy as YAML.", true);
+      }
+      return;
+    }
+    if (t.id === "save-knowledge") {
+      const dl = window.claude && window.claude.use ? await window.claude.use("downloads") : null;
+      if (!dl) { setStatus("Saving files is not available in this view. Use Copy as YAML.", true); return; }
+      try {
+        await dl.save({ filename: "knowledge.json", data: JSON.stringify(knowledgeFile(), null, 2) + "\n" });
+        setStatus("knowledge.json saved");
+      } catch (e) {
+        if (e && e.code === "declined") setStatus("Save cancelled");
+        else if (e && e.code === "rate_limited") setStatus("A save prompt is already open.", true);
+        else setStatus("Could not save the file. Use Copy as YAML.", true);
+      }
+      return;
+    }
+    if (t.id === "copy-yaml" || t.id === "copy-k-yaml") {
+      const k = t.id === "copy-k-yaml", bar = k ? "k-bar" : "bar";
+      const text = k ? knowledgeYaml(knowledgeFile()) : asYaml(rulingFile());
+      try { await navigator.clipboard.writeText(text); setStatus("YAML copied"); }
+      catch (e) {
+        const pre = document.createElement("textarea"); pre.value = text; pre.style.width = "100%"; pre.rows = 12; pre.id = "yaml-fallback";
+        const old = $("yaml-fallback"); if (old) old.remove();
+        $(bar).appendChild(pre); pre.select(); setStatus("Copying is blocked here; the YAML is selected below.", true);
+      }
+    }
+  });
+
+  function addName(card) {
+    const input = card.querySelector("[data-kname]"), name = input ? input.value.trim() : "";
+    if (!name) return false;
+    const who = kw(), id = card.dataset.k;
+    if (!Array.isArray(who[id])) who[id] = [];  // a name replaces the word "party" / "nobody"
+    if (!who[id].includes(name)) who[id].push(name);
+    kstate.editing.add(id);
+    return true;
+  }
+
+  document.addEventListener("keydown", (ev) => {
+    if (ev.key !== "Enter" || !ev.target.matches("[data-kname]")) return;
+    ev.preventDefault();
+    const card = ev.target.closest(".card"), id = card.dataset.k;
+    if (!addName(card)) return;
+    const y = window.scrollY; render(); window.scrollTo(0, y); kchanged();
+    const f = document.querySelector('.card[data-k="' + id + '"] [data-kname]'); if (f) f.focus();
+  });
+
+  document.addEventListener("change", (ev) => {
+    if (ev.target.matches("[data-kname]")) return;
+    if (ev.target.id === "default-v") { rul().default = ev.target.value; render(); changed(npc().stem); return; }
+    const el = ev.target, row = el.closest(".span-row");
+    if (!row) return;
+    const s = rul().spans[+row.dataset.span];
+    s[el.dataset.f] = el.value.trim();
+    render(); changed(npc().stem);
+  });
+})();
+</script>
