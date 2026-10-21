@@ -240,6 +240,7 @@ class ScabardClient:
         secrets: str = "",
         gm_secrets: str = "",
         is_secret: bool = False,
+        aliases: str | None = None,
     ) -> tuple[bool, int | None]:
         """Create a new page in the campaign.
 
@@ -257,6 +258,8 @@ class ScabardClient:
             secrets:       GM-only text hidden from players.
             gm_secrets:    Additional GM-only notes.
             is_secret:     Whether to mark the page as secret.
+            aliases:       Comma-separated alternate names (e.g.
+                           "Milky, The Milk"). None leaves the field out.
 
         Returns:
             (True, thing_id)  — created; thing_id is the new page's ID.
@@ -273,6 +276,8 @@ class ScabardClient:
             # URL uses lowercase concept; body field requires title case
             "concept": concept.title(),
         }
+        if aliases is not None:
+            payload["aliases"] = aliases
         result = self._post(
             f"{self.BASE_URL}/campaign/{campaign_id}/{concept}", payload
         )
@@ -297,6 +302,7 @@ class ScabardClient:
         secrets: str = "",
         gm_secrets: str = "",
         is_secret: bool = False,
+        aliases: str | None = None,
     ) -> bool:
         """Update an existing page.
 
@@ -310,6 +316,10 @@ class ScabardClient:
             secrets:       GM-only text.
             gm_secrets:    Additional GM-only notes.
             is_secret:     Whether to mark the page as secret.
+            aliases:       Comma-separated alternate names. None leaves the
+                           field out of the request, and the server keeps
+                           the page's existing aliases (verified live
+                           2026-10-21); "" clears them.
 
         Returns:
             True if the API reported isSuccess=True, False otherwise.
@@ -324,6 +334,8 @@ class ScabardClient:
             # URL uses lowercase concept; body field requires title case
             "concept": concept.title(),
         }
+        if aliases is not None:
+            payload["aliases"] = aliases
         result = self._post(
             f"{self.BASE_URL}/campaign/{campaign_id}/{concept}/{thing_id}",
             payload,

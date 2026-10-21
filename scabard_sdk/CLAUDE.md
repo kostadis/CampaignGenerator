@@ -43,7 +43,8 @@ python -m scabard_sdk.test_scabard_api --username <u> --access-key <k> --campaig
 | `create_connections(campaign_id, concept, thing_id, connections)` | `tuple[bool, dict[str, dict]]` | Create one or more connections from a page to other pages by name |
 
 `create_page` and `update_page` share the same optional keyword fields:
-`brief_summary`, `description`, `secrets`, `gm_secrets`, `is_secret`.
+`brief_summary`, `description`, `secrets`, `gm_secrets`, `is_secret`, `aliases`.
+`aliases` is sent only when not `None`, so an update never clears aliases set in the Scabard UI.
 
 ## Exceptions
 
@@ -75,6 +76,10 @@ These differ from what the official API docs describe — handle them accordingl
 9. **`/connect` response uses postParam strings as keys.** Response shape is `{"isSuccess": bool, "{postParam}": {relId, uri, value, isFormer, isSecret}, ...}` — the connection records sit at the top level alongside `isSuccess` rather than under a wrapper key. `create_connections` separates them: returns `(isSuccess, {postParam: record})`. `relId` is the **only handle** for an edge once created — there is no list-connections endpoint yet, so persist it if needed.
 
 10. **Canonical concept list is now official.** The 2026-05 docs enumerate concepts as `character, place, group, item, event, vehicle, category, attribute, note, folder`. Note `place`, **not** `location` — `list_connection_types` confirms (`source: "Place"`). The project's `scabard_sync.py` and outer `SCABARD_SDK.md` "Concepts Reference" table still use `location` and have never been verified against the live API for that concept. Worth a focused pass on `scabard_sync.py` next; not addressed in this SDK update.
+
+11. **`aliases` works on save and create, JSON only (verified 2026-10-21).** Pages return `aliases` (a comma-separated string) on every GET. A JSON save with `aliases` stores it; a JSON save that **omits** `aliases` keeps the existing value. The docs' form-encoded save example (`-d 'aliases=...'`) returned **500** on the live server, the same docs/server mismatch as `/connect` (#7).
+
+12. **`location` and `category` return 404.** `GET .../location` is an invalid URI; the concept is `place` (#10). `category` is in the official concept list but also 404s on the live API.
 
 ## Rate limiting
 

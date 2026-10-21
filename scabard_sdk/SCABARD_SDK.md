@@ -24,7 +24,7 @@ To get your access key:
 ```python
 from scabard_client import ScabardClient
 
-client = ScabardClient(username="stolph", access_key="8301789723432159092")
+client = ScabardClient(username="you", access_key="your-key")
 ```
 
 ## Quick Start
@@ -230,6 +230,7 @@ Creates a new page. Because the API does not return the new page's ID in the cre
 | `secrets` | `str` | `""` | GM-only text (hidden from players) |
 | `gm_secrets` | `str` | `""` | Additional GM-only notes |
 | `is_secret` | `bool` | `False` | Mark page as secret |
+| `aliases` | `str \| None` | `None` | Comma-separated alternate names. `None` omits the field (the server keeps existing aliases); `""` clears them |
 
 **Returns**: `(True, thing_id)` on success, `(True, None)` if ID could not be discovered, `(False, None)` if the API reported failure.
 
@@ -261,6 +262,7 @@ Updates an existing page. All text fields default to empty string — omitted fi
 | `secrets` | `str` | `""` | GM-only text |
 | `gm_secrets` | `str` | `""` | Additional GM-only notes |
 | `is_secret` | `bool` | `False` | Mark page as secret |
+| `aliases` | `str \| None` | `None` | Comma-separated alternate names. `None` omits the field (the server keeps existing aliases); `""` clears them |
 
 **Returns**: `True` if the API reported success, `False` otherwise.
 
