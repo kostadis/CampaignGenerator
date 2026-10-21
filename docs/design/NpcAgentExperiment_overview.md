@@ -216,6 +216,21 @@ disguise. The GM decided this very early.
   out." Scored on the true-self page: **11 of 21 turns, all 11 "same"**, none partly
   or different; the GM left the rest unscored because nothing looked off.
 
+### NPC 3: Vizeran, who is never present and learns by report
+
+- **The setup.** He is never on tape. The GM ruled which scenes were *reported* to
+  him and through what channel. He got his sheet from the GM's voice guide; the
+  rest of the arc and the guardrails were withheld as the answer key.
+- **The three moments:** the T'sarran attack on Daz, Daz's Candlekeep
+  discoveries, and his plans for Daz's return.
+- **Scores:** in character and matching canon wherever scored, no guardrail broken,
+  six decisions approved and none rejected.
+- **The decisions went beyond the canon.** He noticed his blind cutouts knew
+  more than his contract said and decided to audit his own chain. The GM: "how to
+  make the plot richer… exactly what he would do."
+- **What it suggests:** the strongest use may not be replaying the past, but
+  working out an off-screen NPC's consistent consequences between sessions.
+
 ## 5. Lessons so far
 
 1. **Ask questions of the unit the question is about.** Event questions belong to

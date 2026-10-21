@@ -603,6 +603,47 @@ compelling… I didn't see anything that was off… at first blush, the agent
 successfully worked out." True-self page: 11 of 21 turns scored, all 11 "same"; the
 rest left unscored because nothing looked off.
 
+## Third NPC: Vizeran, who is never present (2026-10-21)
+
+Vizeran DeVir is never on tape and never named in a summary. He acts through
+cutouts. What he could know is therefore not scenes he attended but **what was
+reported to him**, and that is a new kind of GM ruling: these scenes, through
+this channel.
+
+- **Prep.** His sheet is 82 of 219 passages from the GM's voice guide and DeVir
+  arc. It holds his doctrine, voice, red flags, madness tells, the Disclosure
+  Lever, and that the Duskryn contract is his, how it is worded, and that the
+  mercenaries are blind. The rest of the arc and the guardrails checklist are the
+  **answer key**: shown to the GM beside each reaction, never sent to the model.
+- **Command.** `npc_agent react` gives the agent the reported scenes, his sheet and
+  a question, in one call. He answers with a reaction in his voice, an
+  assessment, and up to four decisions. No dossier is needed.
+- **The three moments:**
+  1. a noble house (T'sarran) tries to kill Daz, frozen at 53 (reports 051.03–051.06
+     and 053.01, via the contract channel);
+  2. Daz's Candlekeep discoveries about his identity, frozen at 72 (adds 056.07 and
+     072.05);
+  3. his plans for Daz's return.
+
+**Result.** No leak flags. GM scores:
+- **The T'sarran attack:** in character and matches canon, three decisions
+  approved.
+- **His plans for Daz's return:** in character and matches canon, no guardrail
+  broken, two decisions approved.
+- **Candlekeep:** one decision approved, the rest unscored.
+- **Overall:** none rejected.
+
+The decisions are where it goes beyond the canon. From the reports alone, the agent
+noticed that his contract named no House while the Duskryns told Daz they guarded
+against Mizzrym and T'sarran ("A cutout who knows is not a cutout. It is a door."),
+and decided to audit his own cutout chain. The GM: "quite interesting because I
+never really [considered its] implications towards the outcome". On leaving Daz to
+believe his patron is a rival noble: "what it shows is how to make the plot richer.
+Given everything I said this is exactly what he would do."
+
+This is a different use from the replays: not reproducing what happened, but
+generating consistent, in-character consequences the GM had not yet worked out.
+
 ## Non-goals
 
 - No RL training, no simulator, no online loop.
