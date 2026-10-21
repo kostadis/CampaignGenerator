@@ -258,3 +258,123 @@ def test_react_modules_are_no_model_and_agent_is_the_only_model_step():
     assert guard.MODEL_STEPS == {"agent"}
     names = {n for n, _ in guard._modules()}
     assert {"react", "react_page"} <= names
+
+
+# ── --witnessed, --hide-beat, --possessive ────────────────────────────────
+
+# The system prompt and user message as they were before these options existed; answers are reused by prompt sha.
+FROZEN_SYSTEM = (
+    "You are Vizeran, a non-player character in a tabletop campaign. You were not present at any of these events; "
+    "you know of them only through the reports below, and through your own private knowledge. Use nothing else. "
+    "Answer the question in character. Reply with JSON only:\n"
+    '{"reaction": "his immediate reaction, in his own voice, 80-200 words", "assessment": "what he concludes, '
+    'in plain words, 2-5 sentences", "decisions": [{"decision": "...", "why": "..."}]}\n'
+    "with 1 to 4 decisions.")
+FROZEN_USER = ("## Who you are and what you hold privately\n\nSHEET\n\n"
+               "## What has reached you\n\nREPORTS\n\n"
+               "## The question\n\nWhat now?\n")
+
+
+def test_default_prompts_are_byte_identical_to_the_frozen_ones():
+    assert agent.build_react_prompt("Vizeran", "SHEET", "REPORTS", "What now?") == (FROZEN_SYSTEM, FROZEN_USER)
+    assert agent.build_react_prompt("Vizeran", "SHEET", "REPORTS", "What now?", "", "his") == (FROZEN_SYSTEM, FROZEN_USER)
+
+
+def test_witnessed_scenes_render_before_reports_and_swap_the_system_sentence(camp, tmp_path, fake):
+    rc, out = _react(camp, tmp_path, "--witnessed", "051.02", reported=("051.01", "053.01"))
+    assert rc == 0
+    user = (out / "m1" / "prompt.user.md").read_text()
+    system = (out / "m1" / "prompt.system.md").read_text()
+    assert re.findall(r"^## .*$", user, re.M) == ["## Who you are and what you hold privately",
+                                                  "## What you witnessed yourself", "## What has reached you",
+                                                  "## The question"]
+    assert "Scene 1 of 1. You were there." in user and "The assassin fails at the inn." in user
+    assert "051.02" not in user and "The Blade" in user  # titles, not ids
+    assert user.index("The assassin fails") < user.index("Report 1 of 2")
+    assert "You were present only at the scenes under \"What you witnessed yourself\"" in system
+    assert "You were not present at any" not in system
+    run = json.loads((out / "m1" / "run.json").read_text())
+    bundle = json.loads((out / "m1" / "bundle.json").read_text())
+    assert run["witnessed"] == ["051.02"] and run["reported"] == ["051.01", "053.01"]
+    assert [w["title"] for w in bundle["witnessed"]] == ["The Blade"]
+    assert "Witnessed by ' + OBJ" in (out / "react.html").read_text()
+
+
+def test_witnessed_drops_knowledge_hidden_beats(camp, tmp_path, fake):
+    rc, out = _react(camp, tmp_path, "--witnessed", "051.01", reported=("053.01",))
+    assert rc == 0
+    user = (out / "m1" / "prompt.user.md").read_text()
+    assert "The Duskryn courier names a price." in user and "party plotted at the Spire" not in user
+
+
+def test_a_scene_cannot_be_both_witnessed_and_reported(camp, tmp_path, fake, capsys):
+    rc, out = _react(camp, tmp_path, "--witnessed", "051.01")
+    assert rc == 2 and "both --witnessed and --reported" in capsys.readouterr().err
+    assert not out.exists()
+
+
+def test_witnessed_refuses_a_future_or_unknown_scene(camp, tmp_path, fake, capsys):
+    rc, out = _react(camp, tmp_path, "--witnessed", "055.01")
+    assert rc == 2 and "--witnessed 055.01" in capsys.readouterr().err and not out.exists()
+    rc, _ = _react(camp, tmp_path, "--witnessed", "051.09")
+    assert rc == 2 and "not a scene in the summaries" in capsys.readouterr().err
+    rc, _ = _react(camp, tmp_path, "--witnessed", "51.1")
+    assert rc == 2
+
+
+def test_hide_beat_removes_the_beat_and_is_recorded_and_shown(camp, tmp_path, fake):
+    rc, out = _react(camp, tmp_path, "--hide-beat", "051.01.b04")
+    assert rc == 0
+    user = (out / "m1" / "prompt.user.md").read_text()
+    assert "The courier leaves by night." not in user and "The Duskryn courier names a price." in user
+    run = json.loads((out / "m1" / "run.json").read_text())
+    bundle = json.loads((out / "m1" / "bundle.json").read_text())
+    assert run["hidden_beats"] == bundle["hidden_beats"] == [
+        {"beat_id": "051.01.b04", "text": "- The courier leaves by night."}]
+    assert "Withheld from \" + OBJ + \" (GM channel ruling)" in (out / "react.html").read_text()
+
+
+def test_hide_beat_refuses_a_beat_of_a_scene_that_did_not_reach_her(camp, tmp_path, fake, capsys):
+    rc, out = _react(camp, tmp_path, "--hide-beat", "053.01.b02", reported=("051.01",))
+    assert rc == 2 and "not a beat of a reported or witnessed scene" in capsys.readouterr().err
+    assert not out.exists()
+    rc, _ = _react(camp, tmp_path, "--hide-beat", "051.01.b99")
+    assert rc == 2
+
+
+def test_possessive(camp, tmp_path, fake, capsys):
+    rc, out = _react(camp, tmp_path, "--possessive", "her")
+    assert rc == 0
+    system = (out / "m1" / "prompt.system.md").read_text()
+    assert "her immediate reaction, in her own voice" in system and "what she concludes" in system
+    assert not re.search(r"\bhis\b", system) and not re.search(r"\bhe\b", system)
+    assert "they conclude" in agent.build_react_prompt("V", "", "", "q", "", "their")[0]
+    rc, _ = _react(camp, tmp_path, "--possessive", "its", out="out2")
+    assert rc == 2 and "--possessive its" in capsys.readouterr().err
+
+
+def _page_data(html):
+    return json.loads(re.search(r"const DATA = (\{.*?\});\n", html, re.S).group(1).replace("<\\/", "</"))
+
+
+def test_page_pronouns_follow_possessive(camp, tmp_path, fake):
+    rc, out = _react(camp, tmp_path, "--possessive", "her", "--witnessed", "051.02", reported=("051.01", "053.01"))
+    assert rc == 0
+    assert json.loads((out / "m1" / "bundle.json").read_text())["possessive"] == "her"
+    html = (out / "react.html").read_text()
+    assert _page_data(html)["possessive"] == "her"
+    assert '"her":["she","her","her"]' not in html and 'her: ["she", "her", "her"]' in html
+    # No hard-coded male or female pronoun is left in the template's visible labels.
+    labels = "\n".join(l for l in react_page.TEMPLATE.read_text().splitlines() if "summary>" in l or "<h3>" in l or "Would you" in l)
+    assert not re.search(r"\b(he|him|his|she|her)\b", labels, re.I)
+    assert "Withheld from \" + OBJ" in html
+
+
+def test_page_defaults_to_his_for_old_bundles(camp, tmp_path, fake):
+    rc, out = _react(camp, tmp_path)
+    b = out / "m1" / "bundle.json"
+    raw = json.loads(b.read_text())
+    raw.pop("possessive")
+    b.write_text(json.dumps(raw))
+    assert cli._write_react_page(out, "Vizeran DeVir", "m")
+    assert _page_data((out / "react.html").read_text())["possessive"] == "his"

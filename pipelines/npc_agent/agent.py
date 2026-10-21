@@ -99,18 +99,30 @@ def build_forward_prompt(subject: str, persona_md: str, horizon_md: str, sheet_m
     return system, user
 
 
-REACT_SYSTEM = """You are {subject}, a non-player character in a tabletop campaign. You were not present at any of these events; you know of them only through the reports below, and through your own private knowledge. Use nothing else. Answer the question in character. Reply with JSON only:
-{{"reaction": "his immediate reaction, in his own voice, 80-200 words", "assessment": "what he concludes, in plain words, 2-5 sentences", "decisions": [{{"decision": "...", "why": "..."}}]}}
+REACT_SYSTEM = """You are {subject}, a non-player character in a tabletop campaign. {presence} Use nothing else. Answer the question in character. Reply with JSON only:
+{{"reaction": "{possessive} immediate reaction, in {possessive} own voice, 80-200 words", "assessment": "what {pronoun} {concludes}, in plain words, 2-5 sentences", "decisions": [{{"decision": "...", "why": "..."}}]}}
 with 1 to 4 decisions."""
 
+ABSENT = "You were not present at any of these events; you know of them only through the reports below, and through your own private knowledge."
+PRESENT_SOME = ("You were present only at the scenes under \"What you witnessed yourself\"; everything else you know only "
+                "through the reports below, and through your own private knowledge.")
+#: The possessive to ``(subject pronoun, verb form)``; anything else is refused.
+POSSESSIVES = {"his": ("he", "concludes"), "her": ("she", "concludes"), "their": ("they", "conclude")}
 
-def build_react_prompt(subject: str, sheet_md: str, reports_md: str, question: str) -> tuple[str, str]:
-    """``(system, user)`` for a reaction; the user message is these three inputs, in order.
 
+def build_react_prompt(subject: str, sheet_md: str, reports_md: str, question: str,
+                       witnessed_md: str = "", possessive: str = "his") -> tuple[str, str]:
+    """``(system, user)`` for a reaction; the user message is these inputs, in order.
+
+    ``witnessed_md`` (scenes she was at) and ``possessive`` change the prompt only when given.
     The GM's answer key is never an input.
     """
-    system = REACT_SYSTEM.format(subject=subject)
+    pronoun, concludes = POSSESSIVES[possessive]
+    system = REACT_SYSTEM.format(subject=subject, possessive=possessive, pronoun=pronoun, concludes=concludes,
+                                 presence=PRESENT_SOME if witnessed_md.strip() else ABSENT)
+    witnessed = f"## What you witnessed yourself\n\n{witnessed_md.strip()}\n\n" if witnessed_md.strip() else ""
     user = (f"## Who you are and what you hold privately\n\n{sheet_md.strip() or '(nothing)'}\n\n"
+            f"{witnessed}"
             f"## What has reached you\n\n{reports_md.strip() or '(nothing)'}\n\n"
             f"## The question\n\n{question.strip()}\n")
     return system, user

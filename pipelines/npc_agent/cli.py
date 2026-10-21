@@ -898,8 +898,9 @@ def _write_react_page(out_dir: Path, subject: str, model: str) -> bool:
     if not moments:
         return False
     run_id = max(stamps).replace("-", "").replace(":", "")
+    possessive = next((m["possessive"] for m in moments if m.get("possessive")), "his")
     page = react_page.render({"version": react_page.BUNDLE_VERSION, "npc": subject, "run_id": run_id,
-                              "model": model, "moments": moments})
+                              "model": model, "possessive": possessive, "moments": moments})
     atomic_write_text(out_dir / "react.html", page)
     print(f"wrote {out_dir / 'react.html'}")
     return True
@@ -914,11 +915,17 @@ def cmd_react(args) -> int:
     corpus = corpus_mod.load_corpus(summaries)
     if not corpus.chapters:
         raise Refusal(f"{summaries}: no summaries with a numeric chapter prefix")
+    if args.possessive not in agent_mod.POSSESSIVES:
+        raise Refusal(f"--possessive {args.possessive}: use one of {', '.join(agent_mod.POSSESSIVES)}")
     # An unknown or future reported scene refuses before anything is written.
     stand_in = dossier_mod.Dossier(subject, subject, Path(""), forms, (), 0, 0, 0, 0, 0, ())
     resolved = _knowledge(args, summaries, corpus)
     try:
-        rs = react.reports(corpus, args.reported, args.freeze, knowledge.hidden_from(resolved, stand_in))
+        react.refuse_overlap(args.witnessed, args.reported)
+        hidden_beats = react.hide_beats(corpus, args.hide_beat, [*args.witnessed, *args.reported])
+        hidden = knowledge.hidden_from(resolved, stand_in) | {b for b, _ in hidden_beats}
+        ws = react.reports(corpus, args.witnessed, args.freeze, hidden, "--witnessed")
+        rs = react.reports(corpus, args.reported, args.freeze, hidden)
     except react.ReactError as e:
         raise Refusal(str(e)) from None
     sheet_md = _prep_sheet(args.prep, args.section, args.prep_rulings, args.moment, subject, forms)
@@ -927,7 +934,8 @@ def cmd_react(args) -> int:
     out_dir = Path(args.out_dir)
     _refuse_inside(out_dir, tuple(sources))
     reports_md = react.render_reports(rs, args.via)
-    system, user = agent_mod.build_react_prompt(subject, sheet_md, reports_md, args.question)
+    witnessed_md = react.render_witnessed(ws) if ws else ""
+    system, user = agent_mod.build_react_prompt(subject, sheet_md, reports_md, args.question, witnessed_md, args.possessive)
     sha = _sha(system, user)
     cases = [c for c in knowledge.leak_cases(resolved, []) if knowledge.names_dossier(c.who, stand_in)]
     backend = agent_mod.backend_name(args)
@@ -937,6 +945,7 @@ def cmd_react(args) -> int:
     atomic_write_text(mdir / "prompt.user.md", user)
     prev = _read_json(mdir / "run.json")
     run = {"subject": subject, "moment": args.moment, "freeze_chapter": args.freeze, "reported": [r.scene_id for r in rs],
+           "witnessed": [r.scene_id for r in ws], "hidden_beats": [{"beat_id": b, "text": t} for b, t in hidden_beats],
            "model": args.model, "backend": backend, "prompt_sha256": sha, "dry_run": bool(args.dry_run),
            "written_at": _now(), "secret_terms": list(args.secret_term)}
     raw_path = mdir / "answer.raw.md"
@@ -963,7 +972,9 @@ def cmd_react(args) -> int:
         {"reaction": f_reaction, "assessment": f_assess, "decisions": [d["flags"] for d in decisions]}, indent=2) + "\n")
     atomic_write_text(mdir / "bundle.json", json.dumps({
         "kind": "react", "moment": args.moment, "question": args.question, "freeze": args.freeze, "sha": sha,
-        "parsed": parsed, "reports": [{"title": r.title, "text": r.text} for r in rs], "via": args.via,
+        "parsed": parsed, "possessive": args.possessive, "reports": [{"title": r.title, "text": r.text} for r in rs], "via": args.via,
+        "witnessed": [{"title": r.title, "text": r.text} for r in ws],
+        "hidden_beats": [{"beat_id": b, "text": t} for b, t in hidden_beats],
         "reaction": got.reaction, "reaction_flags": f_reaction, "assessment": got.assessment,
         "assessment_flags": f_assess, "decisions": decisions, "answer_keys": keys,
         "answer_at": run["answer_at"] or run["written_at"]}, ensure_ascii=False) + "\n")
@@ -1151,6 +1162,11 @@ def build_parser() -> argparse.ArgumentParser:
     rc.add_argument("--question", required=True)
     rc.add_argument("--freeze", type=int, required=True, help="nothing after this chapter reaches him")
     rc.add_argument("--reported", action="append", required=True, metavar="NNN.SS", help="a scene reported to him (repeatable)")
+    rc.add_argument("--witnessed", action="append", default=[], metavar="NNN.SS",
+                    help="a scene she was present at herself (repeatable); not also --reported")
+    rc.add_argument("--hide-beat", action="append", default=[], metavar="BEAT_ID",
+                    help="a beat (NNN.SS.bKK) of a reported or witnessed scene that did not reach her (repeatable)")
+    rc.add_argument("--possessive", default="his", help="his, her or their, for the prompt's pronouns (default: his)")
     rc.add_argument("--via", required=True, help="how the reports reached him")
     rc.add_argument("--prep", type=Path, required=True)
     rc.add_argument("--section", default="", help="heading-text prefix (\"\" for passages naming the NPC)")

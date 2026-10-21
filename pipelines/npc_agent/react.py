@@ -1,4 +1,4 @@
-"""Prototype 6 helpers: what reached an NPC who was never there, and reading his reaction.
+"""Prototype 6 helpers: what reached an NPC who was never there (or was there only for some scenes), and reading his reaction.
 
 An absent NPC learns of events only through reports. :func:`reports` renders the
 full text of each reported scene (title, headline, beats), in corpus order,
@@ -35,18 +35,18 @@ class Report:
 
 
 def reports(corpus: Corpus, reported: list[str] | tuple[str, ...], freeze: int,
-            hidden: frozenset[str] = frozenset()) -> list[Report]:
-    """The reported scenes in corpus order, each with its beats minus ``hidden`` ones."""
+            hidden: frozenset[str] = frozenset(), flag: str = "--reported") -> list[Report]:
+    """The scenes in corpus order, each with its beats minus ``hidden`` ones; ``flag`` names the option in refusals."""
     wanted = list(dict.fromkeys(reported))
     for sid in wanted:
         if not SCENE_ID.fullmatch(sid):
-            raise ReactError(f"--reported {sid}: expected NNN.SS")
+            raise ReactError(f"{flag} {sid}: expected NNN.SS")
     scenes = {it.item_id: it for it in corpus.items() if it.kind == corpus_mod.SCENE}
     for sid in wanted:
         if sid not in scenes:
-            raise ReactError(f"--reported {sid}: not a scene in the summaries")
+            raise ReactError(f"{flag} {sid}: not a scene in the summaries")
         if scenes[sid].chapter > freeze:
-            raise ReactError(f"--reported {sid}: is in chapter {scenes[sid].chapter}, after the freeze chapter {freeze}")
+            raise ReactError(f"{flag} {sid}: is in chapter {scenes[sid].chapter}, after the freeze chapter {freeze}")
     out = []
     for it in corpus.items():
         if it.kind != corpus_mod.SCENE or it.item_id not in wanted:
@@ -59,6 +59,31 @@ def reports(corpus: Corpus, reported: list[str] | tuple[str, ...], freeze: int,
             parts.append(t[len("#### "):].strip() if t.startswith("#### ") else t)
         out.append(Report(it.item_id, it.title or it.item_id, "\n\n".join(parts)))
     return out
+
+
+def refuse_overlap(witnessed: list[str] | tuple[str, ...], reported: list[str] | tuple[str, ...]) -> None:
+    """A scene is one or the other: she was there, or it was told to her."""
+    both = sorted(set(witnessed) & set(reported))
+    if both:
+        raise ReactError(f"{', '.join(both)}: cannot be both --witnessed and --reported")
+
+
+def hide_beats(corpus: Corpus, ids: list[str] | tuple[str, ...],
+               scenes: list[str] | tuple[str, ...]) -> list[tuple[str, str]]:
+    """``(beat_id, text)`` for each ruled-out beat, in the order given; it must be a beat of one of ``scenes``."""
+    known = {b.beat_id: b.text for it in corpus.items() if it.item_id in scenes for b in corpus_mod.beats(it)}
+    out = []
+    for bid in dict.fromkeys(ids):
+        if bid not in known:
+            raise ReactError(f"--hide-beat {bid}: not a beat of a reported or witnessed scene")
+        out.append((bid, known[bid]))
+    return out
+
+
+def render_witnessed(rs: list[Report]) -> str:
+    """The "What you witnessed yourself" section body; no scene ids."""
+    blocks = [f"Scene {i} of {len(rs)}. You were there.\n\n{r.text}" for i, r in enumerate(rs, 1)]
+    return "\n\n---\n\n".join(blocks)
 
 
 def render_reports(rs: list[Report], via: str) -> str:
