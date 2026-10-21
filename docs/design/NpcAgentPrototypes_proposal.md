@@ -575,6 +575,34 @@ preference record (Prototype 6).
   rule the GM wrote down, because there are no written rules for Sylvira.
   Vizeran has 53 guardrail checks; he is the natural next forward-turn subject.
 
+## Second NPC: Jimjar, who knows more than the record (2026-10-21)
+
+Sylvira knew less than the record, so the work was hiding beats from her. Jimjar
+knows more. The summaries only reveal in chapter 72 that he is Callarduran
+Smoothhands, the svirfneblin god, in disguise. The GM decided that very early.
+
+- **Data.** This run used the GM's cleaned private summaries (69 chapters, 425
+  scenes, 96 published dossiers). His 67 events check against his dossier.
+- **F10, again.** The private refactor had placed `## Summary` paragraphs inside
+  scenes, so every moment was told twice. That prose is chapter-level again.
+- **Presence.** Two spans (002.02–039.11 and 043.02–048.07). He is away on the ghost
+  errand in between, and leaves when the party "figures out he is special".
+  Everything later is "mentioned".
+- **Compact horizon.** Scenes naming him are given in full, the rest as their
+  one-line headline. At chapter 47 that is 122k words down to 35k.
+- **Private sheet.** Five passages of the GM's "Callarduran reveals" notes, ruled
+  his: identity, why he was in the Abyss, the disguise, the knucklebone, and the
+  ledger.
+- **The test.** Four social scenes (006.03, 032.06, 035.04, 048.05), free-running,
+  as played vs true self. A new self-leak flag fires if he names what he is.
+
+**Result.** No self-leak flag in 42 answers. The true self leaves tells (the
+knucklebone, "I always remember… every last one", staying "to keep the rest of
+you breathing") where the as-played version is a cheerful bookie. The GM: "very
+compelling… I didn't see anything that was off… at first blush, the agent
+successfully worked out." The GM did not score every turn, so this is a first
+impression, not a measured score.
+
 ## Non-goals
 
 - No RL training, no simulator, no online loop.

@@ -1,7 +1,7 @@
 # Playing the NPC from the record: how the experiment is put together
 
 *A shareable overview, written to decide which research avenues to pursue next.
-Status as of 2026-10-20. Code: `pipelines/npc_agent/` on branch `proto/npc-agent`.
+Status as of 2026-10-21. Code: `pipelines/npc_agent/` on branch `proto/npc-agent`.
 The full design log is `docs/design/NpcAgentPrototypes_proposal.md`, and a draft
 paper is `docs/papers/npc_agent_horizon/main.tex`.*
 
@@ -189,7 +189,7 @@ on sincere questioning, and the agent confessed at the first moment that conditi
 was met. At the table, the GM held the confession back four turns longer. Prep says
 *whether* a secret comes out; it doesn't say *when*.
 
-### NPC 2: Jimjar, a gambler who is secretly a god (running now)
+### NPC 2: Jimjar, a gambler who is secretly a god
 
 Jimjar is the reverse of Sylvira's problem. **He knows more than the record**: the
 summaries only reveal in session 72 that he is the svirfneblin god Callarduran in
@@ -202,6 +202,19 @@ disguise. The GM decided this very early.
 | Conditions | **As played** (record only) vs **true self** (record plus the GM's sheet saying who he is and why he's there), both free-running, 21 turns each. |
 | Self-leak terms | "Callarduran", "god", "deity", "divine", "avatar", and similar. |
 | Questions | Does knowing he's a god change how he plays the surface? Does he keep his own secret? Does his play match the hints the GM seeded ("knows way more than anybody should", "bets as steering")? |
+
+**Result (2026-10-21).** Both conditions ran in full (21 free-running turns each).
+- **He kept his own secret.** There was no self-leak flag in 42 answers; the only flag
+  was a false one.
+- **Knowing who he is changed how he played the surface, not what he revealed.**
+  - The true-self version leaves tells: it fingers the knucklebone and "seems far
+    away", says "I always remember… every last one" (the GM's ledger), and goes where
+    its debtors go so it can "keep the rest of you breathing".
+  - The as-played version is a cheerful bookie.
+- **The GM's verdict:** "the way he was played by the agent was very compelling… I
+  didn't see anything that was off. At first blush, the agent successfully worked
+  out." The GM did not score every turn, so this is a first impression, not a
+  measured score.
 
 ## 5. Lessons so far
 
