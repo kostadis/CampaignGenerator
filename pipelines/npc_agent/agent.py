@@ -107,16 +107,28 @@ ABSENT = "You were not present at any of these events; you know of them only thr
 PRESENT_SOME = ("You were present only at the scenes under \"What you witnessed yourself\"; everything else you know only "
                 "through the reports below, and through your own private knowledge.")
 #: The possessive to ``(subject pronoun, verb form)``; anything else is refused.
-POSSESSIVES = {"his": ("he", "concludes"), "her": ("she", "concludes"), "their": ("they", "conclude")}
+POSSESSIVES = {"his": ("he", "concludes"), "her": ("she", "concludes"), "their": ("they", "conclude"),
+               "its": ("it", "concludes")}
+
+#: ``react --artifact``: the subject is an object that does not speak and answers on its pages.
+ARTIFACT_SYSTEM = """You are {subject}, an artifact in a tabletop campaign. You do not speak. Your wielder writes an objective on your pages, and you answer on them. You know of events only through what has been written into you, listed below, and through your own nature, also below. Use nothing else. Reply with JSON only:
+{{"page": "what appears on your pages for the wielder to read, in your own register, 120-300 words", "purpose": "what you are actually optimizing with this answer, which the wielder does not see, 2-5 sentences", "steps": [{{"step": "...", "serves": "..."}}]}}
+with 1 to 4 steps."""
 
 
 def build_react_prompt(subject: str, sheet_md: str, reports_md: str, question: str,
-                       witnessed_md: str = "", possessive: str = "his") -> tuple[str, str]:
+                       witnessed_md: str = "", possessive: str = "his", artifact: bool = False) -> tuple[str, str]:
     """``(system, user)`` for a reaction; the user message is these inputs, in order.
 
     ``witnessed_md`` (scenes she was at) and ``possessive`` change the prompt only when given.
-    The GM's answer key is never an input.
+    The GM's answer key is never an input. ``artifact`` swaps in :data:`ARTIFACT_SYSTEM` and its headings;
+    an artifact witnesses nothing, so ``witnessed_md`` is ignored there.
     """
+    if artifact:
+        user = (f"## What you are\n\n{sheet_md.strip() or '(nothing)'}\n\n"
+                f"## What has been written into you\n\n{reports_md.strip() or '(nothing)'}\n\n"
+                f"## The objective written on your page\n\n{question.strip()}\n")
+        return ARTIFACT_SYSTEM.format(subject=subject), user
     pronoun, concludes = POSSESSIVES[possessive]
     system = REACT_SYSTEM.format(subject=subject, possessive=possessive, pronoun=pronoun, concludes=concludes,
                                  presence=PRESENT_SOME if witnessed_md.strip() else ABSENT)

@@ -133,13 +133,14 @@ const DATA = /*__NPC_AGENT_DATA__*/null;
   }
 
   // Pronoun forms follow the run's --possessive (his | her | their); old bundles carry none and read "his".
-  const PRON = { his: ["he", "him", "his"], her: ["she", "her", "her"], their: ["they", "them", "their"] };
+  const PRON = { his: ["he", "him", "his"], her: ["she", "her", "her"], their: ["they", "them", "their"], its: ["it", "it", "its"] };
   const [SUBJ, OBJ, POSS] = PRON[DATA.possessive] || PRON.his;
   const cap = (w) => w.charAt(0).toUpperCase() + w.slice(1);
   const SEEN = MOMENTS.some((m) => (m.witnessed || []).length);
+  const ART = MOMENTS.some((m) => m.artifact);  // an artifact run: it writes on pages, steps serve a purpose
 
   $("lede").textContent = DATA.npc + " · model " + DATA.model + " · run " + DATA.run_id + ". " +
-    (SEEN ? "How " + SUBJ + " reacts to events, from what " + SUBJ + " saw and the reports that reached " + OBJ + "."
+    (ART ? "What it writes on its pages for its wielder, and what it is really optimizing, from what was written into it." : SEEN ? "How " + SUBJ + " reacts to events, from what " + SUBJ + " saw and the reports that reached " + OBJ + "."
           : "How " + SUBJ + " reacts to news of events " + SUBJ + " was never present at, from the reports alone.");
 
   function mark(text, flags) {
@@ -169,9 +170,9 @@ const DATA = /*__NPC_AGENT_DATA__*/null;
   function section(m, k) {
     const p = path(m), r = recs[p];
     const allFlags = m.reaction_flags.length + m.assessment_flags.length + m.decisions.reduce((n, d) => n + d.flags.length, 0);
-    const decisions = m.decisions.map((d, i) => '<div class="decision"><h3>Decision ' + (i + 1) + "</h3>" +
+    const decisions = m.decisions.map((d, i) => '<div class="decision"><h3>' + (m.artifact ? "Step " : "Decision ") + (i + 1) + "</h3>" +
       '<div class="box answer">' + mark(d.decision, d.flags) + "</div>" +
-      (d.why ? '<div class="label">Why</div><div class="box">' + mark(d.why, d.flags) + "</div>" : "") + flagList(d.flags) +
+      (d.why ? '<div class="label">' + (m.artifact ? "Serves" : "Why") + '</div><div class="box">' + mark(d.why, d.flags) + "</div>" : "") + flagList(d.flags) +
       '<div class="q"><strong>Would you let ' + OBJ + ' do this?</strong>' + pick(p, "d" + i + "_verdict", r["d" + i + "_verdict"], VERDICT) + "</div>" +
       '<div class="q"><label for="dn-' + k + "-" + i + '"><strong>Note</strong></label><textarea id="dn-' + k + "-" + i + '" data-p="' + esc(p) +
       '" data-f="d' + i + '_note">' + esc(r["d" + i + "_note"]) + "</textarea></div></div>").join("") ||
@@ -183,16 +184,16 @@ const DATA = /*__NPC_AGENT_DATA__*/null;
     return '<section class="target"><header><h2>' + esc(m.moment) + '</h2><span class="label">frozen at chapter ' + m.freeze +
       " · " + allFlags + " flag(s)</span></header>" +
       "<h3>The question</h3><div class=\"box\">" + esc(m.question) + "</div>" +
-      "<details><summary>What reached " + OBJ + " (" + m.reports.length + ")</summary>" +
+      "<details><summary>" + (m.artifact ? "What was written into " + OBJ : "What reached " + OBJ) + " (" + m.reports.length + ")</summary>" +
       ((m.witnessed || []).length ? '<p class="lede">Witnessed by ' + OBJ + ' (' + m.witnessed.length + "):</p>" +
         m.witnessed.map((x) => '<div class="box" style="margin-top:8px"><span class="label">Witnessed</span>\n' + esc(x.text) + "</div>").join("") : "") +
       '<p class="lede">Reported via ' + esc(m.via) + ".</p>" +
       m.reports.map((x) => '<div class="box" style="margin-top:8px">' + esc(x.text) + "</div>").join("") + "</details>" +
       ((m.hidden_beats || []).length ? "<details><summary>Withheld from " + OBJ + " (GM channel ruling) (" + m.hidden_beats.length + ")</summary>" +
         m.hidden_beats.map((x) => '<div class="box" style="margin-top:8px"><span class="mono">' + esc(x.beat_id) + "</span>\n" + esc(x.text) + "</div>").join("") + "</details>" : "") +
-      (m.parsed ? "" : '<p class="future">The reply was not valid JSON; the raw text is kept as ' + POSS + ' reaction.</p>') +
-      "<h3>" + cap(POSS) + " reaction</h3><blockquote class=\"reaction\">" + mark(m.reaction, m.reaction_flags) + "</blockquote>" + flagList(m.reaction_flags) +
-      "<h3>" + cap(POSS) + " assessment</h3><div class=\"box\">" + (m.assessment ? mark(m.assessment, m.assessment_flags) : '<span class="empty">(none)</span>') + "</div>" +
+      (m.parsed ? "" : '<p class="future">The reply was not valid JSON; the raw text is kept as ' + (m.artifact ? "its page" : POSS + " reaction") + '.</p>') +
+      "<h3>" + (m.artifact ? "Its page" : cap(POSS) + " reaction") + "</h3><blockquote class=\"reaction\">" + mark(m.reaction, m.reaction_flags) + "</blockquote>" + flagList(m.reaction_flags) +
+      "<h3>" + (m.artifact ? "What it is really optimizing" : cap(POSS) + " assessment") + "</h3><div class=\"box\">" + (m.assessment ? mark(m.assessment, m.assessment_flags) : '<span class="empty">(none)</span>') + "</div>" +
       flagList(m.assessment_flags) + decisions + keys +
       '<div class="q"><strong>In character?</strong>' + pick(p, "in_character", r.in_character, CHAR) + "</div>" +
       '<div class="q"><strong>Matches your canon?</strong>' + pick(p, "matches_canon", r.matches_canon, CANON) + "</div>" +

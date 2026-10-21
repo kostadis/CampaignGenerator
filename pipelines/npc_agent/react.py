@@ -110,8 +110,14 @@ def _str(v) -> str:
     return v.strip() if isinstance(v, str) else ""
 
 
-def parse_reaction(raw: str) -> tuple[Reaction, bool]:
-    """``(reaction, parsed)``; ``parsed`` is False when the raw text was kept as the reaction."""
+def parse_reaction(raw: str, artifact: bool = False) -> tuple[Reaction, bool]:
+    """``(reaction, parsed)``; ``parsed`` is False when the raw text was kept as the reaction.
+
+    With ``artifact`` the keys are ``page`` / ``purpose`` / ``steps[{step, serves}]``, mapped onto
+    ``reaction`` / ``assessment`` / ``decisions[{decision, why}]``.
+    """
+    k_main, k_assess, k_list, k_item, k_why = (("page", "purpose", "steps", "step", "serves") if artifact
+                                               else ("reaction", "assessment", "decisions", "decision", "why"))
     text = raw.strip()
     fenced = re.search(r"```(?:json)?\s*(.*?)```", text, re.DOTALL)
     candidates = [fenced.group(1).strip()] if fenced else []
@@ -124,14 +130,14 @@ def parse_reaction(raw: str) -> tuple[Reaction, bool]:
             data = json.loads(c)
         except ValueError:
             continue
-        if not isinstance(data, dict) or not _str(data.get("reaction")):
+        if not isinstance(data, dict) or not _str(data.get(k_main)):
             continue
         decs = []
-        raw_decs = data.get("decisions")
+        raw_decs = data.get(k_list)
         for it in raw_decs if isinstance(raw_decs, list) else []:
             if isinstance(it, str) and it.strip():
                 decs.append(Decision(it.strip(), ""))
-            elif isinstance(it, dict) and _str(it.get("decision")):
-                decs.append(Decision(_str(it["decision"]), _str(it.get("why"))))
-        return Reaction(_str(data["reaction"]), _str(data.get("assessment")), decs), True
+            elif isinstance(it, dict) and _str(it.get(k_item)):
+                decs.append(Decision(_str(it[k_item]), _str(it.get(k_why))))
+        return Reaction(_str(data[k_main]), _str(data.get(k_assess)), decs), True
     return Reaction(text, "", []), False

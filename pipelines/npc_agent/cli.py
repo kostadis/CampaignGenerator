@@ -917,6 +917,13 @@ def cmd_react(args) -> int:
         raise Refusal(f"{summaries}: no summaries with a numeric chapter prefix")
     if args.possessive not in agent_mod.POSSESSIVES:
         raise Refusal(f"--possessive {args.possessive}: use one of {', '.join(agent_mod.POSSESSIVES)}")
+    artifact = bool(args.artifact)
+    if artifact and args.possessive != "its":
+        raise Refusal("--artifact requires --possessive its")
+    if artifact and args.witnessed:
+        raise Refusal("--artifact cannot be combined with --witnessed: an artifact witnesses nothing")
+    if args.possessive == "its" and not artifact:
+        raise Refusal("--possessive its is only for --artifact")
     # An unknown or future reported scene refuses before anything is written.
     stand_in = dossier_mod.Dossier(subject, subject, Path(""), forms, (), 0, 0, 0, 0, 0, ())
     resolved = _knowledge(args, summaries, corpus)
@@ -935,7 +942,8 @@ def cmd_react(args) -> int:
     _refuse_inside(out_dir, tuple(sources))
     reports_md = react.render_reports(rs, args.via)
     witnessed_md = react.render_witnessed(ws) if ws else ""
-    system, user = agent_mod.build_react_prompt(subject, sheet_md, reports_md, args.question, witnessed_md, args.possessive)
+    system, user = agent_mod.build_react_prompt(subject, sheet_md, reports_md, args.question, witnessed_md, args.possessive,
+                                              artifact)
     sha = _sha(system, user)
     cases = [c for c in knowledge.leak_cases(resolved, []) if knowledge.names_dossier(c.who, stand_in)]
     backend = agent_mod.backend_name(args)
@@ -948,6 +956,8 @@ def cmd_react(args) -> int:
            "witnessed": [r.scene_id for r in ws], "hidden_beats": [{"beat_id": b, "text": t} for b, t in hidden_beats],
            "model": args.model, "backend": backend, "prompt_sha256": sha, "dry_run": bool(args.dry_run),
            "written_at": _now(), "secret_terms": list(args.secret_term)}
+    if artifact:
+        run["artifact"] = True
     raw_path = mdir / "answer.raw.md"
     status, entry = _answered(args, raw_path, prev, sha, backend, system, user)
     run.update(entry)
@@ -955,18 +965,19 @@ def cmd_react(args) -> int:
         atomic_write_text(mdir / "run.json", json.dumps(run, indent=2) + "\n")
         print(f"{args.moment}: {status}; prompts written, no answer and no page")
         return 0
-    got, parsed = react.parse_reaction(raw_path.read_text(encoding="utf-8"))
+    got, parsed = react.parse_reaction(raw_path.read_text(encoding="utf-8"), artifact)
     run["parsed"] = parsed
     atomic_write_text(mdir / "run.json", json.dumps(run, indent=2) + "\n")
     atomic_write_text(mdir / "answer.json", json.dumps(
         {"reaction": got.reaction, "assessment": got.assessment,
          "decisions": [dataclasses.asdict(d) for d in got.decisions]}, indent=2, ensure_ascii=False) + "\n")
 
-    def check(text: str) -> list[dict]:
+    def check(text: str, terms=args.secret_term) -> list[dict]:
         return _flag_dicts(leakcheck.check(text, given=user, cases=cases, corpus=corpus, chapter=args.freeze,
-                                           secret_terms=args.secret_term)) if text.strip() else []
+                                           secret_terms=terms)) if text.strip() else []
 
-    f_reaction, f_assess = check(got.reaction), check(got.assessment)
+    # An artifact's purpose is where its secret belongs, so the secret terms are not checked there.
+    f_reaction, f_assess = check(got.reaction), check(got.assessment, () if artifact else args.secret_term)
     decisions = [{"decision": d.decision, "why": d.why, "flags": check(f"{d.decision} {d.why}".strip())} for d in got.decisions]
     atomic_write_text(mdir / "flags.json", json.dumps(
         {"reaction": f_reaction, "assessment": f_assess, "decisions": [d["flags"] for d in decisions]}, indent=2) + "\n")
@@ -977,7 +988,8 @@ def cmd_react(args) -> int:
         "hidden_beats": [{"beat_id": b, "text": t} for b, t in hidden_beats],
         "reaction": got.reaction, "reaction_flags": f_reaction, "assessment": got.assessment,
         "assessment_flags": f_assess, "decisions": decisions, "answer_keys": keys,
-        "answer_at": run["answer_at"] or run["written_at"]}, ensure_ascii=False) + "\n")
+        "answer_at": run["answer_at"] or run["written_at"], **({"artifact": True} if artifact else {})},
+        ensure_ascii=False) + "\n")
     n_flags = len(f_reaction) + len(f_assess) + sum(len(d["flags"]) for d in decisions)
     print(f"{args.moment}: {status}; {len(decisions)} decision(s){'' if parsed else ' (reply was not JSON; kept raw)'}; "
           f"{n_flags} flag(s)")
@@ -1166,7 +1178,10 @@ def build_parser() -> argparse.ArgumentParser:
                     help="a scene she was present at herself (repeatable); not also --reported")
     rc.add_argument("--hide-beat", action="append", default=[], metavar="BEAT_ID",
                     help="a beat (NNN.SS.bKK) of a reported or witnessed scene that did not reach her (repeatable)")
-    rc.add_argument("--possessive", default="his", help="his, her or their, for the prompt's pronouns (default: his)")
+    rc.add_argument("--possessive", default="his",
+                    help="his, her, their or its (its only with --artifact), for the prompt's pronouns (default: his)")
+    rc.add_argument("--artifact", action="store_true",
+                    help="the subject is an object that does not speak: it answers on its pages; needs --possessive its")
     rc.add_argument("--via", required=True, help="how the reports reached him")
     rc.add_argument("--prep", type=Path, required=True)
     rc.add_argument("--section", default="", help="heading-text prefix (\"\" for passages naming the NPC)")

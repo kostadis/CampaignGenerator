@@ -8,7 +8,7 @@ from pathlib import Path
 
 import pytest
 
-from pipelines.npc_agent import agent, cli, corpus, prep, react, react_page
+from pipelines.npc_agent import agent, cli, corpus, leakcheck, prep, react, react_page
 
 CH51 = """# Chapter 51
 
@@ -378,3 +378,85 @@ def test_page_defaults_to_his_for_old_bundles(camp, tmp_path, fake):
     b.write_text(json.dumps(raw))
     assert cli._write_react_page(out, "Vizeran DeVir", "m")
     assert _page_data((out / "react.html").read_text())["possessive"] == "his"
+
+
+# ── --artifact ────────────────────────────────────────────────────────────
+
+ARTIFACT_GOOD = json.dumps({
+    "page": "The ink pools, then settles. Vizeran DeVir will answer for the tower; the third page is already warm.",
+    "purpose": "It wants the wielder to keep writing. The Secretword stays unsaid.",
+    "steps": [{"step": "Offer the north door.", "serves": "Keeping the wielder close."}, "Wait."]})
+
+
+@pytest.fixture
+def art(monkeypatch):
+    monkeypatch.setattr(agent, "play", lambda a, s, u: ARTIFACT_GOOD)
+
+
+def test_artifact_prompt_uses_its_own_system_and_headings():
+    system, user = agent.build_react_prompt("The Book", "SHEET", "REPORTS", "Find the heir.", "", "its", True)
+    assert system.startswith("You are The Book, an artifact in a tabletop campaign. You do not speak.")
+    assert '{"page": "what appears on your pages' in system and system.endswith("with 1 to 4 steps.")
+    assert user == ("## What you are\n\nSHEET\n\n## What has been written into you\n\nREPORTS\n\n"
+                    "## The objective written on your page\n\nFind the heir.\n")
+    assert agent.build_react_prompt("V", "S", "R", "q")[0] == agent.build_react_prompt("V", "S", "R", "q", "", "his", False)[0]
+
+
+def test_artifact_refusals(camp, tmp_path, fake, capsys):
+    rc, out = _react(camp, tmp_path, "--artifact")
+    assert rc == 2 and "--artifact requires --possessive its" in capsys.readouterr().err and not out.exists()
+    rc, out = _react(camp, tmp_path, "--artifact", "--possessive", "her")
+    assert rc == 2 and "--artifact requires --possessive its" in capsys.readouterr().err
+    rc, out = _react(camp, tmp_path, "--artifact", "--possessive", "its", "--witnessed", "051.02", reported=("051.01", "053.01"))
+    assert rc == 2 and "--witnessed" in capsys.readouterr().err and not out.exists()
+    assert fake == []
+
+
+def test_artifact_parse_maps_onto_reaction_fields():
+    got, ok = react.parse_reaction(ARTIFACT_GOOD, True)
+    assert ok and got.reaction.startswith("The ink pools") and got.assessment.startswith("It wants")
+    assert got.decisions == [react.Decision("Offer the north door.", "Keeping the wielder close."), react.Decision("Wait.", "")]
+    got, ok = react.parse_reaction('{"reaction": "Hm."}', True)  # wrong keys: kept raw
+    assert not ok and got.reaction == '{"reaction": "Hm."}'
+    got, ok = react.parse_reaction("The pages stay blank.", True)
+    assert not ok and got.reaction == "The pages stay blank." and got.decisions == []
+    got, ok = react.parse_reaction('{"page": "Ink."}', True)
+    assert ok and got.reaction == "Ink." and got.assessment == "" and got.decisions == []
+
+
+def test_artifact_run_records_flag_and_skips_secret_terms_for_purpose(camp, tmp_path, art):
+    rc, out = _react(camp, tmp_path, "--artifact", "--possessive", "its", "--secret-term", "Secretword", "--secret-term", "warm")
+    assert rc == 0
+    m = out / "m1"
+    assert "an artifact in a tabletop campaign" in (m / "prompt.system.md").read_text()
+    assert json.loads((m / "run.json").read_text())["artifact"] is True
+    b = json.loads((m / "bundle.json").read_text())
+    assert b["artifact"] is True and b["possessive"] == "its"
+    assert b["reaction"].startswith("The ink pools") and b["assessment"].startswith("It wants")
+    assert any(f["kind"] == leakcheck.KIND_SELF for f in b["reaction_flags"])
+    assert not any(f["kind"] == leakcheck.KIND_SELF for f in b["assessment_flags"])
+    b2 = json.loads((m / "bundle.json").read_text())
+    assert b2["decisions"][0]["decision"] == "Offer the north door."
+
+
+def test_artifact_secret_terms_still_apply_to_steps(camp, tmp_path, monkeypatch):
+    raw = json.dumps({"page": "Ink.", "purpose": "Secretword.", "steps": [{"step": "Say Secretword aloud.", "serves": "x"}]})
+    monkeypatch.setattr(agent, "play", lambda a, s, u: raw)
+    rc, out = _react(camp, tmp_path, "--artifact", "--possessive", "its", "--secret-term", "Secretword")
+    b = json.loads((out / "m1" / "bundle.json").read_text())
+    assert any(f["kind"] == leakcheck.KIND_SELF for f in b["decisions"][0]["flags"])
+    assert not any(f["kind"] == leakcheck.KIND_SELF for f in b["assessment_flags"])
+
+
+def test_artifact_page_labels_and_plain_page_unchanged(camp, tmp_path, art, fake):
+    rc, out = _react(camp, tmp_path, "--artifact", "--possessive", "its")
+    assert rc == 0
+    html = (out / "react.html").read_text()
+    assert _page_data(html)["moments"][0]["artifact"] is True
+    for label in ("What was written into", '"Its page"', "What it is really optimizing", '"Step "', '"Serves"',
+                  "What it writes on its pages for its wielder, and what it is really optimizing, from what was written into it.",
+                  "Would you let ' + OBJ + ' do this?"):
+        assert label in html, label
+    rc, out2 = _react(camp, tmp_path, out="plain")
+    assert "artifact" not in json.loads((out2 / "plain".replace("plain", "m1") / "bundle.json").read_text())
+    assert "artifact" not in _page_data((out2 / "react.html").read_text())["moments"][0]
