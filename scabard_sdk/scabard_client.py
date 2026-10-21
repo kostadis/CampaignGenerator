@@ -5,24 +5,55 @@ Wraps the Scabard REST API (https://www.scabard.com/api/v0).
 Only dependency: requests.
 
 Usage:
-    from scabard_client import ScabardClient, ScabardAuthError
+    from scabard_sdk import ScabardClient
 
     client = ScabardClient(username="you", access_key="your-key")
-    campaigns = client.list_campaigns()
+    for campaign in client.list_campaigns():
+        print(campaign.id, campaign.name)
 
-    ok, thing_id = client.create_page(
-        campaign_id=121,
-        concept="character",
-        name="Grundar Quartzvein",
+    thing_id = client.create_page(
+        121, "character", "Grundar Quartzvein",
         brief_summary="Dwarven blacksmith and reluctant informant.",
-        description="...",
-        secrets="Working for the Kraken Society.",
+        aliases=["Grundar"],
     )
+    client.update_page(121, "character", thing_id,
+                       secrets="Working for the Kraken Society.")
+    page = client.get_page(121, "character", thing_id)
 """
 
+from dataclasses import dataclass, field
+from datetime import datetime, timezone
 import time
 
 import requests
+
+# ── Concepts ──────────────────────────────────────────────────────────────────
+
+# The official concept list (API docs, "Concept (or Page Type)"). URLs use the
+# lowercase form; values in request and response bodies are Title Case.
+CONCEPTS = (
+    "character", "place", "group", "item", "event",
+    "vehicle", "category", "attribute", "note", "folder",
+)
+
+# Names used by older code and third-party docs that the API rejects with 404.
+_RENAMED_CONCEPTS = {"location": "place"}
+
+
+def normalize_concept(concept: str) -> str:
+    """Return the lowercase URL form of a concept, or raise ValueError."""
+    c = concept.strip().lower()
+    if c in CONCEPTS:
+        return c
+    if c in _RENAMED_CONCEPTS:
+        raise ValueError(
+            f"Unknown Scabard concept {concept!r}; the API calls it "
+            f"{_RENAMED_CONCEPTS[c]!r}."
+        )
+    raise ValueError(
+        f"Unknown Scabard concept {concept!r}; expected one of {', '.join(CONCEPTS)}."
+    )
+
 
 # ── Exceptions ────────────────────────────────────────────────────────────────
 
@@ -52,11 +83,98 @@ class ScabardRateLimitError(ScabardError):
     """429 — rate limit exhausted after all retries."""
 
 
+class ScabardRequestError(ScabardError):
+    """200 with ``isSuccess: false`` — the API refused the write.
+
+    The API gives no reason. ``response`` holds the full response body.
+    """
+
+    def __init__(self, message: str, response: dict) -> None:
+        super().__init__(message, status_code=200, detail=str(response))
+        self.response = response
+
+
+# ── Data types ────────────────────────────────────────────────────────────────
+
+
+@dataclass(frozen=True)
+class PageRef:
+    """Identifies one page: ``/campaign/{campaign_id}/{concept}/{thing_id}``."""
+
+    campaign_id: int
+    concept: str
+    thing_id: int
+
+    @classmethod
+    def from_uri(cls, uri: str) -> "PageRef":
+        parts = uri.strip("/").split("/")
+        if len(parts) != 4 or parts[0] != "campaign":
+            raise ValueError(f"Not a Scabard page uri: {uri!r}")
+        return cls(int(parts[1]), parts[2].lower(), int(parts[3]))
+
+    @property
+    def uri(self) -> str:
+        return f"/campaign/{self.campaign_id}/{self.concept}/{self.thing_id}"
+
+
+@dataclass(frozen=True)
+class Campaign:
+    id: int
+    name: str
+    raw: dict = field(repr=False, compare=False)
+
+
+@dataclass(frozen=True)
+class Connection:
+    """One edge from a page, as listed in the page's ``conns``.
+
+    The read side carries no ``relId``; edges are identified by
+    ``(rel, target)``.
+    """
+
+    rel: str            # e.g. "Acquaintance of"
+    explicit: str       # e.g. "Is Acquaintance of"
+    target: PageRef
+    target_name: str
+    is_secret: bool
+
+
+@dataclass
+class Page:
+    ref: PageRef
+    name: str
+    brief_summary: str
+    description: str
+    secrets: str
+    gm_secrets: str
+    is_secret: bool
+    aliases: list[str]
+    last_edited: datetime | None
+    connections: list[Connection]
+    raw: dict = field(repr=False)
+
+
+def parse_aliases(value: str | None) -> list[str]:
+    """Split the API's comma-separated alias string into names."""
+    return [a.strip() for a in (value or "").split(",") if a.strip()]
+
+
+def _format_aliases(aliases: list[str]) -> str:
+    for a in aliases:
+        if "," in a:
+            raise ValueError(f"Alias {a!r} contains a comma; the API separates aliases with commas.")
+    return ", ".join(a.strip() for a in aliases if a.strip())
+
+
 # ── Client ────────────────────────────────────────────────────────────────────
 
 
 class ScabardClient:
     """Client for the Scabard API (https://www.scabard.com/api/v0).
+
+    Every method that takes a ``concept`` validates it against ``CONCEPTS``
+    and raises ValueError for anything else (including the old ``location``).
+    Writes raise ScabardRequestError when the API answers ``isSuccess: false``.
 
     Args:
         username:   Your Scabard username.
@@ -107,38 +225,25 @@ class ScabardClient:
             )
         resp.raise_for_status()
 
-    def _get(self, url: str) -> dict:
-        last_exc: Exception | None = None
-        for attempt in range(4):
-            resp = requests.get(url, headers=self._headers(), timeout=self._timeout)
-            if resp.status_code == 429:
-                wait = 5 * (2 ** attempt)
-                time.sleep(wait)
-                last_exc = ScabardRateLimitError(
-                    "Rate limit exceeded.",
-                    status_code=429,
-                    detail=resp.text,
-                )
-                continue
-            self._raise_for_status(resp)
-            return resp.json()
-        raise last_exc or ScabardRateLimitError("Rate limit exceeded after 4 retries.",
-                                                status_code=429)
-
-    def _post(self, url: str, payload: dict) -> dict:
-        """POST with exponential-backoff retry on 429 (rate limited).
+    def _request(self, method: str, url: str, payload: dict | None = None) -> dict:
+        """Send a request with exponential-backoff retry on 429.
 
         Attempts: 4 total. Wait schedule: 5s, 10s, 20s, 40s.
         Raises ScabardRateLimitError if all attempts are exhausted.
+
+        Bodies are always JSON: the live API rejects the form-encoded bodies
+        its docs show (``/connect`` answers ``isSuccess: false``; page saves
+        answer 500).
         """
-        headers = {**self._headers(), "content-type": "application/json"}
+        headers = self._headers()
+        if payload is not None:
+            headers["content-type"] = "application/json"
         last_exc: Exception | None = None
         for attempt in range(4):
-            resp = requests.post(url, headers=headers, json=payload,
-                                 timeout=self._timeout)
+            resp = requests.request(method, url, headers=headers, json=payload,
+                                    timeout=self._timeout)
             if resp.status_code == 429:
-                wait = 5 * (2 ** attempt)
-                time.sleep(wait)
+                time.sleep(5 * (2 ** attempt))
                 last_exc = ScabardRateLimitError(
                     "Rate limit exceeded.",
                     status_code=429,
@@ -150,232 +255,197 @@ class ScabardClient:
         raise last_exc or ScabardRateLimitError("Rate limit exceeded after 4 retries.",
                                                 status_code=429)
 
+    def _get(self, url: str) -> dict:
+        return self._request("GET", url)
+
+    def _post(self, url: str, payload: dict) -> dict:
+        """POST a write and raise ScabardRequestError on ``isSuccess: false``."""
+        result = self._request("POST", url, payload)
+        if not result.get("isSuccess", False):
+            raise ScabardRequestError(f"Scabard rejected the write to {url}", result)
+        return result
+
+    def _page_url(self, campaign_id: int, concept: str, thing_id: int | None = None) -> str:
+        url = f"{self.BASE_URL}/campaign/{campaign_id}/{normalize_concept(concept)}"
+        return url if thing_id is None else f"{url}/{thing_id}"
+
     # ── Campaign endpoints ────────────────────────────────────────────────────
 
-    def list_campaigns(self) -> list[dict]:
-        """Return a list of all campaigns the user is GM of.
-
-        Returns:
-            List of campaign summary dicts (id, name, etc.).
-        """
+    def list_campaigns(self) -> list[Campaign]:
+        """Return every campaign the user is GM of."""
         data = self._get(f"{self.BASE_URL}/campaign")
-        return data.get("rows", [])
+        campaigns = []
+        for row in data.get("rows", []):
+            uri = row.get("uri", "")
+            try:
+                campaign_id = int(uri.rstrip("/").rsplit("/", 1)[-1])
+            except ValueError:
+                continue
+            campaigns.append(Campaign(id=campaign_id, name=row.get("name", ""), raw=row))
+        return campaigns
 
     def get_campaign(self, campaign_id: int) -> dict:
-        """Return details for one campaign plus a summary of every page in it.
+        """Return the raw campaign response.
 
-        Returns:
-            Dict with keys:
-              "main" — campaign details dict
-              "rows" — list of page summary dicts
+        Keys: ``main`` (campaign details) and ``rows`` (a summary of every
+        page, each with ``name``, ``concept``, ``uri``, ``aliases``,
+        ``briefSummary``, ``isSecret``).
         """
         return self._get(f"{self.BASE_URL}/campaign/{campaign_id}")
 
     # ── Page endpoints ────────────────────────────────────────────────────────
 
     def list_pages(self, campaign_id: int, concept: str) -> list[dict]:
-        """Return all pages of a given concept in the campaign.
-
-        Args:
-            campaign_id: Campaign ID.
-            concept:     Page type — "character", "group", "location",
-                         "event", etc. Must be lowercase.
-
-        Returns:
-            List of page summary dicts.
-        """
-        data = self._get(f"{self.BASE_URL}/campaign/{campaign_id}/{concept}")
-        return data.get("rows", [])
-
-    def get_page(self, campaign_id: int, concept: str, thing_id: int) -> dict:
-        """Return details for a specific page.
-
-        Args:
-            campaign_id: Campaign ID.
-            concept:     Page concept (lowercase).
-            thing_id:    Page ID.
-
-        Returns:
-            Page detail dict (under "main" in the raw API response).
-        """
-        data = self._get(
-            f"{self.BASE_URL}/campaign/{campaign_id}/{concept}/{thing_id}"
-        )
-        return data.get("main", data)
+        """Return the summary rows for every page of a concept."""
+        return self._get(self._page_url(campaign_id, concept)).get("rows", [])
 
     def fetch_existing(self, campaign_id: int, concept: str) -> dict[str, int]:
-        """Return a name → thing_id mapping for all existing pages of a concept.
-
-        Useful for checking whether a page already exists before creating one.
-
-        Args:
-            campaign_id: Campaign ID.
-            concept:     Page concept (lowercase).
-
-        Returns:
-            Dict mapping page name (str) to page ID (int).
-        """
-        rows = self.list_pages(campaign_id, concept)
+        """Return a name → thing_id mapping for every page of a concept."""
         result: dict[str, int] = {}
-        for row in rows:
-            name = row.get("name")
-            uri = row.get("uri", "")
+        for row in self.list_pages(campaign_id, concept):
+            name, uri = row.get("name"), row.get("uri", "")
             if not name or not uri:
                 continue
             try:
-                # uri is like /campaign/{id}/{concept}/{thing_id}
-                thing_id = int(uri.rstrip("/").rsplit("/", 1)[-1])
-                result[name] = thing_id
-            except (ValueError, IndexError):
+                result[name] = PageRef.from_uri(uri).thing_id
+            except ValueError:
                 pass
         return result
+
+    def get_page(self, campaign_id: int, concept: str, thing_id: int) -> Page:
+        """Return one page, including its connections."""
+        data = self._get(self._page_url(campaign_id, concept, thing_id))
+        main = data.get("main", {})
+        connections = []
+        for c in data.get("conns", []):
+            try:
+                target = PageRef.from_uri(c.get("uri", ""))
+            except ValueError:
+                continue
+            connections.append(Connection(
+                rel=c.get("rel", ""),
+                explicit=c.get("explicit", ""),
+                target=target,
+                target_name=c.get("name", ""),
+                is_secret=bool(c.get("isSecret", False)),
+            ))
+        edited_ms = main.get("dateLastEditedUnix")
+        return Page(
+            ref=PageRef(campaign_id, normalize_concept(concept), thing_id),
+            name=main.get("name", ""),
+            brief_summary=main.get("briefSummary", ""),
+            # rawDescription is the stored text; description has matched it on
+            # every page sampled, but raw is the one to write back.
+            description=main.get("rawDescription", main.get("description", "")),
+            secrets=main.get("secrets", ""),
+            gm_secrets=main.get("gmSecrets", ""),
+            is_secret=bool(main.get("isSecret", False)),
+            aliases=parse_aliases(main.get("aliases")),
+            last_edited=(datetime.fromtimestamp(edited_ms / 1000, tz=timezone.utc)
+                         if edited_ms else None),
+            connections=connections,
+            raw=data,
+        )
+
+    @staticmethod
+    def _page_payload(concept: str, name: str, brief_summary: str, description: str,
+                      secrets: str, gm_secrets: str, is_secret: bool,
+                      aliases: list[str]) -> dict:
+        return {
+            "name": name,
+            "briefSummary": brief_summary,
+            "description": description,
+            "secrets": secrets,
+            "gmSecrets": gm_secrets,
+            "isSecret": "true" if is_secret else "false",
+            "aliases": _format_aliases(aliases),
+            # URL uses lowercase concept; body field requires title case
+            "concept": normalize_concept(concept).title(),
+        }
 
     def create_page(
         self,
         campaign_id: int,
         concept: str,
         name: str,
+        *,
         brief_summary: str = "",
         description: str = "",
         secrets: str = "",
         gm_secrets: str = "",
         is_secret: bool = False,
-        aliases: str | None = None,
-    ) -> tuple[bool, int | None]:
-        """Create a new page in the campaign.
+        aliases: list[str] = (),
+    ) -> int | None:
+        """Create a page and return its thing_id.
 
-        Because the Scabard API does not return the new page's ID in the
-        create response, this method re-fetches the page list after a
-        successful create to discover it.
+        The create response carries no id, so this re-fetches the page list
+        and matches by name. Returns None if the new page could not be found
+        (e.g. a second page already has the same name).
 
-        Args:
-            campaign_id:   Campaign ID.
-            concept:       Page concept (lowercase): "character", "group",
-                           "location", "event", etc.
-            name:          Page name (must be unique within the concept).
-            brief_summary: Short player-facing summary (1-2 sentences).
-            description:   Full player-facing markdown body.
-            secrets:       GM-only text hidden from players.
-            gm_secrets:    Additional GM-only notes.
-            is_secret:     Whether to mark the page as secret.
-            aliases:       Comma-separated alternate names (e.g.
-                           "Milky, The Milk"). None leaves the field out.
-
-        Returns:
-            (True, thing_id)  — created; thing_id is the new page's ID.
-            (True, None)      — created but ID could not be discovered.
-            (False, None)     — API reported isSuccess=False.
+        Note: the API collapses newlines in text fields to spaces, so
+        Markdown structure in ``description`` does not survive.
         """
-        payload = {
-            "name": name,
-            "briefSummary": brief_summary,
-            "description": description,
-            "secrets": secrets,
-            "gmSecrets": gm_secrets,
-            "isSecret": "true" if is_secret else "false",
-            # URL uses lowercase concept; body field requires title case
-            "concept": concept.title(),
-        }
-        if aliases is not None:
-            payload["aliases"] = aliases
-        result = self._post(
-            f"{self.BASE_URL}/campaign/{campaign_id}/{concept}", payload
-        )
-        if not result.get("isSuccess", False):
-            return False, None
-
-        # The API does not return the new page's ID — re-fetch the list to
-        # discover it. A brief pause avoids a race where the page isn't yet
-        # visible in the list endpoint.
+        payload = self._page_payload(concept, name, brief_summary, description,
+                                     secrets, gm_secrets, is_secret, list(aliases))
+        self._post(self._page_url(campaign_id, concept), payload)
+        # A brief pause avoids a race where the page isn't yet in the list.
         time.sleep(1)
-        existing = self.fetch_existing(campaign_id, concept)
-        return True, existing.get(name)
+        return self.fetch_existing(campaign_id, concept).get(name)
 
     def update_page(
         self,
         campaign_id: int,
         concept: str,
         thing_id: int,
-        name: str,
-        brief_summary: str = "",
-        description: str = "",
-        secrets: str = "",
-        gm_secrets: str = "",
-        is_secret: bool = False,
-        aliases: str | None = None,
-    ) -> bool:
-        """Update an existing page.
+        *,
+        name: str | None = None,
+        brief_summary: str | None = None,
+        description: str | None = None,
+        secrets: str | None = None,
+        gm_secrets: str | None = None,
+        is_secret: bool | None = None,
+        aliases: list[str] | None = None,
+    ) -> Page:
+        """Change only the fields you pass; keep every other field as it is.
 
-        Args:
-            campaign_id:   Campaign ID.
-            concept:       Page concept (lowercase).
-            thing_id:      Page ID to update.
-            name:          Page name.
-            brief_summary: Short player-facing summary.
-            description:   Full player-facing markdown body.
-            secrets:       GM-only text.
-            gm_secrets:    Additional GM-only notes.
-            is_secret:     Whether to mark the page as secret.
-            aliases:       Comma-separated alternate names. None leaves the
-                           field out of the request, and the server keeps
-                           the page's existing aliases (verified live
-                           2026-10-21); "" clears them.
+        Reads the page, overlays the given fields, and saves the whole page,
+        so the result does not depend on how the server treats a missing
+        field. Pass ``""`` (or ``[]`` for aliases) to clear a field.
 
-        Returns:
-            True if the API reported isSuccess=True, False otherwise.
+        Returns the page as saved: the page that was read, with the changes
+        applied. It is not re-read from the server.
         """
-        payload = {
-            "name": name,
-            "briefSummary": brief_summary,
-            "description": description,
-            "secrets": secrets,
-            "gmSecrets": gm_secrets,
-            "isSecret": "true" if is_secret else "false",
-            # URL uses lowercase concept; body field requires title case
-            "concept": concept.title(),
+        page = self.get_page(campaign_id, concept, thing_id)
+        changes = {
+            "name": name, "brief_summary": brief_summary, "description": description,
+            "secrets": secrets, "gm_secrets": gm_secrets, "is_secret": is_secret,
+            "aliases": aliases,
         }
-        if aliases is not None:
-            payload["aliases"] = aliases
-        result = self._post(
-            f"{self.BASE_URL}/campaign/{campaign_id}/{concept}/{thing_id}",
-            payload,
-        )
-        return bool(result.get("isSuccess", False))
+        for attr, value in changes.items():
+            if value is not None:
+                setattr(page, attr, list(value) if attr == "aliases" else value)
+        payload = self._page_payload(concept, page.name, page.brief_summary,
+                                     page.description, page.secrets, page.gm_secrets,
+                                     page.is_secret, page.aliases)
+        self._post(self._page_url(campaign_id, concept, thing_id), payload)
+        return page
 
-    # ── Connection-type endpoints ─────────────────────────────────────────────
+    # ── Connection endpoints ──────────────────────────────────────────────────
 
     def list_connection_types(self, concept: str) -> list[dict]:
-        """Return the catalog of valid connection types for a concept.
+        """Return the catalog of connection types whose source is ``concept``.
 
-        Connection types are shared across all campaigns — the URL has no
-        campaign_id. Each entry describes a directed relationship from a
-        source concept to a target concept. Every entry returned by the
-        live API (226 sampled across character/place/event/group) included
-        ``isSymmetric``; the docs example shows it omitted on some entries,
-        so callers should treat a missing key as False defensively.
-
-        ``source`` matches the URL concept on every live entry observed
-        (e.g. ``/conntypes/character`` returns only entries with
-        ``source: "Character"``).
-
-        Args:
-            concept: Source concept (lowercase): "character", "group",
-                     "place", "event", etc.
-
-        Returns:
-            List of connection-type dicts with keys:
-              "rel"         — relationship label (e.g. "Acquaintance of")
-              "source"      — source concept, Title Case (matches URL concept)
-              "target"      — target concept, Title Case ("Event", "Place", ...)
-              "isSymmetric" — bool; treat missing as False (defensive)
-              "postParam"   — undocumented; e.g. "acquaintance_of:character".
-                              Looks like the parameter token a future
-                              connection-CRUD endpoint would accept. Not used
-                              by the SDK; surfaced here for callers who want
-                              to experiment.
+        Shared across all campaigns (no campaign_id in the URL). Each entry
+        has ``rel``, ``source``, ``target`` (Title Case), ``isSymmetric`` and
+        ``postParam`` — the key ``create_connections`` takes, formatted
+        ``{snake_rel}:{lowercase_target}`` (e.g. ``"mother_of:character"``).
         """
-        data = self._get(f"{self.BASE_URL}/campaign/conntypes/{concept}")
+        data = self._get(f"{self.BASE_URL}/campaign/conntypes/{normalize_concept(concept)}")
         return data.get("connTypes", [])
+
+    def list_connections(self, campaign_id: int, concept: str, thing_id: int) -> list[Connection]:
+        """Return a page's existing connections (from the page's ``conns``)."""
+        return self.get_page(campaign_id, concept, thing_id).connections
 
     def create_connections(
         self,
@@ -383,55 +453,22 @@ class ScabardClient:
         concept: str,
         thing_id: int,
         connections: dict[str, str],
-    ) -> tuple[bool, dict[str, dict]]:
+    ) -> dict[str, dict]:
         """Create one or more connections from a page to other pages by name.
 
-        Posts to ``/campaign/{id}/{concept}/{thing_id}/connect``. Targets are
-        resolved server-side by exact name match — the value of each entry
-        in ``connections`` is the target page's name, not its thing_id. The
-        endpoint accepts multiple connections in a single call.
-
         Args:
-            campaign_id: Campaign ID.
-            concept:     Source page concept (lowercase) — e.g. "character".
-            thing_id:    Source page ID.
-            connections: Mapping of ``{postParam: target_page_name}``. The
-                         postParam strings come from
-                         ``list_connection_types(concept)`` and look like
-                         ``"mother_of:character"`` or ``"home:place"``.
-                         Multiple entries OK; all are sent in one request.
+            connections: ``{postParam: target_page_name}``. postParams come
+                         from ``list_connection_types(concept)``. Targets are
+                         resolved server-side by exact name and must exist.
 
         Returns:
-            ``(isSuccess, {postParam: connection_record})``. Each record is
-            the raw API dict and contains:
+            ``{postParam: record}``; each record has ``relId``, ``uri``,
+            ``value`` (the resolved target name), ``isFormer``, ``isSecret``.
 
-              * ``relId``    — int connection ID (use to identify the edge)
-              * ``uri``      — path to the target page
-              * ``value``    — the resolved target page name
-              * ``isFormer`` — bool (always False on a fresh create)
-              * ``isSecret`` — bool (always False on a fresh create; the
-                               request shape for setting it is not documented)
-
-        Notes:
-            * Despite the official docs showing ``-d key=value`` form pairs,
-              the live endpoint only accepts a JSON body — form-encoded
-              requests return ``200 {"isSuccess": false}`` silently. The SDK
-              sends JSON (verified empirically 2026-05-10).
-            * The body's ``concept`` field is Title-cased automatically, same
-              convention as ``create_page`` / ``update_page``.
-            * The API does not (yet) expose update / delete / list-existing
-              connection endpoints. The returned ``relId`` is the only handle
-              for an edge, so callers wanting to track edges should persist
-              the response.
+        The API has no update or delete for connections, and posting the same
+        connection twice is not known to be idempotent: check
+        ``list_connections`` first.
         """
-        payload: dict = {"concept": concept.title(), **connections}
-        result = self._post(
-            f"{self.BASE_URL}/campaign/{campaign_id}/{concept}/{thing_id}/connect",
-            payload,
-        )
-        ok = bool(result.get("isSuccess", False))
-        records = {
-            k: v for k, v in result.items()
-            if k != "isSuccess" and isinstance(v, dict)
-        }
-        return ok, records
+        payload: dict = {"concept": normalize_concept(concept).title(), **connections}
+        result = self._post(f"{self._page_url(campaign_id, concept, thing_id)}/connect", payload)
+        return {k: v for k, v in result.items() if k != "isSuccess" and isinstance(v, dict)}

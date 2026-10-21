@@ -1,17 +1,33 @@
 from .scabard_client import (
+    CONCEPTS,
+    Campaign,
+    Connection,
+    Page,
+    PageRef,
     ScabardClient,
     ScabardError,
     ScabardAuthError,
     ScabardForbiddenError,
     ScabardNotFoundError,
     ScabardRateLimitError,
+    ScabardRequestError,
+    normalize_concept,
+    parse_aliases,
 )
 
 __all__ = [
+    "CONCEPTS",
+    "Campaign",
+    "Connection",
+    "Page",
+    "PageRef",
     "ScabardClient",
     "ScabardError",
     "ScabardAuthError",
     "ScabardForbiddenError",
     "ScabardNotFoundError",
     "ScabardRateLimitError",
+    "ScabardRequestError",
+    "normalize_concept",
+    "parse_aliases",
 ]
