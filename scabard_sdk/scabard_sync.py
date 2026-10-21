@@ -3,8 +3,16 @@
 
 Two passes:
   1. Extract — Claude parses world_state, campaign_state, and party docs and
-     produces a JSON list of entities (character, group, location, event).
+     produces a JSON list of entities (character, group, place, event).
   2. Sync — creates or updates Scabard pages via the API.
+
+An entity may carry an optional "aliases" list. The extractor never fills it
+(names are a precision decision); add aliases by hand to the extract file, or
+build it from a reviewed source, before running --from-extract. Entities
+without the key leave a page's existing aliases alone.
+
+Extract files and manifests from before the API rename may say "location";
+the sync reads that as "place".
 
 A local manifest (scabard_manifest.json in the campaign dir) tracks
 name → thing_id mappings so re-runs update rather than duplicate pages.
@@ -37,7 +45,7 @@ from pathlib import Path
 
 from campaignlib import add_backend_args, client_from_args, run_single_batch, stream_api, DEFAULT_MODEL
 from campaignlib.api.client import resolve_cli_model
-from . import ScabardAuthError, ScabardClient, ScabardRateLimitError
+from . import ScabardAuthError, ScabardClient, ScabardRateLimitError, ScabardRequestError
 
 EXTRACT_SYSTEM = """\
 You are a structured data extractor for a D&D campaign world-building tool.
@@ -45,7 +53,7 @@ You will be given campaign documents: world state, campaign state, and party ros
 Extract every named entity into a JSON array.
 
 Each entry must have these fields:
-  "concept"      – one of: "character", "group", "location", "event"
+  "concept"      – one of: "character", "group", "place", "event"
   "name"         – the entity's canonical name
   "briefSummary" – 1-2 sentence player-facing summary (no GM secrets)
   "description"  – full player-facing markdown: current state, relationships, history
@@ -55,7 +63,7 @@ Each entry must have these fields:
 Concept rules:
   character – named NPCs and player characters
   group     – factions, guilds, cults, organisations, armies
-  location  – named places: cities, dungeons, keeps, taverns, regions
+  place     – named places: cities, dungeons, keeps, taverns, regions
   event     – completed or significant campaign events (battles, discoveries, deaths)
 
 Rules:
@@ -66,7 +74,20 @@ Rules:
   - Output valid JSON only — a bare array, no markdown fences, no commentary.
 """
 
-CONCEPTS = ["character", "group", "location", "event"]
+CONCEPTS = ["character", "group", "place", "event"]
+
+# Concept names from older extract files and manifests → the API's names.
+LEGACY_CONCEPTS = {"location": "place"}
+
+
+def _migrate_manifest(manifest: dict) -> dict:
+    """Fold legacy concept keys (e.g. "location") into their API names."""
+    for old, new in LEGACY_CONCEPTS.items():
+        if old in manifest:
+            merged = manifest.pop(old)
+            merged.update(manifest.get(new, {}))
+            manifest[new] = merged
+    return manifest
 
 
 # ── Extraction ────────────────────────────────────────────────────────────────
@@ -120,10 +141,12 @@ def sync_entities(entities: list[dict], campaign_id: int, username: str,
                   access_key: str, manifest: dict, manifest_path: Path,
                   dry_run: bool) -> dict:
     client = ScabardClient(username=username, access_key=access_key)
+    _migrate_manifest(manifest)
 
     by_concept: dict[str, list[dict]] = {}
     for e in entities:
         concept = e.get("concept", "").lower()
+        concept = LEGACY_CONCEPTS.get(concept, concept)
         if concept not in CONCEPTS:
             print(f"  Skipping unknown concept '{concept}' for: {e.get('name')}")
             continue
@@ -149,34 +172,42 @@ def sync_entities(entities: list[dict], campaign_id: int, username: str,
             if not name:
                 continue
 
-            kwargs = dict(
-                campaign_id=campaign_id,
-                concept=concept,
-                name=name,
+            fields = dict(
                 brief_summary=item.get("briefSummary", ""),
                 description=item.get("description", ""),
                 secrets=item.get("secrets", ""),
             )
+            aliases = item.get("aliases")
+            if isinstance(aliases, str):
+                aliases = [a.strip() for a in aliases.split(",") if a.strip()]
 
             if name in manifest[concept]:
                 thing_id = manifest[concept][name]
                 action = f"Update (id={thing_id})"
                 if not dry_run:
-                    ok = client.update_page(thing_id=thing_id, **kwargs)
-                    action += " ✓" if ok else " FAILED"
+                    try:
+                        # gm_secrets, is_secret and (when absent) aliases
+                        # keep whatever the page already has.
+                        client.update_page(campaign_id, concept, thing_id, name=name,
+                                           aliases=aliases, **fields)
+                        action += " ✓"
+                    except ScabardRequestError:
+                        action += " FAILED"
             else:
                 action = "Create"
                 if not dry_run:
-                    ok, thing_id = client.create_page(**kwargs)
-                    if ok:
+                    try:
+                        thing_id = client.create_page(campaign_id, concept, name,
+                                                      aliases=aliases or [], **fields)
+                    except ScabardRequestError:
+                        action += " FAILED"
+                    else:
                         if thing_id:
                             manifest[concept][name] = thing_id
                             action += f" → id={thing_id} ✓"
                         else:
                             action += " ✓ (id unknown)"
                         save_manifest(manifest_path, manifest)
-                    else:
-                        action += " FAILED"
 
             print(f"  [{action}] {name}")
             if not dry_run:

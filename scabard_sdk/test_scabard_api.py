@@ -12,7 +12,7 @@ Usage:
         --campaign-id 121
 
     # Use a specific concept (default: character):
-    python test_scabard_api.py ... --concept location
+    python test_scabard_api.py ... --concept place
 
     # Leave test page untouched for debugging:
     python test_scabard_api.py ... --keep
@@ -172,15 +172,13 @@ def main() -> None:
     # create_page — all subsequent tests depend on this
     def test_create_page():
         nonlocal created_thing_id
-        ok, thing_id = client.create_page(
-            campaign_id=args.campaign_id,
-            concept=args.concept,
-            name=test_page_name,
+        thing_id = client.create_page(
+            args.campaign_id, args.concept, test_page_name,
             brief_summary="Temporary test page created by test_scabard_api.py.",
             description=f"Created at {ts}. Safe to delete.",
             secrets="GM-only test secret.",
+            aliases=["SDK Alias One", "SDK Alias Two"],
         )
-        assert_true("create_page() returns True", ok)
         # If the re-fetch didn't find the ID (timing), do a manual fallback lookup
         if thing_id is None:
             existing = client.fetch_existing(args.campaign_id, args.concept)
@@ -203,8 +201,9 @@ def main() -> None:
     else:
         def test_get_created_page():
             page = client.get_page(args.campaign_id, args.concept, created_thing_id)
-            assert_true("get_page() returns a dict", isinstance(page, dict))
-            assert_eq("page name matches", page.get("name"), test_page_name)
+            assert_eq("page name matches", page.name, test_page_name)
+            assert_eq("aliases round-trip", page.aliases, ["SDK Alias One", "SDK Alias Two"])
+            assert_eq("secrets stored", page.secrets, "GM-only test secret.")
 
         def test_created_page_in_list():
             existing = client.fetch_existing(args.campaign_id, args.concept)
@@ -212,20 +211,18 @@ def main() -> None:
             assert_in("created thing_id in list_pages()", created_thing_id, ids)
 
         def test_update_page():
-            ok = client.update_page(
-                campaign_id=args.campaign_id,
-                concept=args.concept,
-                thing_id=created_thing_id,
+            # Partial update: secrets and aliases are not passed and must survive.
+            client.update_page(
+                args.campaign_id, args.concept, created_thing_id,
                 name=test_page_name_updated,
                 brief_summary="Updated by test_scabard_api.py.",
-                description=f"Updated at {ts}.",
-                secrets="Updated GM secret.",
             )
-            assert_true("update_page() returns True", ok)
 
         def test_get_updated_page():
             page = client.get_page(args.campaign_id, args.concept, created_thing_id)
-            assert_eq("page name reflects update", page.get("name"), test_page_name_updated)
+            assert_eq("page name reflects update", page.name, test_page_name_updated)
+            assert_eq("untouched secrets kept", page.secrets, "GM-only test secret.")
+            assert_eq("untouched aliases kept", page.aliases, ["SDK Alias One", "SDK Alias Two"])
 
         def test_fetch_existing():
             existing = client.fetch_existing(args.campaign_id, args.concept)
@@ -249,14 +246,11 @@ def main() -> None:
     else:
         def test_create_target_page():
             nonlocal created_target_thing_id
-            ok, thing_id = client.create_page(
-                campaign_id=args.campaign_id,
-                concept=args.concept,
-                name=test_target_page_name,
+            thing_id = client.create_page(
+                args.campaign_id, args.concept, test_target_page_name,
                 brief_summary="Temporary target page for create_connections test.",
                 description=f"Created at {ts}. Safe to delete.",
             )
-            assert_true("create_page() returns True for target", ok)
             if thing_id is None:
                 existing = client.fetch_existing(args.campaign_id, args.concept)
                 thing_id = existing.get(test_target_page_name)
@@ -290,13 +284,10 @@ def main() -> None:
                 post_param = chosen["postParam"]
                 rel_label = chosen.get("rel", "?")
 
-                ok, records = client.create_connections(
-                    campaign_id=args.campaign_id,
-                    concept=args.concept,
-                    thing_id=created_thing_id,
-                    connections={post_param: test_target_page_name},
+                records = client.create_connections(
+                    args.campaign_id, args.concept, created_thing_id,
+                    {post_param: test_target_page_name},
                 )
-                assert_true("create_connections() reports isSuccess=True", ok)
                 assert_in("response contains chosen postParam",
                           post_param, records)
                 record = records[post_param]
@@ -309,6 +300,12 @@ def main() -> None:
                             isinstance(uri, str) and len(uri) > 0)
                 print(f"         ({title_concept} —[{rel_label}]→ "
                       f"{title_concept}, relId={rel_id})")
+
+                conns = client.list_connections(args.campaign_id, args.concept,
+                                                created_thing_id)
+                assert_true("list_connections() shows the new edge", any(
+                    c.rel == rel_label and c.target.thing_id == created_target_thing_id
+                    for c in conns))
 
             run_test("create_connection_between_test_pages",
                      test_create_connection)
@@ -336,20 +333,17 @@ def main() -> None:
     else:
         def test_cleanup():
             for role, tid, pname in cleanup_targets:
-                ok = client.update_page(
-                    campaign_id=args.campaign_id,
-                    concept=args.concept,
-                    thing_id=tid,
+                client.update_page(
+                    args.campaign_id, args.concept, tid,
                     name=pname,
                     brief_summary="[TEST PAGE - SAFE TO DELETE]",
                     description=(
                         f"This page was created by `test_scabard_api.py` on "
                         f"{ts} as part of SDK integration testing "
-                        f"({role} page).\n\n"
-                        f"It is safe to delete."
+                        f"({role} page). It is safe to delete."
                     ),
+                    secrets="", aliases=[],
                 )
-                assert_true(f"cleanup update_page() for {role} returns True", ok)
 
         if run_test("cleanup_mark_test_pages", test_cleanup):
             for role, tid, _ in cleanup_targets:
