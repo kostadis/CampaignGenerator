@@ -600,8 +600,8 @@ Smoothhands, the svirfneblin god, in disguise. The GM decided that very early.
 knucklebone, "I always remember… every last one", staying "to keep the rest of
 you breathing") where the as-played version is a cheerful bookie. The GM: "very
 compelling… I didn't see anything that was off… at first blush, the agent
-successfully worked out." The GM did not score every turn, so this is a first
-impression, not a measured score.
+successfully worked out." True-self page: 11 of 21 turns scored, all 11 "same"; the
+rest left unscored because nothing looked off.
 
 ## Non-goals
 

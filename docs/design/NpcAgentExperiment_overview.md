@@ -213,8 +213,8 @@ disguise. The GM decided this very early.
   - The as-played version is a cheerful bookie.
 - **The GM's verdict:** "the way he was played by the agent was very compelling… I
   didn't see anything that was off. At first blush, the agent successfully worked
-  out." The GM did not score every turn, so this is a first impression, not a
-  measured score.
+  out." Scored on the true-self page: **11 of 21 turns, all 11 "same"**, none partly
+  or different; the GM left the rest unscored because nothing looked off.
 
 ## 5. Lessons so far
 
