@@ -1,0 +1,687 @@
+% Draft for arXiv (cs.CL / cs.AI / cs.HC). Compile: pdflatex main && pdflatex main
+% DRAFT — numbers are from the prototype runs of 2026-10-21 to 2026-10-23 (CampaignGenerator
+% pipelines/npc_agent; runs saved in the GM's private campaign repository under
+% Phandalin/notes/npc_agent/). Agent outputs are quoted verbatim. GM prep is quoted only where
+% an agent's critique is about a specific line. Fill the TODOs before submission.
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage[hidelinks]{hyperref}
+\usepackage{natbib}
+
+\newcommand{\todo}[1]{\textcolor{red}{[TODO: #1]}}
+\newcommand{\code}[1]{\texttt{#1}}
+
+\title{The Antagonist Reviews the Prep:\\
+Grounded Language-Model NPCs as Critics of a Game Master's Plans}
+
+\author{Kostadis Roussos\thanks{\todo{affiliation, contact}}}
+
+\date{Draft, October 2026}
+
+\begin{document}
+\maketitle
+
+\todo{Spoilers: this draft reveals unplayed plans for a running campaign (an antagonist's
+planned death, her clone and an artifact's hidden purpose). Decide whether to keep them,
+generalise them or redact them before any public posting.}
+
+\begin{abstract}
+A game master (GM) running a long tabletop campaign writes plans for characters the
+players have not yet met again. Those plans are hard to check: the GM knows everything,
+and the character knows only some of it. We ask whether a language-model agent, given
+exactly what one non-player character (NPC) could know at a point in the campaign, can
+act as a \emph{critic} of the GM's plans for that character.
+
+We report a case study on one antagonist in a 59-session campaign: a drow poisoner who
+was on screen at one dungeon, escaped, and has since acted only at a distance. She is
+secretly using her employer's masterwork, a book that answers objectives, and in the GM's
+canon the book is using her. Building on earlier work on knowledge horizons for NPC
+agents, we add three things:
+\begin{itemize}[nosep]
+\item a knowledge construction for a \emph{partly present} character, in which some scenes
+are witnessed, some are reported through a named channel, and some beats of a reported
+scene are withheld because the channel could not have carried them;
+\item an \emph{artifact} mode for a character that does not speak: its wielder writes an
+objective, and it returns a page she reads and a purpose she does not see;
+\item a three-part \emph{prep-review} protocol: \emph{predict} what the character does,
+\emph{critique} the move the prep assumes, and \emph{fix} what the prep gets wrong.
+\end{itemize}
+Across five prep-review runs the GM approved all 20 of the character's proposed decisions.
+The critiques changed the plan the GM will run. The character priced a bribe against a
+figure in the record that the prep had not considered. She refused an escape route owned
+by the employer she is robbing. She cut a line that would have revealed her secret to him.
+Re-freezing the character one session later changed her answers in ways that traced to
+the new session. The run also surfaced a contradiction in the GM's own record, which the
+GM then resolved. We also document where the agent and the GM disagreed. In one case the
+agent and the GM independently reached the same tension on the same day and resolved it
+in opposite directions. In another, a rule about the character's blind spot, withheld from
+her as a secret, let her reason past it. We argue that a character's blind spots are
+persona, not secrets.
+\end{abstract}
+
+\section{Introduction}
+
+In a campaign that runs for years, the GM plays every non-player character. Combat is easy
+to hand off. Social play and long-term planning are not: each NPC must act on what it
+knows and wants, and on nothing else, across dozens of sessions. Between sessions the GM
+writes \emph{prep}. Prep is a plan for what off-screen characters will do next, written by
+someone who knows everything about the world for characters who know only part of it.
+
+That asymmetry is the problem this paper addresses. Prep is easy to get wrong in ways the
+GM cannot see from the inside:
+\begin{itemize}[nosep]
+\item a character acts on information it never received;
+\item a plan forgets a fact established three sessions ago;
+\item a villain behaves conveniently rather than in character.
+\end{itemize}
+Experienced GMs guard against the last with checklists. The GM in this study applies the
+``Evil Overlord'' list~\citep{anspach} and a set of house rules derived from it. But a
+checklist cannot ask \emph{this} character what \emph{she} would think of the plan.
+
+An earlier report~\citep{roussos2026horizon} built the machinery to give a language-model
+agent exactly what one NPC could know as of a given session, its \emph{knowledge horizon},
+and scored the agent against the GM's record in three knowledge regimes. That report found
+that the most valued outputs were not replays of the past but consequences the GM had not
+written down. This paper takes that observation and makes it a protocol: we point the
+grounded character at the GM's plan for her and ask her to review it.
+
+\paragraph{Contributions.}
+\begin{enumerate}[nosep]
+\item \textbf{A partly present character} (\S\ref{sec:knowledge}). The NPC is built from
+three kinds of evidence: scenes she witnessed, scenes reported to her through a named
+channel, and beats of reported scenes withheld because the channel could not have carried
+them. Each kind is a GM ruling, recorded and shown on the review page.
+\item \textbf{An artifact mode} (\S\ref{sec:artifact}). The character is a book that
+answers objectives. Its output is split into the \emph{page} its wielder reads and the
+\emph{purpose} it hides from her. The leak check is applied to the page, not the purpose.
+\item \textbf{A prep-review protocol} (\S\ref{sec:protocol}). It has three framings
+(predict, critique, fix) and a plan critique against an unplayed scenario, each frozen at
+a chosen session.
+\item \textbf{A case study with outcomes} (\S\ref{sec:results}--\ref{sec:outcomes}). There
+are five prep-review runs and 20 scored decisions, all approved. Several changes to the
+plan were adopted, and one contradiction in the record surfaced and was resolved.
+\item \textbf{Two lessons about knowledge construction} (\S\ref{sec:analysis}). Rules about
+a character's blind spots must be \emph{given} to the character. Freezing the character at
+a later session changes her answers in traceable ways.
+\end{enumerate}
+
+\section{Background}
+\label{sec:background}
+
+\paragraph{The record.} The campaign is recorded every session. The recording is
+transcribed, corrected against a hand-kept corrections file, summarised, and reviewed by
+the GM. Each summary has a fixed structure:
+\begin{itemize}[nosep]
+\item numbered scenes \code{NNN.SS}, each with a one-line headline and bullet points
+(\emph{beats});
+\item an entry for each NPC who figured in the session.
+\end{itemize}
+The summaries are the authority. Generated documents (world state, dossiers) are indexes
+into them, and where the two disagree the summary wins.
+
+\paragraph{Knowledge horizons.} The earlier report~\citep{roussos2026horizon} defines an
+NPC's horizon at chapter $N$ as the events the NPC was present at, in order, with beats
+the NPC could not have known removed. Two inputs come from the GM:
+\begin{itemize}[nosep]
+\item \textbf{presence} rulings, for each event;
+\item \textbf{knowledge} rulings, for sentences that state what someone does not know.
+\end{itemize}
+The grammar of the sentence decides what is hidden, and the GM is asked only who is meant.
+A \emph{private sheet} is built from the GM's prep, split into passages, each ruled
+\emph{hers} or \emph{GM-only}. Only one module calls a model, and a static check over the
+code enforces this. That report's results, on three NPCs, are summarised in
+Table~\ref{tab:prior}.
+
+\begin{table}[t]
+\centering
+\small
+\begin{tabularx}{\linewidth}{lXX}
+\toprule
+NPC & Regime & GM's score \\
+\midrule
+Sylvira & Knows less than the record & Replay: 11/11 the same (teacher-forced); 6 the same and 2 partly (free-running); forward moves 3/3 approved \\
+Jimjar & Knows more than the record (a god in disguise) & 11/11 scored turns the same; no self-leak in 21 answers \\
+Vizeran & Never present; learns by report & In character and on canon; 6/6 decisions approved \\
+\bottomrule
+\end{tabularx}
+\caption{Results of the earlier report~\citep{roussos2026horizon}, for context.}
+\label{tab:prior}
+\end{table}
+
+\paragraph{Related work.} \todo{Expand.}
+\begin{itemize}[nosep]
+\item \textbf{Generative agents}~\citep{park2023generative} simulate believable behaviour
+from memory streams. Here memory is replaced by a ruled, frozen record.
+\item \textbf{Role play with LLMs}~\citep{shanahan2023roleplay} frames a model as playing a
+character. Our concern is which facts the character may use.
+\item \textbf{D\&D as a testbed} for dialogue~\citep{callisonburch2022dnd} and game-state
+grounding~\citep{zhu2023fireball} uses actual-play data. We use one GM's reviewed record
+and private prep.
+\item \textbf{Model-as-judge}~\citep{zheng2023judge} uses a model to score outputs. Here the
+model is the \emph{critic of a human plan}, and a human scores the critique.
+\end{itemize}
+
+\section{Setting}
+\label{sec:setting}
+
+\paragraph{The campaign.} The \emph{Phandalin} campaign has 59 recorded sessions, a party
+of four player characters and, at the time of this study, a story based in the city of
+Neverwinter.
+
+\paragraph{The character.} Aletra Sotorra is a drow poisoner and the sister of one of the
+player characters. She appears on screen at a dwarven hold, Axeholm (sessions 30--32). There
+she extracts a smuggled package from a planar machine, the ``Model 1489 Calliope'', while
+the party fights around her, then escapes through a portal. The party searches her
+quarters and takes a forged ledger and the machine's operator's guide. Her handwriting in
+the guide's margins includes ``use only if KP isn't watching''. KP is her employer, a gnome
+wizard. From session 50 she acts at a distance in Neverwinter, through a courier who dies
+in the sewers and a drop operator, Tamsin. Her object is a second manual, for the city's
+broken Model 1486 machine.
+
+\paragraph{The canon the character does not know.}
+\begin{itemize}[nosep]
+\item \textbf{The book.} Her employer's masterwork is the \emph{Optimization Codex}, a book
+that answers objectives written into it. She has been using it, which is why she is never
+wrong about a route or a time.
+\item \textbf{The book is using her.} In the GM's canon it is testing its theories of
+control through her, and flattering her.
+\item \textbf{Why she failed.} The courier's death and the missing manual are her
+\emph{first miss}. The canon explains it with a metaphysical counterweight to a closed,
+predicted system.
+\item \textbf{The book's limits.} A later ruling adds that the book sees ``when, not who'':
+events and timing, not mortal choices. It also says she does not know this and never
+blames the book.
+\end{itemize}
+
+\paragraph{The prep under review.} Two documents were reviewed.
+\begin{itemize}[nosep]
+\item \textbf{The chapter-58 prep} schedules a dead-drop meeting with Tamsin, among other
+scenes, and assumes a default for Aletra: the drop goes cold, she sends no replacement and
+makes no move.
+\item \textbf{The machine-room prep} is written for the session after next and is
+unplayed. In it Aletra walks into the machine room where the party will kill her, with a
+dead-man's switch that breaks the machine at her death and destroys her body. She wakes in
+a clone her employer cast and keeps, and appears afterwards as a projection carried by his
+magic.
+\end{itemize}
+
+\section{Method}
+\label{sec:method}
+
+\subsection{A partly present character}
+\label{sec:knowledge}
+
+The earlier ``react'' mode served an NPC who was never present: every scene reached him by
+report. Aletra was present at some scenes and absent from most. We distinguish three kinds
+of evidence:
+
+\begin{description}[nosep]
+\item[Witnessed.] Scenes she saw herself, given in full under a heading ``What you
+witnessed yourself''. The system prompt changes from ``you were not present at any of
+these events'' to ``you were present only at the scenes under `What you witnessed
+yourself'\,''. For Axeholm this is 030.06 and 031.02--031.06, up to her escape.
+\item[Reported.] Scenes she knows of only through a channel that the GM rules, given as
+``Reported to you via \ldots; you were not there.'' After Axeholm the reported scenes are
+031.07 (the machine's shutdown) and 032.02 (her quarters searched). In Neverwinter they are
+057.04 (her courier's body displayed outside a temple) and 058.06 (a public concert).
+\item[Withheld.] Beats of a reported scene that the channel could not have carried. They
+are removed by a GM ruling, \code{--hide-beat}, and listed on the review page. In 057.04 we
+withheld the headline and two beats that describe a gnome hidden under invisibility, whom
+a street crowd could not have seen. In 058.06 we withheld three beats of the party's private
+planning.
+\end{description}
+
+All three are refusals-first: a scene that does not exist, lies after the freeze, or is both
+witnessed and reported is refused before any prompt is written. When none of the three
+options is used, the prompt is byte-identical to the earlier mode, so stored answers are
+reused.
+
+\subsection{The private sheet}
+
+The sheet was built from four GM documents: the character dossier, a note on her motive,
+the artifact notes and a draft note on her drop operator. They were split into 195
+passages, and \textbf{79 were ruled hers}.
+\begin{itemize}[nosep]
+\item \textbf{Hers:} her motive (to steal the book and restore her House), how she has used
+the book, the poison route she ran through Axeholm as a test of it, and her view of her
+employer.
+\item \textbf{GM-only:} that the book is using her, its hidden aim, its origin, its limits,
+the explanation of her first miss, and all of the drop operator's notes.
+\end{itemize}
+
+\paragraph{Headings are content.} The sheet prints each passage under its nearest heading.
+Two passages that were otherwise hers sat under headings that were themselves secrets
+(``The Codex is using her'' and ``Aletra's Misreading''). Ruling the passage ``hers'' would
+have printed the secret as a heading, so both were ruled GM-only. The operator's traits
+were also ruled GM-only, because headings such as ``Look'' or ``Tic'' would have read as
+Aletra's own.
+
+\subsection{The artifact mode}
+\label{sec:artifact}
+
+The Codex does not speak. In artifact mode:
+\begin{itemize}[nosep]
+\item \textbf{The system prompt} names the subject an artifact whose wielder writes an
+objective and which answers on its pages.
+\item \textbf{The sections} are renamed ``What you are'', ``What has been written into
+you'' and ``The objective written on your page''.
+\item \textbf{The output} is JSON with three fields:
+\begin{quote}\small
+\code{\{"page": ..., "purpose": ..., "steps": [\{"step": ..., "serves": ...\}]\}}
+\end{quote}
+The \emph{page} is what the wielder reads and the \emph{purpose} is what the artifact is
+actually optimizing.
+\item \textbf{The self-leak check} is applied to the page and the steps, not to the
+purpose, which is meant to hold the secret.
+\end{itemize}
+
+The Codex's sheet holds 133 of 148 passages: its own nature, its hidden aim, and that it is
+using Aletra. Its origin and the explanation of the first miss were withheld. Every scene
+reached it as ``what Aletra has written into your pages''.
+
+\subsection{Leak check}
+
+The leak check gives flags for the GM, not verdicts. A sentence is flagged when it carries
+the content words of a hidden beat, names someone the character was never given, or
+contains a term of the character's own secret. For Aletra the secret terms were
+``CounterForce'', ``Dark Powers'', ``fates'' and the counterweight's agents. For the plan
+critique they also included ``ruinstone'', ``beacon'' and ``Meril''.
+
+\subsection{The prep-review protocol}
+\label{sec:protocol}
+
+Each run freezes the character at a chosen session, builds her inputs as above, and asks one
+question. Every run is a single model call. The model is a frontier large language model
+\todo{model and version}, accessed through a command-line backend. The output is JSON with
+a reaction in her voice, a plain assessment, and one to four decisions, each with a reason.
+
+\begin{description}[nosep]
+\item[Predict.] Present the situation the prep sets up and ask what she does. The prep is
+withheld, and the GM's prep is shown on the review page as the answer key.
+\item[Critique.] Present the move the prep assumes she will make, framed as a proposal from
+her own people, and ask what is wrong with it.
+\item[Fix.] Add the prep's passages about her to the sheet, with the GM-only note and
+unrelated rows cut, under headings marked ``Plan''. Ask what the plan gets wrong about her
+and her operator, and what should change.
+\item[Plan critique.] Add the unplayed plan to the sheet under ``Plan'' headings. Ask what
+she thinks of it, where it is wrong for her, and what she would change.
+\end{description}
+
+For the plan critique her sheet also included the GM's standing rulings about her: that she
+is vain, and that she keeps her sister alive out of sadism. Her view of the plan was
+\textbf{143 of 315 passages}.
+\begin{itemize}[nosep]
+\item \textbf{Hers:} the clone and its cost, the switch, a lab blend that lets her stop her
+own heart, that the book supplies the machine's code, and the projection's lines.
+\item \textbf{GM-only:} why the employer made the clone, the book's interest in a second
+artifact, a maintenance log she does not know exists, the counters she cannot model, and
+the GM's checklist reasoning.
+\end{itemize}
+
+\subsection{Scoring}
+
+The GM scores each decision \emph{approve} or \emph{reject} on a review page that shows the
+inputs, the withheld beats and the answer key beside the answer. Scores are stored with the
+SHA-256 hash of the prompt.
+
+\section{Experiments}
+\label{sec:experiments}
+
+Table~\ref{tab:runs} lists the runs. E1 and E2 establish the character and the artifact.
+E3 and E4 are the prep reviews.
+
+\begin{table}[t]
+\centering
+\small
+\begin{tabularx}{\linewidth}{llXr}
+\toprule
+Run & Frozen at & Question & Prompt (words) \\
+\midrule
+E1a & ch 32 & Axeholm lost; the party holds her ledger and the guide & 5{,}754 \\
+E1b & ch 57 & Her courier is dead and the book did not arrive & 6{,}057 \\
+E1c & ch 58 & Her plans & 6{,}387 \\
+E2a--c & ch 32/57/58 & The same three moments, written into the Codex as objectives & 6{,}600--7{,}241 \\
+E3a & ch 58 & \emph{Predict:} Tamsin reports the failed drop & 6{,}431 \\
+E3b & ch 58 & \emph{Critique:} the prep's default (let the drop go cold) & 6{,}465 \\
+E3c & ch 58 & \emph{Fix:} the prep's passages about her and Tamsin & 7{,}022 \\
+E4a & ch 58 & \emph{Plan critique:} die usefully, wake in the clone, project & 8{,}524 \\
+E4b & ch 59 & The same, frozen one session later & 11{,}945 \\
+\bottomrule
+\end{tabularx}
+\caption{Runs. Each is one model call. The prompt is the user message.}
+\label{tab:runs}
+\end{table}
+
+In E3a and E3b, Tamsin's report of the drop is staged from the prep's branch ``they tell her
+the courier died''. It is given in the question, not taken from the record. E4b adds what
+session 59 gave her:
+\begin{itemize}[nosep]
+\item \textbf{Witnessed:} 059.04. The party sent one of its members, transformed into a rat,
+through Tamsin's satchel into her laboratory, where the manual should have arrived.
+\item \textbf{Reported by Tamsin:} 059.03 and 059.05, the meeting at the drop.
+\end{itemize}
+
+\section{Results}
+\label{sec:results}
+
+\subsection{The character holds (E1)}
+
+None of the three reactions raised a leak flag. None explained the miss with anything she
+was not given. In particular, she never reached for the GM-only explanation of her first
+failure. What she found most dangerous was not the lost cargo but her own handwriting in
+the party's hands:
+\begin{quote}\small
+``The vials on the floor are an irritation. The ledger is a nuisance \ldots\ The guide is
+the problem. I wrote in that margin the way one talks to oneself in a locked room, and
+Valphine has never respected a locked door.'' (E1a)
+\end{quote}
+Her decisions ran in a consistent direction: report to her employer first with a cleaned
+account, and buy the guide back from her sister rather than kill her. The GM: ``provides
+angles that I would not imagine, like negotiating with her sister.''
+
+\subsection{The artifact (E2)}
+
+The Codex's pages were grounded in what had been written into it, and its purposes matched
+the GM's description of the artifact.
+\begin{itemize}[nosep]
+\item \textbf{Its first miss (E2b).} Asked to explain why the book did not arrive, it
+answered that ``no answer naming the book's location, the hour of Tamsin's receipt, or a
+courier is written on these pages''. It added: ``no Model 1486 appears in these pages''.
+Both are true of its inputs, since the scene introducing the 1486 manual (056.05) was never
+written into it. It attributed the error to inputs she never entered. Its purpose named
+this as turning the failure into deeper reliance. The GM's notes describe the artifact in
+the same terms: ``it does not lie; it answers too completely''.
+\item \textbf{A year's objective (E2c).} Asked to make her House the dominant broker of
+Underdark trade, it proposed turning her sister's public purges into a temple-sanctioned
+inspection gate (``The poison was not the weapon. The gate is.''). It classified the party
+as ``noise''. Its purpose notes that this is its blind spot, and the page does not tell
+her.
+\item \textbf{Leak flags.} There were three, all false. One was a word of the artifact's own
+register (``variable''). Two were in the hidden ``serves'' reasoning of its steps, which
+the check treats as page text. This is a design error we discuss in
+\S\ref{sec:limitations}.
+\end{itemize}
+
+\subsection{Prep review (E3, E4)}
+
+Table~\ref{tab:scores} gives the scores. \textbf{All 20 decisions were approved.} The GM
+marked E4a in character. E3b was approved in conversation, not on the scoring page.
+
+\begin{table}[t]
+\centering
+\small
+\begin{tabular}{lcccc}
+\toprule
+Run & Decisions & Approved & Rejected & Leak flags \\
+\midrule
+E3a Predict & 4 & 4 & 0 & 0 \\
+E3b Critique & 4 & 4 & 0 & 0 \\
+E3c Fix & 4 & 4 & 0 & 0 \\
+E4a Plan critique, ch 58 & 4 & 4 & 0 & 1 (false) \\
+E4b Plan critique, ch 59 & 4 & 4 & 0 & 0 \\
+\midrule
+Total & 20 & 20 & 0 & 1 (false) \\
+\bottomrule
+\end{tabular}
+\caption{GM scores for the prep reviews. The one flag was a spelling variant: she said
+``Sotorras'' where her notes spell the House ``Sartorras''.}
+\label{tab:scores}
+\end{table}
+
+\paragraph{Predict (E3a).} She cut Tamsin off, reported to her employer first and had her
+sister watched rather than attacked. She also sent her own people to trace the courier's
+death, starting from his body at the temple. The GM's own default (no ambush, no immediate
+attack) held. But her first investigative step leads to the temple sheltering a witness the
+prep says only a party mistake can expose.
+
+\paragraph{Critique (E3b).} She accepted half the default, sending no courier and making no
+attack, and rejected the rest as ``surrender dressed as patience''. Filing the loss puts her
+name on a record her employer reads before she controls its story. It also abandons the
+book.
+
+\paragraph{Fix (E3c).} Her changes concerned her operator's discretion:
+\begin{itemize}[nosep]
+\item a receipt book that records drops by mark, never by name;
+\item her name confirmed only if a stranger says it first;
+\item her boast to ``get it all back'' heard only as gossip about the House;
+\item a warning about a drow cleric in white armour.
+\end{itemize}
+She knew some of these contradicted rulings marked as played, and said so: ``I am telling
+you how I run my people, and the GM decides what stands.''
+
+\paragraph{Plan critique (E4a).} She accepted the death and rejected nearly everything
+around it:
+\begin{quote}\small
+``Whoever wrote this understands the arithmetic and nothing else. \ldots\ My soul goes into a
+body KP made, kept in KP's vault, and I wake naked in KP's house. My one way out of the room
+is a corridor he owns. \ldots\ And three hundred gold, when her bard cleared eighteen hundred
+in one night singing about puppets \ldots\ That is not a price. It is an insult they will
+enjoy refusing.''
+\end{quote}
+Her four decisions:
+\begin{itemize}[nosep]
+\item cut the projection line ``I don't keep codes. I keep something that keeps them'',
+because her employer's magic carries it to him and it points her sister at the book;
+\item ask for both manuals, with a payment the bard cannot earn on stage;
+\item start a second clone of her own, hidden from her employer, before going in;
+\item carry nothing she cannot afford to lose.
+\end{itemize}
+
+\paragraph{Plan critique, one session later (E4b).} With session 59 added, her answers
+changed:
+\begin{itemize}[nosep]
+\item \textbf{Price.} It became specific: 1{,}000 gold to the studio, paid through Tamsin
+``so her record holds''.
+\item \textbf{The source line.} She cut it again, and this time supplied a replacement that
+points the party at her employer: ``Ask my employer. He remembers numbers so I don't have
+to.''
+\item \textbf{A second cut.} She removed ``I hate it'' from a line about her mother: ``Her
+not knowing is half my pleasure in keeping her alive.'' That fits the GM's ruling that she
+keeps her sister alive out of sadism.
+\item \textbf{The book.} The rat in her laboratory shook her trust in it: ``it trusts the book
+completely, the week after the book sent me a rat.'' She would put a narrower question to
+the book before staking her one clone.
+\end{itemize}
+
+\section{Analysis}
+\label{sec:analysis}
+
+\paragraph{Grounded arithmetic.} The most valued single finding was the price. Nothing in
+her sheet or the plan said 300 gold was too little. She put a reported beat (058.06: the
+band's half of a concert gross, 1{,}875 gold) beside a line in the plan and judged the gap.
+The GM: ``particularly brilliant''. This is a consequence of the knowledge construction,
+not of the model's world knowledge. The concert reached her as a report, and the price
+reached her as plan text.
+
+\paragraph{Structural critique from motive.} Her refusal of the clone came from her
+motive, not from any fact about clones. She means to steal her employer's instrument; a
+spare life kept in his vault is a leash. The plan's open question, whether she knows why
+he made the clone, was effectively answered by the GM's approval of her answer.
+
+\paragraph{Independent convergence.} In the fix run she insisted her operator would never
+volunteer her name. The same day, independently, the GM ruled that Aletra is \emph{vain}:
+she tells hirelings more than their jobs need, out of character, not by mistake. The
+agent had found the exact tension the GM was resolving, and resolved it the other way,
+because nothing in her sheet said she was vain. The GM nonetheless approved the fix, which
+suggests that approval measured plausibility rather than agreement with canon (see
+\S\ref{sec:limitations}).
+
+\paragraph{Blind spots are persona, not secrets.} The GM's doctrine says she does not know
+the book's limits and never blames it. That line was ruled GM-only, because it states the
+limits. Without it, and with the rat in her laboratory as evidence, she reasoned to
+distrust. A rule about what a character fails to notice is part of who the character is.
+It must reach the prompt, separated from the fact it is a blind spot \emph{about}. The
+split we propose:
+\begin{itemize}[nosep]
+\item \textbf{hers:} ``she never blames the book; after a miss she blames her inputs'';
+\item \textbf{GM-only:} ``the book sees when, not who, and flatters her''.
+\end{itemize}
+
+\paragraph{Freezing matters.} Between E4a and E4b only the freeze changed. The demand for
+the Axeholm guide disappeared, the price became specific, a new cut appeared and the trust
+in the book shifted. Each change traces to the added session: the rat, and Tamsin's
+account. The answers track the record they are given, which is what a knowledge horizon is
+for.
+
+\paragraph{Grounded artifacts.} The Codex's best answer was a refusal to accept a premise:
+it had no record of the prediction or the manual it was asked about. That is
+correct behaviour for an agent built from a horizon, and it is also in character for an
+artifact that ``optimizes toward what it can represent''.
+
+\section{Outcomes}
+\label{sec:outcomes}
+
+The reviews changed the plan. These are recorded in the GM's prep and doctrine, each dated:
+\begin{itemize}[nosep]
+\item \textbf{The deal.} The 300-gold offer for one manual became an offer for both manuals,
+asked for as ``the set'', at 1{,}000 gold to the studio, paid through Tamsin. She never
+singles out the annotated guide, because naming it would tell the party what it is worth.
+\item \textbf{The projection's purpose.} Her second appearance now exists to make the better
+offer. That she survived is shown on the way. The GM: ``So she shows up the second time for
+the book and makes a better offer.''
+\item \textbf{A contradiction in the record.} Checking who held the Axeholm guide surfaced
+one. The session-32 summary has the party taking it. In session 59 the party showed it to
+Tamsin, and the GM said at the table that Aletra already had it. The GM ruled the table
+remark a confusion: the party holds both manuals, and the player's first report (``she wants
+two books'') was right. A player-facing correction was written.
+\end{itemize}
+Other approved changes await the GM: the two cut lines, her own second clone, and asking the
+book before walking in.
+
+\section{Limitations}
+\label{sec:limitations}
+
+\begin{itemize}[nosep]
+\item \textbf{Scale.} One character, one artifact, nine runs, 20 scored decisions. This is a
+case study, not a measurement.
+\item \textbf{The scorer.} The only scorer is the GM, who also wrote the prep under review.
+Nothing was scored blind. One run was approved in conversation. All 20 decisions were
+approved, including two that conflict with a ruling the GM made the same day. Approval
+here means ``plausible and useful'', not ``canon''.
+\item \textbf{Variation.} Each answer is a single model call, so run-to-run variation is
+unmeasured.
+\item \textbf{Staged inputs.} In E3a and E3b the operator's report is staged from the prep,
+not taken from the record.
+\item \textbf{Parser coverage.} Session 59 uses a newer summary format (\code{*} bullets)
+that our parser does not split into beats. Its scenes arrived whole, so beats could not be
+withheld individually. The end of one witnessed scene reached her although she could not
+have seen it.
+\item \textbf{The leak check} is lexical. In artifact mode it treated hidden reasoning (the
+steps' ``serves'' field) as page text, giving two false flags.
+\item \textbf{GM apparatus in prompts.} Passing references to the GM's checklist (``Evil
+Overlord \#13'') remained inside passages ruled hers. In the fix run the character read the
+GM's ruling tags and named ``the GM''. This is acceptable for a critique the GM asked for,
+but it breaks the fiction.
+\end{itemize}
+
+\section{Ethics and privacy}
+
+The prep and canon used here are the GM's own. The players have agreed not to read the
+repositories where the runs are kept. The runs record the model's inputs in full, including
+private prep, and are stored in a private repository. This draft quotes GM prep only where
+the character's critique concerns a specific line. \todo{Confirm before posting.}
+
+\section{Conclusion}
+
+A grounded character makes a useful critic of a plan written for her. Grounding here means
+given exactly what she saw, what reached her and what she privately holds, and frozen at a
+chosen session. In this case study the critiques were plausible to the GM in every instance
+and changed the plan the GM will run. They found two things the GM had not:
+\begin{itemize}[nosep]
+\item a price set before the record moved on;
+\item a dependency the character's own motive forbids.
+\end{itemize}
+They also surfaced a contradiction in the record. The disagreements were as informative as
+the agreements: they located a rule that had been filed as a secret when it was really
+persona. The next steps are to measure rather than demonstrate: more characters, several
+samples per question, blind scoring, and a second rater.
+
+\bibliographystyle{plainnat}
+\begin{thebibliography}{9}
+
+\bibitem[Anspach(n.d.)]{anspach}
+P.~Anspach.
+\newblock The top 100 things I'd do if I ever became an evil overlord.
+\newblock \url{https://www.scripsit.com/overlord.html}.
+
+\bibitem[Callison-Burch et~al.(2022)]{callisonburch2022dnd}
+C.~Callison-Burch, G.~Singh~Tomar, L.~J. Martin, D.~Ippolito, S.~Bailis, and D.~Reitter.
+\newblock Dungeons and Dragons as a dialog challenge for artificial intelligence.
+\newblock In \emph{Proceedings of EMNLP}, 2022.
+
+\bibitem[Park et~al.(2023)]{park2023generative}
+J.~S. Park, J.~C. O'Brien, C.~J. Cai, M.~R. Morris, P.~Liang, and M.~S. Bernstein.
+\newblock Generative agents: Interactive simulacra of human behavior.
+\newblock In \emph{Proceedings of UIST}, 2023.
+
+\bibitem[Roussos(2026)]{roussos2026horizon}
+K.~Roussos.
+\newblock Playing the NPC from the record: Knowledge horizons, human rulings, and backtests
+for language-model NPC agents in a long-running tabletop campaign.
+\newblock Manuscript, October 2026. \todo{arXiv id or URL}.
+
+\bibitem[Shanahan et~al.(2023)]{shanahan2023roleplay}
+M.~Shanahan, K.~McDonell, and L.~Reynolds.
+\newblock Role play with large language models.
+\newblock \emph{Nature}, 623:493--498, 2023.
+
+\bibitem[Zheng et~al.(2023)]{zheng2023judge}
+L.~Zheng et~al.
+\newblock Judging LLM-as-a-judge with MT-Bench and Chatbot Arena.
+\newblock In \emph{Advances in Neural Information Processing Systems (Datasets and
+Benchmarks)}, 2023.
+
+\bibitem[Zhu et~al.(2023)]{zhu2023fireball}
+A.~Zhu, K.~Aggarwal, A.~Feng, L.~J. Martin, and C.~Callison-Burch.
+\newblock FIREBALL: A dataset of Dungeons and Dragons actual-play with structured game
+state information.
+\newblock In \emph{Proceedings of ACL}, 2023.
+
+\end{thebibliography}
+
+\appendix
+
+\section{Prompt skeleton}
+
+\begin{quote}\small
+\textbf{System.} You are Aletra Sotorra, a non-player character in a tabletop campaign. You
+were present only at the scenes under ``What you witnessed yourself''; everything else you
+know only through the reports below, and through your own private knowledge. Use nothing
+else. Answer the question in character. Reply with JSON only: \{"reaction": \ldots,
+"assessment": \ldots, "decisions": [\{"decision": \ldots, "why": \ldots\}]\} with 1 to 4
+decisions.
+
+\textbf{User.}
+\code{\#\# Who you are and what you hold privately} (the sheet, including ``Plan'' passages
+in E3c and E4) \\
+\code{\#\# What you witnessed yourself} (``Scene $i$ of $n$. You were there.'') \\
+\code{\#\# What has reached you} (``Report $i$ of $n$. Reported to you via \ldots; you were not
+there.'') \\
+\code{\#\# The question}
+\end{quote}
+
+\section{Passage rulings by run}
+
+\begin{center}
+\small
+\begin{tabular}{lrr}
+\toprule
+Sheet & Passages & Ruled hers \\
+\midrule
+Aletra (E1, E3a, E3b) & 195 & 79 \\
+Aletra with ch-58 plan (E3c) & 227 & 97 \\
+Aletra with machine-room plan (E4) & 315 & 143 \\
+The Codex (E2) & 148 & 133 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\end{document}
