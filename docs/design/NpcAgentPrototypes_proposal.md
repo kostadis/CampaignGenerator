@@ -490,8 +490,8 @@ overrides it), the same label the review page uses.
 ## Prototypes 2a–5 — the agent plays Sylvira (2026-10-13)
 
 The first functional loop, on the one NPC whose presence and knowledge rulings
-were complete. Models: Opus played her through the repo's `claude-code` backend;
-the code was written by Sonnet subagents and checked here against real data.
+were complete. The agent played her through the repo's `claude-code` backend;
+the code was written by subagents and checked here against real data.
 
 ### What the agent is given
 
