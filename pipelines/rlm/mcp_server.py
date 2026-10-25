@@ -622,8 +622,7 @@ async def arc_triggers(character: str, top: int = 3) -> str:
     organized by trigger with source references.
 
     character — character name (e.g. 'brewbarry', 'soma', 'valphine').
-                Searches mempalace for the matching score doc — doesn't
-                need to be exact.
+                Matched against the score docs — doesn't need to be exact.
     top       — max results per trigger (default: 3)
 
     This is a candidate-finding tool — the DM decides whether a trigger fires.

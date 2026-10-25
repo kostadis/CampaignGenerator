@@ -57,6 +57,12 @@ def test_non_corpus_with_canon_wing_still_uses_hardcoded_wings(tmp_path, calls):
     assert calls == [("phandalin", "arcs"), ("chronicle", None)]
 
 
+def test_non_corpus_never_reads_config(tmp_path, calls):
+    camp = _campaign(tmp_path, False, "mempalace: [this is: not: valid yaml\n")
+    at.search_triggers("brewbarry", campaign_dir=camp)
+    assert calls == [("phandalin", "arcs"), ("chronicle", None)]
+
+
 def test_corpus_skips_score_doc_query_and_searches_each_canon_wing(tmp_path, calls):
     camp = _campaign(
         tmp_path, True, "mempalace:\n  canon_wings: [a, b]\n  index_wings: [npcs]\n"

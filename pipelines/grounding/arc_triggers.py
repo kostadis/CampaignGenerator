@@ -39,6 +39,7 @@ from pathlib import Path
 from campaignlib.config import load_config
 from campaignlib.constants import config_path
 from campaignlib.mempalace_wings import (
+    CORPUS_MARKER,
     MempalaceWings,
     MempalaceWingsError,
     resolve_mempalace_wings,
@@ -63,11 +64,13 @@ MP_BIN = _resolve_mp_bin()
 def load_wings(campaign_dir: Path) -> MempalaceWings:
     """Resolve the campaign's wings from config/config.yaml (absent = empty section).
 
+    Only a corpus campaign's config is read: without a corpus the wings are
+    hardcoded, so a config problem must not change today's behaviour.
     Raises MempalaceWingsError on a corpus campaign whose face lacks canon_wings.
     """
     cfg_file = config_path(campaign_dir, "config.yaml")
     mp_cfg = None
-    if cfg_file.is_file():
+    if (Path(campaign_dir) / CORPUS_MARKER).is_file() and cfg_file.is_file():
         config, _ = load_config(str(cfg_file))
         mp_cfg = (config or {}).get("mempalace")
     return resolve_mempalace_wings(mp_cfg, campaign_dir)
