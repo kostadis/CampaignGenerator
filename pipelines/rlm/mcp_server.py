@@ -37,6 +37,7 @@ from campaignlib import (
     wiring_get,
 )
 from campaignlib.constants import config_path as campaign_config_path
+from campaignlib.mempalace_wings import MempalaceWingsError, resolve_mempalace_wings
 
 # Resolve campaign directory: env var → CLI arg → CWD
 _campaign_dir_arg = ""
@@ -101,10 +102,12 @@ notes_dir = campaign_dir / "notes"
 
 # Mempalace config (wing names are campaign-specific)
 _mp_config = config.get("mempalace", {})
-_mp_index_wings = _mp_config.get(
-    "index_wings", ["chronicle", campaign_dir.name.replace("-", "_")]
-)
-_mp_canon_wing = _mp_config.get("canon_wing", "narrative")
+try:
+    _mp_wings = resolve_mempalace_wings(_mp_config, campaign_dir)
+except MempalaceWingsError as _exc:
+    sys.exit(f"mcp_server: {_exc}")
+_mp_index_wings = _mp_wings.index_wings
+_mp_canon_wings = _mp_wings.canon_wings
 
 # ── MCP server ────────────────────────────────────────────────────────────────
 
@@ -521,9 +524,17 @@ def grounded_search(query: str, limit: int = 3) -> str:
         top_text = index_results[0].get("text", "")[:200]
         narrative_query = f"{query} — {top_text}"
 
-    narrative_results = _mempalace_search(
-        narrative_query, [_mp_canon_wing], n_results=3
-    )
+    if not _mp_canon_wings:
+        canon_note = (
+            "No canon wings are declared for this campaign "
+            "(canon_wings is empty), so there is nothing to verify against.\n"
+        )
+        narrative_results = []
+    else:
+        canon_note = ""
+        narrative_results = _mempalace_search(
+            narrative_query, _mp_canon_wings, n_results=3
+        )
 
     # Format both sections
     parts: list[str] = []
@@ -533,9 +544,11 @@ def grounded_search(query: str, limit: int = 3) -> str:
         parts.append(f"No index results found for '{query}'.\n")
 
     if narrative_results:
-        parts.append(_format_mp_results(narrative_results, header="Canon verification (narrative)"))
+        parts.append(_format_mp_results(narrative_results, header=f"Canon verification ({', '.join(_mp_canon_wings)})"))
+    elif canon_note:
+        parts.append(canon_note)
     else:
-        parts.append("No narrative results found for verification.\n")
+        parts.append(f"No canon results ({', '.join(_mp_canon_wings)}) found for verification.\n")
 
     return "\n---\n\n".join(parts)
 
@@ -599,17 +612,19 @@ async def session_prep(beat: str, mode: str = "single", model: str = "") -> str:
 
 @mcp.tool()
 async def arc_triggers(character: str, top: int = 3) -> str:
-    """Search for arc score trigger candidates using mempalace's chronicle wing.
+    """Search for arc score trigger candidates using mempalace.
 
-    Finds the character's score tracking document via mempalace search,
-    extracts trigger definitions from it, then searches the chronicle
-    (timeline) wing for events matching each trigger. Returns candidates
+    Finds the character's score tracking document (mempalace search, or
+    docs/tracking/ directly on a campaign with a declared corpus), extracts
+    trigger definitions from it, then searches the chronicle wing (the
+    campaign's canon wings on a corpus campaign) for events matching each
+    trigger. Returns candidates
     organized by trigger with source references.
 
     character — character name (e.g. 'brewbarry', 'soma', 'valphine').
                 Searches mempalace for the matching score doc — doesn't
                 need to be exact.
-    top       — max chronicle results per trigger (default: 3)
+    top       — max results per trigger (default: 3)
 
     This is a candidate-finding tool — the DM decides whether a trigger fires.
     """

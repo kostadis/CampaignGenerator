@@ -412,3 +412,35 @@ class TestFullLibraryEndToEnd:
             h["source"] for h in full["hits"] if h["kind"] == "candidate"
         }
         assert full_sources == {"MM", "VGM"}
+
+
+# ── grounded_search canon wings (#593 Part A) ─────────────────────────────
+
+
+def _patch_canon(monkeypatch, canon, index=("chronicle", "camp")):
+    searches: list[list[str]] = []
+
+    def fake(query, wings, n_results=5, room=None):
+        searches.append(list(wings))
+        return [{"text": "hit", "wing": wings[0], "room": "r", "source": "s", "similarity": 0.9}]
+
+    monkeypatch.setattr(mcp_server, "_HAS_MEMPALACE", True)
+    monkeypatch.setattr(mcp_server, "_mempalace_search", fake)
+    monkeypatch.setattr(mcp_server, "_mp_index_wings", list(index))
+    monkeypatch.setattr(mcp_server, "_mp_canon_wings", list(canon))
+    return searches
+
+
+def test_grounded_search_searches_every_canon_wing(monkeypatch):
+    searches = _patch_canon(monkeypatch, ["summaries", "grounding"])
+    out = mcp_server.grounded_search("who is X")
+    assert searches == [["chronicle", "camp"], ["summaries", "grounding"]]
+    assert "Canon verification (summaries, grounding)" in out
+
+
+def test_grounded_search_empty_canon_says_so(monkeypatch):
+    searches = _patch_canon(monkeypatch, [])
+    out = mcp_server.grounded_search("who is X")
+    assert searches == [["chronicle", "camp"]]  # canon search not attempted
+    assert "No canon wings are declared" in out
+    assert "No narrative results" not in out
