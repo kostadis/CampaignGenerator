@@ -93,7 +93,7 @@ def corpus_arc_files(campaign_dir: Path) -> list[Path]:
         "--dir", str(campaign_dir), "--kind", ARCS_KIND, "--json",
     ]
     try:
-        proc = subprocess.run(cmd, capture_output=True, text=True, timeout=60)
+        proc = subprocess.run(cmd, capture_output=True, text=True, timeout=60, check=False)
     except (OSError, subprocess.TimeoutExpired) as e:
         raise CorpusTocError(f"could not run `{' '.join(cmd)}`: {e}") from e
     if proc.returncode != 0:
