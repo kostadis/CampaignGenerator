@@ -614,8 +614,9 @@ async def session_prep(beat: str, mode: str = "single", model: str = "") -> str:
 async def arc_triggers(character: str, top: int = 3) -> str:
     """Search for arc score trigger candidates using mempalace.
 
-    Finds the character's score tracking document (mempalace search, or
-    docs/tracking/ directly on a campaign with a declared corpus), extracts
+    Finds the character's score tracking document (mempalace search plus
+    docs/tracking/, or on a campaign with a declared corpus the mneme corpus
+    kind ``arcs``, refusing if mneme cannot supply it), extracts
     trigger definitions from it, then searches the chronicle wing (the
     campaign's canon wings on a corpus campaign) for events matching each
     trigger. Returns candidates
