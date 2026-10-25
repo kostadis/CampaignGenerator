@@ -6,6 +6,19 @@ reads the trigger definitions from it, then searches the chronicle wing
 for events that match each trigger. Returns candidates organized by
 trigger with source references.
 
+A campaign with a declared corpus (<campaign>/.mneme/corpus.yaml) names its
+wings differently: its config.yaml ``mempalace:`` section carries
+``canon_wings``. For such a campaign the score documents come from the
+mneme corpus TOC, kind ``arcs`` (``mneme corpus toc ... --kind arcs --json``;
+no mempalace query, never a glob of docs/tracking/), and each trigger is searched in
+every wing of ``canon_wings`` (merged by score). An empty ``canon_wings``
+is reported instead of searched. A corpus campaign whose ``mempalace:``
+section lacks ``canon_wings``, or for which mneme errors / reports the
+``arcs`` kind undeclared / invalid, is refused (exit non-zero) with what
+mneme said. Campaigns without
+a corpus behave as before: the ``phandalin``/``arcs`` and ``chronicle``
+wings are hardcoded.
+
 This is a candidate-finding tool — the DM makes the final precision
 decision about whether a trigger actually fires.
 
@@ -14,21 +27,107 @@ Usage:
     arc_triggers --character soma
     arc_triggers --character brewbarry --top 5
 
-Requires mempalace to be installed with chronicle and phandalin wings mined.
+Requires mempalace to be installed with chronicle and phandalin wings mined
+(or, for a corpus campaign, its canon wings).
 """
 
 import argparse
+import json
 import os
 import re
+import shutil
 import subprocess
 import sys
 from pathlib import Path
+
+from campaignlib.config import load_config
+from campaignlib.constants import config_path
+from campaignlib.mempalace_wings import (
+    CORPUS_MARKER,
+    MempalaceWings,
+    MempalaceWingsError,
+    resolve_mempalace_wings,
+)
 
 # ── Configuration ────────────────────────────────────────────────────────────
 
 CAMPAIGN_DIR = Path(os.environ.get("CAMPAIGN_DIR", Path.cwd())).resolve()
 TRACKING_DIR = CAMPAIGN_DIR / "docs" / "tracking"
-MP_BIN = "/home/kroussos/worldanvil_pipeline/venv/bin/mempalace"
+
+def _resolve_mp_bin() -> str:
+    """The mempalace console script: this interpreter's venv, else $PATH."""
+    sibling = Path(sys.executable).parent / "mempalace"
+    if sibling.exists():
+        return str(sibling)
+    return shutil.which("mempalace") or str(sibling)
+
+
+MP_BIN = _resolve_mp_bin()
+
+
+def _resolve_mneme_bin() -> str:
+    """The mneme console script: this interpreter's venv, else $PATH."""
+    sibling = Path(sys.executable).parent / "mneme"
+    if sibling.exists():
+        return str(sibling)
+    return shutil.which("mneme") or str(sibling)
+
+
+MNEME_BIN = _resolve_mneme_bin()
+ARCS_KIND = "arcs"
+
+
+class CorpusTocError(Exception):
+    """mneme could not give the corpus ``arcs`` files; the caller must refuse."""
+
+
+def corpus_arc_files(campaign_dir: Path) -> list[Path]:
+    """The ``arcs`` kind's files from the mneme corpus TOC, in TOC order.
+
+    Takes files only from ``kinds["arcs"]["files"][*]["path"]`` (campaign-
+    relative). Raises CorpusTocError on any failure; never falls back to a glob.
+    """
+    campaign_dir = Path(campaign_dir)
+    cmd = [
+        MNEME_BIN, "corpus", "toc", campaign_dir.name,
+        "--dir", str(campaign_dir), "--kind", ARCS_KIND, "--json",
+    ]
+    try:
+        proc = subprocess.run(cmd, capture_output=True, text=True, timeout=60, check=False)
+    except (OSError, subprocess.TimeoutExpired) as e:
+        raise CorpusTocError(f"could not run `{' '.join(cmd)}`: {e}") from e
+    if proc.returncode != 0:
+        raise CorpusTocError(
+            (proc.stderr or proc.stdout).strip()
+            or f"mneme exited {proc.returncode} with no message"
+        )
+    try:
+        toc = json.loads(proc.stdout)
+        if toc.get("valid") is False:
+            raise CorpusTocError("mneme reports the corpus is not valid")
+        files = toc["kinds"][ARCS_KIND]["files"]
+        return [campaign_dir / f["path"] for f in files]
+    except CorpusTocError:
+        raise
+    except (ValueError, KeyError, TypeError, AttributeError) as e:
+        raise CorpusTocError(
+            f"mneme gave no usable '{ARCS_KIND}' kind in its TOC ({e!r})"
+        ) from e
+
+
+def load_wings(campaign_dir: Path) -> MempalaceWings:
+    """Resolve the campaign's wings from config/config.yaml (absent = empty section).
+
+    Only a corpus campaign's config is read: without a corpus the wings are
+    hardcoded, so a config problem must not change today's behaviour.
+    Raises MempalaceWingsError on a corpus campaign whose face lacks canon_wings.
+    """
+    cfg_file = config_path(campaign_dir, "config.yaml")
+    mp_cfg = None
+    if (Path(campaign_dir) / CORPUS_MARKER).is_file() and cfg_file.is_file():
+        config, _ = load_config(str(cfg_file))
+        mp_cfg = (config or {}).get("mempalace")
+    return resolve_mempalace_wings(mp_cfg, campaign_dir)
 
 
 # ── Mempalace search ────────────────────────────────────────────────────────
@@ -88,8 +187,15 @@ def search_mempalace(
 
 # ── Score document discovery ─────────────────────────────────────────────────
 
-def find_score_file(character: str) -> Path | None:
-    """Search mempalace for the character's score tracking doc, return its path."""
+def find_score_file(
+    character: str, tracking_dir: Path | None = None
+) -> Path | None:
+    """Find the character's score tracking doc (non-corpus campaigns).
+
+    Searches mempalace (phandalin/arcs) first, then globs the tracking
+    directory. Corpus campaigns use pick_corpus_score_file instead.
+    """
+    tracking_dir = TRACKING_DIR if tracking_dir is None else tracking_dir
     results = search_mempalace(
         f"{character} score triggers", wing="phandalin", room="arcs", top=5
     )
@@ -99,12 +205,21 @@ def find_score_file(character: str) -> Path | None:
         if not source:
             continue
         # Try to find it in the tracking directory
-        candidate = TRACKING_DIR / source
+        candidate = tracking_dir / source
         if candidate.exists():
             return candidate
     # Fallback: glob the tracking directory for the character name
-    for f in TRACKING_DIR.glob("*.md"):
+    for f in tracking_dir.glob("*.md"):
         if character.lower() in f.name.lower():
+            return f
+    return None
+
+
+def pick_corpus_score_file(character: str, files: list[Path]) -> Path | None:
+    """First TOC file whose basename contains the character name and ends .md."""
+    for f in files:
+        name = f.name.lower()
+        if name.endswith(".md") and character.lower() in name:
             return f
     return None
 
@@ -199,16 +314,57 @@ def truncate_for_search(description: str, max_len: int = 200) -> str:
 
 # ── Main search logic ────────────────────────────────────────────────────────
 
-def search_triggers(character: str, top: int = 3) -> str:
-    """Find score doc, extract triggers, search chronicle for candidates."""
-    # Step 1: Find the score tracking document
-    score_file = find_score_file(character)
-    if score_file is None:
+def search_wings(query: str, wings: list[str], top: int) -> list[dict]:
+    """Search each wing, merge, sort by parseable score (best first), keep top N."""
+    merged: list[dict] = []
+    for wing in wings:
+        merged.extend(search_mempalace(query, wing=wing, top=top))
+    errors = [r for r in merged if "error" in r]
+    hits = [r for r in merged if "error" not in r]
+
+    def key(r: dict) -> float:
+        try:
+            return float(str(r.get("score", "")).strip().rstrip("%"))
+        except ValueError:
+            return float("-inf")
+
+    hits.sort(key=key, reverse=True)  # stable: unparseable scores keep wing order
+    return errors + hits[:top]
+
+
+def search_triggers(
+    character: str, top: int = 3, campaign_dir: Path | None = None
+) -> str:
+    """Find score doc, extract triggers, search the wings for candidates."""
+    campaign_dir = CAMPAIGN_DIR if campaign_dir is None else campaign_dir
+    tracking_dir = campaign_dir / "docs" / "tracking"
+    wings = load_wings(campaign_dir)
+    corpus = wings.is_corpus
+
+    if corpus and not wings.canon_wings:
         return (
-            f"Could not find a score tracking document for '{character}'.\n"
-            f"Searched mempalace (phandalin/arcs) and {TRACKING_DIR}/.\n"
-            f"Available tracking files: {', '.join(f.name for f in TRACKING_DIR.glob('*.md'))}"
+            "No canon wings are declared for this campaign (canon_wings is "
+            "empty), so there is nothing to search for trigger candidates."
         )
+
+    # Step 1: Find the score tracking document
+    if corpus:
+        arc_files = corpus_arc_files(campaign_dir)  # raises CorpusTocError
+        score_file = pick_corpus_score_file(character, arc_files)
+        if score_file is None:
+            return (
+                f"Could not find a score tracking document for '{character}'.\n"
+                f"Searched the corpus kind '{ARCS_KIND}' (from mneme).\n"
+                f"Available arcs files: {', '.join(f.name for f in arc_files)}"
+            )
+    else:
+        score_file = find_score_file(character, tracking_dir=tracking_dir)
+        if score_file is None:
+            return (
+                f"Could not find a score tracking document for '{character}'.\n"
+                f"Searched mempalace (phandalin/arcs) and {tracking_dir}/.\n"
+                f"Available tracking files: {', '.join(f.name for f in tracking_dir.glob('*.md'))}"
+            )
 
     # Step 2: Read and extract triggers
     text = score_file.read_text(encoding="utf-8")
@@ -230,7 +386,10 @@ def search_triggers(character: str, top: int = 3) -> str:
     lines.append(f"# Arc Score Trigger Candidates: {score_name}")
     lines.append(f"**Character:** {character.title()}")
     lines.append(f"**Score file:** {score_file.name}")
-    lines.append(f"**Source wing:** chronicle (timeline facts)")
+    if corpus:
+        lines.append(f"**Source wing:** {', '.join(wings.canon_wings)} (canon wings)")
+    else:
+        lines.append("**Source wing:** chronicle (timeline facts)")
     lines.append(f"**Triggers found:** {len(triggers)}")
     lines.append("")
     lines.append("---")
@@ -243,7 +402,10 @@ def search_triggers(character: str, top: int = 3) -> str:
 
         # Use the trigger description as the semantic search query
         query = truncate_for_search(trigger["description"])
-        results = search_mempalace(query, wing="chronicle", top=top)
+        if corpus:
+            results = search_wings(query, wings.canon_wings, top)
+        else:
+            results = search_mempalace(query, wing="chronicle", top=top)
 
         has_results = False
         for r in results:
@@ -259,7 +421,8 @@ def search_triggers(character: str, top: int = 3) -> str:
             lines.append("")
 
         if not has_results:
-            lines.append("*No candidates found in chronicle.*")
+            where = ", ".join(wings.canon_wings) if corpus else "chronicle"
+            lines.append(f"*No candidates found in {where}.*")
             lines.append("")
 
         lines.append("")
@@ -285,19 +448,33 @@ def main():
     )
     args = parser.parse_args()
 
+    try:
+        wings = load_wings(CAMPAIGN_DIR)
+        arc_files = corpus_arc_files(CAMPAIGN_DIR) if (
+            wings.is_corpus and not args.character
+        ) else []
+        if args.character:
+            print(search_triggers(args.character, top=args.top))
+            return
+    except (MempalaceWingsError, CorpusTocError) as exc:
+        print(f"arc_triggers: {exc}", file=sys.stderr)
+        sys.exit(1)
+
     if not args.character:
-        # List available tracking files
         print("Usage: arc_triggers.py --character <name>")
         print("")
-        print(f"Tracking files in {TRACKING_DIR}:")
-        for f in sorted(TRACKING_DIR.glob("*.md")):
-            print(f"  {f.name}")
+        if wings.is_corpus:
+            print(f"Score files in corpus kind '{ARCS_KIND}':")
+            for f in arc_files:
+                print(f"  {f.name}")
+        else:
+            print(f"Tracking files in {TRACKING_DIR}:")
+            for f in sorted(TRACKING_DIR.glob("*.md")):
+                print(f"  {f.name}")
         print("")
         print("The character name is used to search mempalace for the")
         print("matching score document — it doesn't need to be exact.")
         return
-
-    print(search_triggers(args.character, top=args.top))
 
 
 if __name__ == "__main__":
