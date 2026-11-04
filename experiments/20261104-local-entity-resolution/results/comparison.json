@@ -1,0 +1,340 @@
+{
+  "baseline_model": "gpt-6.1-sol",
+  "baseline_effort": "medium",
+  "baseline_metrics": {
+    "strict_exact_matches": 13,
+    "strict_label_and_evidence_matches": 13,
+    "strict_cases": 13,
+    "evidence_failures": [],
+    "strict_false_coidentity": [],
+    "surface_only_abstentions": 16,
+    "exploratory_unresolved_coidentity": [],
+    "exploratory": [
+      {
+        "id": "q04",
+        "relation": "same_referent",
+        "draft_expected": "same_referent"
+      },
+      {
+        "id": "q14",
+        "relation": "same_referent",
+        "draft_expected": "same_referent"
+      },
+      {
+        "id": "q16",
+        "relation": "overlap_or_membership",
+        "draft_expected": "ambiguous"
+      }
+    ],
+    "coidentity_conflicts": []
+  },
+  "local_modes": [
+    {
+      "run": "/tmp/orc-identity-qwen-off-20261104",
+      "metrics": {
+        "strict_exact_matches": null,
+        "strict_cases": 13,
+        "surface_only_abstentions": 16,
+        "protocol_failures": {
+          "context": {
+            "status": "protocol_failure",
+            "error": "Expecting ',' delimiter: line 353 column 15 (char 14382)",
+            "raw_response_sha256": "e83c0452ee7110bda6e3e9233a1cab5f87d8c5a1b6e924a62448f3fc4d64862b"
+          }
+        }
+      },
+      "measurements": {
+        "context": {
+          "model": "qwen3.8-flash-next",
+          "served_model": "qwen3.8-flash-next",
+          "thinking": false,
+          "temperature": 0,
+          "max_tokens": 16000,
+          "elapsed_seconds": 108.42173560406081,
+          "usage": {
+            "completion_tokens": 4609,
+            "prompt_tokens": 8503,
+            "total_tokens": 13112,
+            "completion_tokens_details": {
+              "accepted_prediction_tokens": null,
+              "audio_tokens": null,
+              "reasoning_tokens": 0,
+              "rejected_prediction_tokens": null
+            },
+            "prompt_tokens_details": null
+          },
+          "finish_reason": "stop",
+          "reasoning_characters": 0,
+          "request_extras": {
+            "chat_template_kwargs": {
+              "enable_thinking": false
+            }
+          },
+          "structured_output": "none",
+          "output_schema_sha256": null,
+          "status": "protocol_failure"
+        },
+        "surface_only": {
+          "model": "qwen3.8-flash-next",
+          "served_model": "qwen3.8-flash-next",
+          "thinking": false,
+          "temperature": 0,
+          "max_tokens": 16000,
+          "elapsed_seconds": 39.77596227196045,
+          "usage": {
+            "completion_tokens": 1237,
+            "prompt_tokens": 1684,
+            "total_tokens": 2921,
+            "completion_tokens_details": {
+              "accepted_prediction_tokens": null,
+              "audio_tokens": null,
+              "reasoning_tokens": 0,
+              "rejected_prediction_tokens": null
+            },
+            "prompt_tokens_details": null
+          },
+          "finish_reason": "stop",
+          "reasoning_characters": 0,
+          "request_extras": {
+            "chat_template_kwargs": {
+              "enable_thinking": false
+            }
+          },
+          "structured_output": "none",
+          "output_schema_sha256": null,
+          "status": "response_received_not_yet_scored"
+        }
+      },
+      "matches_baseline_on_this_test": false,
+      "differences": [],
+      "report_sha256": null
+    },
+    {
+      "run": "/tmp/orc-identity-qwen-on-20261104",
+      "metrics": {
+        "strict_exact_matches": null,
+        "strict_cases": 13,
+        "surface_only_abstentions": null,
+        "protocol_failures": {
+          "context": {
+            "status": "protocol_failure",
+            "error": "model returned empty output (no content)",
+            "raw_response_sha256": null
+          }
+        }
+      },
+      "measurements": {
+        "context": {
+          "model": "qwen3.8-flash-next",
+          "served_model": null,
+          "thinking": true,
+          "temperature": 0,
+          "max_tokens": 16000,
+          "elapsed_seconds": null,
+          "usage": null,
+          "finish_reason": null,
+          "reasoning_characters": null,
+          "request_extras": null,
+          "structured_output": "none",
+          "output_schema_sha256": null,
+          "status": "protocol_failure"
+        },
+        "surface_only": {
+          "model": "qwen3.8-flash-next",
+          "served_model": null,
+          "thinking": true,
+          "temperature": 0,
+          "max_tokens": 16000,
+          "elapsed_seconds": null,
+          "usage": null,
+          "finish_reason": null,
+          "reasoning_characters": null,
+          "request_extras": null,
+          "structured_output": "none",
+          "output_schema_sha256": null,
+          "status": "not_run_after_context_failure"
+        }
+      },
+      "matches_baseline_on_this_test": false,
+      "differences": [],
+      "report_sha256": null
+    },
+    {
+      "run": "/tmp/orc-identity-qwen-schema-20261104",
+      "metrics": {
+        "strict_exact_matches": 11,
+        "strict_label_and_evidence_matches": 9,
+        "strict_cases": 13,
+        "evidence_failures": [
+          "q02",
+          "q04",
+          "q13"
+        ],
+        "strict_false_coidentity": [],
+        "surface_only_abstentions": 16,
+        "exploratory_unresolved_coidentity": [
+          "q16"
+        ],
+        "exploratory": [
+          {
+            "id": "q04",
+            "relation": "same_referent",
+            "draft_expected": "same_referent"
+          },
+          {
+            "id": "q14",
+            "relation": "distinct_referents",
+            "draft_expected": "same_referent"
+          },
+          {
+            "id": "q16",
+            "relation": "same_referent",
+            "draft_expected": "ambiguous"
+          }
+        ],
+        "coidentity_conflicts": []
+      },
+      "measurements": {
+        "context": {
+          "model": "qwen3.8-flash-next",
+          "served_model": "qwen3.8-flash-next",
+          "thinking": false,
+          "temperature": 0,
+          "max_tokens": 16000,
+          "elapsed_seconds": 101.71980247297324,
+          "usage": {
+            "completion_tokens": 4703,
+            "prompt_tokens": 8503,
+            "total_tokens": 13206,
+            "completion_tokens_details": {
+              "accepted_prediction_tokens": null,
+              "audio_tokens": null,
+              "reasoning_tokens": 0,
+              "rejected_prediction_tokens": null
+            },
+            "prompt_tokens_details": null
+          },
+          "finish_reason": "stop",
+          "reasoning_characters": 0,
+          "request_extras": {
+            "chat_template_kwargs": {
+              "enable_thinking": false
+            }
+          },
+          "structured_output": "json-schema",
+          "output_schema_sha256": "c8eeeadf51bd8ecbfca26ea41ad90aaa474ab7957d977e37f7c11a962e2efe68",
+          "status": "response_received_not_yet_scored"
+        },
+        "surface_only": {
+          "model": "qwen3.8-flash-next",
+          "served_model": "qwen3.8-flash-next",
+          "thinking": false,
+          "temperature": 0,
+          "max_tokens": 16000,
+          "elapsed_seconds": 25.343018951825798,
+          "usage": {
+            "completion_tokens": 1237,
+            "prompt_tokens": 1684,
+            "total_tokens": 2921,
+            "completion_tokens_details": {
+              "accepted_prediction_tokens": null,
+              "audio_tokens": null,
+              "reasoning_tokens": 0,
+              "rejected_prediction_tokens": null
+            },
+            "prompt_tokens_details": null
+          },
+          "finish_reason": "stop",
+          "reasoning_characters": 0,
+          "request_extras": {
+            "chat_template_kwargs": {
+              "enable_thinking": false
+            }
+          },
+          "structured_output": "json-schema",
+          "output_schema_sha256": "c8eeeadf51bd8ecbfca26ea41ad90aaa474ab7957d977e37f7c11a962e2efe68",
+          "status": "response_received_not_yet_scored"
+        }
+      },
+      "matches_baseline_on_this_test": false,
+      "differences": [
+        {
+          "id": "q02",
+          "strict": true,
+          "draft_expected": "same_referent",
+          "baseline": "same_referent",
+          "local": "same_referent",
+          "evidence_errors": [
+            "quote is from the passage but does not cover marked reference: rbd3c2180ce",
+            "evidence does not cover both exact marked references"
+          ]
+        },
+        {
+          "id": "q04",
+          "strict": false,
+          "draft_expected": "same_referent",
+          "baseline": "same_referent",
+          "local": "same_referent",
+          "evidence_errors": [
+            "quote absent from exact passage: rf142fc02e5",
+            "evidence does not cover both exact marked references"
+          ]
+        },
+        {
+          "id": "q07",
+          "strict": true,
+          "draft_expected": "separate_scope",
+          "baseline": "separate_scope",
+          "local": "overlap_or_membership",
+          "evidence_errors": []
+        },
+        {
+          "id": "q13",
+          "strict": true,
+          "draft_expected": "distinct_referents",
+          "baseline": "distinct_referents",
+          "local": "distinct_referents",
+          "evidence_errors": [
+            "quote absent from exact passage: r2f9d0698bb",
+            "evidence does not cover both exact marked references"
+          ]
+        },
+        {
+          "id": "q14",
+          "strict": false,
+          "draft_expected": "same_referent",
+          "baseline": "same_referent",
+          "local": "distinct_referents",
+          "evidence_errors": []
+        },
+        {
+          "id": "q15",
+          "strict": true,
+          "draft_expected": "separate_scope",
+          "baseline": "separate_scope",
+          "local": "distinct_referents",
+          "evidence_errors": []
+        },
+        {
+          "id": "q16",
+          "strict": false,
+          "draft_expected": "ambiguous",
+          "baseline": "overlap_or_membership",
+          "local": "same_referent",
+          "evidence_errors": []
+        }
+      ],
+      "report_sha256": "e72b4577896bcf59c832d0f1424f51c1d81c332ac24d3c1fccb4a15d18b519e4"
+    }
+  ],
+  "criteria": "Complete parseable outputs; 13/13 stricter source expectations; zero quotation/target failures, strict false coidentity or graph conflicts; 16/16 words-only abstentions; no new exact-identity assertion on the unresolved exploratory membership case.",
+  "limits": [
+    "Small researcher-scored fixture, not general model equivalence or GM adjudication.",
+    "Prompts, systems, payload, draft gold, case order and evaluator are unchanged.",
+    "Codex medium and local thinking modes are not matched compute budgets.",
+    "Local elapsed time is measured; no comparable Codex timing was recorded.",
+    "The local server is shared and requests may overlap; elapsed times are observational, not isolated throughput benchmarks.",
+    "The structured follow-up adds native output-schema enforcement; system and user text remain byte-identical.",
+    "Source-backed candidate proposals remain unreviewed; no registry changes."
+  ]
+}

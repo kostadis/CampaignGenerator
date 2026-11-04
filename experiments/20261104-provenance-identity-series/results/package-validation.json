@@ -1,0 +1,9 @@
+{
+  "package_files_verified": 59,
+  "private_files_verified": 99,
+  "local_markdown_links_valid": true,
+  "model_calls": 0,
+  "tests_passed": 78,
+  "offline_replay": "Sol, Terra, local Qwen metrics and 14 cache checks reproduced",
+  "canonical_writes": false
+}

@@ -1,0 +1,4 @@
+__pycache__/
+results/*.sqlite3
+results/evaluation/
+results/final/*.sqlite3

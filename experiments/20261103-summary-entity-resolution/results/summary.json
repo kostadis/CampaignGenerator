@@ -1,0 +1,994 @@
+{
+  "trials": [
+    {
+      "name": "offset_only",
+      "registration": {
+        "gold_sha256": "ce3333cb0dac6b1b6090d395fb8902bf48f3dc30e7a7a27b5d9e9506c23eadea",
+        "payload_sha256": "edbe9d289dfb5e2c87332f321270ffcee504323a994f3aa73ce1696a69d93d2a",
+        "input_hashes_sha256": "930c0c0dae99fb3a5c7f1ec3e189470fc2abbc1e1b239bd2738a9b4e39d3d015",
+        "status": "draft source-based expectations frozen before model calls; not GM rulings"
+      },
+      "paired_system_instructions": true,
+      "arms": {
+        "context": {
+          "model_record": {
+            "arm": "context",
+            "backend": "codex-cli",
+            "model": "gpt-6.1-sol",
+            "effort": "medium",
+            "payload_sha256": "edbe9d289dfb5e2c87332f321270ffcee504323a994f3aa73ce1696a69d93d2a",
+            "system_sha256": "b15b378b16e639b850e87c617179120ee2fb6086f6ab0ad8f2cefaf67cf9e1ff",
+            "prompt_sha256": "1d78583d4e890a74ce3c6ea738efa214a868676e189621ace802738b0eef3c84",
+            "response_sha256": "b9990c980d2e34f99bd2ec93e9d193c21e717f7095a8395c5f9b29ee747d8a47",
+            "status": "response_received_not_yet_scored",
+            "gold_sent": false
+          },
+          "cases": 16,
+          "strict_cases": 13,
+          "strict_exact_matches": 12,
+          "abstentions": 0,
+          "positive_coidentity_proposals": 4,
+          "strict_false_coidentity": [],
+          "evidence_failures": [
+            "q02",
+            "q04",
+            "q05",
+            "q06",
+            "q13",
+            "q16"
+          ],
+          "cases_detail": [
+            {
+              "id": "q01",
+              "relation": "distinct_referents",
+              "draft_expected_relation": "distinct_referents",
+              "strict_source_expectation": true,
+              "matches_draft_expectation": true,
+              "evidence_valid": true,
+              "evidence_errors": []
+            },
+            {
+              "id": "q02",
+              "relation": "same_referent",
+              "draft_expected_relation": "same_referent",
+              "strict_source_expectation": true,
+              "matches_draft_expectation": true,
+              "evidence_valid": false,
+              "evidence_errors": [
+                "quote is from the passage but does not cover marked reference: rbd3c2180ce",
+                "evidence does not cover both exact marked references"
+              ]
+            },
+            {
+              "id": "q03",
+              "relation": "distinct_referents",
+              "draft_expected_relation": "distinct_referents",
+              "strict_source_expectation": true,
+              "matches_draft_expectation": true,
+              "evidence_valid": true,
+              "evidence_errors": []
+            },
+            {
+              "id": "q04",
+              "relation": "same_referent",
+              "draft_expected_relation": "same_referent",
+              "strict_source_expectation": false,
+              "matches_draft_expectation": true,
+              "evidence_valid": false,
+              "evidence_errors": [
+                "quote is from the passage but does not cover marked reference: rd2d35b3d4e",
+                "evidence does not cover both exact marked references"
+              ]
+            },
+            {
+              "id": "q05",
+              "relation": "distinct_referents",
+              "draft_expected_relation": "same_referent",
+              "strict_source_expectation": true,
+              "matches_draft_expectation": false,
+              "evidence_valid": false,
+              "evidence_errors": [
+                "quote is from the passage but does not cover marked reference: r3f38cd3d5c",
+                "evidence does not cover both exact marked references"
+              ]
+            },
+            {
+              "id": "q06",
+              "relation": "distinct_referents",
+              "draft_expected_relation": "distinct_referents",
+              "strict_source_expectation": true,
+              "matches_draft_expectation": true,
+              "evidence_valid": false,
+              "evidence_errors": [
+                "quote is from the passage but does not cover marked reference: r9296b83303",
+                "quote is from the passage but does not cover marked reference: r3f38cd3d5c",
+                "evidence does not cover both exact marked references"
+              ]
+            },
+            {
+              "id": "q07",
+              "relation": "separate_scope",
+              "draft_expected_relation": "separate_scope",
+              "strict_source_expectation": true,
+              "matches_draft_expectation": true,
+              "evidence_valid": true,
+              "evidence_errors": []
+            },
+            {
+              "id": "q08",
+              "relation": "distinct_referents",
+              "draft_expected_relation": "distinct_referents",
+              "strict_source_expectation": true,
+              "matches_draft_expectation": true,
+              "evidence_valid": true,
+              "evidence_errors": []
+            },
+            {
+              "id": "q09",
+              "relation": "same_referent",
+              "draft_expected_relation": "same_referent",
+              "strict_source_expectation": true,
+              "matches_draft_expectation": true,
+              "evidence_valid": true,
+              "evidence_errors": []
+            },
+            {
+              "id": "q10",
+              "relation": "overlap_or_membership",
+              "draft_expected_relation": "overlap_or_membership",
+              "strict_source_expectation": true,
+              "matches_draft_expectation": true,
+              "evidence_valid": true,
+              "evidence_errors": []
+            },
+            {
+              "id": "q11",
+              "relation": "distinct_referents",
+              "draft_expected_relation": "distinct_referents",
+              "strict_source_expectation": true,
+              "matches_draft_expectation": true,
+              "evidence_valid": true,
+              "evidence_errors": []
+            },
+            {
+              "id": "q12",
+              "relation": "corrected_nonreferent",
+              "draft_expected_relation": "corrected_nonreferent",
+              "strict_source_expectation": true,
+              "matches_draft_expectation": true,
+              "evidence_valid": true,
+              "evidence_errors": []
+            },
+            {
+              "id": "q13",
+              "relation": "distinct_referents",
+              "draft_expected_relation": "distinct_referents",
+              "strict_source_expectation": true,
+              "matches_draft_expectation": true,
+              "evidence_valid": false,
+              "evidence_errors": [
+                "quote is from the passage but does not cover marked reference: r2f9d0698bb",
+                "quote is from the passage but does not cover marked reference: rbd3c2180ce",
+                "evidence does not cover both exact marked references"
+              ]
+            },
+            {
+              "id": "q14",
+              "relation": "same_referent",
+              "draft_expected_relation": "same_referent",
+              "strict_source_expectation": false,
+              "matches_draft_expectation": true,
+              "evidence_valid": true,
+              "evidence_errors": []
+            },
+            {
+              "id": "q15",
+              "relation": "separate_scope",
+              "draft_expected_relation": "separate_scope",
+              "strict_source_expectation": true,
+              "matches_draft_expectation": true,
+              "evidence_valid": true,
+              "evidence_errors": []
+            },
+            {
+              "id": "q16",
+              "relation": "overlap_or_membership",
+              "draft_expected_relation": "ambiguous",
+              "strict_source_expectation": false,
+              "matches_draft_expectation": false,
+              "evidence_valid": false,
+              "evidence_errors": [
+                "quote is from the passage but does not cover marked reference: rc10e49c687"
+              ]
+            }
+          ]
+        },
+        "surface_only": {
+          "model_record": {
+            "arm": "surface_only",
+            "backend": "codex-cli",
+            "model": "gpt-6.1-sol",
+            "effort": "medium",
+            "payload_sha256": "edbe9d289dfb5e2c87332f321270ffcee504323a994f3aa73ce1696a69d93d2a",
+            "system_sha256": "b15b378b16e639b850e87c617179120ee2fb6086f6ab0ad8f2cefaf67cf9e1ff",
+            "prompt_sha256": "1536b75bfa5b61f2f92224f0020d289a29965efa0a7cda7fa7771b37270d10fe",
+            "response_sha256": "6af4038c607585bc8817f0e747223d777d10d2c829b4c9d8aa31a484f8f39f8c",
+            "status": "response_received_not_yet_scored",
+            "gold_sent": false
+          },
+          "cases": 16,
+          "strict_cases": 13,
+          "strict_exact_matches": 0,
+          "abstentions": 16,
+          "positive_coidentity_proposals": 0,
+          "strict_false_coidentity": [],
+          "evidence_failures": [],
+          "cases_detail": [
+            {
+              "id": "q01",
+              "relation": "ambiguous",
+              "draft_expected_relation": "distinct_referents",
+              "strict_source_expectation": true,
+              "matches_draft_expectation": false,
+              "evidence_valid": null,
+              "evidence_errors": []
+            },
+            {
+              "id": "q02",
+              "relation": "ambiguous",
+              "draft_expected_relation": "same_referent",
+              "strict_source_expectation": true,
+              "matches_draft_expectation": false,
+              "evidence_valid": null,
+              "evidence_errors": []
+            },
+            {
+              "id": "q03",
+              "relation": "ambiguous",
+              "draft_expected_relation": "distinct_referents",
+              "strict_source_expectation": true,
+              "matches_draft_expectation": false,
+              "evidence_valid": null,
+              "evidence_errors": []
+            },
+            {
+              "id": "q04",
+              "relation": "ambiguous",
+              "draft_expected_relation": "same_referent",
+              "strict_source_expectation": false,
+              "matches_draft_expectation": false,
+              "evidence_valid": null,
+              "evidence_errors": []
+            },
+            {
+              "id": "q05",
+              "relation": "ambiguous",
+              "draft_expected_relation": "same_referent",
+              "strict_source_expectation": true,
+              "matches_draft_expectation": false,
+              "evidence_valid": null,
+              "evidence_errors": []
+            },
+            {
+              "id": "q06",
+              "relation": "ambiguous",
+              "draft_expected_relation": "distinct_referents",
+              "strict_source_expectation": true,
+              "matches_draft_expectation": false,
+              "evidence_valid": null,
+              "evidence_errors": []
+            },
+            {
+              "id": "q07",
+              "relation": "ambiguous",
+              "draft_expected_relation": "separate_scope",
+              "strict_source_expectation": true,
+              "matches_draft_expectation": false,
+              "evidence_valid": null,
+              "evidence_errors": []
+            },
+            {
+              "id": "q08",
+              "relation": "ambiguous",
+              "draft_expected_relation": "distinct_referents",
+              "strict_source_expectation": true,
+              "matches_draft_expectation": false,
+              "evidence_valid": null,
+              "evidence_errors": []
+            },
+            {
+              "id": "q09",
+              "relation": "ambiguous",
+              "draft_expected_relation": "same_referent",
+              "strict_source_expectation": true,
+              "matches_draft_expectation": false,
+              "evidence_valid": null,
+              "evidence_errors": []
+            },
+            {
+              "id": "q10",
+              "relation": "ambiguous",
+              "draft_expected_relation": "overlap_or_membership",
+              "strict_source_expectation": true,
+              "matches_draft_expectation": false,
+              "evidence_valid": null,
+              "evidence_errors": []
+            },
+            {
+              "id": "q11",
+              "relation": "ambiguous",
+              "draft_expected_relation": "distinct_referents",
+              "strict_source_expectation": true,
+              "matches_draft_expectation": false,
+              "evidence_valid": null,
+              "evidence_errors": []
+            },
+            {
+              "id": "q12",
+              "relation": "ambiguous",
+              "draft_expected_relation": "corrected_nonreferent",
+              "strict_source_expectation": true,
+              "matches_draft_expectation": false,
+              "evidence_valid": null,
+              "evidence_errors": []
+            },
+            {
+              "id": "q13",
+              "relation": "ambiguous",
+              "draft_expected_relation": "distinct_referents",
+              "strict_source_expectation": true,
+              "matches_draft_expectation": false,
+              "evidence_valid": null,
+              "evidence_errors": []
+            },
+            {
+              "id": "q14",
+              "relation": "ambiguous",
+              "draft_expected_relation": "same_referent",
+              "strict_source_expectation": false,
+              "matches_draft_expectation": false,
+              "evidence_valid": null,
+              "evidence_errors": []
+            },
+            {
+              "id": "q15",
+              "relation": "ambiguous",
+              "draft_expected_relation": "separate_scope",
+              "strict_source_expectation": true,
+              "matches_draft_expectation": false,
+              "evidence_valid": null,
+              "evidence_errors": []
+            },
+            {
+              "id": "q16",
+              "relation": "ambiguous",
+              "draft_expected_relation": "ambiguous",
+              "strict_source_expectation": false,
+              "matches_draft_expectation": true,
+              "evidence_valid": null,
+              "evidence_errors": []
+            }
+          ]
+        }
+      },
+      "report_sha256": "ab9463615003ee01f4926e896f4ddf0860f71e21918fd9596c652ccf3b4b0ced",
+      "model_record_sha256": {
+        "context": "d5ef78c2a579cdeaeec5279ec9fb1fbec9a1e0e46c2c4768440ee0b4cd152520",
+        "surface_only": "f05d78b7e4dfd0d8babd545322f5e7bfda25b5fc714a27597a015427b8dd2bc7"
+      }
+    },
+    {
+      "name": "explicit_targets",
+      "registration": {
+        "gold_sha256": "ce3333cb0dac6b1b6090d395fb8902bf48f3dc30e7a7a27b5d9e9506c23eadea",
+        "payload_sha256": "4c63668de4aa7f2364e5d71bd979c65ec70234dd4e47dc36a87d90b7d44b1848",
+        "input_hashes_sha256": "930c0c0dae99fb3a5c7f1ec3e189470fc2abbc1e1b239bd2738a9b4e39d3d015",
+        "previous_payload_sha256": "edbe9d289dfb5e2c87332f321270ffcee504323a994f3aa73ce1696a69d93d2a",
+        "change": "Added exact surface and marked local excerpt to prevent target-offset substitution; all raw passages, marked source spans, cases and gold unchanged.",
+        "status": "registered before target-presentation repair call; initial trial retained"
+      },
+      "paired_system_instructions": true,
+      "arms": {
+        "context": {
+          "model_record": {
+            "arm": "context",
+            "backend": "codex-cli",
+            "model": "gpt-6.1-sol",
+            "effort": "medium",
+            "payload_sha256": "4c63668de4aa7f2364e5d71bd979c65ec70234dd4e47dc36a87d90b7d44b1848",
+            "system_sha256": "b590d9eb3da72dbe33c811c13f39a1cbcfb8e5e06788a23bba2df99c9c8bdd90",
+            "prompt_sha256": "3363ad9f238a4f53091a9bac79854c9be3e2e3f649171b0f9172bb936052add1",
+            "response_sha256": "5d940b2b478cb68737e97e6110383883f456e40beb70599629f7a854380df6e6",
+            "status": "response_received_not_yet_scored",
+            "gold_sent": false
+          },
+          "cases": 16,
+          "strict_cases": 13,
+          "strict_exact_matches": 13,
+          "abstentions": 0,
+          "positive_coidentity_proposals": 5,
+          "strict_false_coidentity": [],
+          "evidence_failures": [],
+          "cases_detail": [
+            {
+              "id": "q01",
+              "relation": "distinct_referents",
+              "draft_expected_relation": "distinct_referents",
+              "strict_source_expectation": true,
+              "matches_draft_expectation": true,
+              "evidence_valid": true,
+              "evidence_errors": []
+            },
+            {
+              "id": "q02",
+              "relation": "same_referent",
+              "draft_expected_relation": "same_referent",
+              "strict_source_expectation": true,
+              "matches_draft_expectation": true,
+              "evidence_valid": true,
+              "evidence_errors": []
+            },
+            {
+              "id": "q03",
+              "relation": "distinct_referents",
+              "draft_expected_relation": "distinct_referents",
+              "strict_source_expectation": true,
+              "matches_draft_expectation": true,
+              "evidence_valid": true,
+              "evidence_errors": []
+            },
+            {
+              "id": "q04",
+              "relation": "same_referent",
+              "draft_expected_relation": "same_referent",
+              "strict_source_expectation": false,
+              "matches_draft_expectation": true,
+              "evidence_valid": true,
+              "evidence_errors": []
+            },
+            {
+              "id": "q05",
+              "relation": "same_referent",
+              "draft_expected_relation": "same_referent",
+              "strict_source_expectation": true,
+              "matches_draft_expectation": true,
+              "evidence_valid": true,
+              "evidence_errors": []
+            },
+            {
+              "id": "q06",
+              "relation": "distinct_referents",
+              "draft_expected_relation": "distinct_referents",
+              "strict_source_expectation": true,
+              "matches_draft_expectation": true,
+              "evidence_valid": true,
+              "evidence_errors": []
+            },
+            {
+              "id": "q07",
+              "relation": "separate_scope",
+              "draft_expected_relation": "separate_scope",
+              "strict_source_expectation": true,
+              "matches_draft_expectation": true,
+              "evidence_valid": true,
+              "evidence_errors": []
+            },
+            {
+              "id": "q08",
+              "relation": "distinct_referents",
+              "draft_expected_relation": "distinct_referents",
+              "strict_source_expectation": true,
+              "matches_draft_expectation": true,
+              "evidence_valid": true,
+              "evidence_errors": []
+            },
+            {
+              "id": "q09",
+              "relation": "same_referent",
+              "draft_expected_relation": "same_referent",
+              "strict_source_expectation": true,
+              "matches_draft_expectation": true,
+              "evidence_valid": true,
+              "evidence_errors": []
+            },
+            {
+              "id": "q10",
+              "relation": "overlap_or_membership",
+              "draft_expected_relation": "overlap_or_membership",
+              "strict_source_expectation": true,
+              "matches_draft_expectation": true,
+              "evidence_valid": true,
+              "evidence_errors": []
+            },
+            {
+              "id": "q11",
+              "relation": "distinct_referents",
+              "draft_expected_relation": "distinct_referents",
+              "strict_source_expectation": true,
+              "matches_draft_expectation": true,
+              "evidence_valid": true,
+              "evidence_errors": []
+            },
+            {
+              "id": "q12",
+              "relation": "corrected_nonreferent",
+              "draft_expected_relation": "corrected_nonreferent",
+              "strict_source_expectation": true,
+              "matches_draft_expectation": true,
+              "evidence_valid": true,
+              "evidence_errors": []
+            },
+            {
+              "id": "q13",
+              "relation": "distinct_referents",
+              "draft_expected_relation": "distinct_referents",
+              "strict_source_expectation": true,
+              "matches_draft_expectation": true,
+              "evidence_valid": true,
+              "evidence_errors": []
+            },
+            {
+              "id": "q14",
+              "relation": "same_referent",
+              "draft_expected_relation": "same_referent",
+              "strict_source_expectation": false,
+              "matches_draft_expectation": true,
+              "evidence_valid": true,
+              "evidence_errors": []
+            },
+            {
+              "id": "q15",
+              "relation": "separate_scope",
+              "draft_expected_relation": "separate_scope",
+              "strict_source_expectation": true,
+              "matches_draft_expectation": true,
+              "evidence_valid": true,
+              "evidence_errors": []
+            },
+            {
+              "id": "q16",
+              "relation": "overlap_or_membership",
+              "draft_expected_relation": "ambiguous",
+              "strict_source_expectation": false,
+              "matches_draft_expectation": false,
+              "evidence_valid": true,
+              "evidence_errors": []
+            }
+          ]
+        },
+        "surface_only": {
+          "model_record": {
+            "arm": "surface_only",
+            "backend": "codex-cli",
+            "model": "gpt-6.1-sol",
+            "effort": "medium",
+            "payload_sha256": "4c63668de4aa7f2364e5d71bd979c65ec70234dd4e47dc36a87d90b7d44b1848",
+            "system_sha256": "b590d9eb3da72dbe33c811c13f39a1cbcfb8e5e06788a23bba2df99c9c8bdd90",
+            "prompt_sha256": "1536b75bfa5b61f2f92224f0020d289a29965efa0a7cda7fa7771b37270d10fe",
+            "response_sha256": "a6928d6b97691e833bec6205d0db4a79714bff2db167bf164f76193aaa8eaebb",
+            "status": "response_received_not_yet_scored",
+            "gold_sent": false
+          },
+          "cases": 16,
+          "strict_cases": 13,
+          "strict_exact_matches": 0,
+          "abstentions": 16,
+          "positive_coidentity_proposals": 0,
+          "strict_false_coidentity": [],
+          "evidence_failures": [],
+          "cases_detail": [
+            {
+              "id": "q01",
+              "relation": "ambiguous",
+              "draft_expected_relation": "distinct_referents",
+              "strict_source_expectation": true,
+              "matches_draft_expectation": false,
+              "evidence_valid": null,
+              "evidence_errors": []
+            },
+            {
+              "id": "q02",
+              "relation": "ambiguous",
+              "draft_expected_relation": "same_referent",
+              "strict_source_expectation": true,
+              "matches_draft_expectation": false,
+              "evidence_valid": null,
+              "evidence_errors": []
+            },
+            {
+              "id": "q03",
+              "relation": "ambiguous",
+              "draft_expected_relation": "distinct_referents",
+              "strict_source_expectation": true,
+              "matches_draft_expectation": false,
+              "evidence_valid": null,
+              "evidence_errors": []
+            },
+            {
+              "id": "q04",
+              "relation": "ambiguous",
+              "draft_expected_relation": "same_referent",
+              "strict_source_expectation": false,
+              "matches_draft_expectation": false,
+              "evidence_valid": null,
+              "evidence_errors": []
+            },
+            {
+              "id": "q05",
+              "relation": "ambiguous",
+              "draft_expected_relation": "same_referent",
+              "strict_source_expectation": true,
+              "matches_draft_expectation": false,
+              "evidence_valid": null,
+              "evidence_errors": []
+            },
+            {
+              "id": "q06",
+              "relation": "ambiguous",
+              "draft_expected_relation": "distinct_referents",
+              "strict_source_expectation": true,
+              "matches_draft_expectation": false,
+              "evidence_valid": null,
+              "evidence_errors": []
+            },
+            {
+              "id": "q07",
+              "relation": "ambiguous",
+              "draft_expected_relation": "separate_scope",
+              "strict_source_expectation": true,
+              "matches_draft_expectation": false,
+              "evidence_valid": null,
+              "evidence_errors": []
+            },
+            {
+              "id": "q08",
+              "relation": "ambiguous",
+              "draft_expected_relation": "distinct_referents",
+              "strict_source_expectation": true,
+              "matches_draft_expectation": false,
+              "evidence_valid": null,
+              "evidence_errors": []
+            },
+            {
+              "id": "q09",
+              "relation": "ambiguous",
+              "draft_expected_relation": "same_referent",
+              "strict_source_expectation": true,
+              "matches_draft_expectation": false,
+              "evidence_valid": null,
+              "evidence_errors": []
+            },
+            {
+              "id": "q10",
+              "relation": "ambiguous",
+              "draft_expected_relation": "overlap_or_membership",
+              "strict_source_expectation": true,
+              "matches_draft_expectation": false,
+              "evidence_valid": null,
+              "evidence_errors": []
+            },
+            {
+              "id": "q11",
+              "relation": "ambiguous",
+              "draft_expected_relation": "distinct_referents",
+              "strict_source_expectation": true,
+              "matches_draft_expectation": false,
+              "evidence_valid": null,
+              "evidence_errors": []
+            },
+            {
+              "id": "q12",
+              "relation": "ambiguous",
+              "draft_expected_relation": "corrected_nonreferent",
+              "strict_source_expectation": true,
+              "matches_draft_expectation": false,
+              "evidence_valid": null,
+              "evidence_errors": []
+            },
+            {
+              "id": "q13",
+              "relation": "ambiguous",
+              "draft_expected_relation": "distinct_referents",
+              "strict_source_expectation": true,
+              "matches_draft_expectation": false,
+              "evidence_valid": null,
+              "evidence_errors": []
+            },
+            {
+              "id": "q14",
+              "relation": "ambiguous",
+              "draft_expected_relation": "same_referent",
+              "strict_source_expectation": false,
+              "matches_draft_expectation": false,
+              "evidence_valid": null,
+              "evidence_errors": []
+            },
+            {
+              "id": "q15",
+              "relation": "ambiguous",
+              "draft_expected_relation": "separate_scope",
+              "strict_source_expectation": true,
+              "matches_draft_expectation": false,
+              "evidence_valid": null,
+              "evidence_errors": []
+            },
+            {
+              "id": "q16",
+              "relation": "ambiguous",
+              "draft_expected_relation": "ambiguous",
+              "strict_source_expectation": false,
+              "matches_draft_expectation": true,
+              "evidence_valid": null,
+              "evidence_errors": []
+            }
+          ]
+        }
+      },
+      "report_sha256": "70b457e30fd1a521cc5ffa5434a33de095b0db65abe985fa2e29d3b49ae6909d",
+      "model_record_sha256": {
+        "context": "cb45db8b444fbc19c1f0d58562dfc50319c61aceb46e701f5feb5ba81648b4af",
+        "surface_only": "0f5110666a782e9abf656295796463a0d166ea72a2fe8ff9099fd7a728f515e7"
+      }
+    }
+  ],
+  "source_hashes": {
+    "summaries/2025-05-28-chapter_03/session-summary.md": "f8c3ba2ce94d054dcbcf3448961bac867c74d0d8279dc9b0021fe4e2b411f8f9",
+    "summaries/2025-06-03-chapter_04/session-summary.md": "6abc71081188ea059514889a0f3d203c442e275eb366ccdedab69b8700c5bfaa",
+    "summaries/2025-06-18-chapter_05-to-find-a-shapeshifter/session-summary.md": "797a23c039e02dfec65028d3f37af28194d4fec13748b1f7300329a3572ee657",
+    "summaries/2025-10-01-chapter_18-freeing-big-al-petunia-and-watching-a-ranch-burn/session-summary.md": "6c44303f5ef6b161ee359ec32722d6256fef5906e8b89d022ac58a329e849051",
+    "summaries/2026-04-07-chapter_39-a-dragon-defeated-a-bard-tempted-a-barbarians-vengeance/session-summary.md": "40a7d2dcec665b46853292fb11719ce2fa34b467808c5767150a12aab12f700a",
+    "summaries/2026-04-29-chapter_42-the-charge-of-the-light-brigade/session-summary.md": "a18a057030501b4569302daca810cb62959fd52940ae9cd2343d9a10f77d07ab",
+    "summaries/2026-05-26-chapter_46-the-aasimar-has-landed/session-summary.md": "1687dc245d638310c38311489542df72c4acd3962aea04556fac90611b5cf7d4"
+  },
+  "reference_provenance": {
+    "rbd3c2180ce": {
+      "id": "rbd3c2180ce",
+      "path": "summaries/2025-06-03-chapter_04/session-summary.md",
+      "source_sha256": "6abc71081188ea059514889a0f3d203c442e275eb366ccdedab69b8700c5bfaa",
+      "source_start": 3598,
+      "source_end": 3602,
+      "source_line": 13,
+      "surface": "ogre",
+      "passage_start": 3421,
+      "passage_end": 4205
+    },
+    "rd2d35b3d4e": {
+      "id": "rd2d35b3d4e",
+      "path": "summaries/2025-06-03-chapter_04/session-summary.md",
+      "source_sha256": "6abc71081188ea059514889a0f3d203c442e275eb366ccdedab69b8700c5bfaa",
+      "source_start": 6487,
+      "source_end": 6491,
+      "source_line": 19,
+      "surface": "ogre",
+      "passage_start": 6374,
+      "passage_end": 7525
+    },
+    "rfb229e3d4a": {
+      "id": "rfb229e3d4a",
+      "path": "summaries/2025-06-03-chapter_04/session-summary.md",
+      "source_sha256": "6abc71081188ea059514889a0f3d203c442e275eb366ccdedab69b8700c5bfaa",
+      "source_start": 23679,
+      "source_end": 23683,
+      "source_line": 208,
+      "surface": "ogre",
+      "passage_start": 21934,
+      "passage_end": 24403
+    },
+    "r20a63f5455": {
+      "id": "r20a63f5455",
+      "path": "summaries/2025-06-03-chapter_04/session-summary.md",
+      "source_sha256": "6abc71081188ea059514889a0f3d203c442e275eb366ccdedab69b8700c5bfaa",
+      "source_start": 23699,
+      "source_end": 23703,
+      "source_line": 208,
+      "surface": "ogre",
+      "passage_start": 21934,
+      "passage_end": 24403
+    },
+    "rf142fc02e5": {
+      "id": "rf142fc02e5",
+      "path": "summaries/2025-06-18-chapter_05-to-find-a-shapeshifter/session-summary.md",
+      "source_sha256": "797a23c039e02dfec65028d3f37af28194d4fec13748b1f7300329a3572ee657",
+      "source_start": 173,
+      "source_end": 177,
+      "source_line": 11,
+      "surface": "ogre",
+      "passage_start": 168,
+      "passage_end": 618
+    },
+    "r3f38cd3d5c": {
+      "id": "r3f38cd3d5c",
+      "path": "summaries/2025-06-03-chapter_04/session-summary.md",
+      "source_sha256": "6abc71081188ea059514889a0f3d203c442e275eb366ccdedab69b8700c5bfaa",
+      "source_start": 12150,
+      "source_end": 12157,
+      "source_line": 129,
+      "surface": "orc two",
+      "passage_start": 11420,
+      "passage_end": 14797
+    },
+    "rba6b9483ca": {
+      "id": "rba6b9483ca",
+      "path": "summaries/2025-06-03-chapter_04/session-summary.md",
+      "source_sha256": "6abc71081188ea059514889a0f3d203c442e275eb366ccdedab69b8700c5bfaa",
+      "source_start": 12727,
+      "source_end": 12734,
+      "source_line": 133,
+      "surface": "Orc two",
+      "passage_start": 11420,
+      "passage_end": 14797
+    },
+    "r9296b83303": {
+      "id": "r9296b83303",
+      "path": "summaries/2025-06-03-chapter_04/session-summary.md",
+      "source_sha256": "6abc71081188ea059514889a0f3d203c442e275eb366ccdedab69b8700c5bfaa",
+      "source_start": 11994,
+      "source_end": 12001,
+      "source_line": 128,
+      "surface": "Orc one",
+      "passage_start": 11420,
+      "passage_end": 14797
+    },
+    "r510459ff23": {
+      "id": "r510459ff23",
+      "path": "summaries/2025-06-03-chapter_04/session-summary.md",
+      "source_sha256": "6abc71081188ea059514889a0f3d203c442e275eb366ccdedab69b8700c5bfaa",
+      "source_start": 14417,
+      "source_end": 14421,
+      "source_line": 145,
+      "surface": "orcs",
+      "passage_start": 11420,
+      "passage_end": 14797
+    },
+    "rf9027687d8": {
+      "id": "rf9027687d8",
+      "path": "summaries/2025-10-01-chapter_18-freeing-big-al-petunia-and-watching-a-ranch-burn/session-summary.md",
+      "source_sha256": "6c44303f5ef6b161ee359ec32722d6256fef5906e8b89d022ac58a329e849051",
+      "source_start": 4541,
+      "source_end": 4544,
+      "source_line": 14,
+      "surface": "orc",
+      "passage_start": 3410,
+      "passage_end": 4706
+    },
+    "r1013aa1970": {
+      "id": "r1013aa1970",
+      "path": "summaries/2026-05-26-chapter_46-the-aasimar-has-landed/session-summary.md",
+      "source_sha256": "1687dc245d638310c38311489542df72c4acd3962aea04556fac90611b5cf7d4",
+      "source_start": 3717,
+      "source_end": 3721,
+      "source_line": 12,
+      "surface": "orcs",
+      "passage_start": 3100,
+      "passage_end": 3926
+    },
+    "r9635419091": {
+      "id": "r9635419091",
+      "path": "summaries/2026-05-26-chapter_46-the-aasimar-has-landed/session-summary.md",
+      "source_sha256": "1687dc245d638310c38311489542df72c4acd3962aea04556fac90611b5cf7d4",
+      "source_start": 3788,
+      "source_end": 3792,
+      "source_line": 12,
+      "surface": "orcs",
+      "passage_start": 3100,
+      "passage_end": 3926
+    },
+    "rc10e49c687": {
+      "id": "rc10e49c687",
+      "path": "summaries/2026-05-26-chapter_46-the-aasimar-has-landed/session-summary.md",
+      "source_sha256": "1687dc245d638310c38311489542df72c4acd3962aea04556fac90611b5cf7d4",
+      "source_start": 5997,
+      "source_end": 6001,
+      "source_line": 18,
+      "surface": "orcs",
+      "passage_start": 5607,
+      "passage_end": 6875
+    },
+    "rf24476cb75": {
+      "id": "rf24476cb75",
+      "path": "summaries/2026-05-26-chapter_46-the-aasimar-has-landed/session-summary.md",
+      "source_sha256": "1687dc245d638310c38311489542df72c4acd3962aea04556fac90611b5cf7d4",
+      "source_start": 6081,
+      "source_end": 6089,
+      "source_line": 18,
+      "surface": "stewards",
+      "passage_start": 5607,
+      "passage_end": 6875
+    },
+    "r33f5d57c3d": {
+      "id": "r33f5d57c3d",
+      "path": "summaries/2026-04-29-chapter_42-the-charge-of-the-light-brigade/session-summary.md",
+      "source_sha256": "a18a057030501b4569302daca810cb62959fd52940ae9cd2343d9a10f77d07ab",
+      "source_start": 12011,
+      "source_end": 12015,
+      "source_line": 55,
+      "surface": "orcs",
+      "passage_start": 11584,
+      "passage_end": 12141
+    },
+    "rbdabc1a7af": {
+      "id": "rbdabc1a7af",
+      "path": "summaries/2026-04-29-chapter_42-the-charge-of-the-light-brigade/session-summary.md",
+      "source_sha256": "a18a057030501b4569302daca810cb62959fd52940ae9cd2343d9a10f77d07ab",
+      "source_start": 11974,
+      "source_end": 11978,
+      "source_line": 55,
+      "surface": "orcs",
+      "passage_start": 11584,
+      "passage_end": 12141
+    },
+    "r4733d0df44": {
+      "id": "r4733d0df44",
+      "path": "summaries/2026-04-29-chapter_42-the-charge-of-the-light-brigade/session-summary.md",
+      "source_sha256": "a18a057030501b4569302daca810cb62959fd52940ae9cd2343d9a10f77d07ab",
+      "source_start": 11025,
+      "source_end": 11029,
+      "source_line": 51,
+      "surface": "orcs",
+      "passage_start": 10888,
+      "passage_end": 11162
+    },
+    "raa61eff1eb": {
+      "id": "raa61eff1eb",
+      "path": "summaries/2025-05-28-chapter_03/session-summary.md",
+      "source_sha256": "f8c3ba2ce94d054dcbcf3448961bac867c74d0d8279dc9b0021fe4e2b411f8f9",
+      "source_start": 33065,
+      "source_end": 33070,
+      "source_line": 173,
+      "surface": "ogres",
+      "passage_start": 30557,
+      "passage_end": 33154
+    },
+    "r2f9d0698bb": {
+      "id": "r2f9d0698bb",
+      "path": "summaries/2025-10-01-chapter_18-freeing-big-al-petunia-and-watching-a-ranch-burn/session-summary.md",
+      "source_sha256": "6c44303f5ef6b161ee359ec32722d6256fef5906e8b89d022ac58a329e849051",
+      "source_start": 8170,
+      "source_end": 8175,
+      "source_line": 26,
+      "surface": "ogres",
+      "passage_start": 8089,
+      "passage_end": 8709
+    },
+    "r4fa73e729a": {
+      "id": "r4fa73e729a",
+      "path": "summaries/2025-10-01-chapter_18-freeing-big-al-petunia-and-watching-a-ranch-burn/session-summary.md",
+      "source_sha256": "6c44303f5ef6b161ee359ec32722d6256fef5906e8b89d022ac58a329e849051",
+      "source_start": 5376,
+      "source_end": 5380,
+      "source_line": 16,
+      "surface": "orcs",
+      "passage_start": 4708,
+      "passage_end": 5695
+    },
+    "r50cf090cc6": {
+      "id": "r50cf090cc6",
+      "path": "summaries/2026-04-07-chapter_39-a-dragon-defeated-a-bard-tempted-a-barbarians-vengeance/session-summary.md",
+      "source_sha256": "40a7d2dcec665b46853292fb11719ce2fa34b467808c5767150a12aab12f700a",
+      "source_start": 3726,
+      "source_end": 3740,
+      "source_line": 20,
+      "surface": "Falcon’s Lodge",
+      "passage_start": 3645,
+      "passage_end": 4343
+    },
+    "r76774506ad": {
+      "id": "r76774506ad",
+      "path": "summaries/2026-04-07-chapter_39-a-dragon-defeated-a-bard-tempted-a-barbarians-vengeance/session-summary.md",
+      "source_sha256": "40a7d2dcec665b46853292fb11719ce2fa34b467808c5767150a12aab12f700a",
+      "source_start": 3705,
+      "source_end": 3721,
+      "source_line": 20,
+      "surface": "Shrine of Savras",
+      "passage_start": 3645,
+      "passage_end": 4343
+    }
+  },
+  "authority": "experimental predictions and researcher draft expectations; not GM rulings",
+  "unresolved_exploratory_case": "q16: recruitment from allied survivors is inferred, not explicitly established",
+  "campaign_mutations": 0,
+  "private_runtime_dirs": [
+    "/tmp/orc-identity-real-20261103",
+    "/tmp/orc-identity-real-20261103-marked"
+  ]
+}

@@ -1,0 +1,180 @@
+{
+  "sol_medium": {
+    "strict_exact_matches": 13,
+    "strict_label_and_evidence_matches": 13,
+    "strict_cases": 13,
+    "evidence_failures": [],
+    "strict_false_coidentity": [],
+    "surface_only_abstentions": 16,
+    "exploratory_unresolved_coidentity": [],
+    "exploratory": [
+      {
+        "id": "q04",
+        "relation": "same_referent",
+        "draft_expected": "same_referent"
+      },
+      {
+        "id": "q14",
+        "relation": "same_referent",
+        "draft_expected": "same_referent"
+      },
+      {
+        "id": "q16",
+        "relation": "overlap_or_membership",
+        "draft_expected": "ambiguous"
+      }
+    ],
+    "coidentity_conflicts": []
+  },
+  "terra_medium": {
+    "strict_exact_matches": 13,
+    "strict_label_and_evidence_matches": 13,
+    "strict_cases": 13,
+    "evidence_failures": [],
+    "strict_false_coidentity": [],
+    "surface_only_abstentions": 16,
+    "exploratory_unresolved_coidentity": [],
+    "exploratory": [
+      {
+        "id": "q04",
+        "relation": "same_referent",
+        "draft_expected": "same_referent"
+      },
+      {
+        "id": "q14",
+        "relation": "ambiguous",
+        "draft_expected": "same_referent"
+      },
+      {
+        "id": "q16",
+        "relation": "ambiguous",
+        "draft_expected": "ambiguous"
+      }
+    ],
+    "coidentity_conflicts": []
+  },
+  "qwen_configs": [
+    {
+      "thinking": false,
+      "structured_output": "none",
+      "metrics": {
+        "strict_exact_matches": null,
+        "strict_cases": 13,
+        "surface_only_abstentions": 16,
+        "protocol_failures": {
+          "context": {
+            "status": "protocol_failure",
+            "error": "Expecting ',' delimiter: line 353 column 15 (char 14382)",
+            "raw_response_sha256": "e83c0452ee7110bda6e3e9233a1cab5f87d8c5a1b6e924a62448f3fc4d64862b"
+          }
+        }
+      }
+    },
+    {
+      "thinking": true,
+      "structured_output": "none",
+      "metrics": {
+        "strict_exact_matches": null,
+        "strict_cases": 13,
+        "surface_only_abstentions": null,
+        "protocol_failures": {
+          "context": {
+            "status": "protocol_failure",
+            "error": "model returned empty output (no content)",
+            "raw_response_sha256": null
+          }
+        }
+      }
+    },
+    {
+      "thinking": false,
+      "structured_output": "json-schema",
+      "metrics": {
+        "strict_exact_matches": 11,
+        "strict_label_and_evidence_matches": 9,
+        "strict_cases": 13,
+        "evidence_failures": [
+          "q02",
+          "q04",
+          "q13"
+        ],
+        "strict_false_coidentity": [],
+        "surface_only_abstentions": 16,
+        "exploratory_unresolved_coidentity": [
+          "q16"
+        ],
+        "exploratory": [
+          {
+            "id": "q04",
+            "relation": "same_referent",
+            "draft_expected": "same_referent"
+          },
+          {
+            "id": "q14",
+            "relation": "distinct_referents",
+            "draft_expected": "same_referent"
+          },
+          {
+            "id": "q16",
+            "relation": "same_referent",
+            "draft_expected": "ambiguous"
+          }
+        ],
+        "coidentity_conflicts": []
+      }
+    }
+  ],
+  "terra_vs_sol_differences": [
+    {
+      "id": "q14",
+      "strict": false,
+      "draft_expected": "same_referent",
+      "sol": "same_referent",
+      "terra": "ambiguous",
+      "evidence_errors": []
+    },
+    {
+      "id": "q16",
+      "strict": false,
+      "draft_expected": "ambiguous",
+      "sol": "overlap_or_membership",
+      "terra": "ambiguous",
+      "evidence_errors": []
+    }
+  ],
+  "input_equality_verified": true,
+  "gold_sha256": "ce3333cb0dac6b1b6090d395fb8902bf48f3dc30e7a7a27b5d9e9506c23eadea",
+  "model_records": {
+    "context": {
+      "arm": "context",
+      "backend": "codex-cli",
+      "model": "gpt-6.1-terra",
+      "effort": "medium",
+      "payload_sha256": "4c63668de4aa7f2364e5d71bd979c65ec70234dd4e47dc36a87d90b7d44b1848",
+      "system_sha256": "b590d9eb3da72dbe33c811c13f39a1cbcfb8e5e06788a23bba2df99c9c8bdd90",
+      "prompt_sha256": "3363ad9f238a4f53091a9bac79854c9be3e2e3f649171b0f9172bb936052add1",
+      "response_sha256": "5abb25f622447e6deba2352f450016106b1fb49267bd0cd21300e4aad9666e01",
+      "status": "response_received_not_yet_scored",
+      "gold_sent": false
+    },
+    "surface_only": {
+      "arm": "surface_only",
+      "backend": "codex-cli",
+      "model": "gpt-6.1-terra",
+      "effort": "medium",
+      "payload_sha256": "4c63668de4aa7f2364e5d71bd979c65ec70234dd4e47dc36a87d90b7d44b1848",
+      "system_sha256": "b590d9eb3da72dbe33c811c13f39a1cbcfb8e5e06788a23bba2df99c9c8bdd90",
+      "prompt_sha256": "1536b75bfa5b61f2f92224f0020d289a29965efa0a7cda7fa7771b37270d10fe",
+      "response_sha256": "bdce563c5dcd7c0703942324e123d15025e87e684920db81737e6ac4e56cbffc",
+      "status": "response_received_not_yet_scored",
+      "gold_sent": false
+    }
+  },
+  "report_sha256": "f7a8819530528dd5c3285e2f99e01cdf4bcb8e45e1daf000ead7d0c0f55746c9",
+  "limits": [
+    "Small researcher-scored fixture; no independent GM adjudication or general model ranking.",
+    "Same exact task text and hidden expectations; model providers/settings are recorded.",
+    "Three exploratory cases remain separate from the thirteen clearer source expectations.",
+    "Experimental reference relationships only; no canonical registry writes."
+  ]
+}

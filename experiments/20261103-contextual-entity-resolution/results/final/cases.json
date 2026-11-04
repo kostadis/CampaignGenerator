@@ -1,0 +1,402 @@
+[
+  {
+    "mention": {
+      "id": "level_one",
+      "text": "the bugbear",
+      "label": "bugbear",
+      "campaign": "game",
+      "at": 5,
+      "scene_location": "d1-l1"
+    },
+    "expected_status": "supported_candidate",
+    "expected_candidates": [
+      "e_7c2f"
+    ]
+  },
+  {
+    "mention": {
+      "id": "level_two",
+      "text": "the bugbear",
+      "label": "bugbear",
+      "campaign": "game",
+      "at": 5,
+      "scene_location": "d1-l2"
+    },
+    "expected_status": "supported_candidate",
+    "expected_candidates": [
+      "e_91d0"
+    ]
+  },
+  {
+    "mention": {
+      "id": "level_three",
+      "text": "the bugbear",
+      "label": "bugbear",
+      "campaign": "game",
+      "at": 5,
+      "scene_location": "d1-l3"
+    },
+    "expected_status": "supported_candidate",
+    "expected_candidates": [
+      "e_a340"
+    ]
+  },
+  {
+    "mention": {
+      "id": "no_location",
+      "text": "the bugbear",
+      "label": "bugbear",
+      "campaign": "game",
+      "at": 5
+    },
+    "expected_status": "ambiguous",
+    "expected_candidates": [
+      "e_6f18",
+      "e_7c2f",
+      "e_91d0",
+      "e_a340"
+    ]
+  },
+  {
+    "mention": {
+      "id": "dungeon_only",
+      "text": "the bugbear",
+      "label": "bugbear",
+      "campaign": "game",
+      "at": 5,
+      "scene_location": "d1"
+    },
+    "expected_status": "ambiguous",
+    "expected_candidates": [
+      "e_7c2f",
+      "e_91d0",
+      "e_a340"
+    ]
+  },
+  {
+    "mention": {
+      "id": "same_level_number_other_dungeon",
+      "text": "the bugbear",
+      "label": "bugbear",
+      "campaign": "game",
+      "at": 5,
+      "scene_location": "d2-l1"
+    },
+    "expected_status": "supported_candidate",
+    "expected_candidates": [
+      "e_6f18"
+    ]
+  },
+  {
+    "mention": {
+      "id": "same_room_number_level_one",
+      "text": "the bugbear",
+      "label": "bugbear",
+      "campaign": "game",
+      "at": 5,
+      "scene_location": "d1-l1-cell"
+    },
+    "expected_status": "supported_candidate",
+    "expected_candidates": [
+      "e_7c2f"
+    ]
+  },
+  {
+    "mention": {
+      "id": "same_room_number_level_two",
+      "text": "the bugbear",
+      "label": "bugbear",
+      "campaign": "game",
+      "at": 5,
+      "scene_location": "d1-l2-cell"
+    },
+    "expected_status": "supported_candidate",
+    "expected_candidates": [
+      "e_91d0"
+    ]
+  },
+  {
+    "mention": {
+      "id": "moving_individual_keeps_id",
+      "text": "the bugbear",
+      "label": "bugbear",
+      "campaign": "game",
+      "at": 12,
+      "scene_location": "d1-l2",
+      "features": {
+        "torn_ear": "yes"
+      }
+    },
+    "expected_status": "supported_candidate",
+    "expected_candidates": [
+      "e_7c2f"
+    ]
+  },
+  {
+    "mention": {
+      "id": "two_bugbears_on_level_two",
+      "text": "the bugbear",
+      "label": "bugbear",
+      "campaign": "game",
+      "at": 12,
+      "scene_location": "d1-l2"
+    },
+    "expected_status": "ambiguous",
+    "expected_candidates": [
+      "e_7c2f",
+      "e_91d0"
+    ]
+  },
+  {
+    "mention": {
+      "id": "room_separates_same_level",
+      "text": "the bugbear",
+      "label": "bugbear",
+      "campaign": "game",
+      "at": 12,
+      "scene_location": "d1-l2-cell"
+    },
+    "expected_status": "supported_candidate",
+    "expected_candidates": [
+      "e_91d0"
+    ]
+  },
+  {
+    "mention": {
+      "id": "stairs_separate_same_level",
+      "text": "the bugbear",
+      "label": "bugbear",
+      "campaign": "game",
+      "at": 12,
+      "scene_location": "d1-l2-stairs"
+    },
+    "expected_status": "supported_candidate",
+    "expected_candidates": [
+      "e_7c2f"
+    ]
+  },
+  {
+    "mention": {
+      "id": "plural_is_a_group",
+      "text": "the bugbear",
+      "label": "bugbear",
+      "campaign": "game",
+      "at": 12,
+      "scene_location": "d1-l2",
+      "number": "plural"
+    },
+    "expected_status": "candidate_group",
+    "expected_candidates": [
+      "e_7c2f",
+      "e_91d0"
+    ]
+  },
+  {
+    "mention": {
+      "id": "reference_overrides_speaker_location",
+      "text": "the bugbear on level three",
+      "label": "bugbear",
+      "campaign": "game",
+      "at": 5,
+      "scene_location": "d1-l2",
+      "referent_locations": [
+        "d1-l3"
+      ]
+    },
+    "expected_status": "supported_candidate",
+    "expected_candidates": [
+      "e_a340"
+    ]
+  },
+  {
+    "mention": {
+      "id": "historical_reference_uses_historical_time",
+      "text": "the bugbear we met on level one earlier",
+      "label": "bugbear",
+      "campaign": "game",
+      "at": 16,
+      "referent_at": 5,
+      "scene_location": "d1-l2",
+      "referent_locations": [
+        "d1-l1"
+      ]
+    },
+    "expected_status": "supported_candidate",
+    "expected_candidates": [
+      "e_7c2f"
+    ]
+  },
+  {
+    "mention": {
+      "id": "no_future_role_leak",
+      "text": "the bugbear",
+      "label": "bugbear",
+      "campaign": "game",
+      "at": 5,
+      "features": {
+        "role": "leader"
+      }
+    },
+    "expected_status": "insufficient_evidence",
+    "expected_candidates": [
+      "e_7c2f"
+    ]
+  },
+  {
+    "mention": {
+      "id": "later_role_supports_identity",
+      "text": "the bugbear",
+      "label": "bugbear",
+      "campaign": "game",
+      "at": 12,
+      "features": {
+        "role": "leader"
+      }
+    },
+    "expected_status": "supported_candidate",
+    "expected_candidates": [
+      "e_7c2f"
+    ]
+  },
+  {
+    "mention": {
+      "id": "alive_vs_corpse",
+      "text": "the bugbear",
+      "label": "bugbear",
+      "campaign": "game",
+      "at": 16,
+      "scene_location": "d1-l2",
+      "features": {
+        "life": "alive"
+      }
+    },
+    "expected_status": "supported_candidate",
+    "expected_candidates": [
+      "e_91d0"
+    ]
+  },
+  {
+    "mention": {
+      "id": "corpse_keeps_individual_id",
+      "text": "the bugbear",
+      "label": "bugbear",
+      "campaign": "game",
+      "at": 16,
+      "scene_location": "d1-l2",
+      "features": {
+        "life": "dead"
+      }
+    },
+    "expected_status": "supported_candidate",
+    "expected_candidates": [
+      "e_7c2f"
+    ]
+  },
+  {
+    "mention": {
+      "id": "expired_location_does_not_persist",
+      "text": "the bugbear",
+      "label": "bugbear",
+      "campaign": "game",
+      "at": 30,
+      "scene_location": "d1-l1"
+    },
+    "expected_status": "insufficient_evidence",
+    "expected_candidates": [
+      "e_7c2f"
+    ]
+  },
+  {
+    "mention": {
+      "id": "unknown_competitor_blocks_unique",
+      "text": "the bugbear",
+      "label": "bugbear",
+      "campaign": "game",
+      "at": 30,
+      "scene_location": "d1-l3"
+    },
+    "expected_status": "ambiguous",
+    "expected_candidates": [
+      "e_7c2f",
+      "e_a340"
+    ]
+  },
+  {
+    "mention": {
+      "id": "coarse_location_cannot_prove_specific_room",
+      "text": "the bugbear",
+      "label": "bugbear",
+      "campaign": "game",
+      "at": 5,
+      "scene_location": "d1-l3-cave"
+    },
+    "expected_status": "insufficient_evidence",
+    "expected_candidates": [
+      "e_a340"
+    ]
+  },
+  {
+    "mention": {
+      "id": "incompatible_description_no_new_entity",
+      "text": "the bugbear",
+      "label": "bugbear",
+      "campaign": "game",
+      "at": 5,
+      "scene_location": "d1-l3",
+      "features": {
+        "torn_ear": "yes"
+      }
+    },
+    "expected_status": "no_supported_candidate",
+    "expected_candidates": []
+  },
+  {
+    "mention": {
+      "id": "unknown_time_abstains",
+      "text": "the bugbear",
+      "label": "bugbear",
+      "campaign": "game",
+      "at": null,
+      "scene_location": "d1-l1"
+    },
+    "expected_status": "ambiguous",
+    "expected_candidates": [
+      "e_6f18",
+      "e_7c2f",
+      "e_91d0",
+      "e_a340"
+    ]
+  },
+  {
+    "mention": {
+      "id": "contradictory_referent_scopes",
+      "text": "the bugbear",
+      "label": "bugbear",
+      "campaign": "game",
+      "at": 5,
+      "referent_locations": [
+        "d1-l1",
+        "d1-l2"
+      ]
+    },
+    "expected_status": "conflicting_context",
+    "expected_candidates": []
+  },
+  {
+    "mention": {
+      "id": "compatible_parent_child_scopes",
+      "text": "the bugbear",
+      "label": "bugbear",
+      "campaign": "game",
+      "at": 5,
+      "referent_locations": [
+        "d1-l2",
+        "d1-l2-cell"
+      ]
+    },
+    "expected_status": "supported_candidate",
+    "expected_candidates": [
+      "e_91d0"
+    ]
+  }
+]

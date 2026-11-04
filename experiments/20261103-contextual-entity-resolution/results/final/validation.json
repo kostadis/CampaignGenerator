@@ -1,0 +1,20 @@
+{
+  "cases_passed": 28,
+  "tests_passed": 40,
+  "false_unique_proposals": 0,
+  "code_sha256": {
+    "contextual_identity.py": "5cfaf0ce3dbe03778d62de50b1dca34cc5764374727326122447eae6d583cb1c",
+    "fixtures.py": "ba292d692ecc77a4f74c4af8ad3abc252e0257e154439d8077740159306ded1f",
+    "run_experiment.py": "fe28b7d71f9d9260cb118ea7cde7130ac3eaa32513e9eda36e62dc5276fdbb90",
+    "test_contextual_identity.py": "b33f5d1c6dc1e29d5be7e229147755b1533ab20bc7efb3911469921356cc38ed"
+  },
+  "report_sha256": "54bf9c15bd95c297748ff86cef21c26f0f22f74750b099415477ea97da95d1eb",
+  "cli_example_verified": true,
+  "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c",
+  "model_calls": 0,
+  "network_calls": 0,
+  "campaign_reads": 0,
+  "campaign_writes": 0,
+  "production_registry_changes": 0,
+  "branch": "experiment/provenance-relationship-index"
+}
