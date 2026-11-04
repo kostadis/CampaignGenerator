@@ -1,4 +1,10 @@
-# Narration gap-marking experiments — 2026-09-07
+# Experiments
+
+## Provenance and contextual identity — 2026-11-03–04
+
+Start with [the series overview](20261104-provenance-identity-series/README.md) for the designs, evaluation protocol, results, NVIDIA comparison, code map and archive verification. It covers the provenance graph, synthetic same-label bugbears, actual orc/ogre passages, Sol/Terra/local Qwen comparisons, and saved-resolution reuse. These are experiments, with no production registry or campaign changes.
+
+## Narration gap-marking experiments — 2026-09-07
 
 Frozen evidence for [NarrationGapEditor_proposal](../docs/design/NarrationGapEditor_proposal.md).
 **Evidence only.** No campaign canon, no chapter revision, no production change.

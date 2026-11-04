@@ -1,0 +1,23 @@
+{
+  "tests_passed": 10,
+  "model_calls": 4,
+  "backend": "codex-cli",
+  "model": "gpt-6.1-sol",
+  "effort": "medium",
+  "final_strict_source_expectations_matched": 13,
+  "final_strict_cases": 13,
+  "surface_only_abstentions": 16,
+  "final_evidence_failures": 0,
+  "source_files_unchanged": 7,
+  "gold_unchanged_between_trials": true,
+  "payload_reproduction_verified": true,
+  "campaign_mutations": 0,
+  "code_sha256": {
+    "evaluate.py": "e727adb3145057dc8c753fc62d5aef8182999d9e6041fc116bf16af7c2ab458f",
+    "prepare_cases.py": "8649ba42a720999b7ceb9205e2486e53ea89ebd6d6d837c2b71f628692c41e5d",
+    "run_models.py": "18a36a6a9f5005517e44d6ef11c0fd2703ddc1226ef510a8d0c97e8369a4a1ac",
+    "test_evaluate.py": "d74a954d596a98877153112e5bafcc606a8196f777b9d6532d69e2f940b8df4e"
+  },
+  "summary_sha256": "18222fe0c5e85809a3561cdb98154ee4dd79124d6c85e2594e7078aa64ac0994",
+  "worktree_branch": "experiment/provenance-relationship-index"
+}

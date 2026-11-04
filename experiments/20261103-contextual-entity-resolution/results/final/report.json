@@ -1,0 +1,4036 @@
+{
+  "experiment": "contextual entity candidates; synthetic, annotated evidence",
+  "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c",
+  "same_label_instances": 4,
+  "cases": 28,
+  "passed": true,
+  "context_supported_unique": 15,
+  "name_only_supported_unique": 0,
+  "false_unique_proposals": 0,
+  "context_ablation": [
+    {
+      "mention_id": "level_one",
+      "status": "ambiguous",
+      "candidate_ids": [
+        "e_6f18",
+        "e_7c2f",
+        "e_91d0",
+        "e_a340"
+      ]
+    },
+    {
+      "mention_id": "level_two",
+      "status": "ambiguous",
+      "candidate_ids": [
+        "e_6f18",
+        "e_7c2f",
+        "e_91d0",
+        "e_a340"
+      ]
+    },
+    {
+      "mention_id": "level_three",
+      "status": "ambiguous",
+      "candidate_ids": [
+        "e_6f18",
+        "e_7c2f",
+        "e_91d0",
+        "e_a340"
+      ]
+    },
+    {
+      "mention_id": "no_location",
+      "status": "ambiguous",
+      "candidate_ids": [
+        "e_6f18",
+        "e_7c2f",
+        "e_91d0",
+        "e_a340"
+      ]
+    },
+    {
+      "mention_id": "dungeon_only",
+      "status": "ambiguous",
+      "candidate_ids": [
+        "e_6f18",
+        "e_7c2f",
+        "e_91d0",
+        "e_a340"
+      ]
+    },
+    {
+      "mention_id": "same_level_number_other_dungeon",
+      "status": "ambiguous",
+      "candidate_ids": [
+        "e_6f18",
+        "e_7c2f",
+        "e_91d0",
+        "e_a340"
+      ]
+    },
+    {
+      "mention_id": "same_room_number_level_one",
+      "status": "ambiguous",
+      "candidate_ids": [
+        "e_6f18",
+        "e_7c2f",
+        "e_91d0",
+        "e_a340"
+      ]
+    },
+    {
+      "mention_id": "same_room_number_level_two",
+      "status": "ambiguous",
+      "candidate_ids": [
+        "e_6f18",
+        "e_7c2f",
+        "e_91d0",
+        "e_a340"
+      ]
+    },
+    {
+      "mention_id": "moving_individual_keeps_id",
+      "status": "ambiguous",
+      "candidate_ids": [
+        "e_6f18",
+        "e_7c2f",
+        "e_91d0",
+        "e_a340"
+      ]
+    },
+    {
+      "mention_id": "two_bugbears_on_level_two",
+      "status": "ambiguous",
+      "candidate_ids": [
+        "e_6f18",
+        "e_7c2f",
+        "e_91d0",
+        "e_a340"
+      ]
+    },
+    {
+      "mention_id": "room_separates_same_level",
+      "status": "ambiguous",
+      "candidate_ids": [
+        "e_6f18",
+        "e_7c2f",
+        "e_91d0",
+        "e_a340"
+      ]
+    },
+    {
+      "mention_id": "stairs_separate_same_level",
+      "status": "ambiguous",
+      "candidate_ids": [
+        "e_6f18",
+        "e_7c2f",
+        "e_91d0",
+        "e_a340"
+      ]
+    },
+    {
+      "mention_id": "plural_is_a_group",
+      "status": "candidate_group",
+      "candidate_ids": [
+        "e_6f18",
+        "e_7c2f",
+        "e_91d0",
+        "e_a340"
+      ]
+    },
+    {
+      "mention_id": "reference_overrides_speaker_location",
+      "status": "ambiguous",
+      "candidate_ids": [
+        "e_6f18",
+        "e_7c2f",
+        "e_91d0",
+        "e_a340"
+      ]
+    },
+    {
+      "mention_id": "historical_reference_uses_historical_time",
+      "status": "ambiguous",
+      "candidate_ids": [
+        "e_6f18",
+        "e_7c2f",
+        "e_91d0",
+        "e_a340"
+      ]
+    },
+    {
+      "mention_id": "no_future_role_leak",
+      "status": "ambiguous",
+      "candidate_ids": [
+        "e_6f18",
+        "e_7c2f",
+        "e_91d0",
+        "e_a340"
+      ]
+    },
+    {
+      "mention_id": "later_role_supports_identity",
+      "status": "ambiguous",
+      "candidate_ids": [
+        "e_6f18",
+        "e_7c2f",
+        "e_91d0",
+        "e_a340"
+      ]
+    },
+    {
+      "mention_id": "alive_vs_corpse",
+      "status": "ambiguous",
+      "candidate_ids": [
+        "e_6f18",
+        "e_7c2f",
+        "e_91d0",
+        "e_a340"
+      ]
+    },
+    {
+      "mention_id": "corpse_keeps_individual_id",
+      "status": "ambiguous",
+      "candidate_ids": [
+        "e_6f18",
+        "e_7c2f",
+        "e_91d0",
+        "e_a340"
+      ]
+    },
+    {
+      "mention_id": "expired_location_does_not_persist",
+      "status": "ambiguous",
+      "candidate_ids": [
+        "e_6f18",
+        "e_7c2f",
+        "e_91d0",
+        "e_a340"
+      ]
+    },
+    {
+      "mention_id": "unknown_competitor_blocks_unique",
+      "status": "ambiguous",
+      "candidate_ids": [
+        "e_6f18",
+        "e_7c2f",
+        "e_91d0",
+        "e_a340"
+      ]
+    },
+    {
+      "mention_id": "coarse_location_cannot_prove_specific_room",
+      "status": "ambiguous",
+      "candidate_ids": [
+        "e_6f18",
+        "e_7c2f",
+        "e_91d0",
+        "e_a340"
+      ]
+    },
+    {
+      "mention_id": "incompatible_description_no_new_entity",
+      "status": "ambiguous",
+      "candidate_ids": [
+        "e_6f18",
+        "e_7c2f",
+        "e_91d0",
+        "e_a340"
+      ]
+    },
+    {
+      "mention_id": "unknown_time_abstains",
+      "status": "ambiguous",
+      "candidate_ids": [
+        "e_6f18",
+        "e_7c2f",
+        "e_91d0",
+        "e_a340"
+      ]
+    },
+    {
+      "mention_id": "contradictory_referent_scopes",
+      "status": "ambiguous",
+      "candidate_ids": [
+        "e_6f18",
+        "e_7c2f",
+        "e_91d0",
+        "e_a340"
+      ]
+    },
+    {
+      "mention_id": "compatible_parent_child_scopes",
+      "status": "ambiguous",
+      "candidate_ids": [
+        "e_6f18",
+        "e_7c2f",
+        "e_91d0",
+        "e_a340"
+      ]
+    }
+  ],
+  "level_name_composite_key_baseline": [
+    {
+      "mention_id": "moving_individual_keeps_id",
+      "proposed": "e_91d0",
+      "gold_status": "supported_candidate",
+      "gold_ids": [
+        "e_7c2f"
+      ],
+      "correct": false
+    },
+    {
+      "mention_id": "two_bugbears_on_level_two",
+      "proposed": "e_91d0",
+      "gold_status": "ambiguous",
+      "gold_ids": [
+        "e_7c2f",
+        "e_91d0"
+      ],
+      "correct": false
+    }
+  ],
+  "results": [
+    {
+      "mention_id": "level_one",
+      "status": "supported_candidate",
+      "candidate_ids": [
+        "e_7c2f"
+      ],
+      "proposed_entity_id": "e_7c2f",
+      "at": 5,
+      "scope_origin": "scene",
+      "scopes": [
+        "d1-l1"
+      ],
+      "evaluated": [
+        {
+          "entity_id": "e_6f18",
+          "disposition": "excluded",
+          "matches": [],
+          "contradictions": [
+            {
+              "property": "location",
+              "wanted": "d1-l1",
+              "evidence": [
+                {
+                  "value": "d2-l1",
+                  "valid_from": 0,
+                  "valid_until": 100,
+                  "source": "s05",
+                  "source_sha256": "e4f4b7e6a7878193e9ed8dbb8fb683075de1affddc30c6c3da836f9f6a9be017",
+                  "quote": "Another bugbear stays on level one of the other dungeon throughout the observation window.",
+                  "world_fact_pointer": "/facts/4",
+                  "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c"
+                }
+              ]
+            }
+          ],
+          "unknowns": [],
+          "source_conflicts": []
+        },
+        {
+          "entity_id": "e_7c2f",
+          "disposition": "supported",
+          "matches": [
+            {
+              "property": "location",
+              "wanted": "d1-l1",
+              "evidence": [
+                {
+                  "value": "d1-l1-cell",
+                  "valid_from": 0,
+                  "valid_until": 10,
+                  "source": "s01",
+                  "source_sha256": "48066423cbda735c451f884851bd8c68692558a2204da0db9164b9ede8564e47",
+                  "quote": "The torn-eared bugbear occupies room 12 on level one until turn 10.",
+                  "world_fact_pointer": "/facts/0",
+                  "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c"
+                }
+              ]
+            }
+          ],
+          "contradictions": [],
+          "unknowns": [],
+          "source_conflicts": []
+        },
+        {
+          "entity_id": "e_91d0",
+          "disposition": "excluded",
+          "matches": [],
+          "contradictions": [
+            {
+              "property": "location",
+              "wanted": "d1-l1",
+              "evidence": [
+                {
+                  "value": "d1-l2-cell",
+                  "valid_from": 0,
+                  "valid_until": 100,
+                  "source": "s03",
+                  "source_sha256": "6905f1c68189f64dc16f0ef1a0b4bdddb67e41b65429b3cab40ed44ec4d5e781",
+                  "quote": "A different bugbear guards room 12 on level two throughout the observation window.",
+                  "world_fact_pointer": "/facts/2",
+                  "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c"
+                }
+              ]
+            }
+          ],
+          "unknowns": [],
+          "source_conflicts": []
+        },
+        {
+          "entity_id": "e_a340",
+          "disposition": "excluded",
+          "matches": [],
+          "contradictions": [
+            {
+              "property": "location",
+              "wanted": "d1-l1",
+              "evidence": [
+                {
+                  "value": "d1-l3",
+                  "valid_from": 0,
+                  "valid_until": 100,
+                  "source": "s04",
+                  "source_sha256": "60848a5b5dbad5fc07209ad5772937e5fdc3b3573460c62365ade04cf0483fc3",
+                  "quote": "The third bugbear stays on level three throughout the observation window.",
+                  "world_fact_pointer": "/facts/3",
+                  "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c"
+                }
+              ]
+            }
+          ],
+          "unknowns": [],
+          "source_conflicts": []
+        }
+      ],
+      "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c",
+      "authority": "experimental candidate proposal; no canon merge or registry write",
+      "coverage": "curated context and time-bounded facts; raw-text context extraction untested",
+      "elapsed_seconds": 0.00024120905436575413,
+      "expected_status": "supported_candidate",
+      "expected_candidates": [
+        "e_7c2f"
+      ],
+      "passed": true
+    },
+    {
+      "mention_id": "level_two",
+      "status": "supported_candidate",
+      "candidate_ids": [
+        "e_91d0"
+      ],
+      "proposed_entity_id": "e_91d0",
+      "at": 5,
+      "scope_origin": "scene",
+      "scopes": [
+        "d1-l2"
+      ],
+      "evaluated": [
+        {
+          "entity_id": "e_6f18",
+          "disposition": "excluded",
+          "matches": [],
+          "contradictions": [
+            {
+              "property": "location",
+              "wanted": "d1-l2",
+              "evidence": [
+                {
+                  "value": "d2-l1",
+                  "valid_from": 0,
+                  "valid_until": 100,
+                  "source": "s05",
+                  "source_sha256": "e4f4b7e6a7878193e9ed8dbb8fb683075de1affddc30c6c3da836f9f6a9be017",
+                  "quote": "Another bugbear stays on level one of the other dungeon throughout the observation window.",
+                  "world_fact_pointer": "/facts/4",
+                  "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c"
+                }
+              ]
+            }
+          ],
+          "unknowns": [],
+          "source_conflicts": []
+        },
+        {
+          "entity_id": "e_7c2f",
+          "disposition": "excluded",
+          "matches": [],
+          "contradictions": [
+            {
+              "property": "location",
+              "wanted": "d1-l2",
+              "evidence": [
+                {
+                  "value": "d1-l1-cell",
+                  "valid_from": 0,
+                  "valid_until": 10,
+                  "source": "s01",
+                  "source_sha256": "48066423cbda735c451f884851bd8c68692558a2204da0db9164b9ede8564e47",
+                  "quote": "The torn-eared bugbear occupies room 12 on level one until turn 10.",
+                  "world_fact_pointer": "/facts/0",
+                  "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c"
+                }
+              ]
+            }
+          ],
+          "unknowns": [],
+          "source_conflicts": []
+        },
+        {
+          "entity_id": "e_91d0",
+          "disposition": "supported",
+          "matches": [
+            {
+              "property": "location",
+              "wanted": "d1-l2",
+              "evidence": [
+                {
+                  "value": "d1-l2-cell",
+                  "valid_from": 0,
+                  "valid_until": 100,
+                  "source": "s03",
+                  "source_sha256": "6905f1c68189f64dc16f0ef1a0b4bdddb67e41b65429b3cab40ed44ec4d5e781",
+                  "quote": "A different bugbear guards room 12 on level two throughout the observation window.",
+                  "world_fact_pointer": "/facts/2",
+                  "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c"
+                }
+              ]
+            }
+          ],
+          "contradictions": [],
+          "unknowns": [],
+          "source_conflicts": []
+        },
+        {
+          "entity_id": "e_a340",
+          "disposition": "excluded",
+          "matches": [],
+          "contradictions": [
+            {
+              "property": "location",
+              "wanted": "d1-l2",
+              "evidence": [
+                {
+                  "value": "d1-l3",
+                  "valid_from": 0,
+                  "valid_until": 100,
+                  "source": "s04",
+                  "source_sha256": "60848a5b5dbad5fc07209ad5772937e5fdc3b3573460c62365ade04cf0483fc3",
+                  "quote": "The third bugbear stays on level three throughout the observation window.",
+                  "world_fact_pointer": "/facts/3",
+                  "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c"
+                }
+              ]
+            }
+          ],
+          "unknowns": [],
+          "source_conflicts": []
+        }
+      ],
+      "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c",
+      "authority": "experimental candidate proposal; no canon merge or registry write",
+      "coverage": "curated context and time-bounded facts; raw-text context extraction untested",
+      "elapsed_seconds": 0.00050751818343997,
+      "expected_status": "supported_candidate",
+      "expected_candidates": [
+        "e_91d0"
+      ],
+      "passed": true
+    },
+    {
+      "mention_id": "level_three",
+      "status": "supported_candidate",
+      "candidate_ids": [
+        "e_a340"
+      ],
+      "proposed_entity_id": "e_a340",
+      "at": 5,
+      "scope_origin": "scene",
+      "scopes": [
+        "d1-l3"
+      ],
+      "evaluated": [
+        {
+          "entity_id": "e_6f18",
+          "disposition": "excluded",
+          "matches": [],
+          "contradictions": [
+            {
+              "property": "location",
+              "wanted": "d1-l3",
+              "evidence": [
+                {
+                  "value": "d2-l1",
+                  "valid_from": 0,
+                  "valid_until": 100,
+                  "source": "s05",
+                  "source_sha256": "e4f4b7e6a7878193e9ed8dbb8fb683075de1affddc30c6c3da836f9f6a9be017",
+                  "quote": "Another bugbear stays on level one of the other dungeon throughout the observation window.",
+                  "world_fact_pointer": "/facts/4",
+                  "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c"
+                }
+              ]
+            }
+          ],
+          "unknowns": [],
+          "source_conflicts": []
+        },
+        {
+          "entity_id": "e_7c2f",
+          "disposition": "excluded",
+          "matches": [],
+          "contradictions": [
+            {
+              "property": "location",
+              "wanted": "d1-l3",
+              "evidence": [
+                {
+                  "value": "d1-l1-cell",
+                  "valid_from": 0,
+                  "valid_until": 10,
+                  "source": "s01",
+                  "source_sha256": "48066423cbda735c451f884851bd8c68692558a2204da0db9164b9ede8564e47",
+                  "quote": "The torn-eared bugbear occupies room 12 on level one until turn 10.",
+                  "world_fact_pointer": "/facts/0",
+                  "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c"
+                }
+              ]
+            }
+          ],
+          "unknowns": [],
+          "source_conflicts": []
+        },
+        {
+          "entity_id": "e_91d0",
+          "disposition": "excluded",
+          "matches": [],
+          "contradictions": [
+            {
+              "property": "location",
+              "wanted": "d1-l3",
+              "evidence": [
+                {
+                  "value": "d1-l2-cell",
+                  "valid_from": 0,
+                  "valid_until": 100,
+                  "source": "s03",
+                  "source_sha256": "6905f1c68189f64dc16f0ef1a0b4bdddb67e41b65429b3cab40ed44ec4d5e781",
+                  "quote": "A different bugbear guards room 12 on level two throughout the observation window.",
+                  "world_fact_pointer": "/facts/2",
+                  "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c"
+                }
+              ]
+            }
+          ],
+          "unknowns": [],
+          "source_conflicts": []
+        },
+        {
+          "entity_id": "e_a340",
+          "disposition": "supported",
+          "matches": [
+            {
+              "property": "location",
+              "wanted": "d1-l3",
+              "evidence": [
+                {
+                  "value": "d1-l3",
+                  "valid_from": 0,
+                  "valid_until": 100,
+                  "source": "s04",
+                  "source_sha256": "60848a5b5dbad5fc07209ad5772937e5fdc3b3573460c62365ade04cf0483fc3",
+                  "quote": "The third bugbear stays on level three throughout the observation window.",
+                  "world_fact_pointer": "/facts/3",
+                  "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c"
+                }
+              ]
+            }
+          ],
+          "contradictions": [],
+          "unknowns": [],
+          "source_conflicts": []
+        }
+      ],
+      "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c",
+      "authority": "experimental candidate proposal; no canon merge or registry write",
+      "coverage": "curated context and time-bounded facts; raw-text context extraction untested",
+      "elapsed_seconds": 0.00016234000213444233,
+      "expected_status": "supported_candidate",
+      "expected_candidates": [
+        "e_a340"
+      ],
+      "passed": true
+    },
+    {
+      "mention_id": "no_location",
+      "status": "ambiguous",
+      "candidate_ids": [
+        "e_6f18",
+        "e_7c2f",
+        "e_91d0",
+        "e_a340"
+      ],
+      "proposed_entity_id": null,
+      "at": 5,
+      "scope_origin": "scene",
+      "scopes": [],
+      "evaluated": [
+        {
+          "entity_id": "e_6f18",
+          "disposition": "possible_unknown",
+          "matches": [],
+          "contradictions": [],
+          "unknowns": [],
+          "source_conflicts": []
+        },
+        {
+          "entity_id": "e_7c2f",
+          "disposition": "possible_unknown",
+          "matches": [],
+          "contradictions": [],
+          "unknowns": [],
+          "source_conflicts": []
+        },
+        {
+          "entity_id": "e_91d0",
+          "disposition": "possible_unknown",
+          "matches": [],
+          "contradictions": [],
+          "unknowns": [],
+          "source_conflicts": []
+        },
+        {
+          "entity_id": "e_a340",
+          "disposition": "possible_unknown",
+          "matches": [],
+          "contradictions": [],
+          "unknowns": [],
+          "source_conflicts": []
+        }
+      ],
+      "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c",
+      "authority": "experimental candidate proposal; no canon merge or registry write",
+      "coverage": "curated context and time-bounded facts; raw-text context extraction untested",
+      "elapsed_seconds": 1.7958926036953926e-05,
+      "expected_status": "ambiguous",
+      "expected_candidates": [
+        "e_6f18",
+        "e_7c2f",
+        "e_91d0",
+        "e_a340"
+      ],
+      "passed": true
+    },
+    {
+      "mention_id": "dungeon_only",
+      "status": "ambiguous",
+      "candidate_ids": [
+        "e_7c2f",
+        "e_91d0",
+        "e_a340"
+      ],
+      "proposed_entity_id": null,
+      "at": 5,
+      "scope_origin": "scene",
+      "scopes": [
+        "d1"
+      ],
+      "evaluated": [
+        {
+          "entity_id": "e_6f18",
+          "disposition": "excluded",
+          "matches": [],
+          "contradictions": [
+            {
+              "property": "location",
+              "wanted": "d1",
+              "evidence": [
+                {
+                  "value": "d2-l1",
+                  "valid_from": 0,
+                  "valid_until": 100,
+                  "source": "s05",
+                  "source_sha256": "e4f4b7e6a7878193e9ed8dbb8fb683075de1affddc30c6c3da836f9f6a9be017",
+                  "quote": "Another bugbear stays on level one of the other dungeon throughout the observation window.",
+                  "world_fact_pointer": "/facts/4",
+                  "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c"
+                }
+              ]
+            }
+          ],
+          "unknowns": [],
+          "source_conflicts": []
+        },
+        {
+          "entity_id": "e_7c2f",
+          "disposition": "supported",
+          "matches": [
+            {
+              "property": "location",
+              "wanted": "d1",
+              "evidence": [
+                {
+                  "value": "d1-l1-cell",
+                  "valid_from": 0,
+                  "valid_until": 10,
+                  "source": "s01",
+                  "source_sha256": "48066423cbda735c451f884851bd8c68692558a2204da0db9164b9ede8564e47",
+                  "quote": "The torn-eared bugbear occupies room 12 on level one until turn 10.",
+                  "world_fact_pointer": "/facts/0",
+                  "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c"
+                }
+              ]
+            }
+          ],
+          "contradictions": [],
+          "unknowns": [],
+          "source_conflicts": []
+        },
+        {
+          "entity_id": "e_91d0",
+          "disposition": "supported",
+          "matches": [
+            {
+              "property": "location",
+              "wanted": "d1",
+              "evidence": [
+                {
+                  "value": "d1-l2-cell",
+                  "valid_from": 0,
+                  "valid_until": 100,
+                  "source": "s03",
+                  "source_sha256": "6905f1c68189f64dc16f0ef1a0b4bdddb67e41b65429b3cab40ed44ec4d5e781",
+                  "quote": "A different bugbear guards room 12 on level two throughout the observation window.",
+                  "world_fact_pointer": "/facts/2",
+                  "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c"
+                }
+              ]
+            }
+          ],
+          "contradictions": [],
+          "unknowns": [],
+          "source_conflicts": []
+        },
+        {
+          "entity_id": "e_a340",
+          "disposition": "supported",
+          "matches": [
+            {
+              "property": "location",
+              "wanted": "d1",
+              "evidence": [
+                {
+                  "value": "d1-l3",
+                  "valid_from": 0,
+                  "valid_until": 100,
+                  "source": "s04",
+                  "source_sha256": "60848a5b5dbad5fc07209ad5772937e5fdc3b3573460c62365ade04cf0483fc3",
+                  "quote": "The third bugbear stays on level three throughout the observation window.",
+                  "world_fact_pointer": "/facts/3",
+                  "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c"
+                }
+              ]
+            }
+          ],
+          "contradictions": [],
+          "unknowns": [],
+          "source_conflicts": []
+        }
+      ],
+      "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c",
+      "authority": "experimental candidate proposal; no canon merge or registry write",
+      "coverage": "curated context and time-bounded facts; raw-text context extraction untested",
+      "elapsed_seconds": 0.0001427901443094015,
+      "expected_status": "ambiguous",
+      "expected_candidates": [
+        "e_7c2f",
+        "e_91d0",
+        "e_a340"
+      ],
+      "passed": true
+    },
+    {
+      "mention_id": "same_level_number_other_dungeon",
+      "status": "supported_candidate",
+      "candidate_ids": [
+        "e_6f18"
+      ],
+      "proposed_entity_id": "e_6f18",
+      "at": 5,
+      "scope_origin": "scene",
+      "scopes": [
+        "d2-l1"
+      ],
+      "evaluated": [
+        {
+          "entity_id": "e_6f18",
+          "disposition": "supported",
+          "matches": [
+            {
+              "property": "location",
+              "wanted": "d2-l1",
+              "evidence": [
+                {
+                  "value": "d2-l1",
+                  "valid_from": 0,
+                  "valid_until": 100,
+                  "source": "s05",
+                  "source_sha256": "e4f4b7e6a7878193e9ed8dbb8fb683075de1affddc30c6c3da836f9f6a9be017",
+                  "quote": "Another bugbear stays on level one of the other dungeon throughout the observation window.",
+                  "world_fact_pointer": "/facts/4",
+                  "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c"
+                }
+              ]
+            }
+          ],
+          "contradictions": [],
+          "unknowns": [],
+          "source_conflicts": []
+        },
+        {
+          "entity_id": "e_7c2f",
+          "disposition": "excluded",
+          "matches": [],
+          "contradictions": [
+            {
+              "property": "location",
+              "wanted": "d2-l1",
+              "evidence": [
+                {
+                  "value": "d1-l1-cell",
+                  "valid_from": 0,
+                  "valid_until": 10,
+                  "source": "s01",
+                  "source_sha256": "48066423cbda735c451f884851bd8c68692558a2204da0db9164b9ede8564e47",
+                  "quote": "The torn-eared bugbear occupies room 12 on level one until turn 10.",
+                  "world_fact_pointer": "/facts/0",
+                  "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c"
+                }
+              ]
+            }
+          ],
+          "unknowns": [],
+          "source_conflicts": []
+        },
+        {
+          "entity_id": "e_91d0",
+          "disposition": "excluded",
+          "matches": [],
+          "contradictions": [
+            {
+              "property": "location",
+              "wanted": "d2-l1",
+              "evidence": [
+                {
+                  "value": "d1-l2-cell",
+                  "valid_from": 0,
+                  "valid_until": 100,
+                  "source": "s03",
+                  "source_sha256": "6905f1c68189f64dc16f0ef1a0b4bdddb67e41b65429b3cab40ed44ec4d5e781",
+                  "quote": "A different bugbear guards room 12 on level two throughout the observation window.",
+                  "world_fact_pointer": "/facts/2",
+                  "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c"
+                }
+              ]
+            }
+          ],
+          "unknowns": [],
+          "source_conflicts": []
+        },
+        {
+          "entity_id": "e_a340",
+          "disposition": "excluded",
+          "matches": [],
+          "contradictions": [
+            {
+              "property": "location",
+              "wanted": "d2-l1",
+              "evidence": [
+                {
+                  "value": "d1-l3",
+                  "valid_from": 0,
+                  "valid_until": 100,
+                  "source": "s04",
+                  "source_sha256": "60848a5b5dbad5fc07209ad5772937e5fdc3b3573460c62365ade04cf0483fc3",
+                  "quote": "The third bugbear stays on level three throughout the observation window.",
+                  "world_fact_pointer": "/facts/3",
+                  "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c"
+                }
+              ]
+            }
+          ],
+          "unknowns": [],
+          "source_conflicts": []
+        }
+      ],
+      "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c",
+      "authority": "experimental candidate proposal; no canon merge or registry write",
+      "coverage": "curated context and time-bounded facts; raw-text context extraction untested",
+      "elapsed_seconds": 0.00014469888992607594,
+      "expected_status": "supported_candidate",
+      "expected_candidates": [
+        "e_6f18"
+      ],
+      "passed": true
+    },
+    {
+      "mention_id": "same_room_number_level_one",
+      "status": "supported_candidate",
+      "candidate_ids": [
+        "e_7c2f"
+      ],
+      "proposed_entity_id": "e_7c2f",
+      "at": 5,
+      "scope_origin": "scene",
+      "scopes": [
+        "d1-l1-cell"
+      ],
+      "evaluated": [
+        {
+          "entity_id": "e_6f18",
+          "disposition": "excluded",
+          "matches": [],
+          "contradictions": [
+            {
+              "property": "location",
+              "wanted": "d1-l1-cell",
+              "evidence": [
+                {
+                  "value": "d2-l1",
+                  "valid_from": 0,
+                  "valid_until": 100,
+                  "source": "s05",
+                  "source_sha256": "e4f4b7e6a7878193e9ed8dbb8fb683075de1affddc30c6c3da836f9f6a9be017",
+                  "quote": "Another bugbear stays on level one of the other dungeon throughout the observation window.",
+                  "world_fact_pointer": "/facts/4",
+                  "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c"
+                }
+              ]
+            }
+          ],
+          "unknowns": [],
+          "source_conflicts": []
+        },
+        {
+          "entity_id": "e_7c2f",
+          "disposition": "supported",
+          "matches": [
+            {
+              "property": "location",
+              "wanted": "d1-l1-cell",
+              "evidence": [
+                {
+                  "value": "d1-l1-cell",
+                  "valid_from": 0,
+                  "valid_until": 10,
+                  "source": "s01",
+                  "source_sha256": "48066423cbda735c451f884851bd8c68692558a2204da0db9164b9ede8564e47",
+                  "quote": "The torn-eared bugbear occupies room 12 on level one until turn 10.",
+                  "world_fact_pointer": "/facts/0",
+                  "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c"
+                }
+              ]
+            }
+          ],
+          "contradictions": [],
+          "unknowns": [],
+          "source_conflicts": []
+        },
+        {
+          "entity_id": "e_91d0",
+          "disposition": "excluded",
+          "matches": [],
+          "contradictions": [
+            {
+              "property": "location",
+              "wanted": "d1-l1-cell",
+              "evidence": [
+                {
+                  "value": "d1-l2-cell",
+                  "valid_from": 0,
+                  "valid_until": 100,
+                  "source": "s03",
+                  "source_sha256": "6905f1c68189f64dc16f0ef1a0b4bdddb67e41b65429b3cab40ed44ec4d5e781",
+                  "quote": "A different bugbear guards room 12 on level two throughout the observation window.",
+                  "world_fact_pointer": "/facts/2",
+                  "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c"
+                }
+              ]
+            }
+          ],
+          "unknowns": [],
+          "source_conflicts": []
+        },
+        {
+          "entity_id": "e_a340",
+          "disposition": "excluded",
+          "matches": [],
+          "contradictions": [
+            {
+              "property": "location",
+              "wanted": "d1-l1-cell",
+              "evidence": [
+                {
+                  "value": "d1-l3",
+                  "valid_from": 0,
+                  "valid_until": 100,
+                  "source": "s04",
+                  "source_sha256": "60848a5b5dbad5fc07209ad5772937e5fdc3b3573460c62365ade04cf0483fc3",
+                  "quote": "The third bugbear stays on level three throughout the observation window.",
+                  "world_fact_pointer": "/facts/3",
+                  "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c"
+                }
+              ]
+            }
+          ],
+          "unknowns": [],
+          "source_conflicts": []
+        }
+      ],
+      "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c",
+      "authority": "experimental candidate proposal; no canon merge or registry write",
+      "coverage": "curated context and time-bounded facts; raw-text context extraction untested",
+      "elapsed_seconds": 0.00015842006541788578,
+      "expected_status": "supported_candidate",
+      "expected_candidates": [
+        "e_7c2f"
+      ],
+      "passed": true
+    },
+    {
+      "mention_id": "same_room_number_level_two",
+      "status": "supported_candidate",
+      "candidate_ids": [
+        "e_91d0"
+      ],
+      "proposed_entity_id": "e_91d0",
+      "at": 5,
+      "scope_origin": "scene",
+      "scopes": [
+        "d1-l2-cell"
+      ],
+      "evaluated": [
+        {
+          "entity_id": "e_6f18",
+          "disposition": "excluded",
+          "matches": [],
+          "contradictions": [
+            {
+              "property": "location",
+              "wanted": "d1-l2-cell",
+              "evidence": [
+                {
+                  "value": "d2-l1",
+                  "valid_from": 0,
+                  "valid_until": 100,
+                  "source": "s05",
+                  "source_sha256": "e4f4b7e6a7878193e9ed8dbb8fb683075de1affddc30c6c3da836f9f6a9be017",
+                  "quote": "Another bugbear stays on level one of the other dungeon throughout the observation window.",
+                  "world_fact_pointer": "/facts/4",
+                  "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c"
+                }
+              ]
+            }
+          ],
+          "unknowns": [],
+          "source_conflicts": []
+        },
+        {
+          "entity_id": "e_7c2f",
+          "disposition": "excluded",
+          "matches": [],
+          "contradictions": [
+            {
+              "property": "location",
+              "wanted": "d1-l2-cell",
+              "evidence": [
+                {
+                  "value": "d1-l1-cell",
+                  "valid_from": 0,
+                  "valid_until": 10,
+                  "source": "s01",
+                  "source_sha256": "48066423cbda735c451f884851bd8c68692558a2204da0db9164b9ede8564e47",
+                  "quote": "The torn-eared bugbear occupies room 12 on level one until turn 10.",
+                  "world_fact_pointer": "/facts/0",
+                  "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c"
+                }
+              ]
+            }
+          ],
+          "unknowns": [],
+          "source_conflicts": []
+        },
+        {
+          "entity_id": "e_91d0",
+          "disposition": "supported",
+          "matches": [
+            {
+              "property": "location",
+              "wanted": "d1-l2-cell",
+              "evidence": [
+                {
+                  "value": "d1-l2-cell",
+                  "valid_from": 0,
+                  "valid_until": 100,
+                  "source": "s03",
+                  "source_sha256": "6905f1c68189f64dc16f0ef1a0b4bdddb67e41b65429b3cab40ed44ec4d5e781",
+                  "quote": "A different bugbear guards room 12 on level two throughout the observation window.",
+                  "world_fact_pointer": "/facts/2",
+                  "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c"
+                }
+              ]
+            }
+          ],
+          "contradictions": [],
+          "unknowns": [],
+          "source_conflicts": []
+        },
+        {
+          "entity_id": "e_a340",
+          "disposition": "excluded",
+          "matches": [],
+          "contradictions": [
+            {
+              "property": "location",
+              "wanted": "d1-l2-cell",
+              "evidence": [
+                {
+                  "value": "d1-l3",
+                  "valid_from": 0,
+                  "valid_until": 100,
+                  "source": "s04",
+                  "source_sha256": "60848a5b5dbad5fc07209ad5772937e5fdc3b3573460c62365ade04cf0483fc3",
+                  "quote": "The third bugbear stays on level three throughout the observation window.",
+                  "world_fact_pointer": "/facts/3",
+                  "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c"
+                }
+              ]
+            }
+          ],
+          "unknowns": [],
+          "source_conflicts": []
+        }
+      ],
+      "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c",
+      "authority": "experimental candidate proposal; no canon merge or registry write",
+      "coverage": "curated context and time-bounded facts; raw-text context extraction untested",
+      "elapsed_seconds": 0.00016014883294701576,
+      "expected_status": "supported_candidate",
+      "expected_candidates": [
+        "e_91d0"
+      ],
+      "passed": true
+    },
+    {
+      "mention_id": "moving_individual_keeps_id",
+      "status": "supported_candidate",
+      "candidate_ids": [
+        "e_7c2f"
+      ],
+      "proposed_entity_id": "e_7c2f",
+      "at": 12,
+      "scope_origin": "scene",
+      "scopes": [
+        "d1-l2"
+      ],
+      "evaluated": [
+        {
+          "entity_id": "e_6f18",
+          "disposition": "excluded",
+          "matches": [],
+          "contradictions": [
+            {
+              "property": "location",
+              "wanted": "d1-l2",
+              "evidence": [
+                {
+                  "value": "d2-l1",
+                  "valid_from": 0,
+                  "valid_until": 100,
+                  "source": "s05",
+                  "source_sha256": "e4f4b7e6a7878193e9ed8dbb8fb683075de1affddc30c6c3da836f9f6a9be017",
+                  "quote": "Another bugbear stays on level one of the other dungeon throughout the observation window.",
+                  "world_fact_pointer": "/facts/4",
+                  "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c"
+                }
+              ]
+            },
+            {
+              "property": "torn_ear",
+              "wanted": "yes",
+              "evidence": [
+                {
+                  "value": "no",
+                  "valid_from": 0,
+                  "valid_until": 100,
+                  "source": "s09",
+                  "source_sha256": "15b4a04a49c6be3828c8a96ab30591670c7e06f8ba5c409cbcf1be8bdc02e0b6",
+                  "quote": "Tracking observation for e_6f18: torn ear is absent.",
+                  "world_fact_pointer": "/facts/8",
+                  "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c"
+                }
+              ]
+            }
+          ],
+          "unknowns": [],
+          "source_conflicts": []
+        },
+        {
+          "entity_id": "e_7c2f",
+          "disposition": "supported",
+          "matches": [
+            {
+              "property": "location",
+              "wanted": "d1-l2",
+              "evidence": [
+                {
+                  "value": "d1-l2-stairs",
+                  "valid_from": 10,
+                  "valid_until": 20,
+                  "source": "s02",
+                  "source_sha256": "06514dd4f9a8911a5d2ea2cb7223f5ab1e221dc0514462f7520c21a8f90ac896",
+                  "quote": "At turn 10 the same torn-eared bugbear moves to the level-two stairs, tracked through turn 20.",
+                  "world_fact_pointer": "/facts/1",
+                  "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c"
+                }
+              ]
+            },
+            {
+              "property": "torn_ear",
+              "wanted": "yes",
+              "evidence": [
+                {
+                  "value": "yes",
+                  "valid_from": 0,
+                  "valid_until": 100,
+                  "source": "s06",
+                  "source_sha256": "03c56b525faba721c47acb029336478bfbde73d6bc646a7debd4fef6eb9d0b63",
+                  "quote": "Tracking observation for e_7c2f: torn ear is present.",
+                  "world_fact_pointer": "/facts/5",
+                  "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c"
+                }
+              ]
+            }
+          ],
+          "contradictions": [],
+          "unknowns": [],
+          "source_conflicts": []
+        },
+        {
+          "entity_id": "e_91d0",
+          "disposition": "excluded",
+          "matches": [
+            {
+              "property": "location",
+              "wanted": "d1-l2",
+              "evidence": [
+                {
+                  "value": "d1-l2-cell",
+                  "valid_from": 0,
+                  "valid_until": 100,
+                  "source": "s03",
+                  "source_sha256": "6905f1c68189f64dc16f0ef1a0b4bdddb67e41b65429b3cab40ed44ec4d5e781",
+                  "quote": "A different bugbear guards room 12 on level two throughout the observation window.",
+                  "world_fact_pointer": "/facts/2",
+                  "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c"
+                }
+              ]
+            }
+          ],
+          "contradictions": [
+            {
+              "property": "torn_ear",
+              "wanted": "yes",
+              "evidence": [
+                {
+                  "value": "no",
+                  "valid_from": 0,
+                  "valid_until": 100,
+                  "source": "s07",
+                  "source_sha256": "79631ea05bb2d501b417d3ff1cd6cf2a3777c0950cd7a47ae3b3ba4234d78872",
+                  "quote": "Tracking observation for e_91d0: torn ear is absent.",
+                  "world_fact_pointer": "/facts/6",
+                  "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c"
+                }
+              ]
+            }
+          ],
+          "unknowns": [],
+          "source_conflicts": []
+        },
+        {
+          "entity_id": "e_a340",
+          "disposition": "excluded",
+          "matches": [],
+          "contradictions": [
+            {
+              "property": "location",
+              "wanted": "d1-l2",
+              "evidence": [
+                {
+                  "value": "d1-l3",
+                  "valid_from": 0,
+                  "valid_until": 100,
+                  "source": "s04",
+                  "source_sha256": "60848a5b5dbad5fc07209ad5772937e5fdc3b3573460c62365ade04cf0483fc3",
+                  "quote": "The third bugbear stays on level three throughout the observation window.",
+                  "world_fact_pointer": "/facts/3",
+                  "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c"
+                }
+              ]
+            },
+            {
+              "property": "torn_ear",
+              "wanted": "yes",
+              "evidence": [
+                {
+                  "value": "no",
+                  "valid_from": 0,
+                  "valid_until": 100,
+                  "source": "s08",
+                  "source_sha256": "aec3d88459a8305423aa36c514b84a2b1a4b55965c9f7c1763f6b86ef2bbd0bb",
+                  "quote": "Tracking observation for e_a340: torn ear is absent.",
+                  "world_fact_pointer": "/facts/7",
+                  "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c"
+                }
+              ]
+            }
+          ],
+          "unknowns": [],
+          "source_conflicts": []
+        }
+      ],
+      "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c",
+      "authority": "experimental candidate proposal; no canon merge or registry write",
+      "coverage": "curated context and time-bounded facts; raw-text context extraction untested",
+      "elapsed_seconds": 0.00020191911607980728,
+      "expected_status": "supported_candidate",
+      "expected_candidates": [
+        "e_7c2f"
+      ],
+      "passed": true
+    },
+    {
+      "mention_id": "two_bugbears_on_level_two",
+      "status": "ambiguous",
+      "candidate_ids": [
+        "e_7c2f",
+        "e_91d0"
+      ],
+      "proposed_entity_id": null,
+      "at": 12,
+      "scope_origin": "scene",
+      "scopes": [
+        "d1-l2"
+      ],
+      "evaluated": [
+        {
+          "entity_id": "e_6f18",
+          "disposition": "excluded",
+          "matches": [],
+          "contradictions": [
+            {
+              "property": "location",
+              "wanted": "d1-l2",
+              "evidence": [
+                {
+                  "value": "d2-l1",
+                  "valid_from": 0,
+                  "valid_until": 100,
+                  "source": "s05",
+                  "source_sha256": "e4f4b7e6a7878193e9ed8dbb8fb683075de1affddc30c6c3da836f9f6a9be017",
+                  "quote": "Another bugbear stays on level one of the other dungeon throughout the observation window.",
+                  "world_fact_pointer": "/facts/4",
+                  "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c"
+                }
+              ]
+            }
+          ],
+          "unknowns": [],
+          "source_conflicts": []
+        },
+        {
+          "entity_id": "e_7c2f",
+          "disposition": "supported",
+          "matches": [
+            {
+              "property": "location",
+              "wanted": "d1-l2",
+              "evidence": [
+                {
+                  "value": "d1-l2-stairs",
+                  "valid_from": 10,
+                  "valid_until": 20,
+                  "source": "s02",
+                  "source_sha256": "06514dd4f9a8911a5d2ea2cb7223f5ab1e221dc0514462f7520c21a8f90ac896",
+                  "quote": "At turn 10 the same torn-eared bugbear moves to the level-two stairs, tracked through turn 20.",
+                  "world_fact_pointer": "/facts/1",
+                  "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c"
+                }
+              ]
+            }
+          ],
+          "contradictions": [],
+          "unknowns": [],
+          "source_conflicts": []
+        },
+        {
+          "entity_id": "e_91d0",
+          "disposition": "supported",
+          "matches": [
+            {
+              "property": "location",
+              "wanted": "d1-l2",
+              "evidence": [
+                {
+                  "value": "d1-l2-cell",
+                  "valid_from": 0,
+                  "valid_until": 100,
+                  "source": "s03",
+                  "source_sha256": "6905f1c68189f64dc16f0ef1a0b4bdddb67e41b65429b3cab40ed44ec4d5e781",
+                  "quote": "A different bugbear guards room 12 on level two throughout the observation window.",
+                  "world_fact_pointer": "/facts/2",
+                  "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c"
+                }
+              ]
+            }
+          ],
+          "contradictions": [],
+          "unknowns": [],
+          "source_conflicts": []
+        },
+        {
+          "entity_id": "e_a340",
+          "disposition": "excluded",
+          "matches": [],
+          "contradictions": [
+            {
+              "property": "location",
+              "wanted": "d1-l2",
+              "evidence": [
+                {
+                  "value": "d1-l3",
+                  "valid_from": 0,
+                  "valid_until": 100,
+                  "source": "s04",
+                  "source_sha256": "60848a5b5dbad5fc07209ad5772937e5fdc3b3573460c62365ade04cf0483fc3",
+                  "quote": "The third bugbear stays on level three throughout the observation window.",
+                  "world_fact_pointer": "/facts/3",
+                  "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c"
+                }
+              ]
+            }
+          ],
+          "unknowns": [],
+          "source_conflicts": []
+        }
+      ],
+      "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c",
+      "authority": "experimental candidate proposal; no canon merge or registry write",
+      "coverage": "curated context and time-bounded facts; raw-text context extraction untested",
+      "elapsed_seconds": 0.00014440016821026802,
+      "expected_status": "ambiguous",
+      "expected_candidates": [
+        "e_7c2f",
+        "e_91d0"
+      ],
+      "passed": true
+    },
+    {
+      "mention_id": "room_separates_same_level",
+      "status": "supported_candidate",
+      "candidate_ids": [
+        "e_91d0"
+      ],
+      "proposed_entity_id": "e_91d0",
+      "at": 12,
+      "scope_origin": "scene",
+      "scopes": [
+        "d1-l2-cell"
+      ],
+      "evaluated": [
+        {
+          "entity_id": "e_6f18",
+          "disposition": "excluded",
+          "matches": [],
+          "contradictions": [
+            {
+              "property": "location",
+              "wanted": "d1-l2-cell",
+              "evidence": [
+                {
+                  "value": "d2-l1",
+                  "valid_from": 0,
+                  "valid_until": 100,
+                  "source": "s05",
+                  "source_sha256": "e4f4b7e6a7878193e9ed8dbb8fb683075de1affddc30c6c3da836f9f6a9be017",
+                  "quote": "Another bugbear stays on level one of the other dungeon throughout the observation window.",
+                  "world_fact_pointer": "/facts/4",
+                  "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c"
+                }
+              ]
+            }
+          ],
+          "unknowns": [],
+          "source_conflicts": []
+        },
+        {
+          "entity_id": "e_7c2f",
+          "disposition": "excluded",
+          "matches": [],
+          "contradictions": [
+            {
+              "property": "location",
+              "wanted": "d1-l2-cell",
+              "evidence": [
+                {
+                  "value": "d1-l2-stairs",
+                  "valid_from": 10,
+                  "valid_until": 20,
+                  "source": "s02",
+                  "source_sha256": "06514dd4f9a8911a5d2ea2cb7223f5ab1e221dc0514462f7520c21a8f90ac896",
+                  "quote": "At turn 10 the same torn-eared bugbear moves to the level-two stairs, tracked through turn 20.",
+                  "world_fact_pointer": "/facts/1",
+                  "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c"
+                }
+              ]
+            }
+          ],
+          "unknowns": [],
+          "source_conflicts": []
+        },
+        {
+          "entity_id": "e_91d0",
+          "disposition": "supported",
+          "matches": [
+            {
+              "property": "location",
+              "wanted": "d1-l2-cell",
+              "evidence": [
+                {
+                  "value": "d1-l2-cell",
+                  "valid_from": 0,
+                  "valid_until": 100,
+                  "source": "s03",
+                  "source_sha256": "6905f1c68189f64dc16f0ef1a0b4bdddb67e41b65429b3cab40ed44ec4d5e781",
+                  "quote": "A different bugbear guards room 12 on level two throughout the observation window.",
+                  "world_fact_pointer": "/facts/2",
+                  "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c"
+                }
+              ]
+            }
+          ],
+          "contradictions": [],
+          "unknowns": [],
+          "source_conflicts": []
+        },
+        {
+          "entity_id": "e_a340",
+          "disposition": "excluded",
+          "matches": [],
+          "contradictions": [
+            {
+              "property": "location",
+              "wanted": "d1-l2-cell",
+              "evidence": [
+                {
+                  "value": "d1-l3",
+                  "valid_from": 0,
+                  "valid_until": 100,
+                  "source": "s04",
+                  "source_sha256": "60848a5b5dbad5fc07209ad5772937e5fdc3b3573460c62365ade04cf0483fc3",
+                  "quote": "The third bugbear stays on level three throughout the observation window.",
+                  "world_fact_pointer": "/facts/3",
+                  "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c"
+                }
+              ]
+            }
+          ],
+          "unknowns": [],
+          "source_conflicts": []
+        }
+      ],
+      "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c",
+      "authority": "experimental candidate proposal; no canon merge or registry write",
+      "coverage": "curated context and time-bounded facts; raw-text context extraction untested",
+      "elapsed_seconds": 0.00017339899204671383,
+      "expected_status": "supported_candidate",
+      "expected_candidates": [
+        "e_91d0"
+      ],
+      "passed": true
+    },
+    {
+      "mention_id": "stairs_separate_same_level",
+      "status": "supported_candidate",
+      "candidate_ids": [
+        "e_7c2f"
+      ],
+      "proposed_entity_id": "e_7c2f",
+      "at": 12,
+      "scope_origin": "scene",
+      "scopes": [
+        "d1-l2-stairs"
+      ],
+      "evaluated": [
+        {
+          "entity_id": "e_6f18",
+          "disposition": "excluded",
+          "matches": [],
+          "contradictions": [
+            {
+              "property": "location",
+              "wanted": "d1-l2-stairs",
+              "evidence": [
+                {
+                  "value": "d2-l1",
+                  "valid_from": 0,
+                  "valid_until": 100,
+                  "source": "s05",
+                  "source_sha256": "e4f4b7e6a7878193e9ed8dbb8fb683075de1affddc30c6c3da836f9f6a9be017",
+                  "quote": "Another bugbear stays on level one of the other dungeon throughout the observation window.",
+                  "world_fact_pointer": "/facts/4",
+                  "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c"
+                }
+              ]
+            }
+          ],
+          "unknowns": [],
+          "source_conflicts": []
+        },
+        {
+          "entity_id": "e_7c2f",
+          "disposition": "supported",
+          "matches": [
+            {
+              "property": "location",
+              "wanted": "d1-l2-stairs",
+              "evidence": [
+                {
+                  "value": "d1-l2-stairs",
+                  "valid_from": 10,
+                  "valid_until": 20,
+                  "source": "s02",
+                  "source_sha256": "06514dd4f9a8911a5d2ea2cb7223f5ab1e221dc0514462f7520c21a8f90ac896",
+                  "quote": "At turn 10 the same torn-eared bugbear moves to the level-two stairs, tracked through turn 20.",
+                  "world_fact_pointer": "/facts/1",
+                  "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c"
+                }
+              ]
+            }
+          ],
+          "contradictions": [],
+          "unknowns": [],
+          "source_conflicts": []
+        },
+        {
+          "entity_id": "e_91d0",
+          "disposition": "excluded",
+          "matches": [],
+          "contradictions": [
+            {
+              "property": "location",
+              "wanted": "d1-l2-stairs",
+              "evidence": [
+                {
+                  "value": "d1-l2-cell",
+                  "valid_from": 0,
+                  "valid_until": 100,
+                  "source": "s03",
+                  "source_sha256": "6905f1c68189f64dc16f0ef1a0b4bdddb67e41b65429b3cab40ed44ec4d5e781",
+                  "quote": "A different bugbear guards room 12 on level two throughout the observation window.",
+                  "world_fact_pointer": "/facts/2",
+                  "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c"
+                }
+              ]
+            }
+          ],
+          "unknowns": [],
+          "source_conflicts": []
+        },
+        {
+          "entity_id": "e_a340",
+          "disposition": "excluded",
+          "matches": [],
+          "contradictions": [
+            {
+              "property": "location",
+              "wanted": "d1-l2-stairs",
+              "evidence": [
+                {
+                  "value": "d1-l3",
+                  "valid_from": 0,
+                  "valid_until": 100,
+                  "source": "s04",
+                  "source_sha256": "60848a5b5dbad5fc07209ad5772937e5fdc3b3573460c62365ade04cf0483fc3",
+                  "quote": "The third bugbear stays on level three throughout the observation window.",
+                  "world_fact_pointer": "/facts/3",
+                  "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c"
+                }
+              ]
+            }
+          ],
+          "unknowns": [],
+          "source_conflicts": []
+        }
+      ],
+      "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c",
+      "authority": "experimental candidate proposal; no canon merge or registry write",
+      "coverage": "curated context and time-bounded facts; raw-text context extraction untested",
+      "elapsed_seconds": 0.00016146013513207436,
+      "expected_status": "supported_candidate",
+      "expected_candidates": [
+        "e_7c2f"
+      ],
+      "passed": true
+    },
+    {
+      "mention_id": "plural_is_a_group",
+      "status": "candidate_group",
+      "candidate_ids": [
+        "e_7c2f",
+        "e_91d0"
+      ],
+      "proposed_entity_id": null,
+      "at": 12,
+      "scope_origin": "scene",
+      "scopes": [
+        "d1-l2"
+      ],
+      "evaluated": [
+        {
+          "entity_id": "e_6f18",
+          "disposition": "excluded",
+          "matches": [],
+          "contradictions": [
+            {
+              "property": "location",
+              "wanted": "d1-l2",
+              "evidence": [
+                {
+                  "value": "d2-l1",
+                  "valid_from": 0,
+                  "valid_until": 100,
+                  "source": "s05",
+                  "source_sha256": "e4f4b7e6a7878193e9ed8dbb8fb683075de1affddc30c6c3da836f9f6a9be017",
+                  "quote": "Another bugbear stays on level one of the other dungeon throughout the observation window.",
+                  "world_fact_pointer": "/facts/4",
+                  "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c"
+                }
+              ]
+            }
+          ],
+          "unknowns": [],
+          "source_conflicts": []
+        },
+        {
+          "entity_id": "e_7c2f",
+          "disposition": "supported",
+          "matches": [
+            {
+              "property": "location",
+              "wanted": "d1-l2",
+              "evidence": [
+                {
+                  "value": "d1-l2-stairs",
+                  "valid_from": 10,
+                  "valid_until": 20,
+                  "source": "s02",
+                  "source_sha256": "06514dd4f9a8911a5d2ea2cb7223f5ab1e221dc0514462f7520c21a8f90ac896",
+                  "quote": "At turn 10 the same torn-eared bugbear moves to the level-two stairs, tracked through turn 20.",
+                  "world_fact_pointer": "/facts/1",
+                  "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c"
+                }
+              ]
+            }
+          ],
+          "contradictions": [],
+          "unknowns": [],
+          "source_conflicts": []
+        },
+        {
+          "entity_id": "e_91d0",
+          "disposition": "supported",
+          "matches": [
+            {
+              "property": "location",
+              "wanted": "d1-l2",
+              "evidence": [
+                {
+                  "value": "d1-l2-cell",
+                  "valid_from": 0,
+                  "valid_until": 100,
+                  "source": "s03",
+                  "source_sha256": "6905f1c68189f64dc16f0ef1a0b4bdddb67e41b65429b3cab40ed44ec4d5e781",
+                  "quote": "A different bugbear guards room 12 on level two throughout the observation window.",
+                  "world_fact_pointer": "/facts/2",
+                  "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c"
+                }
+              ]
+            }
+          ],
+          "contradictions": [],
+          "unknowns": [],
+          "source_conflicts": []
+        },
+        {
+          "entity_id": "e_a340",
+          "disposition": "excluded",
+          "matches": [],
+          "contradictions": [
+            {
+              "property": "location",
+              "wanted": "d1-l2",
+              "evidence": [
+                {
+                  "value": "d1-l3",
+                  "valid_from": 0,
+                  "valid_until": 100,
+                  "source": "s04",
+                  "source_sha256": "60848a5b5dbad5fc07209ad5772937e5fdc3b3573460c62365ade04cf0483fc3",
+                  "quote": "The third bugbear stays on level three throughout the observation window.",
+                  "world_fact_pointer": "/facts/3",
+                  "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c"
+                }
+              ]
+            }
+          ],
+          "unknowns": [],
+          "source_conflicts": []
+        }
+      ],
+      "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c",
+      "authority": "experimental candidate proposal; no canon merge or registry write",
+      "coverage": "curated context and time-bounded facts; raw-text context extraction untested",
+      "elapsed_seconds": 0.0001795790158212185,
+      "expected_status": "candidate_group",
+      "expected_candidates": [
+        "e_7c2f",
+        "e_91d0"
+      ],
+      "passed": true
+    },
+    {
+      "mention_id": "reference_overrides_speaker_location",
+      "status": "supported_candidate",
+      "candidate_ids": [
+        "e_a340"
+      ],
+      "proposed_entity_id": "e_a340",
+      "at": 5,
+      "scope_origin": "explicit_referent",
+      "scopes": [
+        "d1-l3"
+      ],
+      "evaluated": [
+        {
+          "entity_id": "e_6f18",
+          "disposition": "excluded",
+          "matches": [],
+          "contradictions": [
+            {
+              "property": "location",
+              "wanted": "d1-l3",
+              "evidence": [
+                {
+                  "value": "d2-l1",
+                  "valid_from": 0,
+                  "valid_until": 100,
+                  "source": "s05",
+                  "source_sha256": "e4f4b7e6a7878193e9ed8dbb8fb683075de1affddc30c6c3da836f9f6a9be017",
+                  "quote": "Another bugbear stays on level one of the other dungeon throughout the observation window.",
+                  "world_fact_pointer": "/facts/4",
+                  "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c"
+                }
+              ]
+            }
+          ],
+          "unknowns": [],
+          "source_conflicts": []
+        },
+        {
+          "entity_id": "e_7c2f",
+          "disposition": "excluded",
+          "matches": [],
+          "contradictions": [
+            {
+              "property": "location",
+              "wanted": "d1-l3",
+              "evidence": [
+                {
+                  "value": "d1-l1-cell",
+                  "valid_from": 0,
+                  "valid_until": 10,
+                  "source": "s01",
+                  "source_sha256": "48066423cbda735c451f884851bd8c68692558a2204da0db9164b9ede8564e47",
+                  "quote": "The torn-eared bugbear occupies room 12 on level one until turn 10.",
+                  "world_fact_pointer": "/facts/0",
+                  "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c"
+                }
+              ]
+            }
+          ],
+          "unknowns": [],
+          "source_conflicts": []
+        },
+        {
+          "entity_id": "e_91d0",
+          "disposition": "excluded",
+          "matches": [],
+          "contradictions": [
+            {
+              "property": "location",
+              "wanted": "d1-l3",
+              "evidence": [
+                {
+                  "value": "d1-l2-cell",
+                  "valid_from": 0,
+                  "valid_until": 100,
+                  "source": "s03",
+                  "source_sha256": "6905f1c68189f64dc16f0ef1a0b4bdddb67e41b65429b3cab40ed44ec4d5e781",
+                  "quote": "A different bugbear guards room 12 on level two throughout the observation window.",
+                  "world_fact_pointer": "/facts/2",
+                  "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c"
+                }
+              ]
+            }
+          ],
+          "unknowns": [],
+          "source_conflicts": []
+        },
+        {
+          "entity_id": "e_a340",
+          "disposition": "supported",
+          "matches": [
+            {
+              "property": "location",
+              "wanted": "d1-l3",
+              "evidence": [
+                {
+                  "value": "d1-l3",
+                  "valid_from": 0,
+                  "valid_until": 100,
+                  "source": "s04",
+                  "source_sha256": "60848a5b5dbad5fc07209ad5772937e5fdc3b3573460c62365ade04cf0483fc3",
+                  "quote": "The third bugbear stays on level three throughout the observation window.",
+                  "world_fact_pointer": "/facts/3",
+                  "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c"
+                }
+              ]
+            }
+          ],
+          "contradictions": [],
+          "unknowns": [],
+          "source_conflicts": []
+        }
+      ],
+      "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c",
+      "authority": "experimental candidate proposal; no canon merge or registry write",
+      "coverage": "curated context and time-bounded facts; raw-text context extraction untested",
+      "elapsed_seconds": 0.0001622089184820652,
+      "expected_status": "supported_candidate",
+      "expected_candidates": [
+        "e_a340"
+      ],
+      "passed": true
+    },
+    {
+      "mention_id": "historical_reference_uses_historical_time",
+      "status": "supported_candidate",
+      "candidate_ids": [
+        "e_7c2f"
+      ],
+      "proposed_entity_id": "e_7c2f",
+      "at": 5,
+      "scope_origin": "explicit_referent",
+      "scopes": [
+        "d1-l1"
+      ],
+      "evaluated": [
+        {
+          "entity_id": "e_6f18",
+          "disposition": "excluded",
+          "matches": [],
+          "contradictions": [
+            {
+              "property": "location",
+              "wanted": "d1-l1",
+              "evidence": [
+                {
+                  "value": "d2-l1",
+                  "valid_from": 0,
+                  "valid_until": 100,
+                  "source": "s05",
+                  "source_sha256": "e4f4b7e6a7878193e9ed8dbb8fb683075de1affddc30c6c3da836f9f6a9be017",
+                  "quote": "Another bugbear stays on level one of the other dungeon throughout the observation window.",
+                  "world_fact_pointer": "/facts/4",
+                  "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c"
+                }
+              ]
+            }
+          ],
+          "unknowns": [],
+          "source_conflicts": []
+        },
+        {
+          "entity_id": "e_7c2f",
+          "disposition": "supported",
+          "matches": [
+            {
+              "property": "location",
+              "wanted": "d1-l1",
+              "evidence": [
+                {
+                  "value": "d1-l1-cell",
+                  "valid_from": 0,
+                  "valid_until": 10,
+                  "source": "s01",
+                  "source_sha256": "48066423cbda735c451f884851bd8c68692558a2204da0db9164b9ede8564e47",
+                  "quote": "The torn-eared bugbear occupies room 12 on level one until turn 10.",
+                  "world_fact_pointer": "/facts/0",
+                  "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c"
+                }
+              ]
+            }
+          ],
+          "contradictions": [],
+          "unknowns": [],
+          "source_conflicts": []
+        },
+        {
+          "entity_id": "e_91d0",
+          "disposition": "excluded",
+          "matches": [],
+          "contradictions": [
+            {
+              "property": "location",
+              "wanted": "d1-l1",
+              "evidence": [
+                {
+                  "value": "d1-l2-cell",
+                  "valid_from": 0,
+                  "valid_until": 100,
+                  "source": "s03",
+                  "source_sha256": "6905f1c68189f64dc16f0ef1a0b4bdddb67e41b65429b3cab40ed44ec4d5e781",
+                  "quote": "A different bugbear guards room 12 on level two throughout the observation window.",
+                  "world_fact_pointer": "/facts/2",
+                  "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c"
+                }
+              ]
+            }
+          ],
+          "unknowns": [],
+          "source_conflicts": []
+        },
+        {
+          "entity_id": "e_a340",
+          "disposition": "excluded",
+          "matches": [],
+          "contradictions": [
+            {
+              "property": "location",
+              "wanted": "d1-l1",
+              "evidence": [
+                {
+                  "value": "d1-l3",
+                  "valid_from": 0,
+                  "valid_until": 100,
+                  "source": "s04",
+                  "source_sha256": "60848a5b5dbad5fc07209ad5772937e5fdc3b3573460c62365ade04cf0483fc3",
+                  "quote": "The third bugbear stays on level three throughout the observation window.",
+                  "world_fact_pointer": "/facts/3",
+                  "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c"
+                }
+              ]
+            }
+          ],
+          "unknowns": [],
+          "source_conflicts": []
+        }
+      ],
+      "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c",
+      "authority": "experimental candidate proposal; no canon merge or registry write",
+      "coverage": "curated context and time-bounded facts; raw-text context extraction untested",
+      "elapsed_seconds": 0.00015050987713038921,
+      "expected_status": "supported_candidate",
+      "expected_candidates": [
+        "e_7c2f"
+      ],
+      "passed": true
+    },
+    {
+      "mention_id": "no_future_role_leak",
+      "status": "insufficient_evidence",
+      "candidate_ids": [
+        "e_7c2f"
+      ],
+      "proposed_entity_id": null,
+      "at": 5,
+      "scope_origin": "scene",
+      "scopes": [],
+      "evaluated": [
+        {
+          "entity_id": "e_6f18",
+          "disposition": "excluded",
+          "matches": [],
+          "contradictions": [
+            {
+              "property": "role",
+              "wanted": "leader",
+              "evidence": [
+                {
+                  "value": "guard",
+                  "valid_from": 0,
+                  "valid_until": 100,
+                  "source": "s17",
+                  "source_sha256": "f54eaefa76bee58085d89c72456aad774a3a7be15fdf61da02a6c187954414bb",
+                  "quote": "Tracking observation for e_6f18: ordinary guard during the observation window.",
+                  "world_fact_pointer": "/facts/16",
+                  "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c"
+                }
+              ]
+            }
+          ],
+          "unknowns": [],
+          "source_conflicts": []
+        },
+        {
+          "entity_id": "e_7c2f",
+          "disposition": "possible_unknown",
+          "matches": [],
+          "contradictions": [],
+          "unknowns": [
+            {
+              "property": "role",
+              "wanted": "leader",
+              "evidence": []
+            }
+          ],
+          "source_conflicts": []
+        },
+        {
+          "entity_id": "e_91d0",
+          "disposition": "excluded",
+          "matches": [],
+          "contradictions": [
+            {
+              "property": "role",
+              "wanted": "leader",
+              "evidence": [
+                {
+                  "value": "guard",
+                  "valid_from": 0,
+                  "valid_until": 100,
+                  "source": "s13",
+                  "source_sha256": "c4dafb847f109ac9863da2ea03146fd4e6920ed07c6d487309fea1fe51234fb0",
+                  "quote": "Tracking observation for e_91d0: ordinary guard during the observation window.",
+                  "world_fact_pointer": "/facts/12",
+                  "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c"
+                }
+              ]
+            }
+          ],
+          "unknowns": [],
+          "source_conflicts": []
+        },
+        {
+          "entity_id": "e_a340",
+          "disposition": "excluded",
+          "matches": [],
+          "contradictions": [
+            {
+              "property": "role",
+              "wanted": "leader",
+              "evidence": [
+                {
+                  "value": "guard",
+                  "valid_from": 0,
+                  "valid_until": 100,
+                  "source": "s15",
+                  "source_sha256": "b88c2dc90c64f623956ea7374216ccc1fdcad8dcc0558ada5f18d0fbaea3ecdb",
+                  "quote": "Tracking observation for e_a340: ordinary guard during the observation window.",
+                  "world_fact_pointer": "/facts/14",
+                  "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c"
+                }
+              ]
+            }
+          ],
+          "unknowns": [],
+          "source_conflicts": []
+        }
+      ],
+      "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c",
+      "authority": "experimental candidate proposal; no canon merge or registry write",
+      "coverage": "curated context and time-bounded facts; raw-text context extraction untested",
+      "elapsed_seconds": 5.825003609061241e-05,
+      "expected_status": "insufficient_evidence",
+      "expected_candidates": [
+        "e_7c2f"
+      ],
+      "passed": true
+    },
+    {
+      "mention_id": "later_role_supports_identity",
+      "status": "supported_candidate",
+      "candidate_ids": [
+        "e_7c2f"
+      ],
+      "proposed_entity_id": "e_7c2f",
+      "at": 12,
+      "scope_origin": "scene",
+      "scopes": [],
+      "evaluated": [
+        {
+          "entity_id": "e_6f18",
+          "disposition": "excluded",
+          "matches": [],
+          "contradictions": [
+            {
+              "property": "role",
+              "wanted": "leader",
+              "evidence": [
+                {
+                  "value": "guard",
+                  "valid_from": 0,
+                  "valid_until": 100,
+                  "source": "s17",
+                  "source_sha256": "f54eaefa76bee58085d89c72456aad774a3a7be15fdf61da02a6c187954414bb",
+                  "quote": "Tracking observation for e_6f18: ordinary guard during the observation window.",
+                  "world_fact_pointer": "/facts/16",
+                  "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c"
+                }
+              ]
+            }
+          ],
+          "unknowns": [],
+          "source_conflicts": []
+        },
+        {
+          "entity_id": "e_7c2f",
+          "disposition": "supported",
+          "matches": [
+            {
+              "property": "role",
+              "wanted": "leader",
+              "evidence": [
+                {
+                  "value": "leader",
+                  "valid_from": 10,
+                  "valid_until": 100,
+                  "source": "s18",
+                  "source_sha256": "f085d13e9c7d2c4f9f68f559dd28e88edc37fac1e39419adcb29065151144995",
+                  "quote": "The torn-eared bugbear becomes the leader at turn 10; earlier rank is unrecorded.",
+                  "world_fact_pointer": "/facts/17",
+                  "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c"
+                }
+              ]
+            }
+          ],
+          "contradictions": [],
+          "unknowns": [],
+          "source_conflicts": []
+        },
+        {
+          "entity_id": "e_91d0",
+          "disposition": "excluded",
+          "matches": [],
+          "contradictions": [
+            {
+              "property": "role",
+              "wanted": "leader",
+              "evidence": [
+                {
+                  "value": "guard",
+                  "valid_from": 0,
+                  "valid_until": 100,
+                  "source": "s13",
+                  "source_sha256": "c4dafb847f109ac9863da2ea03146fd4e6920ed07c6d487309fea1fe51234fb0",
+                  "quote": "Tracking observation for e_91d0: ordinary guard during the observation window.",
+                  "world_fact_pointer": "/facts/12",
+                  "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c"
+                }
+              ]
+            }
+          ],
+          "unknowns": [],
+          "source_conflicts": []
+        },
+        {
+          "entity_id": "e_a340",
+          "disposition": "excluded",
+          "matches": [],
+          "contradictions": [
+            {
+              "property": "role",
+              "wanted": "leader",
+              "evidence": [
+                {
+                  "value": "guard",
+                  "valid_from": 0,
+                  "valid_until": 100,
+                  "source": "s15",
+                  "source_sha256": "b88c2dc90c64f623956ea7374216ccc1fdcad8dcc0558ada5f18d0fbaea3ecdb",
+                  "quote": "Tracking observation for e_a340: ordinary guard during the observation window.",
+                  "world_fact_pointer": "/facts/14",
+                  "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c"
+                }
+              ]
+            }
+          ],
+          "unknowns": [],
+          "source_conflicts": []
+        }
+      ],
+      "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c",
+      "authority": "experimental candidate proposal; no canon merge or registry write",
+      "coverage": "curated context and time-bounded facts; raw-text context extraction untested",
+      "elapsed_seconds": 6.777886301279068e-05,
+      "expected_status": "supported_candidate",
+      "expected_candidates": [
+        "e_7c2f"
+      ],
+      "passed": true
+    },
+    {
+      "mention_id": "alive_vs_corpse",
+      "status": "supported_candidate",
+      "candidate_ids": [
+        "e_91d0"
+      ],
+      "proposed_entity_id": "e_91d0",
+      "at": 16,
+      "scope_origin": "scene",
+      "scopes": [
+        "d1-l2"
+      ],
+      "evaluated": [
+        {
+          "entity_id": "e_6f18",
+          "disposition": "excluded",
+          "matches": [
+            {
+              "property": "life",
+              "wanted": "alive",
+              "evidence": [
+                {
+                  "value": "alive",
+                  "valid_from": 0,
+                  "valid_until": 100,
+                  "source": "s16",
+                  "source_sha256": "0a9fdbb4828515aff5027629d63cf581685705bb64391098f85c9f62d5ee7290",
+                  "quote": "Tracking observation for e_6f18: alive during the observation window.",
+                  "world_fact_pointer": "/facts/15",
+                  "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c"
+                }
+              ]
+            }
+          ],
+          "contradictions": [
+            {
+              "property": "location",
+              "wanted": "d1-l2",
+              "evidence": [
+                {
+                  "value": "d2-l1",
+                  "valid_from": 0,
+                  "valid_until": 100,
+                  "source": "s05",
+                  "source_sha256": "e4f4b7e6a7878193e9ed8dbb8fb683075de1affddc30c6c3da836f9f6a9be017",
+                  "quote": "Another bugbear stays on level one of the other dungeon throughout the observation window.",
+                  "world_fact_pointer": "/facts/4",
+                  "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c"
+                }
+              ]
+            }
+          ],
+          "unknowns": [],
+          "source_conflicts": []
+        },
+        {
+          "entity_id": "e_7c2f",
+          "disposition": "excluded",
+          "matches": [
+            {
+              "property": "location",
+              "wanted": "d1-l2",
+              "evidence": [
+                {
+                  "value": "d1-l2-stairs",
+                  "valid_from": 10,
+                  "valid_until": 20,
+                  "source": "s02",
+                  "source_sha256": "06514dd4f9a8911a5d2ea2cb7223f5ab1e221dc0514462f7520c21a8f90ac896",
+                  "quote": "At turn 10 the same torn-eared bugbear moves to the level-two stairs, tracked through turn 20.",
+                  "world_fact_pointer": "/facts/1",
+                  "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c"
+                }
+              ]
+            }
+          ],
+          "contradictions": [
+            {
+              "property": "life",
+              "wanted": "alive",
+              "evidence": [
+                {
+                  "value": "dead",
+                  "valid_from": 15,
+                  "valid_until": 100,
+                  "source": "s11",
+                  "source_sha256": "32988715b45b52573bdd473b356f9aa4a2579e0c4e056e3d021341401dda6b68",
+                  "quote": "The torn-eared bugbear dies at turn 15; its corpse remains the same tracked individual.",
+                  "world_fact_pointer": "/facts/10",
+                  "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c"
+                }
+              ]
+            }
+          ],
+          "unknowns": [],
+          "source_conflicts": []
+        },
+        {
+          "entity_id": "e_91d0",
+          "disposition": "supported",
+          "matches": [
+            {
+              "property": "location",
+              "wanted": "d1-l2",
+              "evidence": [
+                {
+                  "value": "d1-l2-cell",
+                  "valid_from": 0,
+                  "valid_until": 100,
+                  "source": "s03",
+                  "source_sha256": "6905f1c68189f64dc16f0ef1a0b4bdddb67e41b65429b3cab40ed44ec4d5e781",
+                  "quote": "A different bugbear guards room 12 on level two throughout the observation window.",
+                  "world_fact_pointer": "/facts/2",
+                  "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c"
+                }
+              ]
+            },
+            {
+              "property": "life",
+              "wanted": "alive",
+              "evidence": [
+                {
+                  "value": "alive",
+                  "valid_from": 0,
+                  "valid_until": 100,
+                  "source": "s12",
+                  "source_sha256": "1470ce5fe025b94fe062020bd6d83d8bfc10995f131ed65146e856e8c5f551f2",
+                  "quote": "Tracking observation for e_91d0: alive during the observation window.",
+                  "world_fact_pointer": "/facts/11",
+                  "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c"
+                }
+              ]
+            }
+          ],
+          "contradictions": [],
+          "unknowns": [],
+          "source_conflicts": []
+        },
+        {
+          "entity_id": "e_a340",
+          "disposition": "excluded",
+          "matches": [
+            {
+              "property": "life",
+              "wanted": "alive",
+              "evidence": [
+                {
+                  "value": "alive",
+                  "valid_from": 0,
+                  "valid_until": 100,
+                  "source": "s14",
+                  "source_sha256": "abf5bac52b297c1f6c20c662f170ce63176290a3d89e3b2570345650a2013411",
+                  "quote": "Tracking observation for e_a340: alive during the observation window.",
+                  "world_fact_pointer": "/facts/13",
+                  "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c"
+                }
+              ]
+            }
+          ],
+          "contradictions": [
+            {
+              "property": "location",
+              "wanted": "d1-l2",
+              "evidence": [
+                {
+                  "value": "d1-l3",
+                  "valid_from": 0,
+                  "valid_until": 100,
+                  "source": "s04",
+                  "source_sha256": "60848a5b5dbad5fc07209ad5772937e5fdc3b3573460c62365ade04cf0483fc3",
+                  "quote": "The third bugbear stays on level three throughout the observation window.",
+                  "world_fact_pointer": "/facts/3",
+                  "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c"
+                }
+              ]
+            }
+          ],
+          "unknowns": [],
+          "source_conflicts": []
+        }
+      ],
+      "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c",
+      "authority": "experimental candidate proposal; no canon merge or registry write",
+      "coverage": "curated context and time-bounded facts; raw-text context extraction untested",
+      "elapsed_seconds": 0.00019847997464239597,
+      "expected_status": "supported_candidate",
+      "expected_candidates": [
+        "e_91d0"
+      ],
+      "passed": true
+    },
+    {
+      "mention_id": "corpse_keeps_individual_id",
+      "status": "supported_candidate",
+      "candidate_ids": [
+        "e_7c2f"
+      ],
+      "proposed_entity_id": "e_7c2f",
+      "at": 16,
+      "scope_origin": "scene",
+      "scopes": [
+        "d1-l2"
+      ],
+      "evaluated": [
+        {
+          "entity_id": "e_6f18",
+          "disposition": "excluded",
+          "matches": [],
+          "contradictions": [
+            {
+              "property": "location",
+              "wanted": "d1-l2",
+              "evidence": [
+                {
+                  "value": "d2-l1",
+                  "valid_from": 0,
+                  "valid_until": 100,
+                  "source": "s05",
+                  "source_sha256": "e4f4b7e6a7878193e9ed8dbb8fb683075de1affddc30c6c3da836f9f6a9be017",
+                  "quote": "Another bugbear stays on level one of the other dungeon throughout the observation window.",
+                  "world_fact_pointer": "/facts/4",
+                  "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c"
+                }
+              ]
+            },
+            {
+              "property": "life",
+              "wanted": "dead",
+              "evidence": [
+                {
+                  "value": "alive",
+                  "valid_from": 0,
+                  "valid_until": 100,
+                  "source": "s16",
+                  "source_sha256": "0a9fdbb4828515aff5027629d63cf581685705bb64391098f85c9f62d5ee7290",
+                  "quote": "Tracking observation for e_6f18: alive during the observation window.",
+                  "world_fact_pointer": "/facts/15",
+                  "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c"
+                }
+              ]
+            }
+          ],
+          "unknowns": [],
+          "source_conflicts": []
+        },
+        {
+          "entity_id": "e_7c2f",
+          "disposition": "supported",
+          "matches": [
+            {
+              "property": "location",
+              "wanted": "d1-l2",
+              "evidence": [
+                {
+                  "value": "d1-l2-stairs",
+                  "valid_from": 10,
+                  "valid_until": 20,
+                  "source": "s02",
+                  "source_sha256": "06514dd4f9a8911a5d2ea2cb7223f5ab1e221dc0514462f7520c21a8f90ac896",
+                  "quote": "At turn 10 the same torn-eared bugbear moves to the level-two stairs, tracked through turn 20.",
+                  "world_fact_pointer": "/facts/1",
+                  "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c"
+                }
+              ]
+            },
+            {
+              "property": "life",
+              "wanted": "dead",
+              "evidence": [
+                {
+                  "value": "dead",
+                  "valid_from": 15,
+                  "valid_until": 100,
+                  "source": "s11",
+                  "source_sha256": "32988715b45b52573bdd473b356f9aa4a2579e0c4e056e3d021341401dda6b68",
+                  "quote": "The torn-eared bugbear dies at turn 15; its corpse remains the same tracked individual.",
+                  "world_fact_pointer": "/facts/10",
+                  "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c"
+                }
+              ]
+            }
+          ],
+          "contradictions": [],
+          "unknowns": [],
+          "source_conflicts": []
+        },
+        {
+          "entity_id": "e_91d0",
+          "disposition": "excluded",
+          "matches": [
+            {
+              "property": "location",
+              "wanted": "d1-l2",
+              "evidence": [
+                {
+                  "value": "d1-l2-cell",
+                  "valid_from": 0,
+                  "valid_until": 100,
+                  "source": "s03",
+                  "source_sha256": "6905f1c68189f64dc16f0ef1a0b4bdddb67e41b65429b3cab40ed44ec4d5e781",
+                  "quote": "A different bugbear guards room 12 on level two throughout the observation window.",
+                  "world_fact_pointer": "/facts/2",
+                  "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c"
+                }
+              ]
+            }
+          ],
+          "contradictions": [
+            {
+              "property": "life",
+              "wanted": "dead",
+              "evidence": [
+                {
+                  "value": "alive",
+                  "valid_from": 0,
+                  "valid_until": 100,
+                  "source": "s12",
+                  "source_sha256": "1470ce5fe025b94fe062020bd6d83d8bfc10995f131ed65146e856e8c5f551f2",
+                  "quote": "Tracking observation for e_91d0: alive during the observation window.",
+                  "world_fact_pointer": "/facts/11",
+                  "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c"
+                }
+              ]
+            }
+          ],
+          "unknowns": [],
+          "source_conflicts": []
+        },
+        {
+          "entity_id": "e_a340",
+          "disposition": "excluded",
+          "matches": [],
+          "contradictions": [
+            {
+              "property": "location",
+              "wanted": "d1-l2",
+              "evidence": [
+                {
+                  "value": "d1-l3",
+                  "valid_from": 0,
+                  "valid_until": 100,
+                  "source": "s04",
+                  "source_sha256": "60848a5b5dbad5fc07209ad5772937e5fdc3b3573460c62365ade04cf0483fc3",
+                  "quote": "The third bugbear stays on level three throughout the observation window.",
+                  "world_fact_pointer": "/facts/3",
+                  "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c"
+                }
+              ]
+            },
+            {
+              "property": "life",
+              "wanted": "dead",
+              "evidence": [
+                {
+                  "value": "alive",
+                  "valid_from": 0,
+                  "valid_until": 100,
+                  "source": "s14",
+                  "source_sha256": "abf5bac52b297c1f6c20c662f170ce63176290a3d89e3b2570345650a2013411",
+                  "quote": "Tracking observation for e_a340: alive during the observation window.",
+                  "world_fact_pointer": "/facts/13",
+                  "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c"
+                }
+              ]
+            }
+          ],
+          "unknowns": [],
+          "source_conflicts": []
+        }
+      ],
+      "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c",
+      "authority": "experimental candidate proposal; no canon merge or registry write",
+      "coverage": "curated context and time-bounded facts; raw-text context extraction untested",
+      "elapsed_seconds": 0.00018810899928212166,
+      "expected_status": "supported_candidate",
+      "expected_candidates": [
+        "e_7c2f"
+      ],
+      "passed": true
+    },
+    {
+      "mention_id": "expired_location_does_not_persist",
+      "status": "insufficient_evidence",
+      "candidate_ids": [
+        "e_7c2f"
+      ],
+      "proposed_entity_id": null,
+      "at": 30,
+      "scope_origin": "scene",
+      "scopes": [
+        "d1-l1"
+      ],
+      "evaluated": [
+        {
+          "entity_id": "e_6f18",
+          "disposition": "excluded",
+          "matches": [],
+          "contradictions": [
+            {
+              "property": "location",
+              "wanted": "d1-l1",
+              "evidence": [
+                {
+                  "value": "d2-l1",
+                  "valid_from": 0,
+                  "valid_until": 100,
+                  "source": "s05",
+                  "source_sha256": "e4f4b7e6a7878193e9ed8dbb8fb683075de1affddc30c6c3da836f9f6a9be017",
+                  "quote": "Another bugbear stays on level one of the other dungeon throughout the observation window.",
+                  "world_fact_pointer": "/facts/4",
+                  "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c"
+                }
+              ]
+            }
+          ],
+          "unknowns": [],
+          "source_conflicts": []
+        },
+        {
+          "entity_id": "e_7c2f",
+          "disposition": "possible_unknown",
+          "matches": [],
+          "contradictions": [],
+          "unknowns": [
+            {
+              "property": "location",
+              "wanted": "d1-l1",
+              "evidence": []
+            }
+          ],
+          "source_conflicts": []
+        },
+        {
+          "entity_id": "e_91d0",
+          "disposition": "excluded",
+          "matches": [],
+          "contradictions": [
+            {
+              "property": "location",
+              "wanted": "d1-l1",
+              "evidence": [
+                {
+                  "value": "d1-l2-cell",
+                  "valid_from": 0,
+                  "valid_until": 100,
+                  "source": "s03",
+                  "source_sha256": "6905f1c68189f64dc16f0ef1a0b4bdddb67e41b65429b3cab40ed44ec4d5e781",
+                  "quote": "A different bugbear guards room 12 on level two throughout the observation window.",
+                  "world_fact_pointer": "/facts/2",
+                  "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c"
+                }
+              ]
+            }
+          ],
+          "unknowns": [],
+          "source_conflicts": []
+        },
+        {
+          "entity_id": "e_a340",
+          "disposition": "excluded",
+          "matches": [],
+          "contradictions": [
+            {
+              "property": "location",
+              "wanted": "d1-l1",
+              "evidence": [
+                {
+                  "value": "d1-l3",
+                  "valid_from": 0,
+                  "valid_until": 100,
+                  "source": "s04",
+                  "source_sha256": "60848a5b5dbad5fc07209ad5772937e5fdc3b3573460c62365ade04cf0483fc3",
+                  "quote": "The third bugbear stays on level three throughout the observation window.",
+                  "world_fact_pointer": "/facts/3",
+                  "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c"
+                }
+              ]
+            }
+          ],
+          "unknowns": [],
+          "source_conflicts": []
+        }
+      ],
+      "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c",
+      "authority": "experimental candidate proposal; no canon merge or registry write",
+      "coverage": "curated context and time-bounded facts; raw-text context extraction untested",
+      "elapsed_seconds": 0.0001267490442842245,
+      "expected_status": "insufficient_evidence",
+      "expected_candidates": [
+        "e_7c2f"
+      ],
+      "passed": true
+    },
+    {
+      "mention_id": "unknown_competitor_blocks_unique",
+      "status": "ambiguous",
+      "candidate_ids": [
+        "e_7c2f",
+        "e_a340"
+      ],
+      "proposed_entity_id": null,
+      "at": 30,
+      "scope_origin": "scene",
+      "scopes": [
+        "d1-l3"
+      ],
+      "evaluated": [
+        {
+          "entity_id": "e_6f18",
+          "disposition": "excluded",
+          "matches": [],
+          "contradictions": [
+            {
+              "property": "location",
+              "wanted": "d1-l3",
+              "evidence": [
+                {
+                  "value": "d2-l1",
+                  "valid_from": 0,
+                  "valid_until": 100,
+                  "source": "s05",
+                  "source_sha256": "e4f4b7e6a7878193e9ed8dbb8fb683075de1affddc30c6c3da836f9f6a9be017",
+                  "quote": "Another bugbear stays on level one of the other dungeon throughout the observation window.",
+                  "world_fact_pointer": "/facts/4",
+                  "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c"
+                }
+              ]
+            }
+          ],
+          "unknowns": [],
+          "source_conflicts": []
+        },
+        {
+          "entity_id": "e_7c2f",
+          "disposition": "possible_unknown",
+          "matches": [],
+          "contradictions": [],
+          "unknowns": [
+            {
+              "property": "location",
+              "wanted": "d1-l3",
+              "evidence": []
+            }
+          ],
+          "source_conflicts": []
+        },
+        {
+          "entity_id": "e_91d0",
+          "disposition": "excluded",
+          "matches": [],
+          "contradictions": [
+            {
+              "property": "location",
+              "wanted": "d1-l3",
+              "evidence": [
+                {
+                  "value": "d1-l2-cell",
+                  "valid_from": 0,
+                  "valid_until": 100,
+                  "source": "s03",
+                  "source_sha256": "6905f1c68189f64dc16f0ef1a0b4bdddb67e41b65429b3cab40ed44ec4d5e781",
+                  "quote": "A different bugbear guards room 12 on level two throughout the observation window.",
+                  "world_fact_pointer": "/facts/2",
+                  "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c"
+                }
+              ]
+            }
+          ],
+          "unknowns": [],
+          "source_conflicts": []
+        },
+        {
+          "entity_id": "e_a340",
+          "disposition": "supported",
+          "matches": [
+            {
+              "property": "location",
+              "wanted": "d1-l3",
+              "evidence": [
+                {
+                  "value": "d1-l3",
+                  "valid_from": 0,
+                  "valid_until": 100,
+                  "source": "s04",
+                  "source_sha256": "60848a5b5dbad5fc07209ad5772937e5fdc3b3573460c62365ade04cf0483fc3",
+                  "quote": "The third bugbear stays on level three throughout the observation window.",
+                  "world_fact_pointer": "/facts/3",
+                  "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c"
+                }
+              ]
+            }
+          ],
+          "contradictions": [],
+          "unknowns": [],
+          "source_conflicts": []
+        }
+      ],
+      "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c",
+      "authority": "experimental candidate proposal; no canon merge or registry write",
+      "coverage": "curated context and time-bounded facts; raw-text context extraction untested",
+      "elapsed_seconds": 0.00012017018161714077,
+      "expected_status": "ambiguous",
+      "expected_candidates": [
+        "e_7c2f",
+        "e_a340"
+      ],
+      "passed": true
+    },
+    {
+      "mention_id": "coarse_location_cannot_prove_specific_room",
+      "status": "insufficient_evidence",
+      "candidate_ids": [
+        "e_a340"
+      ],
+      "proposed_entity_id": null,
+      "at": 5,
+      "scope_origin": "scene",
+      "scopes": [
+        "d1-l3-cave"
+      ],
+      "evaluated": [
+        {
+          "entity_id": "e_6f18",
+          "disposition": "excluded",
+          "matches": [],
+          "contradictions": [
+            {
+              "property": "location",
+              "wanted": "d1-l3-cave",
+              "evidence": [
+                {
+                  "value": "d2-l1",
+                  "valid_from": 0,
+                  "valid_until": 100,
+                  "source": "s05",
+                  "source_sha256": "e4f4b7e6a7878193e9ed8dbb8fb683075de1affddc30c6c3da836f9f6a9be017",
+                  "quote": "Another bugbear stays on level one of the other dungeon throughout the observation window.",
+                  "world_fact_pointer": "/facts/4",
+                  "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c"
+                }
+              ]
+            }
+          ],
+          "unknowns": [],
+          "source_conflicts": []
+        },
+        {
+          "entity_id": "e_7c2f",
+          "disposition": "excluded",
+          "matches": [],
+          "contradictions": [
+            {
+              "property": "location",
+              "wanted": "d1-l3-cave",
+              "evidence": [
+                {
+                  "value": "d1-l1-cell",
+                  "valid_from": 0,
+                  "valid_until": 10,
+                  "source": "s01",
+                  "source_sha256": "48066423cbda735c451f884851bd8c68692558a2204da0db9164b9ede8564e47",
+                  "quote": "The torn-eared bugbear occupies room 12 on level one until turn 10.",
+                  "world_fact_pointer": "/facts/0",
+                  "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c"
+                }
+              ]
+            }
+          ],
+          "unknowns": [],
+          "source_conflicts": []
+        },
+        {
+          "entity_id": "e_91d0",
+          "disposition": "excluded",
+          "matches": [],
+          "contradictions": [
+            {
+              "property": "location",
+              "wanted": "d1-l3-cave",
+              "evidence": [
+                {
+                  "value": "d1-l2-cell",
+                  "valid_from": 0,
+                  "valid_until": 100,
+                  "source": "s03",
+                  "source_sha256": "6905f1c68189f64dc16f0ef1a0b4bdddb67e41b65429b3cab40ed44ec4d5e781",
+                  "quote": "A different bugbear guards room 12 on level two throughout the observation window.",
+                  "world_fact_pointer": "/facts/2",
+                  "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c"
+                }
+              ]
+            }
+          ],
+          "unknowns": [],
+          "source_conflicts": []
+        },
+        {
+          "entity_id": "e_a340",
+          "disposition": "possible_unknown",
+          "matches": [],
+          "contradictions": [],
+          "unknowns": [
+            {
+              "property": "location",
+              "wanted": "d1-l3-cave",
+              "evidence": [
+                {
+                  "value": "d1-l3",
+                  "valid_from": 0,
+                  "valid_until": 100,
+                  "source": "s04",
+                  "source_sha256": "60848a5b5dbad5fc07209ad5772937e5fdc3b3573460c62365ade04cf0483fc3",
+                  "quote": "The third bugbear stays on level three throughout the observation window.",
+                  "world_fact_pointer": "/facts/3",
+                  "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c"
+                }
+              ]
+            }
+          ],
+          "source_conflicts": []
+        }
+      ],
+      "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c",
+      "authority": "experimental candidate proposal; no canon merge or registry write",
+      "coverage": "curated context and time-bounded facts; raw-text context extraction untested",
+      "elapsed_seconds": 0.00016651907935738564,
+      "expected_status": "insufficient_evidence",
+      "expected_candidates": [
+        "e_a340"
+      ],
+      "passed": true
+    },
+    {
+      "mention_id": "incompatible_description_no_new_entity",
+      "status": "no_supported_candidate",
+      "candidate_ids": [],
+      "proposed_entity_id": null,
+      "at": 5,
+      "scope_origin": "scene",
+      "scopes": [
+        "d1-l3"
+      ],
+      "evaluated": [
+        {
+          "entity_id": "e_6f18",
+          "disposition": "excluded",
+          "matches": [],
+          "contradictions": [
+            {
+              "property": "location",
+              "wanted": "d1-l3",
+              "evidence": [
+                {
+                  "value": "d2-l1",
+                  "valid_from": 0,
+                  "valid_until": 100,
+                  "source": "s05",
+                  "source_sha256": "e4f4b7e6a7878193e9ed8dbb8fb683075de1affddc30c6c3da836f9f6a9be017",
+                  "quote": "Another bugbear stays on level one of the other dungeon throughout the observation window.",
+                  "world_fact_pointer": "/facts/4",
+                  "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c"
+                }
+              ]
+            },
+            {
+              "property": "torn_ear",
+              "wanted": "yes",
+              "evidence": [
+                {
+                  "value": "no",
+                  "valid_from": 0,
+                  "valid_until": 100,
+                  "source": "s09",
+                  "source_sha256": "15b4a04a49c6be3828c8a96ab30591670c7e06f8ba5c409cbcf1be8bdc02e0b6",
+                  "quote": "Tracking observation for e_6f18: torn ear is absent.",
+                  "world_fact_pointer": "/facts/8",
+                  "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c"
+                }
+              ]
+            }
+          ],
+          "unknowns": [],
+          "source_conflicts": []
+        },
+        {
+          "entity_id": "e_7c2f",
+          "disposition": "excluded",
+          "matches": [
+            {
+              "property": "torn_ear",
+              "wanted": "yes",
+              "evidence": [
+                {
+                  "value": "yes",
+                  "valid_from": 0,
+                  "valid_until": 100,
+                  "source": "s06",
+                  "source_sha256": "03c56b525faba721c47acb029336478bfbde73d6bc646a7debd4fef6eb9d0b63",
+                  "quote": "Tracking observation for e_7c2f: torn ear is present.",
+                  "world_fact_pointer": "/facts/5",
+                  "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c"
+                }
+              ]
+            }
+          ],
+          "contradictions": [
+            {
+              "property": "location",
+              "wanted": "d1-l3",
+              "evidence": [
+                {
+                  "value": "d1-l1-cell",
+                  "valid_from": 0,
+                  "valid_until": 10,
+                  "source": "s01",
+                  "source_sha256": "48066423cbda735c451f884851bd8c68692558a2204da0db9164b9ede8564e47",
+                  "quote": "The torn-eared bugbear occupies room 12 on level one until turn 10.",
+                  "world_fact_pointer": "/facts/0",
+                  "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c"
+                }
+              ]
+            }
+          ],
+          "unknowns": [],
+          "source_conflicts": []
+        },
+        {
+          "entity_id": "e_91d0",
+          "disposition": "excluded",
+          "matches": [],
+          "contradictions": [
+            {
+              "property": "location",
+              "wanted": "d1-l3",
+              "evidence": [
+                {
+                  "value": "d1-l2-cell",
+                  "valid_from": 0,
+                  "valid_until": 100,
+                  "source": "s03",
+                  "source_sha256": "6905f1c68189f64dc16f0ef1a0b4bdddb67e41b65429b3cab40ed44ec4d5e781",
+                  "quote": "A different bugbear guards room 12 on level two throughout the observation window.",
+                  "world_fact_pointer": "/facts/2",
+                  "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c"
+                }
+              ]
+            },
+            {
+              "property": "torn_ear",
+              "wanted": "yes",
+              "evidence": [
+                {
+                  "value": "no",
+                  "valid_from": 0,
+                  "valid_until": 100,
+                  "source": "s07",
+                  "source_sha256": "79631ea05bb2d501b417d3ff1cd6cf2a3777c0950cd7a47ae3b3ba4234d78872",
+                  "quote": "Tracking observation for e_91d0: torn ear is absent.",
+                  "world_fact_pointer": "/facts/6",
+                  "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c"
+                }
+              ]
+            }
+          ],
+          "unknowns": [],
+          "source_conflicts": []
+        },
+        {
+          "entity_id": "e_a340",
+          "disposition": "excluded",
+          "matches": [
+            {
+              "property": "location",
+              "wanted": "d1-l3",
+              "evidence": [
+                {
+                  "value": "d1-l3",
+                  "valid_from": 0,
+                  "valid_until": 100,
+                  "source": "s04",
+                  "source_sha256": "60848a5b5dbad5fc07209ad5772937e5fdc3b3573460c62365ade04cf0483fc3",
+                  "quote": "The third bugbear stays on level three throughout the observation window.",
+                  "world_fact_pointer": "/facts/3",
+                  "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c"
+                }
+              ]
+            }
+          ],
+          "contradictions": [
+            {
+              "property": "torn_ear",
+              "wanted": "yes",
+              "evidence": [
+                {
+                  "value": "no",
+                  "valid_from": 0,
+                  "valid_until": 100,
+                  "source": "s08",
+                  "source_sha256": "aec3d88459a8305423aa36c514b84a2b1a4b55965c9f7c1763f6b86ef2bbd0bb",
+                  "quote": "Tracking observation for e_a340: torn ear is absent.",
+                  "world_fact_pointer": "/facts/7",
+                  "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c"
+                }
+              ]
+            }
+          ],
+          "unknowns": [],
+          "source_conflicts": []
+        }
+      ],
+      "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c",
+      "authority": "experimental candidate proposal; no canon merge or registry write",
+      "coverage": "curated context and time-bounded facts; raw-text context extraction untested",
+      "elapsed_seconds": 0.0001977798528969288,
+      "expected_status": "no_supported_candidate",
+      "expected_candidates": [],
+      "passed": true
+    },
+    {
+      "mention_id": "unknown_time_abstains",
+      "status": "ambiguous",
+      "candidate_ids": [
+        "e_6f18",
+        "e_7c2f",
+        "e_91d0",
+        "e_a340"
+      ],
+      "proposed_entity_id": null,
+      "at": null,
+      "scope_origin": "scene",
+      "scopes": [
+        "d1-l1"
+      ],
+      "evaluated": [
+        {
+          "entity_id": "e_6f18",
+          "disposition": "possible_unknown",
+          "matches": [],
+          "contradictions": [],
+          "unknowns": [
+            {
+              "property": "location",
+              "wanted": "d1-l1",
+              "evidence": []
+            }
+          ],
+          "source_conflicts": []
+        },
+        {
+          "entity_id": "e_7c2f",
+          "disposition": "possible_unknown",
+          "matches": [],
+          "contradictions": [],
+          "unknowns": [
+            {
+              "property": "location",
+              "wanted": "d1-l1",
+              "evidence": []
+            }
+          ],
+          "source_conflicts": []
+        },
+        {
+          "entity_id": "e_91d0",
+          "disposition": "possible_unknown",
+          "matches": [],
+          "contradictions": [],
+          "unknowns": [
+            {
+              "property": "location",
+              "wanted": "d1-l1",
+              "evidence": []
+            }
+          ],
+          "source_conflicts": []
+        },
+        {
+          "entity_id": "e_a340",
+          "disposition": "possible_unknown",
+          "matches": [],
+          "contradictions": [],
+          "unknowns": [
+            {
+              "property": "location",
+              "wanted": "d1-l1",
+              "evidence": []
+            }
+          ],
+          "source_conflicts": []
+        }
+      ],
+      "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c",
+      "authority": "experimental candidate proposal; no canon merge or registry write",
+      "coverage": "curated context and time-bounded facts; raw-text context extraction untested",
+      "elapsed_seconds": 2.7060043066740036e-05,
+      "expected_status": "ambiguous",
+      "expected_candidates": [
+        "e_6f18",
+        "e_7c2f",
+        "e_91d0",
+        "e_a340"
+      ],
+      "passed": true
+    },
+    {
+      "mention_id": "contradictory_referent_scopes",
+      "status": "conflicting_context",
+      "candidate_ids": [],
+      "proposed_entity_id": null,
+      "at": 5,
+      "scope_origin": "explicit_referent",
+      "scopes": [
+        "d1-l1",
+        "d1-l2"
+      ],
+      "evaluated": [
+        {
+          "entity_id": "e_6f18",
+          "disposition": "excluded",
+          "matches": [],
+          "contradictions": [
+            {
+              "property": "location",
+              "wanted": "d1-l1",
+              "evidence": [
+                {
+                  "value": "d2-l1",
+                  "valid_from": 0,
+                  "valid_until": 100,
+                  "source": "s05",
+                  "source_sha256": "e4f4b7e6a7878193e9ed8dbb8fb683075de1affddc30c6c3da836f9f6a9be017",
+                  "quote": "Another bugbear stays on level one of the other dungeon throughout the observation window.",
+                  "world_fact_pointer": "/facts/4",
+                  "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c"
+                }
+              ]
+            },
+            {
+              "property": "location",
+              "wanted": "d1-l2",
+              "evidence": [
+                {
+                  "value": "d2-l1",
+                  "valid_from": 0,
+                  "valid_until": 100,
+                  "source": "s05",
+                  "source_sha256": "e4f4b7e6a7878193e9ed8dbb8fb683075de1affddc30c6c3da836f9f6a9be017",
+                  "quote": "Another bugbear stays on level one of the other dungeon throughout the observation window.",
+                  "world_fact_pointer": "/facts/4",
+                  "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c"
+                }
+              ]
+            }
+          ],
+          "unknowns": [],
+          "source_conflicts": []
+        },
+        {
+          "entity_id": "e_7c2f",
+          "disposition": "excluded",
+          "matches": [
+            {
+              "property": "location",
+              "wanted": "d1-l1",
+              "evidence": [
+                {
+                  "value": "d1-l1-cell",
+                  "valid_from": 0,
+                  "valid_until": 10,
+                  "source": "s01",
+                  "source_sha256": "48066423cbda735c451f884851bd8c68692558a2204da0db9164b9ede8564e47",
+                  "quote": "The torn-eared bugbear occupies room 12 on level one until turn 10.",
+                  "world_fact_pointer": "/facts/0",
+                  "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c"
+                }
+              ]
+            }
+          ],
+          "contradictions": [
+            {
+              "property": "location",
+              "wanted": "d1-l2",
+              "evidence": [
+                {
+                  "value": "d1-l1-cell",
+                  "valid_from": 0,
+                  "valid_until": 10,
+                  "source": "s01",
+                  "source_sha256": "48066423cbda735c451f884851bd8c68692558a2204da0db9164b9ede8564e47",
+                  "quote": "The torn-eared bugbear occupies room 12 on level one until turn 10.",
+                  "world_fact_pointer": "/facts/0",
+                  "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c"
+                }
+              ]
+            }
+          ],
+          "unknowns": [],
+          "source_conflicts": []
+        },
+        {
+          "entity_id": "e_91d0",
+          "disposition": "excluded",
+          "matches": [
+            {
+              "property": "location",
+              "wanted": "d1-l2",
+              "evidence": [
+                {
+                  "value": "d1-l2-cell",
+                  "valid_from": 0,
+                  "valid_until": 100,
+                  "source": "s03",
+                  "source_sha256": "6905f1c68189f64dc16f0ef1a0b4bdddb67e41b65429b3cab40ed44ec4d5e781",
+                  "quote": "A different bugbear guards room 12 on level two throughout the observation window.",
+                  "world_fact_pointer": "/facts/2",
+                  "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c"
+                }
+              ]
+            }
+          ],
+          "contradictions": [
+            {
+              "property": "location",
+              "wanted": "d1-l1",
+              "evidence": [
+                {
+                  "value": "d1-l2-cell",
+                  "valid_from": 0,
+                  "valid_until": 100,
+                  "source": "s03",
+                  "source_sha256": "6905f1c68189f64dc16f0ef1a0b4bdddb67e41b65429b3cab40ed44ec4d5e781",
+                  "quote": "A different bugbear guards room 12 on level two throughout the observation window.",
+                  "world_fact_pointer": "/facts/2",
+                  "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c"
+                }
+              ]
+            }
+          ],
+          "unknowns": [],
+          "source_conflicts": []
+        },
+        {
+          "entity_id": "e_a340",
+          "disposition": "excluded",
+          "matches": [],
+          "contradictions": [
+            {
+              "property": "location",
+              "wanted": "d1-l1",
+              "evidence": [
+                {
+                  "value": "d1-l3",
+                  "valid_from": 0,
+                  "valid_until": 100,
+                  "source": "s04",
+                  "source_sha256": "60848a5b5dbad5fc07209ad5772937e5fdc3b3573460c62365ade04cf0483fc3",
+                  "quote": "The third bugbear stays on level three throughout the observation window.",
+                  "world_fact_pointer": "/facts/3",
+                  "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c"
+                }
+              ]
+            },
+            {
+              "property": "location",
+              "wanted": "d1-l2",
+              "evidence": [
+                {
+                  "value": "d1-l3",
+                  "valid_from": 0,
+                  "valid_until": 100,
+                  "source": "s04",
+                  "source_sha256": "60848a5b5dbad5fc07209ad5772937e5fdc3b3573460c62365ade04cf0483fc3",
+                  "quote": "The third bugbear stays on level three throughout the observation window.",
+                  "world_fact_pointer": "/facts/3",
+                  "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c"
+                }
+              ]
+            }
+          ],
+          "unknowns": [],
+          "source_conflicts": []
+        }
+      ],
+      "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c",
+      "authority": "experimental candidate proposal; no canon merge or registry write",
+      "coverage": "curated context and time-bounded facts; raw-text context extraction untested",
+      "elapsed_seconds": 0.00028887810185551643,
+      "expected_status": "conflicting_context",
+      "expected_candidates": [],
+      "passed": true
+    },
+    {
+      "mention_id": "compatible_parent_child_scopes",
+      "status": "supported_candidate",
+      "candidate_ids": [
+        "e_91d0"
+      ],
+      "proposed_entity_id": "e_91d0",
+      "at": 5,
+      "scope_origin": "explicit_referent",
+      "scopes": [
+        "d1-l2",
+        "d1-l2-cell"
+      ],
+      "evaluated": [
+        {
+          "entity_id": "e_6f18",
+          "disposition": "excluded",
+          "matches": [],
+          "contradictions": [
+            {
+              "property": "location",
+              "wanted": "d1-l2",
+              "evidence": [
+                {
+                  "value": "d2-l1",
+                  "valid_from": 0,
+                  "valid_until": 100,
+                  "source": "s05",
+                  "source_sha256": "e4f4b7e6a7878193e9ed8dbb8fb683075de1affddc30c6c3da836f9f6a9be017",
+                  "quote": "Another bugbear stays on level one of the other dungeon throughout the observation window.",
+                  "world_fact_pointer": "/facts/4",
+                  "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c"
+                }
+              ]
+            },
+            {
+              "property": "location",
+              "wanted": "d1-l2-cell",
+              "evidence": [
+                {
+                  "value": "d2-l1",
+                  "valid_from": 0,
+                  "valid_until": 100,
+                  "source": "s05",
+                  "source_sha256": "e4f4b7e6a7878193e9ed8dbb8fb683075de1affddc30c6c3da836f9f6a9be017",
+                  "quote": "Another bugbear stays on level one of the other dungeon throughout the observation window.",
+                  "world_fact_pointer": "/facts/4",
+                  "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c"
+                }
+              ]
+            }
+          ],
+          "unknowns": [],
+          "source_conflicts": []
+        },
+        {
+          "entity_id": "e_7c2f",
+          "disposition": "excluded",
+          "matches": [],
+          "contradictions": [
+            {
+              "property": "location",
+              "wanted": "d1-l2",
+              "evidence": [
+                {
+                  "value": "d1-l1-cell",
+                  "valid_from": 0,
+                  "valid_until": 10,
+                  "source": "s01",
+                  "source_sha256": "48066423cbda735c451f884851bd8c68692558a2204da0db9164b9ede8564e47",
+                  "quote": "The torn-eared bugbear occupies room 12 on level one until turn 10.",
+                  "world_fact_pointer": "/facts/0",
+                  "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c"
+                }
+              ]
+            },
+            {
+              "property": "location",
+              "wanted": "d1-l2-cell",
+              "evidence": [
+                {
+                  "value": "d1-l1-cell",
+                  "valid_from": 0,
+                  "valid_until": 10,
+                  "source": "s01",
+                  "source_sha256": "48066423cbda735c451f884851bd8c68692558a2204da0db9164b9ede8564e47",
+                  "quote": "The torn-eared bugbear occupies room 12 on level one until turn 10.",
+                  "world_fact_pointer": "/facts/0",
+                  "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c"
+                }
+              ]
+            }
+          ],
+          "unknowns": [],
+          "source_conflicts": []
+        },
+        {
+          "entity_id": "e_91d0",
+          "disposition": "supported",
+          "matches": [
+            {
+              "property": "location",
+              "wanted": "d1-l2",
+              "evidence": [
+                {
+                  "value": "d1-l2-cell",
+                  "valid_from": 0,
+                  "valid_until": 100,
+                  "source": "s03",
+                  "source_sha256": "6905f1c68189f64dc16f0ef1a0b4bdddb67e41b65429b3cab40ed44ec4d5e781",
+                  "quote": "A different bugbear guards room 12 on level two throughout the observation window.",
+                  "world_fact_pointer": "/facts/2",
+                  "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c"
+                }
+              ]
+            },
+            {
+              "property": "location",
+              "wanted": "d1-l2-cell",
+              "evidence": [
+                {
+                  "value": "d1-l2-cell",
+                  "valid_from": 0,
+                  "valid_until": 100,
+                  "source": "s03",
+                  "source_sha256": "6905f1c68189f64dc16f0ef1a0b4bdddb67e41b65429b3cab40ed44ec4d5e781",
+                  "quote": "A different bugbear guards room 12 on level two throughout the observation window.",
+                  "world_fact_pointer": "/facts/2",
+                  "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c"
+                }
+              ]
+            }
+          ],
+          "contradictions": [],
+          "unknowns": [],
+          "source_conflicts": []
+        },
+        {
+          "entity_id": "e_a340",
+          "disposition": "excluded",
+          "matches": [],
+          "contradictions": [
+            {
+              "property": "location",
+              "wanted": "d1-l2",
+              "evidence": [
+                {
+                  "value": "d1-l3",
+                  "valid_from": 0,
+                  "valid_until": 100,
+                  "source": "s04",
+                  "source_sha256": "60848a5b5dbad5fc07209ad5772937e5fdc3b3573460c62365ade04cf0483fc3",
+                  "quote": "The third bugbear stays on level three throughout the observation window.",
+                  "world_fact_pointer": "/facts/3",
+                  "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c"
+                }
+              ]
+            },
+            {
+              "property": "location",
+              "wanted": "d1-l2-cell",
+              "evidence": [
+                {
+                  "value": "d1-l3",
+                  "valid_from": 0,
+                  "valid_until": 100,
+                  "source": "s04",
+                  "source_sha256": "60848a5b5dbad5fc07209ad5772937e5fdc3b3573460c62365ade04cf0483fc3",
+                  "quote": "The third bugbear stays on level three throughout the observation window.",
+                  "world_fact_pointer": "/facts/3",
+                  "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c"
+                }
+              ]
+            }
+          ],
+          "unknowns": [],
+          "source_conflicts": []
+        }
+      ],
+      "world_sha256": "a3931b2f61d3293e572dceda6a1f457f4f36869ca571d82b7fcb5dbedb49d56c",
+      "authority": "experimental candidate proposal; no canon merge or registry write",
+      "coverage": "curated context and time-bounded facts; raw-text context extraction untested",
+      "elapsed_seconds": 0.0006710700690746307,
+      "expected_status": "supported_candidate",
+      "expected_candidates": [
+        "e_91d0"
+      ],
+      "passed": true
+    }
+  ],
+  "variant_results": [
+    {
+      "mention_id": "missing_location",
+      "status": "ambiguous",
+      "candidate_ids": [
+        "e_7c2f",
+        "e_91d0"
+      ],
+      "proposed_entity_id": null,
+      "at": 5,
+      "scope_origin": "scene",
+      "scopes": [
+        "d1-l2"
+      ],
+      "evaluated": [
+        {
+          "entity_id": "e_6f18",
+          "disposition": "excluded",
+          "matches": [],
+          "contradictions": [
+            {
+              "property": "location",
+              "wanted": "d1-l2",
+              "evidence": [
+                {
+                  "value": "d2-l1",
+                  "valid_from": 0,
+                  "valid_until": 100,
+                  "source": "s05",
+                  "source_sha256": "e4f4b7e6a7878193e9ed8dbb8fb683075de1affddc30c6c3da836f9f6a9be017",
+                  "quote": "Another bugbear stays on level one of the other dungeon throughout the observation window.",
+                  "world_fact_pointer": "/facts/2",
+                  "world_sha256": "73f6a95e1df74b747252d34d6d0ae9d99aff7bde2dbd804de31a9719842480e9"
+                }
+              ]
+            }
+          ],
+          "unknowns": [],
+          "source_conflicts": []
+        },
+        {
+          "entity_id": "e_7c2f",
+          "disposition": "possible_unknown",
+          "matches": [],
+          "contradictions": [],
+          "unknowns": [
+            {
+              "property": "location",
+              "wanted": "d1-l2",
+              "evidence": []
+            }
+          ],
+          "source_conflicts": []
+        },
+        {
+          "entity_id": "e_91d0",
+          "disposition": "supported",
+          "matches": [
+            {
+              "property": "location",
+              "wanted": "d1-l2",
+              "evidence": [
+                {
+                  "value": "d1-l2-cell",
+                  "valid_from": 0,
+                  "valid_until": 100,
+                  "source": "s03",
+                  "source_sha256": "6905f1c68189f64dc16f0ef1a0b4bdddb67e41b65429b3cab40ed44ec4d5e781",
+                  "quote": "A different bugbear guards room 12 on level two throughout the observation window.",
+                  "world_fact_pointer": "/facts/0",
+                  "world_sha256": "73f6a95e1df74b747252d34d6d0ae9d99aff7bde2dbd804de31a9719842480e9"
+                }
+              ]
+            }
+          ],
+          "contradictions": [],
+          "unknowns": [],
+          "source_conflicts": []
+        },
+        {
+          "entity_id": "e_a340",
+          "disposition": "excluded",
+          "matches": [],
+          "contradictions": [
+            {
+              "property": "location",
+              "wanted": "d1-l2",
+              "evidence": [
+                {
+                  "value": "d1-l3",
+                  "valid_from": 0,
+                  "valid_until": 100,
+                  "source": "s04",
+                  "source_sha256": "60848a5b5dbad5fc07209ad5772937e5fdc3b3573460c62365ade04cf0483fc3",
+                  "quote": "The third bugbear stays on level three throughout the observation window.",
+                  "world_fact_pointer": "/facts/1",
+                  "world_sha256": "73f6a95e1df74b747252d34d6d0ae9d99aff7bde2dbd804de31a9719842480e9"
+                }
+              ]
+            }
+          ],
+          "unknowns": [],
+          "source_conflicts": []
+        }
+      ],
+      "world_sha256": "73f6a95e1df74b747252d34d6d0ae9d99aff7bde2dbd804de31a9719842480e9",
+      "authority": "experimental candidate proposal; no canon merge or registry write",
+      "coverage": "curated context and time-bounded facts; raw-text context extraction untested",
+      "elapsed_seconds": 0.00019108993001282215,
+      "expected_status": "ambiguous",
+      "expected_candidates": [
+        "e_7c2f",
+        "e_91d0"
+      ],
+      "passed": true
+    },
+    {
+      "mention_id": "conflicting_location",
+      "status": "conflicting_evidence",
+      "candidate_ids": [
+        "e_7c2f"
+      ],
+      "proposed_entity_id": null,
+      "at": 5,
+      "scope_origin": "scene",
+      "scopes": [
+        "d1-l1"
+      ],
+      "evaluated": [
+        {
+          "entity_id": "e_6f18",
+          "disposition": "excluded",
+          "matches": [],
+          "contradictions": [
+            {
+              "property": "location",
+              "wanted": "d1-l1",
+              "evidence": [
+                {
+                  "value": "d2-l1",
+                  "valid_from": 0,
+                  "valid_until": 100,
+                  "source": "s05",
+                  "source_sha256": "e4f4b7e6a7878193e9ed8dbb8fb683075de1affddc30c6c3da836f9f6a9be017",
+                  "quote": "Another bugbear stays on level one of the other dungeon throughout the observation window.",
+                  "world_fact_pointer": "/facts/4",
+                  "world_sha256": "0ea7d7b529ecfdbb43e8a7f7a8ba16778ef4c3071a634870af9f6abf89269e15"
+                }
+              ]
+            }
+          ],
+          "unknowns": [],
+          "source_conflicts": []
+        },
+        {
+          "entity_id": "e_7c2f",
+          "disposition": "conflicting_evidence",
+          "matches": [],
+          "contradictions": [],
+          "unknowns": [],
+          "source_conflicts": [
+            {
+              "property": "location",
+              "wanted": "d1-l1",
+              "evidence": [
+                {
+                  "value": "d1-l1-cell",
+                  "valid_from": 0,
+                  "valid_until": 10,
+                  "source": "s01",
+                  "source_sha256": "48066423cbda735c451f884851bd8c68692558a2204da0db9164b9ede8564e47",
+                  "quote": "The torn-eared bugbear occupies room 12 on level one until turn 10.",
+                  "world_fact_pointer": "/facts/0",
+                  "world_sha256": "0ea7d7b529ecfdbb43e8a7f7a8ba16778ef4c3071a634870af9f6abf89269e15"
+                },
+                {
+                  "value": "d1-l2-stairs",
+                  "valid_from": 0,
+                  "valid_until": 10,
+                  "source": "conflict",
+                  "source_sha256": "6b3aa8fd601fe3c1d74dc4b1e337c1926264000938c17348bdf9f0554c9fd7bc",
+                  "quote": "A conflicting tracker places the torn-eared individual on level two at turn 5.",
+                  "world_fact_pointer": "/facts/18",
+                  "world_sha256": "0ea7d7b529ecfdbb43e8a7f7a8ba16778ef4c3071a634870af9f6abf89269e15"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "entity_id": "e_91d0",
+          "disposition": "excluded",
+          "matches": [],
+          "contradictions": [
+            {
+              "property": "location",
+              "wanted": "d1-l1",
+              "evidence": [
+                {
+                  "value": "d1-l2-cell",
+                  "valid_from": 0,
+                  "valid_until": 100,
+                  "source": "s03",
+                  "source_sha256": "6905f1c68189f64dc16f0ef1a0b4bdddb67e41b65429b3cab40ed44ec4d5e781",
+                  "quote": "A different bugbear guards room 12 on level two throughout the observation window.",
+                  "world_fact_pointer": "/facts/2",
+                  "world_sha256": "0ea7d7b529ecfdbb43e8a7f7a8ba16778ef4c3071a634870af9f6abf89269e15"
+                }
+              ]
+            }
+          ],
+          "unknowns": [],
+          "source_conflicts": []
+        },
+        {
+          "entity_id": "e_a340",
+          "disposition": "excluded",
+          "matches": [],
+          "contradictions": [
+            {
+              "property": "location",
+              "wanted": "d1-l1",
+              "evidence": [
+                {
+                  "value": "d1-l3",
+                  "valid_from": 0,
+                  "valid_until": 100,
+                  "source": "s04",
+                  "source_sha256": "60848a5b5dbad5fc07209ad5772937e5fdc3b3573460c62365ade04cf0483fc3",
+                  "quote": "The third bugbear stays on level three throughout the observation window.",
+                  "world_fact_pointer": "/facts/3",
+                  "world_sha256": "0ea7d7b529ecfdbb43e8a7f7a8ba16778ef4c3071a634870af9f6abf89269e15"
+                }
+              ]
+            }
+          ],
+          "unknowns": [],
+          "source_conflicts": []
+        }
+      ],
+      "world_sha256": "0ea7d7b529ecfdbb43e8a7f7a8ba16778ef4c3071a634870af9f6abf89269e15",
+      "authority": "experimental candidate proposal; no canon merge or registry write",
+      "coverage": "curated context and time-bounded facts; raw-text context extraction untested",
+      "elapsed_seconds": 0.0002954488154500723,
+      "expected_status": "conflicting_evidence",
+      "expected_candidates": [
+        "e_7c2f"
+      ],
+      "passed": true
+    }
+  ],
+  "limitations": [
+    "This is not an NVIDIA Auto Ontology runtime benchmark.",
+    "Evidence, scene scope, temporal reference and descriptive features are hand-annotated synthetic inputs.",
+    "There is no automatic prose-to-context extraction, probabilistic coreference, or novel-entity creation.",
+    "Matching known instances is not a proof that an unknown instance cannot exist.",
+    "Supported candidates are proposals; no identity/alias becomes canon and no campaign registry is written.",
+    "Production registry format still requires globally unique names/aliases; these instances are held in a separate experimental graph."
+  ]
+}

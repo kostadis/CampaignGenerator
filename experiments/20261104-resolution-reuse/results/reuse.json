@@ -1,0 +1,109 @@
+{
+  "model_calls_made": 0,
+  "saved_model": "gpt-6.1-terra",
+  "saved_effort": "medium",
+  "response_sha256": "5abb25f622447e6deba2352f450016106b1fb49267bd0cd21300e4aad9666e01",
+  "fixture_snapshot": "211ffd063eb38018328c3cc268f73d90555cc409d2dd7a24d57b74e1fc6f6bad",
+  "experiments": [
+    {
+      "experiment": "cold snapshot",
+      "lookups": 16,
+      "expected": "resolution_required",
+      "observed": "resolution_required",
+      "passed": true
+    },
+    {
+      "experiment": "ten repeats after process-style reopen",
+      "lookups": 160,
+      "expected": "cached_proposal",
+      "observed": "cached_proposal",
+      "passed": true
+    },
+    {
+      "experiment": "proposal is not canon",
+      "lookups": 16,
+      "expected": "review_required",
+      "observed": "review_required",
+      "passed": true
+    },
+    {
+      "experiment": "changed model",
+      "lookups": 16,
+      "expected": "resolution_required",
+      "observed": "resolution_required",
+      "passed": true
+    },
+    {
+      "experiment": "changed effort",
+      "lookups": 16,
+      "expected": "resolution_required",
+      "observed": "resolution_required",
+      "passed": true
+    },
+    {
+      "experiment": "changed system_sha256",
+      "lookups": 16,
+      "expected": "resolution_required",
+      "observed": "resolution_required",
+      "passed": true
+    },
+    {
+      "experiment": "changed registry_revision",
+      "lookups": 16,
+      "expected": "resolution_required",
+      "observed": "resolution_required",
+      "passed": true
+    },
+    {
+      "experiment": "changed rulings_revision",
+      "lookups": 16,
+      "expected": "resolution_required",
+      "observed": "resolution_required",
+      "passed": true
+    },
+    {
+      "experiment": "changed campaign",
+      "lookups": 16,
+      "expected": "resolution_required",
+      "observed": "resolution_required",
+      "passed": true
+    },
+    {
+      "experiment": "changed existing passage",
+      "lookups": 16,
+      "expected": "resolution_required",
+      "observed": "resolution_required",
+      "passed": true
+    },
+    {
+      "experiment": "added passage or candidate context",
+      "lookups": 16,
+      "expected": "resolution_required",
+      "observed": "resolution_required",
+      "passed": true
+    },
+    {
+      "experiment": "changed marked reference",
+      "lookups": 16,
+      "expected": "resolution_required",
+      "observed": "resolution_required",
+      "passed": true
+    },
+    {
+      "experiment": "q16 ambiguity preserved",
+      "passed": true
+    },
+    {
+      "experiment": "corrupt saved response",
+      "lookups": 16,
+      "expected": "corrupt_cache",
+      "observed": "corrupt_cache",
+      "passed": true
+    }
+  ],
+  "limits": [
+    "Offline reuse/invalidation tests, not additional model-accuracy trials.",
+    "Snapshot-wide invalidation because the model saw the whole payload.",
+    "No gold used, no automatic review, no canonical writes, no inference on cache miss."
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "test_command": "python -m pytest experiments/20261103-provenance-ontology/test_relationship_index.py -q --tb=short",
+  "counterexample_tests_passed": 17,
+  "real_input_cases_passed": 11,
+  "code_sha256": {
+    "relationship_index.py": "a1cb9f13748b8f2ddeb8aefee24450c76b750c32782ae661bf6509fb23350c08",
+    "run_experiment.py": "a292b736a75fd81e35f113c958684720167c4d04e1e604073b6864ee9f284cbd",
+    "test_relationship_index.py": "48e5f2de08694897a9ae92058fcfe6770bc00fa977be4b8adeb26610664793a4"
+  },
+  "base_commit": "9d4079a166dc2654a5f6cee52c583a44eea882cb",
+  "worktree_branch": "experiment/provenance-relationship-index",
+  "campaign_mutations": 0,
+  "network_calls": 0,
+  "model_calls": 0
+}

@@ -1,0 +1,262 @@
+{
+  "experiment": "declared-dependency graph, not NVIDIA runtime benchmark",
+  "source_workspace": "/home/kostadis/phandalin",
+  "campaign": "Phandalin",
+  "scope": [
+    "notes/grounding_delta/ch059",
+    "notes/grounding_delta/ch060"
+  ],
+  "registry": {
+    "status": "indexed",
+    "campaign": "Phandalin",
+    "entities": 686,
+    "registry_sha256": "aa185632071f98b57a4df045a216a9b70f1590c2740478f54f33f2c0afd036d5"
+  },
+  "bundle_status": [
+    {
+      "bundle": "notes/grounding_delta/ch059",
+      "members": [
+        {
+          "document": "world_state",
+          "binding_valid": true,
+          "errors": [],
+          "current_source_matches": false,
+          "reuse_status": "stale_source",
+          "live_matches_this_version": false,
+          "candidate_sha256": "c7a92d2300c7036642c9b0cad98619fbeb844030a32a9ff3bef4b770d3e75e4b"
+        },
+        {
+          "document": "campaign_state",
+          "binding_valid": true,
+          "errors": [],
+          "current_source_matches": false,
+          "reuse_status": "stale_source",
+          "live_matches_this_version": false,
+          "candidate_sha256": "9c2fba935df7763d2f76e364909809f57228e957752667877ca902b5092f7267"
+        },
+        {
+          "document": "party",
+          "binding_valid": true,
+          "errors": [],
+          "current_source_matches": false,
+          "reuse_status": "stale_source",
+          "live_matches_this_version": false,
+          "candidate_sha256": "1f44e3c800b1645e845bd9a2379b754c71b198e75d6e1dc5e208d335da618c9c"
+        },
+        {
+          "document": "planning",
+          "binding_valid": true,
+          "errors": [],
+          "current_source_matches": false,
+          "reuse_status": "stale_source",
+          "live_matches_this_version": false,
+          "candidate_sha256": "5f86aca6be3df96c7423f3bee3c8695fce9bbaea3d7a4206f312ecf8c7953c6a"
+        }
+      ]
+    },
+    {
+      "bundle": "notes/grounding_delta/ch060",
+      "members": [
+        {
+          "document": "world_state",
+          "binding_valid": true,
+          "errors": [],
+          "current_source_matches": false,
+          "reuse_status": "stale_source",
+          "live_matches_this_version": true,
+          "candidate_sha256": "41f840d4dc0dbf46c2a4d44f07a00411d3e2676d942a27a3acc1abfeef8e3b8f"
+        },
+        {
+          "document": "campaign_state",
+          "binding_valid": true,
+          "errors": [],
+          "current_source_matches": false,
+          "reuse_status": "stale_source",
+          "live_matches_this_version": true,
+          "candidate_sha256": "c2db8cd714f63c974cc51ccdbac1c724d45031c6e27d7bd4ce4498cae413618c"
+        },
+        {
+          "document": "party",
+          "binding_valid": true,
+          "errors": [],
+          "current_source_matches": false,
+          "reuse_status": "stale_source",
+          "live_matches_this_version": true,
+          "candidate_sha256": "b4c3624f2049c6039b11ba854f4e2e3c503c0c88803419e60c7e0bcca23a160b"
+        },
+        {
+          "document": "planning",
+          "binding_valid": true,
+          "errors": [],
+          "current_source_matches": false,
+          "reuse_status": "stale_source",
+          "live_matches_this_version": true,
+          "candidate_sha256": "a6f160e50133170137ff20e592e6782fc0529658a42d7d5bb227c41f10a21cb4"
+        }
+      ]
+    }
+  ],
+  "measurements": {
+    "build_seconds": 0.7982451741117984,
+    "sqlite_bytes": 1613824,
+    "nodes": 1677,
+    "edges": 1802,
+    "files_read": 51,
+    "graph_sha256": "0577ec50a0478156f090e76237298735ff0bb0232a5d0dac953ca3f9355f0df6"
+  },
+  "classification_manifest_sha256": "c060472b63feb0ee2b5b42ead0d95d750c9784ab52cb165655228543b58387a0",
+  "cases": [
+    {
+      "name": "all eight historical approval/application bindings validate",
+      "passed": true,
+      "observed": 8
+    },
+    {
+      "name": "current summary change reaches all four Chapter 60 approvals",
+      "passed": true,
+      "observed": [
+        "campaign_state",
+        "party",
+        "planning",
+        "world_state"
+      ]
+    },
+    {
+      "name": "older summary change propagates through retained origins into Chapter 60",
+      "passed": true,
+      "observed": [
+        "campaign_state",
+        "party",
+        "planning",
+        "world_state"
+      ]
+    },
+    {
+      "name": "party candidate change stays within party approval",
+      "passed": true,
+      "observed": [
+        "party"
+      ]
+    },
+    {
+      "name": "saved-decision change reaches all four Chapter 60 approvals",
+      "passed": true,
+      "observed": [
+        "campaign_state",
+        "party",
+        "planning",
+        "world_state"
+      ]
+    },
+    {
+      "name": "unknown path reports missing coverage",
+      "passed": true,
+      "observed": "not_covered"
+    },
+    {
+      "name": "approved short name resolves exactly",
+      "passed": true,
+      "observed": [
+        "Bimble Nackle"
+      ]
+    },
+    {
+      "name": "similar spelling does not acquire identity",
+      "passed": true,
+      "observed": "not_found"
+    },
+    {
+      "name": "registry does not invent unrecorded grounding dependency",
+      "passed": true,
+      "observed": {
+        "approval_links": [],
+        "answer": "unanswerable: no registry digest dependency in these bundle records"
+      }
+    },
+    {
+      "name": "rebuild independent of bundle import order",
+      "passed": true,
+      "observed": {
+        "first": "0577ec50a0478156f090e76237298735ff0bb0232a5d0dac953ca3f9355f0df6",
+        "reversed_import": "0577ec50a0478156f090e76237298735ff0bb0232a5d0dac953ca3f9355f0df6"
+      }
+    },
+    {
+      "name": "all read campaign files unchanged after experiment",
+      "passed": true,
+      "observed": []
+    }
+  ],
+  "passed": true,
+  "source_drift": [
+    {
+      "path": "summaries/2026-10-20-chapter_59/session-summary.md",
+      "approved_source_sha256": "cb003d692cbac504ef213072cf901ac85b0fdb250ea90fef4d56b41d783de94c",
+      "current_source_sha256": "81ba20fe542df9894861a0b64dd623b7676f6993c458560274b318dff8f03bec",
+      "bytes_changed": true,
+      "line_change_groups": [
+        [
+          "replace",
+          1,
+          1
+        ],
+        [
+          "replace",
+          1,
+          1
+        ],
+        [
+          "replace",
+          1,
+          1
+        ]
+      ],
+      "interpretation": "byte drift only; no semantic judgment or automatic invalidation write"
+    },
+    {
+      "path": "summaries/2026-10-27-chapter_60/session-summary.md",
+      "approved_source_sha256": "1f827cca29372f91ede1d23b36992414908584b70f00e45132ea4acfe3962c0c",
+      "current_source_sha256": "fc9203edfa7f5548862bac35ef0e812cf0447de0d5014e4dfa52cdb5e9e022ae",
+      "bytes_changed": true,
+      "line_change_groups": [
+        [
+          "replace",
+          1,
+          1
+        ],
+        [
+          "replace",
+          1,
+          1
+        ],
+        [
+          "replace",
+          1,
+          1
+        ],
+        [
+          "replace",
+          1,
+          1
+        ]
+      ],
+      "interpretation": "byte drift only; no semantic judgment or automatic invalidation write"
+    }
+  ],
+  "literal_baseline": {
+    "query": "summaries/2026-10-20-chapter_59/session-summary.md",
+    "direct_json_matches": [
+      "Phandalin/notes/grounding_delta/ch059/application_plan.json",
+      "Phandalin/notes/grounding_delta/ch059/manifest.json"
+    ],
+    "limitation": "literal matches do not traverse later baseline dependencies"
+  },
+  "limitations": [
+    "Only the two explicitly selected legacy grounding bundles and one registry are covered.",
+    "Impact means requires reconsideration; it does not prove a semantic contradiction.",
+    "No story relation extraction, character audience inference, or automated canon changes.",
+    "Registry dependencies and generation/check tool-version bindings are absent from these records.",
+    "Legacy record checks verify internal bindings, not signed authorship, native authority or semantic correctness.",
+    "Auto Ontology was not installed or benchmarked; this tests whether a semantic projection is useful first."
+  ]
+}

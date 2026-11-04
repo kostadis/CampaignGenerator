@@ -1,0 +1,11 @@
+{
+  "id": "moving_individual_keeps_id",
+  "text": "the bugbear",
+  "label": "bugbear",
+  "campaign": "game",
+  "at": 12,
+  "scene_location": "d1-l2",
+  "features": {
+    "torn_ear": "yes"
+  }
+}

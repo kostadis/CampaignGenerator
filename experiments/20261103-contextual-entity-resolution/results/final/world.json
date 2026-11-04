@@ -1,0 +1,410 @@
+{
+  "schema": 1,
+  "synthetic": true,
+  "entities": [
+    {
+      "id": "e_7c2f",
+      "campaign": "game",
+      "kind": "creature",
+      "labels": [
+        "bugbear"
+      ]
+    },
+    {
+      "id": "e_91d0",
+      "campaign": "game",
+      "kind": "creature",
+      "labels": [
+        "bugbear"
+      ]
+    },
+    {
+      "id": "e_a340",
+      "campaign": "game",
+      "kind": "creature",
+      "labels": [
+        "bugbear"
+      ]
+    },
+    {
+      "id": "e_6f18",
+      "campaign": "game",
+      "kind": "creature",
+      "labels": [
+        "bugbear"
+      ]
+    }
+  ],
+  "locations": [
+    {
+      "id": "d1",
+      "campaign": "game",
+      "label": "dungeon",
+      "parent": null
+    },
+    {
+      "id": "d2",
+      "campaign": "game",
+      "label": "dungeon",
+      "parent": null
+    },
+    {
+      "id": "d1-l1",
+      "campaign": "game",
+      "label": "level 1",
+      "parent": "d1"
+    },
+    {
+      "id": "d1-l2",
+      "campaign": "game",
+      "label": "level 2",
+      "parent": "d1"
+    },
+    {
+      "id": "d1-l3",
+      "campaign": "game",
+      "label": "level 3",
+      "parent": "d1"
+    },
+    {
+      "id": "d2-l1",
+      "campaign": "game",
+      "label": "level 1",
+      "parent": "d2"
+    },
+    {
+      "id": "d1-l1-cell",
+      "campaign": "game",
+      "label": "room 12",
+      "parent": "d1-l1"
+    },
+    {
+      "id": "d1-l2-cell",
+      "campaign": "game",
+      "label": "room 12",
+      "parent": "d1-l2"
+    },
+    {
+      "id": "d1-l2-stairs",
+      "campaign": "game",
+      "label": "stairs",
+      "parent": "d1-l2"
+    },
+    {
+      "id": "d1-l3-cave",
+      "campaign": "game",
+      "label": "cave",
+      "parent": "d1-l3"
+    }
+  ],
+  "sources": [
+    {
+      "id": "s01",
+      "campaign": "game",
+      "text": "The torn-eared bugbear occupies room 12 on level one until turn 10.",
+      "class": "synthetic hand-annotated tracking evidence"
+    },
+    {
+      "id": "s02",
+      "campaign": "game",
+      "text": "At turn 10 the same torn-eared bugbear moves to the level-two stairs, tracked through turn 20.",
+      "class": "synthetic hand-annotated tracking evidence"
+    },
+    {
+      "id": "s03",
+      "campaign": "game",
+      "text": "A different bugbear guards room 12 on level two throughout the observation window.",
+      "class": "synthetic hand-annotated tracking evidence"
+    },
+    {
+      "id": "s04",
+      "campaign": "game",
+      "text": "The third bugbear stays on level three throughout the observation window.",
+      "class": "synthetic hand-annotated tracking evidence"
+    },
+    {
+      "id": "s05",
+      "campaign": "game",
+      "text": "Another bugbear stays on level one of the other dungeon throughout the observation window.",
+      "class": "synthetic hand-annotated tracking evidence"
+    },
+    {
+      "id": "s06",
+      "campaign": "game",
+      "text": "Tracking observation for e_7c2f: torn ear is present.",
+      "class": "synthetic hand-annotated tracking evidence"
+    },
+    {
+      "id": "s07",
+      "campaign": "game",
+      "text": "Tracking observation for e_91d0: torn ear is absent.",
+      "class": "synthetic hand-annotated tracking evidence"
+    },
+    {
+      "id": "s08",
+      "campaign": "game",
+      "text": "Tracking observation for e_a340: torn ear is absent.",
+      "class": "synthetic hand-annotated tracking evidence"
+    },
+    {
+      "id": "s09",
+      "campaign": "game",
+      "text": "Tracking observation for e_6f18: torn ear is absent.",
+      "class": "synthetic hand-annotated tracking evidence"
+    },
+    {
+      "id": "s10",
+      "campaign": "game",
+      "text": "The torn-eared bugbear is alive before turn 15.",
+      "class": "synthetic hand-annotated tracking evidence"
+    },
+    {
+      "id": "s11",
+      "campaign": "game",
+      "text": "The torn-eared bugbear dies at turn 15; its corpse remains the same tracked individual.",
+      "class": "synthetic hand-annotated tracking evidence"
+    },
+    {
+      "id": "s12",
+      "campaign": "game",
+      "text": "Tracking observation for e_91d0: alive during the observation window.",
+      "class": "synthetic hand-annotated tracking evidence"
+    },
+    {
+      "id": "s13",
+      "campaign": "game",
+      "text": "Tracking observation for e_91d0: ordinary guard during the observation window.",
+      "class": "synthetic hand-annotated tracking evidence"
+    },
+    {
+      "id": "s14",
+      "campaign": "game",
+      "text": "Tracking observation for e_a340: alive during the observation window.",
+      "class": "synthetic hand-annotated tracking evidence"
+    },
+    {
+      "id": "s15",
+      "campaign": "game",
+      "text": "Tracking observation for e_a340: ordinary guard during the observation window.",
+      "class": "synthetic hand-annotated tracking evidence"
+    },
+    {
+      "id": "s16",
+      "campaign": "game",
+      "text": "Tracking observation for e_6f18: alive during the observation window.",
+      "class": "synthetic hand-annotated tracking evidence"
+    },
+    {
+      "id": "s17",
+      "campaign": "game",
+      "text": "Tracking observation for e_6f18: ordinary guard during the observation window.",
+      "class": "synthetic hand-annotated tracking evidence"
+    },
+    {
+      "id": "s18",
+      "campaign": "game",
+      "text": "The torn-eared bugbear becomes the leader at turn 10; earlier rank is unrecorded.",
+      "class": "synthetic hand-annotated tracking evidence"
+    }
+  ],
+  "facts": [
+    {
+      "entity_id": "e_7c2f",
+      "property": "location",
+      "value": "d1-l1-cell",
+      "valid_from": 0,
+      "valid_until": 10,
+      "evidence": {
+        "source": "s01",
+        "quote": "The torn-eared bugbear occupies room 12 on level one until turn 10."
+      }
+    },
+    {
+      "entity_id": "e_7c2f",
+      "property": "location",
+      "value": "d1-l2-stairs",
+      "valid_from": 10,
+      "valid_until": 20,
+      "evidence": {
+        "source": "s02",
+        "quote": "At turn 10 the same torn-eared bugbear moves to the level-two stairs, tracked through turn 20."
+      }
+    },
+    {
+      "entity_id": "e_91d0",
+      "property": "location",
+      "value": "d1-l2-cell",
+      "valid_from": 0,
+      "valid_until": 100,
+      "evidence": {
+        "source": "s03",
+        "quote": "A different bugbear guards room 12 on level two throughout the observation window."
+      }
+    },
+    {
+      "entity_id": "e_a340",
+      "property": "location",
+      "value": "d1-l3",
+      "valid_from": 0,
+      "valid_until": 100,
+      "evidence": {
+        "source": "s04",
+        "quote": "The third bugbear stays on level three throughout the observation window."
+      }
+    },
+    {
+      "entity_id": "e_6f18",
+      "property": "location",
+      "value": "d2-l1",
+      "valid_from": 0,
+      "valid_until": 100,
+      "evidence": {
+        "source": "s05",
+        "quote": "Another bugbear stays on level one of the other dungeon throughout the observation window."
+      }
+    },
+    {
+      "entity_id": "e_7c2f",
+      "property": "torn_ear",
+      "value": "yes",
+      "valid_from": 0,
+      "valid_until": 100,
+      "evidence": {
+        "source": "s06",
+        "quote": "Tracking observation for e_7c2f: torn ear is present."
+      }
+    },
+    {
+      "entity_id": "e_91d0",
+      "property": "torn_ear",
+      "value": "no",
+      "valid_from": 0,
+      "valid_until": 100,
+      "evidence": {
+        "source": "s07",
+        "quote": "Tracking observation for e_91d0: torn ear is absent."
+      }
+    },
+    {
+      "entity_id": "e_a340",
+      "property": "torn_ear",
+      "value": "no",
+      "valid_from": 0,
+      "valid_until": 100,
+      "evidence": {
+        "source": "s08",
+        "quote": "Tracking observation for e_a340: torn ear is absent."
+      }
+    },
+    {
+      "entity_id": "e_6f18",
+      "property": "torn_ear",
+      "value": "no",
+      "valid_from": 0,
+      "valid_until": 100,
+      "evidence": {
+        "source": "s09",
+        "quote": "Tracking observation for e_6f18: torn ear is absent."
+      }
+    },
+    {
+      "entity_id": "e_7c2f",
+      "property": "life",
+      "value": "alive",
+      "valid_from": 0,
+      "valid_until": 15,
+      "evidence": {
+        "source": "s10",
+        "quote": "The torn-eared bugbear is alive before turn 15."
+      }
+    },
+    {
+      "entity_id": "e_7c2f",
+      "property": "life",
+      "value": "dead",
+      "valid_from": 15,
+      "valid_until": 100,
+      "evidence": {
+        "source": "s11",
+        "quote": "The torn-eared bugbear dies at turn 15; its corpse remains the same tracked individual."
+      }
+    },
+    {
+      "entity_id": "e_91d0",
+      "property": "life",
+      "value": "alive",
+      "valid_from": 0,
+      "valid_until": 100,
+      "evidence": {
+        "source": "s12",
+        "quote": "Tracking observation for e_91d0: alive during the observation window."
+      }
+    },
+    {
+      "entity_id": "e_91d0",
+      "property": "role",
+      "value": "guard",
+      "valid_from": 0,
+      "valid_until": 100,
+      "evidence": {
+        "source": "s13",
+        "quote": "Tracking observation for e_91d0: ordinary guard during the observation window."
+      }
+    },
+    {
+      "entity_id": "e_a340",
+      "property": "life",
+      "value": "alive",
+      "valid_from": 0,
+      "valid_until": 100,
+      "evidence": {
+        "source": "s14",
+        "quote": "Tracking observation for e_a340: alive during the observation window."
+      }
+    },
+    {
+      "entity_id": "e_a340",
+      "property": "role",
+      "value": "guard",
+      "valid_from": 0,
+      "valid_until": 100,
+      "evidence": {
+        "source": "s15",
+        "quote": "Tracking observation for e_a340: ordinary guard during the observation window."
+      }
+    },
+    {
+      "entity_id": "e_6f18",
+      "property": "life",
+      "value": "alive",
+      "valid_from": 0,
+      "valid_until": 100,
+      "evidence": {
+        "source": "s16",
+        "quote": "Tracking observation for e_6f18: alive during the observation window."
+      }
+    },
+    {
+      "entity_id": "e_6f18",
+      "property": "role",
+      "value": "guard",
+      "valid_from": 0,
+      "valid_until": 100,
+      "evidence": {
+        "source": "s17",
+        "quote": "Tracking observation for e_6f18: ordinary guard during the observation window."
+      }
+    },
+    {
+      "entity_id": "e_7c2f",
+      "property": "role",
+      "value": "leader",
+      "valid_from": 10,
+      "valid_until": 100,
+      "evidence": {
+        "source": "s18",
+        "quote": "The torn-eared bugbear becomes the leader at turn 10; earlier rank is unrecorded."
+      }
+    }
+  ]
+}

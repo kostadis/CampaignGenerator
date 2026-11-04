@@ -1,0 +1,52 @@
+[
+  {
+    "question": "What depends on summaries/2026-10-20-chapter_59/session-summary.md?",
+    "example_trace": [
+      {
+        "from": "summaries/2026-10-20-chapter_59/session-summary.md",
+        "to": "delta:party",
+        "relationship": "input_to",
+        "evidence_path": "notes/grounding_delta/ch059/application_plan.json",
+        "evidence_sha256": "a10c37d976def2e20b1c381840548904dd469af90a662c31e78d30176ffe7867",
+        "json_pointer": "/source"
+      },
+      {
+        "from": "delta:party",
+        "to": "notes/grounding_delta/ch059/drafts/party.md",
+        "relationship": "proposed_candidate",
+        "evidence_path": "notes/grounding_delta/ch059/manifest.json",
+        "evidence_sha256": "ad350dce5180e63f525463acbe2830a6d0e34ffe1ba586c9c253618606e2cfd7",
+        "json_pointer": "/candidates/party"
+      },
+      {
+        "from": "notes/grounding_delta/ch059/drafts/party.md",
+        "to": "notes/grounding_delta/ch060/baseline/party.md",
+        "relationship": "baseline_copy",
+        "evidence_path": "notes/grounding_delta/ch060/application_plan.json",
+        "evidence_sha256": "3a3f14f22a15cca60c1d3e5e9dcb553524944dd3f7dfd48a04468bac5950274d",
+        "json_pointer": "/members/2/retained_origin"
+      },
+      {
+        "from": "notes/grounding_delta/ch060/baseline/party.md",
+        "to": "approval_binding:party",
+        "relationship": "approved_baseline",
+        "evidence_path": "notes/grounding_delta/ch060/review_mapping.json",
+        "evidence_sha256": "2f3931e412157d90d8b16495e36d3a16a308481437c66fb1c6d0a7ec516d8526",
+        "json_pointer": "/party/baseline_sha256"
+      }
+    ]
+  },
+  {
+    "question": "What depends on notes/grounding_delta/ch060/drafts/party.md?",
+    "example_trace": [
+      {
+        "from": "notes/grounding_delta/ch060/drafts/party.md",
+        "to": "approval_binding:party",
+        "relationship": "approved_candidate",
+        "evidence_path": "notes/grounding_delta/ch060/review_mapping.json",
+        "evidence_sha256": "2f3931e412157d90d8b16495e36d3a16a308481437c66fb1c6d0a7ec516d8526",
+        "json_pointer": "/party/draft_sha256"
+      }
+    ]
+  }
+]

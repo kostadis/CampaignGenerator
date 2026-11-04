@@ -1,0 +1,47 @@
+{
+  "completed": "2026-11-04",
+  "model_arm_requests_launched": 5,
+  "local_harness_tests_passed": 11,
+  "backend": "dgx",
+  "requested_model": "qwen3.8-flash-next",
+  "endpoint": "http://192.168.1.147:8001/v1",
+  "baseline_model": "gpt-6.1-sol",
+  "baseline_effort": "medium",
+  "frozen_input_hashes": {
+    "summaries/2025-05-28-chapter_03/session-summary.md": "f8c3ba2ce94d054dcbcf3448961bac867c74d0d8279dc9b0021fe4e2b411f8f9",
+    "summaries/2025-06-03-chapter_04/session-summary.md": "6abc71081188ea059514889a0f3d203c442e275eb366ccdedab69b8700c5bfaa",
+    "summaries/2025-06-18-chapter_05-to-find-a-shapeshifter/session-summary.md": "797a23c039e02dfec65028d3f37af28194d4fec13748b1f7300329a3572ee657",
+    "summaries/2025-10-01-chapter_18-freeing-big-al-petunia-and-watching-a-ranch-burn/session-summary.md": "6c44303f5ef6b161ee359ec32722d6256fef5906e8b89d022ac58a329e849051",
+    "summaries/2026-04-07-chapter_39-a-dragon-defeated-a-bard-tempted-a-barbarians-vengeance/session-summary.md": "40a7d2dcec665b46853292fb11719ce2fa34b467808c5767150a12aab12f700a",
+    "summaries/2026-04-29-chapter_42-the-charge-of-the-light-brigade/session-summary.md": "a18a057030501b4569302daca810cb62959fd52940ae9cd2343d9a10f77d07ab",
+    "summaries/2026-05-26-chapter_46-the-aasimar-has-landed/session-summary.md": "1687dc245d638310c38311489542df72c4acd3962aea04556fac90611b5cf7d4"
+  },
+  "source_files_unchanged": 7,
+  "campaign_mutations": 0,
+  "prompt_system_payload_equality_verified": true,
+  "gold_transmitted": false,
+  "local_run_record_sha256": {
+    "off": {
+      "context": "b564fea0117629a47a6559e0e75aec4eb368dceb62f9d89d8cc787a970964ec3",
+      "surface_only": "03ff6f409df0a8516ad7860d43f6d6c049349a13c0ae1998c4bd677e972901be"
+    },
+    "on": {
+      "context": "f8fff4a49135517034ac8275ebeea0a72a1942502787179fb4c75cef50921900",
+      "surface_only": "045c1494747e2a5b46b17229b046171c1be9253a1ff0a9a27af2d90eb0d185e2"
+    },
+    "schema": {
+      "context": "f33e5ffa7498a7cd20384c5b66c0f340d29e926d0d34efe7e8ad06d51ddb85c5",
+      "surface_only": "cb53da897424fb8c54b04202deb2933b52bc8e138cbbe6a49b6ec3adaace8f40"
+    }
+  },
+  "code_sha256": {
+    "compare.py": "503ac9d4b4c7f4fa7a497dd84ebbf27c927c6c56121907f023becb65db4ca34f",
+    "run_local.py": "075d2a8f997bb3774ba2b688d03a45c8162b474d7edc840ef4866b9287b20b8c",
+    "test_run_local.py": "cac78800f4c6b3e661af2f56c9a152ea8c7a560658ff030f51ff0466e0f69f73"
+  },
+  "comparison_sha256": "6a1ad2dbecda9e6b2716743ecbbd587d913d7fec24d46fd8503a8d3afe6efc62",
+  "comparison_protocol_sha256": "ef296d2f952dc48c026c8722f126a83f3f7b5a3e5a920b41ea50f33bc2b007b0",
+  "worktree_branch": "experiment/provenance-relationship-index",
+  "transport_measurement_gap": "Initial reasoning-mode metadata not retained; unknown fields remain null.",
+  "server_model_metadata_sha256": "c5fdbc6bdbfcd48305bb0de5b868fce71e6dc400502bf6d21cb0959d5e91b62c"
+}

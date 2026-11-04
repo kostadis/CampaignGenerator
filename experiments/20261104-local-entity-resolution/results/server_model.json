@@ -1,0 +1,29 @@
+{
+  "observation": "server-advertised model metadata after the comparison; not an independent weight attestation",
+  "endpoint": "http://192.168.1.147:8001/v1",
+  "model": {
+    "id": "qwen3.8-flash-next",
+    "object": "model",
+    "created": 1793754909,
+    "owned_by": "vllm",
+    "root": "/hf/hub/models--RadixArk--Qwen3.8-Flash-Next-NVFP4/snapshots/7b719225242aacd3dbd3f9407468c2ee9a9d2594-fp8hybrid",
+    "parent": null,
+    "max_model_len": 262144,
+    "permission": [
+      {
+        "id": "modelperm-b2ddb712d9617093",
+        "object": "model_permission",
+        "created": 1793754909,
+        "allow_create_engine": false,
+        "allow_sampling": true,
+        "allow_logprobs": true,
+        "allow_search_indices": false,
+        "allow_view": true,
+        "allow_fine_tuning": false,
+        "organization": "*",
+        "group": null,
+        "is_blocking": false
+      }
+    ]
+  }
+}

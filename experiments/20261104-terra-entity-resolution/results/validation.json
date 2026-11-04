@@ -1,0 +1,18 @@
+{
+  "source_hashes_unchanged": true,
+  "source_count": 7,
+  "source_hashes": {
+    "summaries/2025-05-28-chapter_03/session-summary.md": "f8c3ba2ce94d054dcbcf3448961bac867c74d0d8279dc9b0021fe4e2b411f8f9",
+    "summaries/2025-06-03-chapter_04/session-summary.md": "6abc71081188ea059514889a0f3d203c442e275eb366ccdedab69b8700c5bfaa",
+    "summaries/2025-06-18-chapter_05-to-find-a-shapeshifter/session-summary.md": "797a23c039e02dfec65028d3f37af28194d4fec13748b1f7300329a3572ee657",
+    "summaries/2025-10-01-chapter_18-freeing-big-al-petunia-and-watching-a-ranch-burn/session-summary.md": "6c44303f5ef6b161ee359ec32722d6256fef5906e8b89d022ac58a329e849051",
+    "summaries/2026-04-07-chapter_39-a-dragon-defeated-a-bard-tempted-a-barbarians-vengeance/session-summary.md": "40a7d2dcec665b46853292fb11719ce2fa34b467808c5767150a12aab12f700a",
+    "summaries/2026-04-29-chapter_42-the-charge-of-the-light-brigade/session-summary.md": "a18a057030501b4569302daca810cb62959fd52940ae9cd2343d9a10f77d07ab",
+    "summaries/2026-05-26-chapter_46-the-aasimar-has-landed/session-summary.md": "1687dc245d638310c38311489542df72c4acd3962aea04556fac90611b5cf7d4"
+  },
+  "input_equality_verified": true,
+  "comparison_sha256": "ccf4a2f36e71b39c80868b90849bd0f65c3445ba20f084ff123a80c3277f4ef7",
+  "runtime": "/tmp/orc-identity-terra-medium-20261104",
+  "tests": "10 shared evaluator tests passed",
+  "canonical_writes": false
+}
