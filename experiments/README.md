@@ -1,5 +1,9 @@
 # Experiments
 
+## Who is who in Curse of the Hags — 2026-11-07
+
+[Series report](20261107-cos-identity-series/README.md): the 2026-11-03 identity method applied to a live campaign. Masked Marron/Merrin attribution ([code](20261107-aasimar-control-resolution/)) and unnamed-character identities ([code](20261107-unnamed-identity/)), both taken through GM review: 24 bible lines changed, 57 identities ruled. Methodology, outcomes, and before/after tables are in the report.
+
 ## Provenance and contextual identity — 2026-11-03–04
 
 Start with [the series overview](20261104-provenance-identity-series/README.md) for the designs, evaluation protocol, results, NVIDIA comparison, code map and archive verification. It covers the provenance graph, synthetic same-label bugbears, actual orc/ogre passages, Sol/Terra/local Qwen comparisons, and saved-resolution reuse. These are experiments, with no production registry or campaign changes.
