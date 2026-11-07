@@ -548,6 +548,7 @@ onMounted(async () => {
         <RouterLink to="/grounding/promotion">Claims &amp; promotion</RouterLink> checks and publishes the bundle,
         <RouterLink to="/grounding/review">Shared review</RouterLink> holds the review queue and sign-offs, and
         <RouterLink to="/grounding/authority">Rulings</RouterLink> manages the reviewed-authority ledger.
+        To update from new chapters only, use <RouterLink to="/grounding/delta">Incremental update</RouterLink>.
       </p>
     </div>
 

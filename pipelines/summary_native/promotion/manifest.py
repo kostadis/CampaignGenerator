@@ -109,6 +109,17 @@ def _record_and_dependencies(root: Path, draft: Path, state_dir: Path) -> tuple[
     except (OSError, ValueError) as exc:
         raise PromotionPathError(f"invalid run record: {lexical}") from exc
     dependencies: dict[str, ContentIdentity] = {}
+    if isinstance(payload, dict) and payload.get("kind") == "delta":
+        # Spec 039 R8: a delta lineage record is read by pointer; its inherited custody files are the
+        # dependencies. No strict model gains a field.
+        from pipelines.summary_native.delta.lineage import custody_dependencies
+
+        for rel, digest in custody_dependencies(payload):
+            identity = _identity(root, root / rel)
+            if identity.sha256 != digest:
+                raise PromotionPathError(f"delta record custody dependency is stale: {identity.path}")
+            dependencies[identity.path] = identity
+        return record, tuple(sorted(dependencies.values(), key=lambda item: item.path))
     inputs = payload.get("inputs")
     if not isinstance(inputs, dict):
         raise PromotionPathError(f"run record has no typed inputs map: {lexical}")

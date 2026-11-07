@@ -1,0 +1,16 @@
+{
+  "brannoc-ironvein": {
+    "published_at": "2026-03-10T12:00:00+00:00",
+    "published_sha256": "9cfd9043167c80e3033ce6a7a4e52e7d7a2f767d4e27e24f9533c4816ec74375",
+    "range": "ch001-002",
+    "run": "20260310T100000Z",
+    "source": "summary_native"
+  },
+  "envoy-sella-marr": {
+    "published_at": "2026-03-10T12:00:00+00:00",
+    "published_sha256": "b540396f2246ca9faa346d0ef86a528cf72bb35f31417b0bf60402b2abe3f7da",
+    "range": "ch001-001",
+    "run": "20260310T101000Z",
+    "source": "summary_native"
+  }
+}

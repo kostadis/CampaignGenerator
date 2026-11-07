@@ -1,0 +1,9 @@
+players:
+- id: ana
+  name: Ana
+  plays:
+  - Ruck Halloway
+- id: ben
+  name: Ben
+  plays:
+  - Sister Ines

@@ -972,6 +972,18 @@ Exit codes are the same as everywhere: `0` ok, `1` blocking validation problems,
 | exit 4: `no chunk could be extracted: the backend could not be reached …` / `no item could be judged …` | extract, audit | The backend is unreachable; see `state/runs/<stamp>/record.json`. |
 | exit 4: `model call failed in section <heading> …` | synth | See `record.json`; no draft written. |
 
+### Three ways to get a new session into the documents
+
+Only one of these is a native feature; do not mistake the others for it.
+
+| Path | When | What it is |
+|---|---|---|
+| Existing cache or full-range rerender | You want a complete refresh of the whole range, or the delta path does not apply | `extract` (cached chunks are reused, only the missing ones are called), `synth`, `annotate`, then managed promotion below. Always available; never a delta. |
+| Native delta generation and publication | One or a few newly reviewed sessions, existing published baseline | `summary_native delta ...`: host-validated minimal edits against the active generation, GM decision per proposal, then a digest-bound preview and apply through the same managed promotion. See [Incremental updates how-to](delta_howto.md). |
+| Explicit local editable-live correction | A small fix to a published line between builds | A person edits the file in `docs/` (or `docs/grounding/current/`) after promotion. This is a local correction, not a feature of the pipeline: it creates drift from the published generation that the next full build overwrites, and `delta baseline adopt` will list it as drift to accept or reject. |
+
+Copying a draft over a live document by hand is none of the three.
+
 ### Promotion
 
 Generation never writes `docs/`. The managed promotion command publishes the
@@ -1355,8 +1367,9 @@ Exit 3 and `<doc>.incomplete.md` also cover: `<label>: the model wrote no body`,
 `<label>: the model wrote a heading (...)`, `<label>: the model wrote a level line
 (...)`, and `<label>: the model wrote '#### Candidate Arc Score Events'`. A chunk
 that is missing one of its sections no longer passes the extraction check: it fails
-`extract` (exit 3, #515). Incremental rebuilds after a new
-session are tracked in #512.
+`extract` (exit 3, #515). A rebuild after a new session is a
+full-range rerender that reuses the #512 caches; for the native single-session
+path see [Incremental updates after one reviewed session](#three-ways-to-get-a-new-session-into-the-documents).
 
 ---
 
@@ -1699,8 +1712,10 @@ summary_native compare world_state --summaries-dir docs/summaries --live docs/wo
 summary_native compare campaign_state --summaries-dir docs/summaries --live docs/campaign_state.md
 ```
 
-**8. Promote by hand.** Open the diffs, then copy the draft you are satisfied
-with over `docs/world_state.md` (and so on). The tool does not do this step.
+**8. Promote.** Open the diffs, then publish the reviewed bundle with the managed
+promotion command ([Grounding bundle review and promotion](grounding_bundle_promotion.md)).
+Do not copy a draft over `docs/world_state.md` (and so on) by hand: that bypasses
+the claims gate, the sign-offs and the generation record.
 
 Later, if you edit a summary, `synth` refuses until you `build --force` — that
 refusal is the tool telling you the drafts it would write no longer match the

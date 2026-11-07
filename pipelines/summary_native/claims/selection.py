@@ -10,6 +10,7 @@ import stat
 import json
 import re
 from datetime import datetime
+from typing import Callable
 from pathlib import Path
 
 from pipelines.summary_native.claims.models import (
@@ -23,6 +24,33 @@ from pipelines.summary_native.authority import NoteRecord, RulingRecord, load_le
 
 _CITATION = re.compile(r"\[ch\s+(\d+)\s*/\s*([^\]]+)\]", re.IGNORECASE)
 _MARKDOWN_LINK = re.compile(r"\[[^\]]+\]\(([^)]+)\)")
+
+
+#: Spec 039 (FR-016): resolves a citation ``(chapter, entry)`` that is absent from the selected corpus
+#: inventory through baseline custody. Returns the custody ``ContentIdentity`` or ``None`` when the
+#: baseline does not hold it. Default ``None`` everywhere keeps the original behavior.
+InheritedCustodyResolver = Callable[[int, str], "ContentIdentity | None"]
+
+
+def delta_inherited_custody(root: Path, bundle: BundleSelection) -> "InheritedCustodyResolver | None":
+    """Spec 039 (FR-016): for a bundle whose run record is a ``delta`` lineage record, the resolver that
+    answers an inherited citation from the baseline generation the record names; ``None`` for any other
+    bundle, so the default behavior is unchanged."""
+    for item in bundle.retained_records:
+        try:
+            record = json.loads((root / item.path).read_text(encoding="utf-8"))
+        except (OSError, ValueError):
+            continue
+        if isinstance(record, dict) and record.get("kind") == "delta":
+            from pipelines.summary_native.delta.baseline import custody_resolver_for_generation
+            from pipelines.summary_native.delta.errors import DeltaRefusal
+
+            generation = (record.get("baseline") or {}).get("generation_id")
+            try:
+                return custody_resolver_for_generation(root, generation)
+            except DeltaRefusal:
+                return lambda _chapter, _entry: None  # no custody: every inherited citation blocks, targeted
+    return None
 
 
 def bundle_source_digest(bundle: BundleSelection) -> str:
@@ -58,7 +86,7 @@ def _audience_label(grants: frozenset[str]) -> str:
     return "gm"
 
 
-def _discovered_rows(root: Path, bundle: BundleSelection):
+def _discovered_rows(root: Path, bundle: BundleSelection, inherited: InheritedCustodyResolver | None = None):
     """Resolve only explicit citation and active authority links, never filename recency."""
     seen: set[tuple[str, str, str]] = set()
     linked_paths: set[str] = {item.path for item, *_ in _identity_rows(bundle)}
@@ -83,6 +111,16 @@ def _discovered_rows(root: Path, bundle: BundleSelection):
         for match in _CITATION.finditer(text):
             chapter = int(match.group(1))
             entry = chapters.get(chapter)
+            if not entry and inherited is not None:
+                custody = inherited(chapter, match.group(2).strip())
+                if custody is None:
+                    raise PromotionError(
+                        f"inherited citation [ch {chapter:03d} / {match.group(2).strip()}] has no baseline custody: "
+                        f"chapter {chapter} is not in the selected corpus and the baseline does not hold it "
+                        "(its support was removed or never inherited)",
+                        code="CLAIMS_SOURCE_MISSING",
+                    )
+                entry = {"path": custody.path, "sha256": custody.sha256}
             if not entry:
                 raise PromotionError(f"cited chapter {chapter} is absent from the selected corpus inventory", code="CLAIMS_SOURCE_MISSING")
             path = root / entry["path"]
@@ -222,6 +260,7 @@ def mandatory_source_closure(
     audience: str, rule_versions: tuple[str, ...], unresolved_scope: tuple[str, ...] = (),
     linked_sources: tuple[tuple[ContentIdentity, SourceKind, SourceRole, tuple[str, ...]], ...] = (),
     scope_resolutions: tuple[ScopeResolution, ...] | None = None,
+    inherited_custody: InheritedCustodyResolver | None = None,
 ) -> SourceSelection:
     """Materialize every bundle dependency; never infer that an empty list means all.
 
@@ -232,7 +271,9 @@ def mandatory_source_closure(
     root = Path(campaign_dir).resolve()
     sources: list[SourceEntry] = []
     chunks: list[SelectedChunk] = []
-    discovered_rows, discovered = _discovered_rows(root, bundle)
+    if inherited_custody is None:
+        inherited_custody = delta_inherited_custody(root, bundle)
+    discovered_rows, discovered = _discovered_rows(root, bundle, inherited_custody)
     discovered_ambiguities = [text for text, _record_id in discovered]
     choices = {item.entry: item.choice for item in scope_resolutions or ()}
     context_only_records = {

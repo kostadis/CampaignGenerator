@@ -9,7 +9,10 @@ from __future__ import annotations
 import hashlib
 import json
 import re
+from collections.abc import Iterable, Mapping
+from dataclasses import dataclass
 from pathlib import Path
+from typing import Literal
 
 import yaml
 
@@ -532,3 +535,122 @@ def check_audit_fresh(range_dir: Path, track_files) -> str | None:
     if m.get("notes_manifest_sha256") != sha_file(notes_dir(range_dir) / NOTES_MANIFEST):
         return f"the audit is stale (the checked notes changed); run {AUDIT_CMD}"
     return None
+
+
+# ── Per-item dependency graph (spec 039 T017, research R5) ──────────────────
+#
+# Pure data structure: no file reads, no model calls. Callers hash the real
+# artifacts and hand the digests in. A change to a node stales exactly the items
+# that recorded it; a shared node lists every consumer, so it stales all of them
+# and nothing else.
+
+DEP_GRAPH_SCHEMA_VERSION = 1
+
+DepKind = Literal[
+    "draft", "evidence", "composition", "shared_source",
+    "identity_ruling", "rule", "association",
+]
+DEP_KINDS: tuple[str, ...] = (
+    "draft", "evidence", "composition", "shared_source",
+    "identity_ruling", "rule", "association",
+)
+
+
+@dataclass(frozen=True, order=True)
+class DepNode:
+    """One thing an item's sign-off or output depends on."""
+
+    kind: DepKind
+    key: str
+
+    def __post_init__(self) -> None:
+        if self.kind not in DEP_KINDS:
+            raise ValueError(f"unknown dependency node kind {self.kind!r}")
+
+    def label(self) -> str:
+        return f"{self.kind}:{self.key}"
+
+
+class DependencyGraph:
+    """item -> {node: digest recorded when the item was last signed off/built}."""
+
+    def __init__(self) -> None:
+        self._deps: dict[str, dict[DepNode, str]] = {}
+        self._consumers: dict[DepNode, set[str]] = {}
+
+    def add(self, item: str, node: DepNode, digest: str) -> None:
+        self._deps.setdefault(item, {})[node] = digest
+        self._consumers.setdefault(node, set()).add(item)
+
+    def items(self) -> frozenset[str]:
+        return frozenset(self._deps)
+
+    def consumers(self, node: DepNode) -> frozenset[str]:
+        return frozenset(self._consumers.get(node, ()))
+
+    def dependencies(self, item: str) -> dict[DepNode, str]:
+        return dict(self._deps.get(item, {}))
+
+    def affected_by(self, changed: Iterable[DepNode]) -> frozenset[str]:
+        out: set[str] = set()
+        for node in changed:
+            out |= self._consumers.get(node, set())
+        return frozenset(out)
+
+    def stale_items(self, current_digests: Mapping[DepNode, str]) -> dict[str, list[str]]:
+        """Items whose recorded digests differ from ``current_digests``.
+
+        A node absent from ``current_digests`` counts as changed (reason says
+        "missing"). Reasons are sorted; only stale items appear in the result.
+        """
+        stale: dict[str, list[str]] = {}
+        for item in sorted(self._deps):
+            reasons = []
+            for node in sorted(self._deps[item]):
+                recorded = self._deps[item][node]
+                if node not in current_digests:
+                    reasons.append(f"{node.label()} missing")
+                elif current_digests[node] != recorded:
+                    reasons.append(f"{node.label()} changed")
+            if reasons:
+                stale[item] = reasons
+        return stale
+
+    def item_stale(self, item: str, current_digests: Mapping[DepNode, str]) -> list[str]:
+        """Reasons one item is stale (empty list: current). Unknown item: one reason."""
+        if item not in self._deps:
+            return [f"item {item} has no recorded dependencies"]
+        return self._item_reasons(item, current_digests)
+
+    def _item_reasons(self, item: str, current_digests: Mapping[DepNode, str]) -> list[str]:
+        sub = DependencyGraph()
+        for node, digest in self._deps[item].items():
+            sub.add(item, node, digest)
+        return sub.stale_items(current_digests).get(item, [])
+
+    def to_dict(self) -> dict:
+        return {
+            "schema_version": DEP_GRAPH_SCHEMA_VERSION,
+            "items": {
+                item: [
+                    {"kind": n.kind, "key": n.key, "digest": self._deps[item][n]}
+                    for n in sorted(self._deps[item])
+                ]
+                for item in sorted(self._deps)
+            },
+        }
+
+    @classmethod
+    def from_dict(cls, data: Mapping) -> "DependencyGraph":
+        if not isinstance(data, Mapping) or data.get("schema_version") != DEP_GRAPH_SCHEMA_VERSION:
+            raise ValueError(
+                f"unsupported dependency graph schema_version {data.get('schema_version') if isinstance(data, Mapping) else None!r}"
+            )
+        graph = cls()
+        for item, rows in (data.get("items") or {}).items():
+            for row in rows:
+                graph.add(item, DepNode(row["kind"], row["key"]), row["digest"])
+        return graph
+
+    def __eq__(self, other: object) -> bool:
+        return isinstance(other, DependencyGraph) and self._deps == other._deps

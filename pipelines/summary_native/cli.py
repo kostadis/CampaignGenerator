@@ -308,6 +308,8 @@ def build_parser() -> argparse.ArgumentParser:
     preview.add_argument("--json", action="store_true")
     from pipelines.summary_native.review.cli import add_parser as add_review_parser
     add_review_parser(sub)
+    from pipelines.summary_native.delta.cli import add_delta_parser
+    add_delta_parser(sub)
     return parser
 
 
@@ -355,6 +357,9 @@ def main(argv: list[str] | None = None) -> int:
     if args.command == "review":
         from pipelines.summary_native.review.cli import run as run_review
         return run_review(args)
+    if args.command == "delta":
+        from pipelines.summary_native.delta.cli import run as run_delta
+        return run_delta(args)
     if args.command == "synth" and synth.retired_flag_refusal(args):
         return _err(synth.retired_flag_refusal(args))  # before any config or corpus read: the flag is gone, whatever else is wrong
     if args.command == "thread-propose" and (args.since is None or args.until is None):

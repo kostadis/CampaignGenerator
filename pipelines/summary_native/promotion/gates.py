@@ -35,6 +35,15 @@ def synth_record_complete(record: dict[str, Any]) -> bool:
     return check == "passed"
 
 
+def record_complete(record: dict[str, Any], campaign_dir: Path | None = None) -> bool:
+    """Dispatch on record kind: a ``delta`` lineage record or a finished ``synth`` record (spec 039 R6)."""
+    if record.get("kind") == "delta":
+        from pipelines.summary_native.delta.lineage import delta_record_complete
+
+        return delta_record_complete(record, campaign_dir)
+    return synth_record_complete(record)
+
+
 def check_bundle_structure(campaign_dir: Path, bundle: BundleSelection) -> tuple[GateOutcome, ...]:
     root = Path(campaign_dir).resolve()
     outcomes: list[GateOutcome] = []
@@ -53,7 +62,7 @@ def check_bundle_structure(campaign_dir: Path, bundle: BundleSelection) -> tuple
                 raise ValueError("bytes changed after enumeration")
             if member in bundle.retained_records:
                 record = json.loads(data)
-                if not synth_record_complete(record):
+                if not record_complete(record, root):
                     raise ValueError("retained run record is incomplete")
         except (OSError, ValueError) as exc:
             outcomes.append(
