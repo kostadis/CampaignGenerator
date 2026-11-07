@@ -32,6 +32,7 @@ Pick a doc by audience or task. The repo root has only the project README, the C
 - [Grounding bundle migration](cli/grounding_bundle_migration.md) — explicit preview/apply/verify migration from loose grounding files to one managed generation, including interruption recovery and editing limits.
 - [Grounding bundle promotion](cli/grounding_bundle_promotion.md) — exact source selection, claim review, four-document sign-off, dry-run, digest-bound publication, receipts, and recovery.
 - [NPC dossiers how-to](cli/npc_dossiers_howto.md) — **Start here for NPC dossiers built from your summaries.** `summary_native npc-link | npc-draft | npc-verify | npc-compose | npc-publish`: every scene and moment that names an NPC is attached with no model, one model step drafts the prose (chunked, local Spark by default; Claude by flag), and a deterministic verifier checks every quote, citation and manual edit before you publish. Read this for the authored file (manual edits, Secrets), ruling on generic name forms, reading the link report / verify report / drops, the Spark-vs-Claude A/B, and every refusal and exit code.
+- [Incremental updates how-to](cli/delta_howto.md) — **Start here to update NPC dossiers and the grounding documents from one newly reviewed session.** `summary_native delta plan | sources | census | npc draft | verify | publish | grounding propose | check | preview | apply | run resume | receipt`: you name the sources, a model only drafts, every approval is yours, and publication is preview-bound. Covers changed, passing-mention and new NPCs, baseline adoption, review handoff, recovery, worktree transfer, and every refusal and exit code.
 - [NPC dossier layout migration](cli/npc_dossiers_migration.md) — one-shot, two-step (`--propose` then `--apply`) move of loose `docs/npcs/*` into `distilled/` and `authored/`, with the GM classifying every file the tool cannot prove is distilled. Readers refuse with this command until it is run.
 - [Provenance search how-to](cli/provenance_howto.md) — task-oriented walkthrough: find a fact and know whether to trust it, scope to canon, ask what was true at chapter N, resolve a name, compare two campaigns. **Start here.**
 - [Provenance-aware search](cli/provenance_search.md) — the reference behind it: the two hand-authored files (`provenance.yaml`, per-campaign `corrections.yaml`), trust tiers, the corrections matching rule, all ten `check` findings. **Read this before hand-editing either file.**
@@ -61,6 +62,7 @@ Pick a doc by audience or task. The repo root has only the project README, the C
 ## Specs
 
 - [File formats](specs/formats.md) — input/output shapes for the major tools.
+- [Incremental grounding and NPC updates](../specs/039-incremental-campaign-updates/spec.md) — draft specification of the remaining baseline, selected-source, sparse-evidence, review and native-publication gaps, grounded in the Chapter 75 workflow.
 
 ## Design notes
 

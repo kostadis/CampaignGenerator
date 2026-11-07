@@ -420,33 +420,47 @@ def run_draft(
     default_recent: int = schema.DEFAULT_RECENT_CHAPTERS,
     default_recurring: int = schema.DEFAULT_RECURRING_MIN,
     now=None,
+    delta=None,
 ) -> int:
+    """Draft the selected global NPCs.
+
+    ``delta`` (spec 039, additive; ``None`` keeps every path below unchanged) is an object from
+    ``delta.npc_update`` that supplies, in place of a built corpus: ``evidence`` (``EvidenceFile``
+    list), ``since``/``until``, ``prompt(stem, subject, ev, manual, headings)``,
+    ``postprocess(stem, body)`` (code that restores reused historical bytes), ``verify_draft(...)``
+    (sparse verification) and ``record`` (merged into the run record). Resume, dispatch, the
+    outline check, the draft files and compose are this function's own.
+    """
     now = now or _utcnow
-    if report.blocking_count:
+    if delta is None and report.blocking_count:
         print(report.to_markdown(), end="")
         print("validation has blocking problems; fix the summaries, then build --force", file=sys.stderr)
         return EXIT_BLOCKING
-    if registry_path is None:
-        return _refuse(
-            "no global NPCs are declared (no entity registry found); build a registry with "
-            "`registry init` / `registry import-inventory`"
+    if delta is not None:
+        evidence = list(delta.evidence)
+        since, until = int(delta.since), int(delta.until)
+    else:
+        if registry_path is None:
+            return _refuse(
+                "no global NPCs are declared (no entity registry found); build a registry with "
+                "`registry init` / `registry import-inventory`"
+            )
+        try:
+            manifest = corpus.load_manifest(range_dir, require_complete=True)
+        except corpus.CorpusError as e:
+            return _refuse(f"{e}; run `summary_native build`")
+        stale = check_fresh(report, range_dir, root, manifest, registry_path)
+        if stale:
+            return _refuse(stale)
+
+        evidence = npc_link.read_evidence_files(npc_range_dir)
+        link_problem = check_link_fresh(
+            npc_range_dir, range_dir, registry_path, canon_path, {e.stem: e.sha256 for e in evidence}, players_path
         )
-    try:
-        manifest = corpus.load_manifest(range_dir, require_complete=True)
-    except corpus.CorpusError as e:
-        return _refuse(f"{e}; run `summary_native build`")
-    stale = check_fresh(report, range_dir, root, manifest, registry_path)
-    if stale:
-        return _refuse(stale)
+        if link_problem:
+            return _refuse(link_problem)
 
-    evidence = npc_link.read_evidence_files(npc_range_dir)
-    link_problem = check_link_fresh(
-        npc_range_dir, range_dir, registry_path, canon_path, {e.stem: e.sha256 for e in evidence}, players_path
-    )
-    if link_problem:
-        return _refuse(link_problem)
-
-    since, until = int(manifest["range"]["since"]), int(manifest["range"]["until"])
+        since, until = int(manifest["range"]["since"]), int(manifest["range"]["until"])
     try:
         selection = select_global(
             evidence,
@@ -485,6 +499,9 @@ def run_draft(
             chunk_plan[s["stem"]] = chunks
             map_prompts[s["stem"]] = [npc_chunked.map_prompt(s["subject"], c, manuals[s["stem"]]) for c in chunks]
             system, user = chunked_key_inputs(map_prompts[s["stem"]], reduce_system, headings)
+        elif delta is not None:
+            system, user = delta.prompt(s["stem"], s["subject"], ev, manuals[s["stem"]], headings)
+            prompts[s["stem"]] = (system, user)
         else:
             system, user = build_prompt(ev.body, ev.header, manuals[s["stem"]], headings)
             prompts[s["stem"]] = (system, user)
@@ -504,8 +521,8 @@ def run_draft(
         "mode": mode,
         "chunk_chars": chunk_chars if chunked else None,
         "max_tokens": args.max_tokens,
-        "corpus_manifest_sha256": corpus.sha256_file(range_dir / "manifest.json"),
-        "link_manifest_sha256": corpus.sha256_file(npc_range_dir / npc_link.LINK_MANIFEST),
+        "corpus_manifest_sha256": None if delta is not None else corpus.sha256_file(range_dir / "manifest.json"),
+        "link_manifest_sha256": None if delta is not None else corpus.sha256_file(npc_range_dir / npc_link.LINK_MANIFEST),
         "registry_sha256": _sha_file(registry_path),
         "canon_sha256": _sha_file(canon_path),
         "wordlist_sha256": npc_forms.load_wordlist()[1],
@@ -530,6 +547,8 @@ def run_draft(
         "finished": None,
         "stopped_at": None,
     }
+    if delta is not None:
+        record["delta"] = dict(delta.record)
 
     if args.resume is not None:
         try:
@@ -664,6 +683,8 @@ def run_draft(
                 return EXIT_MODEL_FAILED
             atomic_write_text(run_dir / f"{stem}.out.md", out)  # chunked: the assembled body
             body, stripped = strip_model_header(out)
+            if delta is not None:
+                body = delta.postprocess(stem, body)
             if stripped:
                 print(f"warning: {subject}: the model wrote its own header; stripped (the header is computed)", file=sys.stderr)
             problems = synth.check_outline(body if body.endswith("\n") else body + "\n", headings)
@@ -697,9 +718,12 @@ def run_draft(
                 record["npcs"][stem]["status"] = "drafted"
                 print(f"{subject}: drafted")
         if outcomes[stem].status in ("drafted", "skipped-unchanged") and (draft_dir / f"{stem}.md").is_file():
-            if verify_ctx is None:
-                verify_ctx = npc_verify.load_context(root, report)
-            result = npc_verify.verify_draft(draft_dir, stem, subject, by_stem[stem], manuals[stem], verify_ctx)
+            if delta is not None:
+                result = delta.verify_draft(draft_dir, stem, subject, by_stem[stem], manuals[stem])
+            else:
+                if verify_ctx is None:
+                    verify_ctx = npc_verify.load_context(root, report)
+                result = npc_verify.verify_draft(draft_dir, stem, subject, by_stem[stem], manuals[stem], verify_ctx)
             verify_json[stem] = result.to_dict()
             record["npcs"][stem]["verify"] = {"verdict": result.verdict, "counts": result.counts}
             print(f"  verify: {result.summary_line()}")

@@ -94,6 +94,11 @@ const routes = [
         component: () => import('./views/grounding/GroundingPromote.vue'),
       },
       {
+        path: 'delta',
+        name: 'grounding-delta',
+        component: () => import('./views/grounding/DeltaRun.vue'),
+      },
+      {
         path: 'authority',
         name: 'grounding-authority',
         component: () => import('./views/grounding/GroundingAuthority.vue'),

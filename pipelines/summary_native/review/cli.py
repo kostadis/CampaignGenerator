@@ -565,10 +565,17 @@ def _create_verified_dossier_review(root:Path,dossiers:list[dict])->dict:
             if not resolved.is_file(): raise ReviewStoreError(f"REVIEW_INVALID_SELECTION: missing {role} {relative}")
             data=resolved.read_bytes(); texts[role]=data.decode("utf-8"); paths[role]=resolved
             source_id=f"{role}-{hashlib.sha256(relative.encode()).hexdigest()[:16]}"
+            if any(existing["path"]==relative for existing in source_map.values()): continue  # one custody entry per file (a delta's members share the new chapter)
             source_map[source_id]={"source_id":source_id,"path":relative,"sha256":hashlib.sha256(data).hexdigest(),"size":len(data)}
         summary_roles=[role for role,_ in named if role.startswith("summary-")]
-        parsed=[parse.parse_file(paths[role],root) for role in summary_roles]
-        index=npc_verify.CorpusIndex.from_parsed(parsed); summaries=npc_verify.load_summaries_text(paths[role] for role in summary_roles)
+        sparse=entry.get("sparse_evidence")
+        if sparse is not None:
+            # spec 039: a delta verifies against the member's recorded spans (SparseEvidence) -- the summary
+            # paths are custody only, nothing is parsed, so no historical chapter is read (SC-001)
+            index=sparse; summaries="\n".join(span.span for span in sparse.spans)
+        else:
+            parsed=[parse.parse_file(paths[role],root) for role in summary_roles]
+            index=npc_verify.CorpusIndex.from_parsed(parsed); summaries=npc_verify.load_summaries_text(paths[role] for role in summary_roles)
         manual=entry.get("manual",[])
         if not isinstance(manual,list) or any(not isinstance(value,str) for value in manual): raise ReviewStoreError("REVIEW_INVALID_SELECTION: manual edits must be strings")
         result=npc_verify.verify(texts["draft"],texts["evidence"],index,summaries,manual)
@@ -611,6 +618,44 @@ def _npc_signoff_items(campaign_id,review_id,selections,names,*,verification_com
             input_bindings=({"source_id":selection.draft_source_id,"path":selection.draft_path,"custody_sha256":digest,"semantic_sha256":digest},),
         ))
     return items
+
+
+def _create_combined_dossier_handoff(root:Path,dossiers:list[dict])->dict:
+    """One combined NPC review for a delta, reusing prior valid sign-offs (spec 039 T061).
+
+    Creates the review exactly as ``_create_verified_dossier_review`` does, then plans a carry from every
+    earlier ``npc_verification`` review through ``delegated.plan_carry`` -- the same bar a hand-made
+    sign-off meets (identical draft bytes, a passing real verification).  Only items the carry cannot
+    vouch for are left for fresh review.  Nothing here approves anything the GM did not already approve.
+    """
+    from pipelines.summary_native.review.delegated import plan_carry,submit_decisions
+    created=_create_verified_dossier_review(root,dossiers)
+    review_id=created["review_id"]
+    priors=[]
+    for entry in list_reviews(root):
+        if entry["review_id"]==review_id or entry["kind"]!="npc_verification": continue
+        manifest,_custody,_items=read_snapshot(root,entry["review_id"])
+        priors.append((manifest.created_at,entry["review_id"]))
+    carried=[]; reused_from={}
+    judged=set()  # items a NEWER prior review already ruled on (any verdict, incl. withdrawn): older approvals never carry past them
+    for _created_at,source in sorted(priors,reverse=True):
+        plan=plan_carry(root,review_id,source_review_id=source)
+        _m,_i,source_events,_s=read_review_state(root,source)
+        source_judged={event.get("item_id") for event in source_events if event.get("item_id")}
+        plan["carried"]=[value for value in plan["carried"] if value["decision"]["item_id"] not in judged]
+        judged|=source_judged
+        groups:dict[str,list[dict]]={}
+        for value in plan["carried"]:
+            groups.setdefault(f"{value['reviewer']} (carried)",[]).append(value["decision"])
+            reused_from[value["decision"]["item_id"]]=source
+        for reviewer,decisions in groups.items():
+            submit_decisions(root,review_id,generation=plan["review_generation"],reviewer=reviewer,decisions=decisions,prefix="carry")
+        carried.extend(value["decision"]["item_id"] for value in plan["carried"])
+    _manifest,_items,events,_stale=read_review_state(root,review_id)
+    signoffs=[item for item in read_snapshot(root,review_id)[2] if item.proposed_action.action=="signoff_npc_draft"]
+    from pipelines.summary_native.review.delegated import _current_decision,_latest
+    needs=[item.item_id for item in signoffs if not _current_decision(_latest(events,item.item_id),item,_stale)]
+    return {**created,"review_id":review_id,"carried":sorted(carried),"carried_from":reused_from,"needs_review":sorted(needs)}
 
 
 def _sign_npc_draft(root:Path,review_id:str,*,item_id:str,draft_sha256:str,expected_decision_revision:int,reviewer:str)->dict:

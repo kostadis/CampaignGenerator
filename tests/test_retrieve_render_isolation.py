@@ -158,3 +158,21 @@ def test_promotion_and_claim_gates_do_not_mix_retrieval_or_rendering():
             assert not calls & RETRIEVAL_NAMES, path
             assert not calls & RENDER_NAMES, path
     assert checked >= 15
+
+
+def test_delta_package_does_not_mix_retrieval_or_rendering():
+    """spec 039: the delta family is scanned by directory, so untracked files count too.
+
+    The repo-wide walk above only sees git-tracked files; a delta module that is
+    written but not yet committed must not escape the retrieve/render split.
+    """
+    root = REPO_ROOT / "pipelines" / "summary_native" / "delta"
+    if not root.is_dir():
+        pytest.skip("pipelines/summary_native/delta/ does not exist yet")
+    for path in sorted(root.rglob("*.py")):
+        tree = ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
+        for name, node in _function_bodies(tree):
+            calls = _collect_call_names(node)
+            assert not (calls & RETRIEVAL_NAMES and calls & RENDER_NAMES), (
+                f"{path.relative_to(REPO_ROOT)}::{name} mixes retrieval and render"
+            )

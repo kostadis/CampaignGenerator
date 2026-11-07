@@ -22,6 +22,8 @@ from pathlib import Path
 
 from campaignlib.util import atomic_write_text
 from pipelines.summary_native import npc_check, npc_link, parse, schema
+from pipelines.summary_native.delta.evidence import EvidenceIndex as CorpusEvidence
+from pipelines.summary_native.delta.evidence import FullEvidence
 from pipelines.summary_native.scheduler import FailureEnvelope
 
 PASS, FAIL = "pass", "fail"
@@ -225,6 +227,16 @@ class VerificationContext:
     sections: dict[str, tuple[int, list[str]]]
     body_start: int
 
+    @property
+    def corpus_evidence(self) -> CorpusEvidence:
+        """The evidence index the citation check consults (spec 039 R2).
+
+        A bare ``CorpusIndex`` is a full-mode corpus and is wrapped in ``FullEvidence``
+        (identical ``targets``); an index that already declares a ``kind`` is used as is.
+        """
+        index = self.corpus_index
+        return index if hasattr(index, "kind") else FullEvidence(index)
+
 
 @dataclass
 class ScopedCheckResult:
@@ -264,13 +276,14 @@ def check_citations(context: VerificationContext) -> ScopedCheckResult:
 
     n_cites = n_valid = 0
     failures: list[Finding] = []
+    corpus_targets = context.corpus_evidence.targets
     for n in range(context.body_start, len(context.lines)):
         for bracket, (ch, tgt) in npc_check.citation_parts(context.lines[n]):
             n_cites += 1
             if (
                 ch < 0
                 or not npc_check.scene_chapter_ok(ch, tgt)
-                or (ch, tgt) not in context.corpus_index.targets
+                or (ch, tgt) not in corpus_targets
             ):
                 failures.append(Finding(INVALID, n + 1, bracket, "not in the in-range corpus"))
             elif (ch, tgt) not in context.evidence.targets:

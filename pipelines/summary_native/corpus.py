@@ -25,6 +25,7 @@ import yaml
 
 from campaignlib.util import atomic_write_text
 from pipelines.summary_native import parse, schema
+from pipelines.summary_native import validate
 from pipelines.summary_native.validate import ValidationReport
 
 Grouper = Callable[[str, str], "tuple[str, list[str]]"]
@@ -634,6 +635,7 @@ def build_corpus(
     grouper: Grouper = identity_grouper,
     registry_sha256: str | None = None,
     canon_sha256: str | None = None,
+    sources: "list[Path | str] | tuple | None" = None,
 ) -> dict:
     """Write the corpus for ``report``'s range into ``range_dir``; return the manifest.
 
@@ -645,8 +647,18 @@ def build_corpus(
         raise CorpusError("refusing to build: validation has blocking problems")
     range_dir = Path(range_dir)
     guard_out_dir(range_dir, force)
+    to_parse = sorted(report.input_files)
+    if sources is not None:
+        # Same selection rule as validate.scan (spec 039): explicit, non-empty,
+        # and a subset of what the scan accepted.
+        selected = {p.resolve() for p in validate.select_sources(sources)}
+        allowed = {p.resolve() for p in to_parse}
+        stray = sorted(str(p) for p in selected - allowed)
+        if stray:
+            raise CorpusError("sources not accepted by the validation report: " + ", ".join(stray))
+        to_parse = [p for p in to_parse if p.resolve() in selected]
     files = []
-    for p in sorted(report.input_files):
+    for p in to_parse:
         try:
             files.append(parse.parse_file(p, campaign_root))
         except (OSError, UnicodeDecodeError) as e:

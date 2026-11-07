@@ -496,5 +496,5 @@ resolves the path per-request.
 <!-- SPECKIT START -->
 For additional context about technologies to be used, project structure,
 shell commands, and other important information, read the current plan
-at specs/022-grounding-nav-hierarchy/plan.md
+at specs/039-incremental-campaign-updates/plan.md
 <!-- SPECKIT END -->

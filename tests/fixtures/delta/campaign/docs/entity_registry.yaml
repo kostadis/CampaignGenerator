@@ -1,0 +1,22 @@
+version: 1
+campaign: delta-fixture
+entities:
+  - name: Brannoc Ironvein
+    type: npc
+    aliases: [Brannoc]
+  - name: Envoy Sella Marr
+    type: npc
+    aliases: [Sella Marr]
+  - name: Tobin Fenwick
+    type: npc
+    aliases: [Tobin]
+  - name: Ruck Halloway
+    type: npc
+    aliases: [Ruck]
+  - name: Sister Ines
+    type: npc
+  - name: The Lantern Guild
+    type: faction
+    aliases: [the Guild]
+  - name: Emberfall
+    type: location

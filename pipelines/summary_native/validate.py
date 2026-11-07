@@ -21,6 +21,7 @@ from __future__ import annotations
 
 import json
 import os
+from collections.abc import Sequence
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
 
@@ -37,6 +38,23 @@ class RangeError(ValidationRefusal):
 
 class InputError(ValidationRefusal):
     pass
+
+
+class EmptySourceSelection(ValueError):
+    """An explicit ``sources`` list that selects nothing: refused, never read as "all"."""
+
+
+def select_sources(sources: Sequence[Path | str]) -> list[Path]:
+    """Resolve an explicit source list: non-empty, existing files, de-duplicated, sorted."""
+    if sources is None or len(sources) == 0:
+        raise EmptySourceSelection("no sources selected; an empty selection does not mean all summaries")
+    out: dict[Path, Path] = {}
+    for s in sources:
+        p = Path(s)
+        if not p.is_file():
+            raise InputError(f"{p}: not a file")
+        out.setdefault(p.resolve(), p)
+    return sorted(out.values())
 
 
 @dataclass(frozen=True)
@@ -246,7 +264,7 @@ def _rel(path: Path, root: Path) -> str:
     return Path(os.path.relpath(Path(path).resolve(), Path(root).resolve())).as_posix()
 
 
-def _check_input_dir(summaries_dir: Path) -> list[Path]:
+def _check_input_dir(summaries_dir: Path, list_files: bool = True) -> list[Path]:
     resolved = Path(summaries_dir).resolve()
     parts = resolved.parts
     if any(parts[i] == "docs" and parts[i + 1] == "ensemble" for i in range(len(parts) - 1)):
@@ -256,6 +274,8 @@ def _check_input_dir(summaries_dir: Path) -> list[Path]:
         )
     if not resolved.is_dir():
         raise InputError(f"{summaries_dir}: not a directory")
+    if not list_files:
+        return []
     files = sorted(p for p in resolved.iterdir() if p.is_file() and p.suffix == ".md")
     if not files:
         raise InputError(f"{summaries_dir}: no *.md summaries found")
@@ -357,14 +377,27 @@ def scan(
     registry=None,
     rulings=None,
     dup_threshold: float = schema.DEFAULT_DUP_THRESHOLD,
+    sources: Sequence[Path | str] | None = None,
+    parse_log: list | None = None,
 ) -> ValidationReport:
-    """Validate every summary in ``summaries_dir``. See the module docstring."""
-    files = _check_input_dir(Path(summaries_dir))
+    """Validate every summary in ``summaries_dir``. See the module docstring.
+
+    ``sources`` (spec 039): when given, only those files are parsed and the
+    directory is not listed; ``[]`` is refused (``EmptySourceSelection``).
+    ``parse_log``, when given, receives one entry per ``parse_file`` call.
+    """
+    if sources is None:
+        files = _check_input_dir(Path(summaries_dir))
+    else:
+        files = select_sources(sources)
+        _check_input_dir(Path(summaries_dir), list_files=False)
     parsed: list[parse.ParsedFile] = []
     parsed_paths: list[Path] = []
     unreadable: list[tuple[str, int | None, str]] = []
     for p in files:
         try:
+            if parse_log is not None:
+                parse_log.append(Path(p))
             parsed.append(parse.parse_file(p, campaign_root))
             parsed_paths.append(p)
         except (OSError, UnicodeDecodeError) as e:
