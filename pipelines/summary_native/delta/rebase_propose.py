@@ -69,7 +69,8 @@ def _entry_diffs(state: RebaseState, chapters: set[int]) -> tuple[str, list[int]
 
 def build_prompt(state: RebaseState, docs, lines: list[AffectedLine]) -> tuple[str, dict]:
     """The model's whole input and the record of its sources."""
-    chapters = {l.chapter for l in lines}
+    ids = {l.line_id for l in lines}
+    chapters = {a.chapter for a in state.impact.affected_lines if a.line_id in ids}
     body = ["## Affected grounding lines (line id <TAB> text)\n"]
     for l in lines:
         found = find_line(docs, l.line_id)
@@ -107,15 +108,14 @@ def propose(root: Path | str, plan_id: str, *, backend: str | None, model: str, 
     state = load_state(root, plan_id)
     require_fresh(state)
     docs = baseline_docs(state)
-    try:
-        existing = {p.target_id for p in grounding_edits.load_proposals(state.root, plan_id).proposals}
-    except DeltaRefusal:
-        existing = set()
+    existing = grounding_edits.live_target_ids(state.root, plan_id)
     candidates: list[AffectedLine] = []
     skipped: list[dict] = []
+    offered: set[str] = set()  # a line citing two corrected chapters has one impact record per chapter
     for l in state.impact.affected_lines:
-        if l.origin != "baseline":
+        if l.origin != "baseline" or l.line_id in offered:
             continue
+        offered.add(l.line_id)
         found = find_line(docs, l.line_id)
         tid = grounding_edits.line_target_id(found[0], found[1], found[2]) if found else None
         if tid in existing:
@@ -153,7 +153,7 @@ def propose(root: Path | str, plan_id: str, *, backend: str | None, model: str, 
     saved = None
     if drafts:
         saved = grounding_edits.append_proposals(
-            state.root, plan_id, state.plan.grounding_baseline_ref or "", docs, drafts,
+            state.root, plan_id, state.plan.grounding_baseline_ref or "", docs, drafts, supersede_rejected=True,
             generated_by={"backend": backend or "", "model": model})
     revision = (_latest_revision(state) or 0) + 1
     record = {"rebase_id": state.rebase_id, "plan_id": plan_id, "revision": revision,

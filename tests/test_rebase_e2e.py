@@ -152,7 +152,7 @@ def test_the_rebase_receipt_reports_what_was_and_was_not_read(world):  # SC-007
     assert receipt.model_calls == 0 and receipt.call_counts["model"] == 0
     assert receipt.parsed_historical == {"selected": [2, 3, 4, 5], "unselected": []}  # no unselected chapter was parsed
     assert receipt.integrity_reads == 5 and receipt.unselected_stale_remaining == []
-    assert receipt.model_input_sources == {"affected_lines": [], "entry_diffs": []}  # no model ever saw a source
+    assert receipt.model_input_sources == {"affected_lines": [], "entry_diffs": [], "annotations": []}  # no model ever saw a source
     assert receipt.cached_evidence_reused == 0 and receipt.followup_consumers == []
     assert receipt.new_generation_ref.startswith(world.rebased.new_generation)
     assert receipt.parent_generation_ref.startswith(world.fx.generation_id)

@@ -201,7 +201,7 @@ def build_rebase_receipt(campaign_dir: Path | str, plan) -> RebaseReceipt:
                      "decision": verdict["decision"], "reason": verdict.get("reason"),
                      "old_bytes_provider": old.provider, "rebased": chapter in kept})
     proposals = sorted(state.directory.glob("propose-r*.json"))
-    model_calls, shown = 0, {"affected_lines": [], "entry_diffs": []}
+    model_calls, shown = 0, {"affected_lines": [], "entry_diffs": [], "annotations": []}
     for path in proposals:
         rec = read_json(path)
         model_calls += int(rec.get("model_calls", 0))
@@ -217,7 +217,10 @@ def build_rebase_receipt(campaign_dir: Path | str, plan) -> RebaseReceipt:
     check_calls = 0
     for path in sorted(gp.grounding_dir(root, plan.plan_id).glob("check-r*.json")):
         check_calls += int(read_json(path).get("model_calls", 0))
+    # parsed = the chapters the impact record actually cut into entries; selected = what the plan chose.  They
+    # are separate records, so a parse of an unselected chapter would show here rather than be assumed away.
     parsed = sorted(s.chapter for s in state.impact.sources)
+    chosen = sorted({s.chapter for s in plan.sources})
     remaining = [e.chapter for e in rebase_inspect.inspect(root).stale]
     return RebaseReceipt(
         rebase_id=state.rebase_id, selected_chapters=sorted(kept),
@@ -229,7 +232,7 @@ def build_rebase_receipt(campaign_dir: Path | str, plan) -> RebaseReceipt:
         read_counts={"integrity_reads": state.inspection.get("integrity_reads", 0)},
         call_counts={"model": model_calls + check_calls}, recovery_state="none",
         sources_and_decisions=rows, integrity_reads=int(state.inspection.get("integrity_reads", 0)),
-        parsed_historical={"selected": parsed, "unselected": sorted(set(parsed) - set(state.chapters))},
+        parsed_historical={"selected": parsed, "unselected": sorted(set(parsed) - set(chosen))},
         cached_evidence_reused=cached,
         model_input_sources=shown, model_calls=model_calls + check_calls,
         unselected_stale_remaining=remaining,

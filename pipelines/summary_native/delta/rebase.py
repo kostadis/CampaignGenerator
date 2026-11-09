@@ -329,7 +329,36 @@ def changed_inputs(bound: Mapping[str, str], now: Mapping[str, str]) -> list[str
 
 
 def baseline_docs(state: RebaseState) -> dict[str, bytes]:
-    return baseline_mod.baseline_documents(baseline_mod.bind(state.root), state.root)
+    """The four documents of the baseline the plan was BOUND to (``grounding_baseline_ref``), not the active one.
+
+    While the bound generation is the active one this is the usual adopted-drift view.  Once another generation
+    has been activated, the bound generation's own published bytes are read (its manifest digest must still equal
+    the bound one), so a line id, a hold or a review keeps addressing the lines the GM actually ruled on."""
+    ref = state.plan.grounding_baseline_ref or ""
+    try:
+        active = baseline_mod.bind(state.root)
+    except DeltaRefusal:
+        active = None
+    if active is not None and active.ref == ref:
+        return baseline_mod.baseline_documents(active, state.root)
+    generation_id, _, bound_sha = ref.partition("@")
+    try:
+        manifest = baseline_mod._read_manifest(state.root, generation_id)
+    except (OSError, ValueError) as exc:
+        raise _refuse("REBASE_STALE", f"the bound baseline {ref} cannot be read ({exc})", EXIT_STALE) from exc
+    if manifest.manifest_sha256 != bound_sha:
+        raise _refuse("REBASE_STALE", f"the bound baseline {generation_id} changed (manifest "
+                      f"{manifest.manifest_sha256[:12]}, bound {bound_sha[:12]})", EXIT_STALE)
+    if baseline_mod.load_adoption(state.root, generation_id) is not None:
+        raise _refuse("REBASE_STALE", f"the bound baseline {generation_id} is no longer active and carries adopted "
+                      "drift, which cannot be reproduced from its published bytes; re-run `delta rebase prepare`.",
+                      EXIT_STALE)
+    published = state.root / manifest.published_path
+    try:
+        return {name: (published / f"{name}.md").read_bytes() for name in baseline_mod.DOCUMENT_NAMES}
+    except OSError as exc:
+        raise _refuse("REBASE_STALE", f"the bound baseline {generation_id} documents cannot be read ({exc})",
+                      EXIT_STALE) from exc
 
 
 # --------------------------------------------------------------------------- repairs
@@ -387,7 +416,7 @@ def repair_add(root: Path | str, plan_id: str, line_id: str, text: str, reason: 
     docs = baseline_docs(state)
     proposal = build_repair(docs, state, line, text, reason.strip(), origin="gm", author=reviewer.strip())
     saved = grounding_edits.append_proposals(state.root, plan_id, state.plan.grounding_baseline_ref or "", docs,
-                                             [proposal])
+                                             [proposal], supersede_rejected=True)
     return {"plan_id": plan_id, "rebase_id": state.rebase_id, "proposal_id": proposal.proposal_id,
             "target_id": proposal.target_id, "line_id": line_id, "origin": "gm", "status": "draft",
             "proposals_revision": saved.revision, "call_counts": {"model": 0},
@@ -426,10 +455,7 @@ def hold_entry(root: Path | str, plan_id: str, entry_ref: str, reason: str, revi
                       f"do are: {', '.join(listed) or 'none'}.", EXIT_USAGE)
     docs = baseline_docs(state)
     index = _line_index(docs)
-    try:
-        existing = {p.target_id for p in grounding_edits.load_proposals(state.root, plan_id).proposals}
-    except DeltaRefusal:
-        existing = set()
+    existing = grounding_edits.live_target_ids(state.root, plan_id)
     why = reason.strip()
     proposals, held, skipped = [], [], []
     for line in wanted:
@@ -446,7 +472,7 @@ def hold_entry(root: Path | str, plan_id: str, entry_ref: str, reason: str, revi
         held.append(line.line_id)
     if proposals:
         saved = grounding_edits.append_proposals(state.root, plan_id, state.plan.grounding_baseline_ref or "", docs,
-                                                 proposals)
+                                                 proposals, supersede_rejected=True)
         grounding_edits.decide_many(
             state.root, plan_id,
             {p.proposal_id: ("hold", f"bulk hold of {chapter}/{entry} ({line_id}): {why}")
@@ -474,7 +500,10 @@ def _line_index(docs: Mapping[str, bytes]) -> dict[str, tuple[str, int, bytes]]:
 
 def _line_states(state: RebaseState) -> dict[str, dict]:
     """``line_id -> {state, proposal_id}`` for each affected line: unruled | approved | rejected | held | discuss."""
-    docs = baseline_docs(state)
+    try:
+        docs = baseline_docs(state)
+    except DeltaRefusal:  # show reports the staleness; the lines simply cannot be matched to a proposal
+        docs = {}
     index = _line_index(docs)
     try:
         proposals = grounding_edits.load_proposals(state.root, state.plan.plan_id)
@@ -530,6 +559,15 @@ def _parse_chapter(key: str) -> int:
         raise DeltaRefusal(f"bad chapter {key!r} in --source-decision; expected CH=DECISION", EXIT_USAGE) from exc
 
 
+def _line_chapters(state: RebaseState, origin: str | None = None) -> dict[str, set[int]]:
+    """``line_id -> every selected chapter whose changed entry the line cites`` (one impact record per chapter)."""
+    out: dict[str, set[int]] = {}
+    for line in state.impact.affected_lines:
+        if origin is None or line.origin == origin:
+            out.setdefault(line.line_id, set()).add(line.chapter)
+    return out
+
+
 def _describe(lines: list[AffectedLine]) -> str:
     return "; ".join(f"{l.line_id} ({l.document} line {l.line_no}, {l.citation}, {l.reason})" for l in lines)
 
@@ -551,6 +589,19 @@ def check_rulings(state: RebaseState, sources: Mapping[int, str], ruled_members:
                     f"{', '.join(a.annotation_id for a in notes) or 'none'}. Use adopt-with-repairs (with a repair "
                     "or hold for each line) or reject.")
     line_state = _line_states(state)
+    # A repair or hold on a line whose every corrected chapter is REJECTED would be applied to a generation that
+    # keeps the old pin for that chapter, with a marker naming a correction it does not adopt.  It is refused,
+    # never silently dropped: the GM rejects (withdraws) that repair or adopts the chapter (research R5).
+    rejected = {ch for ch, d in sources.items() if d == "reject"}
+    orphaned = sorted(lid for lid, chs in _line_chapters(state, origin="baseline").items()
+                      if chs <= rejected and line_state[lid]["state"] in ("approved", "held"))
+    if orphaned:
+        raise _refuse(
+            "REBASE_REJECTED_REPAIR",
+            f"{len(orphaned)} line(s) have an approved repair or hold but every corrected chapter they cite is "
+            f"rejected ({', '.join(map(str, sorted(rejected)))}): {', '.join(orphaned[:5])}"
+            f"{' ...' if len(orphaned) > 5 else ''}. Reject those repairs with `delta grounding decide --decision "
+            "reject`, or change the chapter's decision to adopt-with-repairs.")
     unruled: list[str] = []
     for ch, d in sorted(sources.items()):
         if d != "adopt-with-repairs":
@@ -678,6 +729,8 @@ def build_candidate(root: Path | str, plan: DeltaPlan, docs: Mapping[str, bytes]
         raise _refuse("REBASE_UNRULED_IMPACT", exc.message) from exc
     line_state = _line_states(state)
     chapters = sorted(int(c) for c, v in decisions["sources"].items() if v["decision"] != "reject")
+    # only a line citing at least one KEPT chapter is repaired or held by this rebase (check_rulings refuses the rest)
+    adopted_lines = {lid for lid, chs in _line_chapters(state, origin="baseline").items() if chs & set(chapters)}
     block = RebaseBlock(
         rebase_id=state.rebase_id, decisions_ref=path.relative_to(state.root).as_posix(),
         decisions_sha256=_sha(path.read_bytes()),
@@ -686,13 +739,35 @@ def build_candidate(root: Path | str, plan: DeltaPlan, docs: Mapping[str, bytes]
                               old_snapshot=custody_store.object_rel(state.snapshot(c, "old").sha256),
                               current_snapshot=custody_store.object_rel(state.snapshot(c, "current").sha256))
                  for c in chapters],
-        repaired_lines=sorted(i for i, v in line_state.items() if v["state"] == "approved"),
-        held_lines=sorted(i for i, v in line_state.items() if v["state"] == "held"),
+        repaired_lines=sorted(i for i, v in line_state.items() if v["state"] == "approved" and i in adopted_lines),
+        held_lines=sorted(i for i, v in line_state.items() if v["state"] == "held" and i in adopted_lines),
         attested_members=sorted(m for m, v in decisions["unknown_members"].items()
                                 if v["decision"] == "attested-unaffected"),
         unchanged_members=sorted(f"{n}.md" for n in docs if candidate[n] == docs[n]))
     return RebaseCandidate(candidate=candidate, docs=docs, block=block, decisions=decisions, decisions_path=path,
                            chapters=chapters)
+
+
+def rejected_custody_resolver(state: RebaseState, resolver, kept: set[int]):
+    """Wrap a baseline custody resolver so a REJECTED chapter is resolved against its retained OLD snapshot.
+
+    The new generation keeps the old pin for a rejected chapter, so an inherited citation into it is judged
+    against the bytes that pin names (a scene id the correction removed still exists there), not against the
+    corrected file on disk.  Every other chapter is answered by ``resolver`` unchanged."""
+    from pipelines.summary_native.promotion.models import ContentIdentity
+
+    def resolve(chapter: int, entry: str):
+        if chapter not in state.chapters or chapter in kept:
+            return resolver(chapter, entry)
+        snap = state.snapshot(chapter, "old")
+        data = custody_store.get(state.root, snap.sha256)
+        if data is None:
+            return None
+        if re.match(r"^\d{3}\.\d{2}$", entry.strip()) and entry.strip().encode("utf-8") not in data:
+            return None
+        return ContentIdentity(path=snap.path, sha256=snap.sha256, size=len(data))
+
+    return resolve
 
 
 # --------------------------------------------------------------------------- show

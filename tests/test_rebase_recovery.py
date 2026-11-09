@@ -155,3 +155,69 @@ def test_an_identical_prepare_and_decide_are_no_ops(w):
     changed = sorted(p for p in set(before) | set(after) if before.get(p) != after.get(p))
     assert changed == [p for p in changed if p.endswith("review.md")], changed  # `show` re-renders its own view only
     assert rebase.bound_inputs(w.root, w.plan()) == rebase.bound_inputs(w.root, w.plan())
+
+
+# --------------------------------------------------------------------------- review fixes (4, 5)
+
+def _request(w: ApplyWorld) -> dict:
+    import json
+
+    return json.loads((gp.grounding_dir(w.root, w.plan_id) / gp.PUBLISH_REQUEST_FILE).read_text(encoding="utf-8"))
+
+
+def test_a_committed_request_id_does_not_replay_when_the_staged_content_changed(w):
+    from pipelines.summary_native.delta.errors import EXIT_STALE, DeltaRefusal
+    from pipelines.summary_native.delta.grounding_candidates import _range_name
+
+    first = w.apply()
+    request = _request(w)
+    assert gp.default_publisher(w.root, w.plan(), request)["receipt"] == first["result"]["receipt"]  # identical: replay
+    range_dir = w.root / request["out_root"] / _range_name(int(request["since"]), int(request["until"]))
+    draft = next(p for p in sorted(range_dir.rglob("world_state*.md")))
+    draft.write_bytes(draft.read_bytes() + b"\nA line staged after the commit. [ch 002 / 002.01]\n")
+    before = everything(w)
+    with pytest.raises(DeltaRefusal, match="new --request-id") as raised:
+        gp.default_publisher(w.root, w.plan(), request)  # a revised plan reuses the id; it must not get the old receipt
+    assert raised.value.exit_code == EXIT_STALE
+    assert everything(w) == before
+
+
+def test_a_corrupt_operation_history_is_a_clean_refusal(w, monkeypatch):
+    from pipelines.summary_native.delta.errors import EXIT_RECOVERY, DeltaRefusal
+    from pipelines.summary_native.promotion import publish
+    from pipelines.summary_native.promotion.errors import PromotionError
+
+    def corrupt(*_a, **_k):
+        raise PromotionError("request id has conflicting operation history", code="PROMOTION_HISTORY_INVALID")
+
+    monkeypatch.setattr(publish, "committed_replay", corrupt)
+    with pytest.raises(DeltaRefusal, match="PROMOTION_HISTORY_INVALID") as raised:
+        gp.default_publisher(w.root, w.plan(), _request(w))
+    assert raised.value.exit_code == EXIT_RECOVERY
+
+
+def test_the_bound_baseline_documents_survive_the_activation_of_the_rebase_generation(w):
+    bound = documents(w)
+    state = rebase.load_state(w.root, w.plan_id)
+    assert rebase.baseline_docs(state) == bound
+    w.apply()
+    assert documents(w) != bound  # the active baseline moved
+    assert rebase.baseline_docs(rebase.load_state(w.root, w.plan_id)) == bound  # the plan still reads ITS baseline
+    shown = rebase.show(w.root, w.plan_id)  # reports the staleness instead of failing or re-addressing lines
+    assert shown["stale"]
+
+
+def test_the_receipt_reports_annotations_a_model_was_shown_and_parses_from_records(w):
+    import json
+
+    from pipelines.summary_native.delta.receipt import build_rebase_receipt
+
+    w.apply()
+    state = rebase.load_state(w.root, w.plan_id)
+    (state.directory / "propose-r1.json").write_text(json.dumps({
+        "model_calls": 1, "model_input_sources": {"affected_lines": ["world_state#a@1"], "entry_diffs": ["2"],
+                                                    "annotations": ["ann-1"]}}), encoding="utf-8")
+    receipt = build_rebase_receipt(w.root, w.plan())
+    assert receipt.model_input_sources == {"affected_lines": ["world_state#a@1"], "entry_diffs": ["2"],
+                                           "annotations": ["ann-1"]}
+    assert receipt.parsed_historical == {"selected": [2, 3, 4, 5], "unselected": []}

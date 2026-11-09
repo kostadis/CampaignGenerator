@@ -235,22 +235,26 @@ def find_line(docs: Mapping[str, bytes], lid: str) -> tuple[str, int, bytes] | N
     return None
 
 
-def _classify(line: str, sources: Mapping[int, SourceImpact]) -> tuple[str, int, str, str] | None:
-    """``(citation, chapter, entry, reason)`` for the first citation of ``line`` into a changed source."""
+def _classify(line: str, sources: Mapping[int, SourceImpact]) -> list[tuple[str, int, str, str]]:
+    """``(citation, chapter, entry, reason)`` for the first citation of ``line`` into each changed source.
+
+    One record per distinct selected chapter: a line citing two corrected chapters is affected for both, so
+    each chapter's ruling (and the FR-009 gate over ``lines_of(chapter)``) sees it."""
+    found: dict[int, tuple[str, int, str, str]] = {}
     for m in _CITATION.finditer(line):
         chapter, entry = int(m.group(1)), m.group(2).strip()
         src = sources.get(chapter)
-        if src is None:
+        if src is None or chapter in found:
             continue
         key = _slug(entry)
         by_key = {e.entry: e for e in src.entries}
         sid = _SCENE_ID.match(entry)
         hit = by_key.get(sid.group(1) if sid else _SECTION_KEYS.get(key, key))
         if hit is None:
-            return m.group(0), chapter, entry, "whole_chapter"
-        if hit.status in ("changed", "removed"):
-            return m.group(0), chapter, entry, hit.status
-    return None
+            found[chapter] = (m.group(0), chapter, entry, "whole_chapter")
+        elif hit.status in ("changed", "removed"):
+            found[chapter] = (m.group(0), chapter, entry, hit.status)
+    return [found[c] for c in sorted(found)]
 
 
 def _scan_document(document: str, data: bytes, sources, origin: str, skip: set[bytes] | None = None):
@@ -258,9 +262,7 @@ def _scan_document(document: str, data: bytes, sources, origin: str, skip: set[b
         if skip is not None and raw.rstrip(b"\r\n") in skip:
             continue
         text = raw.decode("utf-8", "replace")
-        hit = _classify(text, sources)
-        if hit is not None:
-            citation, chapter, entry, reason = hit
+        for citation, chapter, entry, reason in _classify(text, sources):
             yield AffectedLine(line_id=lid, document=document, line_no=n,
                                line_sha256=_sha(raw.rstrip(b"\r\n")), citation=citation, chapter=chapter,
                                entry=entry, reason=reason, origin=origin)

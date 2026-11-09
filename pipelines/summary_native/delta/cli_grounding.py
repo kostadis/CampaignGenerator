@@ -136,8 +136,10 @@ def _grounding_check(args: argparse.Namespace) -> int:
         texts = _source_texts(plan)
         new_targets = grounding_check.new_targets_for_sources(
             {s.chapter: texts[s.path] for s in plan.sources})
-    report = grounding_check.check_documents(
-        docs, candidate, new_targets=new_targets, custody=baseline_mod.custody_resolver(baseline, root))
+    custody = baseline_mod.custody_resolver(baseline, root)
+    if plan.kind == "rebase":
+        custody = rebase_mod.rejected_custody_resolver(rebase_mod.load_state(root, plan.plan_id), custody, kept)
+    report = grounding_check.check_documents(docs, candidate, new_targets=new_targets, custody=custody)
     calls = 0
     if plan.kind != "rebase" and any(candidate[k] != docs[k] for k in candidate):
         backend, model = _choice(args, plan, "consistency")

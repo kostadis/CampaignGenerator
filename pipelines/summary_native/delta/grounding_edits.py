@@ -385,8 +385,20 @@ def decide_many(campaign_dir: Path | str, plan_id: str, decisions: Mapping[str, 
     return record
 
 
+def live_target_ids(campaign_dir: Path | str, plan_id: str) -> set[str]:
+    """Targets that have a proposal which is not currently rejected (approved, held, discussed or undecided)."""
+    try:
+        current = load_proposals(campaign_dir, plan_id)
+    except DeltaRefusal:
+        return set()
+    decided = current_decisions(campaign_dir, plan_id, current)
+    return {p.target_id for p in current.proposals
+            if not (decided.get(p.proposal_id) and decided[p.proposal_id].decision == "reject")}
+
+
 def append_proposals(campaign_dir: Path | str, plan_id: str, baseline_ref: str, docs: Mapping[str, bytes],
-                     new: list[Proposal], *, generated_by: dict[str, str] | None = None) -> ProposalSet:
+                     new: list[Proposal], *, generated_by: dict[str, str] | None = None,
+                     supersede_rejected: bool = False) -> ProposalSet:
     """Add proposals to the plan's set as a NEW revision, keeping the decisions already made on the others.
 
     ``save_proposals`` starts a re-proposed set undecided; a rebase adds repairs one at a time, and a GM's
@@ -401,7 +413,16 @@ def append_proposals(campaign_dir: Path | str, plan_id: str, baseline_ref: str, 
     fresh = [p for p in new if p.proposal_id not in have]
     if current is not None and not fresh:
         return current
-    merged = list(current.proposals if current else []) + fresh
+    kept = list(current.proposals if current else [])
+    dropped: set[str] = set()
+    if supersede_rejected and current is not None:
+        # A target whose every proposal was rejected may be proposed again; the rejected ones leave the new
+        # revision (earlier revisions stay on disk).  A live proposal still makes the new one a duplicate.
+        live = live_target_ids(campaign_dir, plan_id)
+        fresh_targets = {p.target_id for p in fresh}
+        dropped = {p.proposal_id for p in kept if p.target_id in fresh_targets and p.target_id not in live}
+        kept = [p for p in kept if p.proposal_id not in dropped]
+    merged = kept + fresh
     validate_proposals(docs, merged)
     saved = save_proposals(campaign_dir, ProposalSet(
         plan_id=plan_id, baseline_ref=baseline_ref, proposals=merged,
@@ -410,7 +431,7 @@ def append_proposals(campaign_dir: Path | str, plan_id: str, baseline_ref: str, 
     if current is not None and previous is not None and previous.proposals_revision == current.revision \
             and previous.decisions:
         carried = DecisionSet(plan_id=plan_id, proposals_revision=saved.revision, revision=previous.revision + 1,
-                              decisions=dict(previous.decisions))
+                              decisions={k: v for k, v in previous.decisions.items() if k not in dropped})
         _write_new(edits_dir(campaign_dir, plan_id), "decisions", carried.revision, carried.model_dump(mode="json"))
     return saved
 
