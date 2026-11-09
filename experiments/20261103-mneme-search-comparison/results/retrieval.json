@@ -1,0 +1,1113 @@
+{
+  "task": "retrieval coverage of frozen mention pairs; not relation accuracy",
+  "requests": {
+    "context-q01": {
+      "returncode": 0,
+      "elapsed_seconds": 1.823,
+      "embedder_identity_warning": true,
+      "related_theme_block_present": true,
+      "verbatim_hits": 10
+    },
+    "context-q02": {
+      "returncode": 0,
+      "elapsed_seconds": 1.846,
+      "embedder_identity_warning": true,
+      "related_theme_block_present": true,
+      "verbatim_hits": 10
+    },
+    "context-q03": {
+      "returncode": 0,
+      "elapsed_seconds": 1.84,
+      "embedder_identity_warning": true,
+      "related_theme_block_present": true,
+      "verbatim_hits": 10
+    },
+    "context-q04": {
+      "returncode": 0,
+      "elapsed_seconds": 1.797,
+      "embedder_identity_warning": true,
+      "related_theme_block_present": true,
+      "verbatim_hits": 10
+    },
+    "context-q05": {
+      "returncode": 0,
+      "elapsed_seconds": 1.771,
+      "embedder_identity_warning": true,
+      "related_theme_block_present": true,
+      "verbatim_hits": 10
+    },
+    "context-q06": {
+      "returncode": 0,
+      "elapsed_seconds": 1.802,
+      "embedder_identity_warning": true,
+      "related_theme_block_present": true,
+      "verbatim_hits": 10
+    },
+    "context-q07": {
+      "returncode": 0,
+      "elapsed_seconds": 1.847,
+      "embedder_identity_warning": true,
+      "related_theme_block_present": true,
+      "verbatim_hits": 10
+    },
+    "context-q08": {
+      "returncode": 0,
+      "elapsed_seconds": 1.868,
+      "embedder_identity_warning": true,
+      "related_theme_block_present": true,
+      "verbatim_hits": 10
+    },
+    "context-q09": {
+      "returncode": 0,
+      "elapsed_seconds": 1.833,
+      "embedder_identity_warning": true,
+      "related_theme_block_present": true,
+      "verbatim_hits": 10
+    },
+    "context-q10": {
+      "returncode": 0,
+      "elapsed_seconds": 1.824,
+      "embedder_identity_warning": true,
+      "related_theme_block_present": true,
+      "verbatim_hits": 10
+    },
+    "context-q11": {
+      "returncode": 0,
+      "elapsed_seconds": 1.82,
+      "embedder_identity_warning": true,
+      "related_theme_block_present": true,
+      "verbatim_hits": 10
+    },
+    "context-q12": {
+      "returncode": 0,
+      "elapsed_seconds": 1.831,
+      "embedder_identity_warning": true,
+      "related_theme_block_present": true,
+      "verbatim_hits": 10
+    },
+    "context-q13": {
+      "returncode": 0,
+      "elapsed_seconds": 1.822,
+      "embedder_identity_warning": true,
+      "related_theme_block_present": true,
+      "verbatim_hits": 10
+    },
+    "context-q14": {
+      "returncode": 0,
+      "elapsed_seconds": 1.809,
+      "embedder_identity_warning": true,
+      "related_theme_block_present": true,
+      "verbatim_hits": 10
+    },
+    "context-q15": {
+      "returncode": 0,
+      "elapsed_seconds": 1.745,
+      "embedder_identity_warning": true,
+      "related_theme_block_present": true,
+      "verbatim_hits": 10
+    },
+    "context-q16": {
+      "returncode": 0,
+      "elapsed_seconds": 1.826,
+      "embedder_identity_warning": true,
+      "related_theme_block_present": true,
+      "verbatim_hits": 10
+    },
+    "bare-ogres": {
+      "returncode": 0,
+      "elapsed_seconds": 1.833,
+      "embedder_identity_warning": true,
+      "related_theme_block_present": true,
+      "verbatim_hits": 10
+    },
+    "bare-orcs": {
+      "returncode": 0,
+      "elapsed_seconds": 1.893,
+      "embedder_identity_warning": true,
+      "related_theme_block_present": true,
+      "verbatim_hits": 10
+    }
+  },
+  "unique_search_requests": 18,
+  "failed_requests": [],
+  "median_cli_seconds": 1.8250000000000002,
+  "modes": {
+    "bare": {
+      "cases": 16,
+      "coverage": {
+        "1": {
+          "both_sources": 0,
+          "both_target_anchors": 0
+        },
+        "5": {
+          "both_sources": 6,
+          "both_target_anchors": 0
+        },
+        "10": {
+          "both_sources": 9,
+          "both_target_anchors": 1
+        }
+      },
+      "results": [
+        {
+          "id": "q01",
+          "sides": {
+            "left": {
+              "source_rank": 2,
+              "anchor_rank": null
+            },
+            "right": {
+              "source_rank": 2,
+              "anchor_rank": null
+            }
+          },
+          "coverage": {
+            "1": {
+              "both_sources": false,
+              "both_target_anchors": false
+            },
+            "5": {
+              "both_sources": true,
+              "both_target_anchors": false
+            },
+            "10": {
+              "both_sources": true,
+              "both_target_anchors": false
+            }
+          },
+          "request": "bare-ogres",
+          "returncode": 0
+        },
+        {
+          "id": "q02",
+          "sides": {
+            "left": {
+              "source_rank": 2,
+              "anchor_rank": null
+            },
+            "right": {
+              "source_rank": 2,
+              "anchor_rank": 7
+            }
+          },
+          "coverage": {
+            "1": {
+              "both_sources": false,
+              "both_target_anchors": false
+            },
+            "5": {
+              "both_sources": true,
+              "both_target_anchors": false
+            },
+            "10": {
+              "both_sources": true,
+              "both_target_anchors": false
+            }
+          },
+          "request": "bare-ogres",
+          "returncode": 0
+        },
+        {
+          "id": "q03",
+          "sides": {
+            "left": {
+              "source_rank": 2,
+              "anchor_rank": 7
+            },
+            "right": {
+              "source_rank": 2,
+              "anchor_rank": 7
+            }
+          },
+          "coverage": {
+            "1": {
+              "both_sources": false,
+              "both_target_anchors": false
+            },
+            "5": {
+              "both_sources": true,
+              "both_target_anchors": false
+            },
+            "10": {
+              "both_sources": true,
+              "both_target_anchors": true
+            }
+          },
+          "request": "bare-ogres",
+          "returncode": 0
+        },
+        {
+          "id": "q04",
+          "sides": {
+            "left": {
+              "source_rank": 2,
+              "anchor_rank": null
+            },
+            "right": {
+              "source_rank": 1,
+              "anchor_rank": null
+            }
+          },
+          "coverage": {
+            "1": {
+              "both_sources": false,
+              "both_target_anchors": false
+            },
+            "5": {
+              "both_sources": true,
+              "both_target_anchors": false
+            },
+            "10": {
+              "both_sources": true,
+              "both_target_anchors": false
+            }
+          },
+          "request": "bare-ogres",
+          "returncode": 0
+        },
+        {
+          "id": "q05",
+          "sides": {
+            "left": {
+              "source_rank": 3,
+              "anchor_rank": null
+            },
+            "right": {
+              "source_rank": 3,
+              "anchor_rank": null
+            }
+          },
+          "coverage": {
+            "1": {
+              "both_sources": false,
+              "both_target_anchors": false
+            },
+            "5": {
+              "both_sources": true,
+              "both_target_anchors": false
+            },
+            "10": {
+              "both_sources": true,
+              "both_target_anchors": false
+            }
+          },
+          "request": "bare-orcs",
+          "returncode": 0
+        },
+        {
+          "id": "q06",
+          "sides": {
+            "left": {
+              "source_rank": 3,
+              "anchor_rank": null
+            },
+            "right": {
+              "source_rank": 3,
+              "anchor_rank": null
+            }
+          },
+          "coverage": {
+            "1": {
+              "both_sources": false,
+              "both_target_anchors": false
+            },
+            "5": {
+              "both_sources": true,
+              "both_target_anchors": false
+            },
+            "10": {
+              "both_sources": true,
+              "both_target_anchors": false
+            }
+          },
+          "request": "bare-orcs",
+          "returncode": 0
+        },
+        {
+          "id": "q07",
+          "sides": {
+            "left": {
+              "source_rank": 3,
+              "anchor_rank": null
+            },
+            "right": {
+              "source_rank": null,
+              "anchor_rank": null
+            }
+          },
+          "coverage": {
+            "1": {
+              "both_sources": false,
+              "both_target_anchors": false
+            },
+            "5": {
+              "both_sources": false,
+              "both_target_anchors": false
+            },
+            "10": {
+              "both_sources": false,
+              "both_target_anchors": false
+            }
+          },
+          "request": "bare-orcs",
+          "returncode": 0
+        },
+        {
+          "id": "q08",
+          "sides": {
+            "left": {
+              "source_rank": 9,
+              "anchor_rank": null
+            },
+            "right": {
+              "source_rank": 9,
+              "anchor_rank": null
+            }
+          },
+          "coverage": {
+            "1": {
+              "both_sources": false,
+              "both_target_anchors": false
+            },
+            "5": {
+              "both_sources": false,
+              "both_target_anchors": false
+            },
+            "10": {
+              "both_sources": true,
+              "both_target_anchors": false
+            }
+          },
+          "request": "bare-orcs",
+          "returncode": 0
+        },
+        {
+          "id": "q09",
+          "sides": {
+            "left": {
+              "source_rank": 9,
+              "anchor_rank": null
+            },
+            "right": {
+              "source_rank": 9,
+              "anchor_rank": null
+            }
+          },
+          "coverage": {
+            "1": {
+              "both_sources": false,
+              "both_target_anchors": false
+            },
+            "5": {
+              "both_sources": false,
+              "both_target_anchors": false
+            },
+            "10": {
+              "both_sources": true,
+              "both_target_anchors": false
+            }
+          },
+          "request": "bare-orcs",
+          "returncode": 0
+        },
+        {
+          "id": "q10",
+          "sides": {
+            "left": {
+              "source_rank": null,
+              "anchor_rank": null
+            },
+            "right": {
+              "source_rank": null,
+              "anchor_rank": null
+            }
+          },
+          "coverage": {
+            "1": {
+              "both_sources": false,
+              "both_target_anchors": false
+            },
+            "5": {
+              "both_sources": false,
+              "both_target_anchors": false
+            },
+            "10": {
+              "both_sources": false,
+              "both_target_anchors": false
+            }
+          },
+          "request": "bare-orcs",
+          "returncode": 0
+        },
+        {
+          "id": "q11",
+          "sides": {
+            "left": {
+              "source_rank": null,
+              "anchor_rank": null
+            },
+            "right": {
+              "source_rank": null,
+              "anchor_rank": null
+            }
+          },
+          "coverage": {
+            "1": {
+              "both_sources": false,
+              "both_target_anchors": false
+            },
+            "5": {
+              "both_sources": false,
+              "both_target_anchors": false
+            },
+            "10": {
+              "both_sources": false,
+              "both_target_anchors": false
+            }
+          },
+          "request": "bare-orcs",
+          "returncode": 0
+        },
+        {
+          "id": "q12",
+          "sides": {
+            "left": {
+              "source_rank": null,
+              "anchor_rank": null
+            },
+            "right": {
+              "source_rank": 2,
+              "anchor_rank": null
+            }
+          },
+          "coverage": {
+            "1": {
+              "both_sources": false,
+              "both_target_anchors": false
+            },
+            "5": {
+              "both_sources": false,
+              "both_target_anchors": false
+            },
+            "10": {
+              "both_sources": false,
+              "both_target_anchors": false
+            }
+          },
+          "request": "bare-ogres",
+          "returncode": 0
+        },
+        {
+          "id": "q13",
+          "sides": {
+            "left": {
+              "source_rank": null,
+              "anchor_rank": null
+            },
+            "right": {
+              "source_rank": 2,
+              "anchor_rank": null
+            }
+          },
+          "coverage": {
+            "1": {
+              "both_sources": false,
+              "both_target_anchors": false
+            },
+            "5": {
+              "both_sources": false,
+              "both_target_anchors": false
+            },
+            "10": {
+              "both_sources": false,
+              "both_target_anchors": false
+            }
+          },
+          "request": "bare-ogres",
+          "returncode": 0
+        },
+        {
+          "id": "q14",
+          "sides": {
+            "left": {
+              "source_rank": null,
+              "anchor_rank": null
+            },
+            "right": {
+              "source_rank": null,
+              "anchor_rank": null
+            }
+          },
+          "coverage": {
+            "1": {
+              "both_sources": false,
+              "both_target_anchors": false
+            },
+            "5": {
+              "both_sources": false,
+              "both_target_anchors": false
+            },
+            "10": {
+              "both_sources": false,
+              "both_target_anchors": false
+            }
+          },
+          "request": "bare-orcs",
+          "returncode": 0
+        },
+        {
+          "id": "q15",
+          "sides": {
+            "left": {
+              "source_rank": null,
+              "anchor_rank": null
+            },
+            "right": {
+              "source_rank": null,
+              "anchor_rank": null
+            }
+          },
+          "coverage": {
+            "1": {
+              "both_sources": false,
+              "both_target_anchors": false
+            },
+            "5": {
+              "both_sources": false,
+              "both_target_anchors": false
+            },
+            "10": {
+              "both_sources": false,
+              "both_target_anchors": false
+            }
+          },
+          "request": "bare-orcs",
+          "returncode": 0
+        },
+        {
+          "id": "q16",
+          "sides": {
+            "left": {
+              "source_rank": 9,
+              "anchor_rank": null
+            },
+            "right": {
+              "source_rank": 9,
+              "anchor_rank": null
+            }
+          },
+          "coverage": {
+            "1": {
+              "both_sources": false,
+              "both_target_anchors": false
+            },
+            "5": {
+              "both_sources": false,
+              "both_target_anchors": false
+            },
+            "10": {
+              "both_sources": true,
+              "both_target_anchors": false
+            }
+          },
+          "request": "bare-orcs",
+          "returncode": 0
+        }
+      ]
+    },
+    "context": {
+      "cases": 16,
+      "coverage": {
+        "1": {
+          "both_sources": 11,
+          "both_target_anchors": 1
+        },
+        "5": {
+          "both_sources": 14,
+          "both_target_anchors": 4
+        },
+        "10": {
+          "both_sources": 14,
+          "both_target_anchors": 5
+        }
+      },
+      "results": [
+        {
+          "id": "q01",
+          "sides": {
+            "left": {
+              "source_rank": 1,
+              "anchor_rank": 8
+            },
+            "right": {
+              "source_rank": 1,
+              "anchor_rank": 5
+            }
+          },
+          "coverage": {
+            "1": {
+              "both_sources": true,
+              "both_target_anchors": false
+            },
+            "5": {
+              "both_sources": true,
+              "both_target_anchors": false
+            },
+            "10": {
+              "both_sources": true,
+              "both_target_anchors": true
+            }
+          },
+          "request": "context-q01",
+          "returncode": 0
+        },
+        {
+          "id": "q02",
+          "sides": {
+            "left": {
+              "source_rank": 1,
+              "anchor_rank": 4
+            },
+            "right": {
+              "source_rank": 1,
+              "anchor_rank": 1
+            }
+          },
+          "coverage": {
+            "1": {
+              "both_sources": true,
+              "both_target_anchors": false
+            },
+            "5": {
+              "both_sources": true,
+              "both_target_anchors": true
+            },
+            "10": {
+              "both_sources": true,
+              "both_target_anchors": true
+            }
+          },
+          "request": "context-q02",
+          "returncode": 0
+        },
+        {
+          "id": "q03",
+          "sides": {
+            "left": {
+              "source_rank": 1,
+              "anchor_rank": 1
+            },
+            "right": {
+              "source_rank": 1,
+              "anchor_rank": 1
+            }
+          },
+          "coverage": {
+            "1": {
+              "both_sources": true,
+              "both_target_anchors": true
+            },
+            "5": {
+              "both_sources": true,
+              "both_target_anchors": true
+            },
+            "10": {
+              "both_sources": true,
+              "both_target_anchors": true
+            }
+          },
+          "request": "context-q03",
+          "returncode": 0
+        },
+        {
+          "id": "q04",
+          "sides": {
+            "left": {
+              "source_rank": 1,
+              "anchor_rank": 5
+            },
+            "right": {
+              "source_rank": null,
+              "anchor_rank": null
+            }
+          },
+          "coverage": {
+            "1": {
+              "both_sources": false,
+              "both_target_anchors": false
+            },
+            "5": {
+              "both_sources": false,
+              "both_target_anchors": false
+            },
+            "10": {
+              "both_sources": false,
+              "both_target_anchors": false
+            }
+          },
+          "request": "context-q04",
+          "returncode": 0
+        },
+        {
+          "id": "q05",
+          "sides": {
+            "left": {
+              "source_rank": 1,
+              "anchor_rank": null
+            },
+            "right": {
+              "source_rank": 1,
+              "anchor_rank": null
+            }
+          },
+          "coverage": {
+            "1": {
+              "both_sources": true,
+              "both_target_anchors": false
+            },
+            "5": {
+              "both_sources": true,
+              "both_target_anchors": false
+            },
+            "10": {
+              "both_sources": true,
+              "both_target_anchors": false
+            }
+          },
+          "request": "context-q05",
+          "returncode": 0
+        },
+        {
+          "id": "q06",
+          "sides": {
+            "left": {
+              "source_rank": 1,
+              "anchor_rank": null
+            },
+            "right": {
+              "source_rank": 1,
+              "anchor_rank": 1
+            }
+          },
+          "coverage": {
+            "1": {
+              "both_sources": true,
+              "both_target_anchors": false
+            },
+            "5": {
+              "both_sources": true,
+              "both_target_anchors": false
+            },
+            "10": {
+              "both_sources": true,
+              "both_target_anchors": false
+            }
+          },
+          "request": "context-q06",
+          "returncode": 0
+        },
+        {
+          "id": "q07",
+          "sides": {
+            "left": {
+              "source_rank": 1,
+              "anchor_rank": null
+            },
+            "right": {
+              "source_rank": 4,
+              "anchor_rank": null
+            }
+          },
+          "coverage": {
+            "1": {
+              "both_sources": false,
+              "both_target_anchors": false
+            },
+            "5": {
+              "both_sources": true,
+              "both_target_anchors": false
+            },
+            "10": {
+              "both_sources": true,
+              "both_target_anchors": false
+            }
+          },
+          "request": "context-q07",
+          "returncode": 0
+        },
+        {
+          "id": "q08",
+          "sides": {
+            "left": {
+              "source_rank": 1,
+              "anchor_rank": null
+            },
+            "right": {
+              "source_rank": 1,
+              "anchor_rank": 1
+            }
+          },
+          "coverage": {
+            "1": {
+              "both_sources": true,
+              "both_target_anchors": false
+            },
+            "5": {
+              "both_sources": true,
+              "both_target_anchors": false
+            },
+            "10": {
+              "both_sources": true,
+              "both_target_anchors": false
+            }
+          },
+          "request": "context-q08",
+          "returncode": 0
+        },
+        {
+          "id": "q09",
+          "sides": {
+            "left": {
+              "source_rank": 1,
+              "anchor_rank": null
+            },
+            "right": {
+              "source_rank": 1,
+              "anchor_rank": 2
+            }
+          },
+          "coverage": {
+            "1": {
+              "both_sources": true,
+              "both_target_anchors": false
+            },
+            "5": {
+              "both_sources": true,
+              "both_target_anchors": false
+            },
+            "10": {
+              "both_sources": true,
+              "both_target_anchors": false
+            }
+          },
+          "request": "context-q09",
+          "returncode": 0
+        },
+        {
+          "id": "q10",
+          "sides": {
+            "left": {
+              "source_rank": 1,
+              "anchor_rank": null
+            },
+            "right": {
+              "source_rank": 1,
+              "anchor_rank": 1
+            }
+          },
+          "coverage": {
+            "1": {
+              "both_sources": true,
+              "both_target_anchors": false
+            },
+            "5": {
+              "both_sources": true,
+              "both_target_anchors": false
+            },
+            "10": {
+              "both_sources": true,
+              "both_target_anchors": false
+            }
+          },
+          "request": "context-q10",
+          "returncode": 0
+        },
+        {
+          "id": "q11",
+          "sides": {
+            "left": {
+              "source_rank": 1,
+              "anchor_rank": 2
+            },
+            "right": {
+              "source_rank": 1,
+              "anchor_rank": 2
+            }
+          },
+          "coverage": {
+            "1": {
+              "both_sources": true,
+              "both_target_anchors": false
+            },
+            "5": {
+              "both_sources": true,
+              "both_target_anchors": true
+            },
+            "10": {
+              "both_sources": true,
+              "both_target_anchors": true
+            }
+          },
+          "request": "context-q11",
+          "returncode": 0
+        },
+        {
+          "id": "q12",
+          "sides": {
+            "left": {
+              "source_rank": null,
+              "anchor_rank": null
+            },
+            "right": {
+              "source_rank": 2,
+              "anchor_rank": 4
+            }
+          },
+          "coverage": {
+            "1": {
+              "both_sources": false,
+              "both_target_anchors": false
+            },
+            "5": {
+              "both_sources": false,
+              "both_target_anchors": false
+            },
+            "10": {
+              "both_sources": false,
+              "both_target_anchors": false
+            }
+          },
+          "request": "context-q12",
+          "returncode": 0
+        },
+        {
+          "id": "q13",
+          "sides": {
+            "left": {
+              "source_rank": 1,
+              "anchor_rank": 2
+            },
+            "right": {
+              "source_rank": 4,
+              "anchor_rank": 4
+            }
+          },
+          "coverage": {
+            "1": {
+              "both_sources": false,
+              "both_target_anchors": false
+            },
+            "5": {
+              "both_sources": true,
+              "both_target_anchors": true
+            },
+            "10": {
+              "both_sources": true,
+              "both_target_anchors": true
+            }
+          },
+          "request": "context-q13",
+          "returncode": 0
+        },
+        {
+          "id": "q14",
+          "sides": {
+            "left": {
+              "source_rank": 2,
+              "anchor_rank": null
+            },
+            "right": {
+              "source_rank": 2,
+              "anchor_rank": 4
+            }
+          },
+          "coverage": {
+            "1": {
+              "both_sources": false,
+              "both_target_anchors": false
+            },
+            "5": {
+              "both_sources": true,
+              "both_target_anchors": false
+            },
+            "10": {
+              "both_sources": true,
+              "both_target_anchors": false
+            }
+          },
+          "request": "context-q14",
+          "returncode": 0
+        },
+        {
+          "id": "q15",
+          "sides": {
+            "left": {
+              "source_rank": 1,
+              "anchor_rank": null
+            },
+            "right": {
+              "source_rank": 1,
+              "anchor_rank": null
+            }
+          },
+          "coverage": {
+            "1": {
+              "both_sources": true,
+              "both_target_anchors": false
+            },
+            "5": {
+              "both_sources": true,
+              "both_target_anchors": false
+            },
+            "10": {
+              "both_sources": true,
+              "both_target_anchors": false
+            }
+          },
+          "request": "context-q15",
+          "returncode": 0
+        },
+        {
+          "id": "q16",
+          "sides": {
+            "left": {
+              "source_rank": 1,
+              "anchor_rank": 2
+            },
+            "right": {
+              "source_rank": 1,
+              "anchor_rank": null
+            }
+          },
+          "coverage": {
+            "1": {
+              "both_sources": true,
+              "both_target_anchors": false
+            },
+            "5": {
+              "both_sources": true,
+              "both_target_anchors": false
+            },
+            "10": {
+              "both_sources": true,
+              "both_target_anchors": false
+            }
+          },
+          "request": "context-q16",
+          "returncode": 0
+        }
+      ]
+    }
+  },
+  "gold_read": false,
+  "generative_model_calls": 0,
+  "limits": [
+    "Human-authored context queries use known encounter clues; no blind user-query distribution.",
+    "Coverage uses normalized exact 60-character neighborhoods around frozen targets in displayed verbatim hits.",
+    "Source coverage checks chapter-prefixed basename, not identity or sufficient supporting evidence.",
+    "Palace searches all indexed summaries, unlike the manually selected 14-passage model task.",
+    "No same/distinct/membership predictions are produced by mneme search.",
+    "Related LLM-tagged themes are excluded from coverage scoring.",
+    "Embedding inference occurs at query time; zero generative calls does not mean zero model use."
+  ]
+}

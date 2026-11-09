@@ -1,0 +1,105 @@
+{
+  "campaign": "Phandalin",
+  "source_chapters": [
+    9,
+    11,
+    14,
+    22,
+    24,
+    25,
+    26,
+    28,
+    29,
+    32,
+    33,
+    34,
+    36,
+    45,
+    48,
+    55,
+    56
+  ],
+  "source_files": 17,
+  "held_out_chapters_from_previous_fixture": true,
+  "case_count": 100,
+  "reference_count": 136,
+  "passage_count": 17,
+  "strict_cases": 84,
+  "exploratory_cases": 16,
+  "expected_relation_counts": {
+    "same_referent": 37,
+    "distinct_referents": 36,
+    "ambiguous": 9,
+    "overlap_or_membership": 16,
+    "separate_scope": 2
+  },
+  "strict_relation_counts": {
+    "same_referent": 33,
+    "distinct_referents": 34,
+    "overlap_or_membership": 15,
+    "separate_scope": 1,
+    "ambiguous": 1
+  },
+  "category_counts": {
+    "alias_role": 13,
+    "transformation": 9,
+    "reinforcements": 3,
+    "numbered": 10,
+    "same_location": 3,
+    "underspecified": 7,
+    "membership": 17,
+    "factions": 3,
+    "continuity": 12,
+    "cross_chapter": 5,
+    "scope": 2,
+    "life_state": 6,
+    "same_encounter": 6,
+    "rename": 1,
+    "part_whole": 1,
+    "same_label": 1,
+    "representation": 1
+  },
+  "shuffle_seed": 20261103,
+  "batch_size": 20,
+  "batches": [
+    {
+      "directory": "batch-01",
+      "cases": 20,
+      "payload_sha256": "61fe9bc6479c8a6f099c5fe2807065c8fb3d00bab64397cfa7e4eb399ed4f4fd"
+    },
+    {
+      "directory": "batch-02",
+      "cases": 20,
+      "payload_sha256": "546ef03dc950d15f828a0cc72c5eb162fc011e1dcc27ba456332f56a6d564632"
+    },
+    {
+      "directory": "batch-03",
+      "cases": 20,
+      "payload_sha256": "76e98d64847e960cec662ad96ff96f0e6f08fe14bf322bb4c191dd7f0f40f520"
+    },
+    {
+      "directory": "batch-04",
+      "cases": 20,
+      "payload_sha256": "f4c82398939ee82692b5197b1b750b188830e5f0e243ec02f0346c82a3ea4552"
+    },
+    {
+      "directory": "batch-05",
+      "cases": 20,
+      "payload_sha256": "86833d5a405aa7648df6ee6720c8ac6011e52501d8aa6561e2726ce1c05826f3"
+    }
+  ],
+  "model": "gpt-6.1-terra",
+  "effort": "medium",
+  "backend": "codex-cli",
+  "planned_model_arm_requests": 10,
+  "baseline_system_reused": true,
+  "mneme_used": false,
+  "gold_transmitted": false,
+  "context": "Full authored Summary sections for chapters referenced in each batch; no retrieval.",
+  "authority": "researcher source-based draft expectations; not independent GM adjudication",
+  "limits": [
+    "Related cases share passages and individuals; case counts are correlated.",
+    "Manually supplied references/context; not automatic extraction or retrieval.",
+    "Five relation classes; no held-out corrected_nonreferent examples."
+  ]
+}

@@ -1,0 +1,9 @@
+# Derived campaign data — regenerable from the runners against a re-extracted
+# corpus. Kept out of the repo for the same reason as
+# 20260919-phandalin-event-kg/unregistered.json: it is OOTA content, not evidence
+# about the method. The numbers these support are frozen in README.md and in
+# docs/design/TwoStageExtraction_proposal.md.
+posmerge_rerun.json
+claims_ch07.json
+lx_chapter_*.json
+lx_ch05_b*.json
