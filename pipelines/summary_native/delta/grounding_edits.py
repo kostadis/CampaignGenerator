@@ -23,7 +23,7 @@ import re
 from pathlib import Path
 from typing import Mapping
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, model_serializer
 
 from campaignlib import make_client, stream_api
 
@@ -31,8 +31,8 @@ from .errors import EXIT_REFUSAL, EXIT_STALE, EXIT_USAGE, DeltaRefusal
 from .plan import DELTA_ROOT_REL
 
 CATEGORIES = ("new_information", "superseded_state", "resolved_thread", "historical_event",
-              "no_material_change")
-DECISION_VALUES = ("approve", "reject", "discuss")
+              "no_material_change", "source_correction")
+DECISION_VALUES = ("approve", "reject", "discuss", "hold")
 DEFAULT_CHECKS = ("heading", "table", "citation", "consistency")
 _TARGET = re.compile(r"^(?P<doc>[a-z_]+):L(?P<a>\d+)(?:-L(?P<b>\d+))?:(?P<h>[0-9a-f]{8})$")
 
@@ -96,6 +96,20 @@ class Proposal(BaseModel):
     rationale: str
     support: str
     dependent_checks: list[str] = Field(default_factory=lambda: list(DEFAULT_CHECKS))
+    #: Spec 040 (rebase repairs).  All three are omitted from the serialised record while None, so a proposal
+    #: made before they existed keeps its bytes.  ``hold_marker`` is the one line a ``hold`` decision appends
+    #: under the target; a proposal without one cannot be held.
+    origin: str | None = None  # "gm" | "model"
+    author: str | None = None
+    hold_marker: str | None = None
+
+    @model_serializer(mode="wrap")
+    def _omit_unset(self, handler):
+        data = handler(self)
+        for key in ("origin", "author", "hold_marker"):
+            if data.get(key) is None:
+                data.pop(key, None)
+        return data
 
 
 class RejectedProposal(BaseModel):
@@ -214,7 +228,7 @@ def validate_proposals(docs: Mapping[str, bytes], proposals, *, source_texts=Non
 def blocking_proposals(proposals, decisions: Mapping[str, DecisionEntry]) -> list[str]:
     return [p.proposal_id for p in proposals
             if (decisions.get(p.proposal_id).decision if decisions.get(p.proposal_id) else None)
-            not in ("approve", "reject")]
+            not in ("approve", "reject", "hold")]
 
 
 def reconstruct(docs: Mapping[str, bytes], proposals, decisions: Mapping[str, DecisionEntry],
@@ -229,7 +243,19 @@ def reconstruct(docs: Mapping[str, bytes], proposals, decisions: Mapping[str, De
             "'discuss': " + ", ".join(blocked), EXIT_REFUSAL)
     edits: dict[str, list[tuple[int, int, bytes]]] = {}
     for p in proposals:
-        if decisions[p.proposal_id].decision != "approve" or p.category == "no_material_change":
+        verdict = decisions[p.proposal_id].decision
+        if verdict == "hold":
+            if not p.hold_marker:
+                raise DeltaRefusal(f"proposal {p.proposal_id} cannot be held: it carries no hold marker", EXIT_REFUSAL)
+            t = resolve_target(docs, p.target_id)
+            original = b"".join(_lines(docs[t.document])[t.start - 1:t.end])
+            ending = b"\r\n" if original.endswith(b"\r\n") else b"\n"
+            kept = original.endswith((b"\n", b"\r"))
+            # the line stays byte-identical; exactly one marker line follows it
+            new = (original if kept else original + ending) + p.hold_marker.encode("utf-8") + (ending if kept else b"")
+            edits.setdefault(t.document, []).append((t.start, t.end, new))
+            continue
+        if verdict != "approve" or p.category == "no_material_change":
             continue
         t = resolve_target(docs, p.target_id)
         original = b"".join(_lines(docs[t.document])[t.start - 1:t.end])
@@ -311,8 +337,12 @@ def decide(campaign_dir: Path | str, plan_id: str, proposal_id: str, decision: s
         raise DeltaRefusal("--reviewer is required to record a grounding decision; there is no default reviewer",
                            EXIT_USAGE)
     proposal_set = load_proposals(campaign_dir, plan_id)
-    if proposal_id not in {p.proposal_id for p in proposal_set.proposals}:
+    chosen = {p.proposal_id: p for p in proposal_set.proposals}.get(proposal_id)
+    if chosen is None:
         raise DeltaRefusal(f"no such proposal {proposal_id} in plan {plan_id}", EXIT_REFUSAL)
+    if decision == "hold" and not chosen.hold_marker:
+        raise DeltaRefusal(f"proposal {proposal_id} cannot be held: only a source-correction repair carries a hold "
+                           "marker (use approve, reject or discuss)", EXIT_REFUSAL)
     previous = load_decisions(campaign_dir, plan_id)
     carried = dict(previous.decisions) if previous and previous.proposals_revision == proposal_set.revision else {}
     carried[proposal_id] = DecisionEntry(decision=decision, reason=reason, reviewer=reviewer.strip())
@@ -320,6 +350,36 @@ def decide(campaign_dir: Path | str, plan_id: str, proposal_id: str, decision: s
                          revision=(previous.revision + 1) if previous else 1, decisions=carried)
     _write_new(edits_dir(campaign_dir, plan_id), "decisions", record.revision, record.model_dump(mode="json"))
     return record
+
+
+def append_proposals(campaign_dir: Path | str, plan_id: str, baseline_ref: str, docs: Mapping[str, bytes],
+                     new: list[Proposal], *, generated_by: dict[str, str] | None = None) -> ProposalSet:
+    """Add proposals to the plan's set as a NEW revision, keeping the decisions already made on the others.
+
+    ``save_proposals`` starts a re-proposed set undecided; a rebase adds repairs one at a time, and a GM's
+    earlier approvals must survive the next one.  The merged set is validated strictly (an unknown, stale,
+    duplicate or overlapping proposal refuses and writes nothing).  A proposal already in the set is a no-op.
+    """
+    try:
+        current = load_proposals(campaign_dir, plan_id)
+    except DeltaRefusal:
+        current = None
+    have = {p.proposal_id for p in current.proposals} if current else set()
+    fresh = [p for p in new if p.proposal_id not in have]
+    if current is not None and not fresh:
+        return current
+    merged = list(current.proposals if current else []) + fresh
+    validate_proposals(docs, merged)
+    saved = save_proposals(campaign_dir, ProposalSet(
+        plan_id=plan_id, baseline_ref=baseline_ref, proposals=merged,
+        generated_by=generated_by or (current.generated_by if current else None)))
+    previous = load_decisions(campaign_dir, plan_id)
+    if current is not None and previous is not None and previous.proposals_revision == current.revision \
+            and previous.decisions:
+        carried = DecisionSet(plan_id=plan_id, proposals_revision=saved.revision, revision=previous.revision + 1,
+                              decisions=dict(previous.decisions))
+        _write_new(edits_dir(campaign_dir, plan_id), "decisions", carried.revision, carried.model_dump(mode="json"))
+    return saved
 
 
 def current_decisions(campaign_dir: Path | str, plan_id: str, proposal_set: ProposalSet) -> dict[str, DecisionEntry]:

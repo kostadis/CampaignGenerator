@@ -145,3 +145,35 @@ def recover(root: Path | str, chapter: int, path: str, expected_sha: str,
         f"REBASE_OLD_BYTES_UNAVAILABLE: cannot recover the bytes of chapter {chapter} ({path}) pinned at "
         f"sha256 {expected_sha}. Providers tried:\n  - " + "\n  - ".join(tried) +
         f"\nSupply them with --old-bytes {chapter}=PATH.", EXIT_REFUSAL)
+
+
+def probe(root: Path | str, path: str, expected_sha: str, explicit: Path | str | None = None) -> list[dict]:
+    """Which providers could supply the bytes ``expected_sha`` pins; never writes and never raises.
+
+    ``[{provider, available, detail}]`` in the fixed provider order.  A missing, corrupt or
+    wrong-hash candidate is reported unavailable with the reason, so inspection can say what ``prepare``
+    would do without doing any of it.
+    """
+    root = Path(root)
+    out: list[dict] = []
+    try:
+        data = get(root, expected_sha)
+    except DeltaRefusal as exc:
+        out.append({"provider": "snapshot", "available": False, "detail": exc.message})
+    else:
+        out.append({"provider": "snapshot", "available": data is not None,
+                    "detail": f"{CUSTODY_REL}/{expected_sha}" if data is not None else "no retained object"})
+    git_data, git_detail = _from_git(root, path, expected_sha)
+    out.append({"provider": "git", "available": git_data is not None, "detail": git_detail})
+    if explicit is None:
+        out.append({"provider": "explicit", "available": False, "detail": "no --old-bytes given"})
+    else:
+        try:
+            actual = _sha(Path(explicit).read_bytes())
+        except OSError as exc:
+            out.append({"provider": "explicit", "available": False,
+                        "detail": f"cannot read {explicit} ({exc.strerror or exc})"})
+        else:
+            out.append({"provider": "explicit", "available": actual == expected_sha,
+                        "detail": str(explicit) if actual == expected_sha else f"{explicit} hashes to {actual}"})
+    return out

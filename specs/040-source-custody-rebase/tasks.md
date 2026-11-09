@@ -51,33 +51,33 @@ description: "Task list for spec 040: reviewed source-custody rebase"
 
 **Independent test**: On the fixture, inspect lists chapters 2–5 with no writes and no model calls. Prepare creates snapshots and an impact set. `adopt-unaffected` for ch5 is refused. Whitespace-only ch1 is adopted unaffected with zero model calls.
 
-- [ ] T010 [US1] Implement `pipelines/summary_native/delta/rebase_inspect.py`. `inspect(root, plan_id=None) -> StaleCustodyReport` binds the active generation through `baseline.bind`/the `current` link (never the newest dir), walks `baseline._custody_rows` (make it return or expose which generation pinned each row, without changing its existing return contract for current callers: add a sibling function if needed), hashes every row (counted as `integrity_reads`), and probes old-byte availability through `custody_store` without writing. With `--plan`, also report that plan's baseline ref. No writes, no model.
-- [ ] T011 [US1] Implement `pipelines/summary_native/delta/rebase_impact.py` (R4):
+- [x] T010 [US1] Implement `pipelines/summary_native/delta/rebase_inspect.py`. `inspect(root, plan_id=None) -> StaleCustodyReport` binds the active generation through `baseline.bind`/the `current` link (never the newest dir), walks `baseline._custody_rows` (make it return or expose which generation pinned each row, without changing its existing return contract for current callers: add a sibling function if needed), hashes every row (counted as `integrity_reads`), and probes old-byte availability through `custody_store` without writing. With `--plan`, also report that plan's baseline ref. No writes, no model.
+- [x] T011 [US1] Implement `pipelines/summary_native/delta/rebase_impact.py` (R4):
   - **Entries.** Parse scene/entry sections of old and new bytes (reuse the `[ch NNN / ENTRY]` entry vocabulary; entries such as `016.03` and heading-named entries, following how `claims/selection.py` and `custody_resolver_for_generation` treat entries) and mark each changed/removed/unchanged with byte spans.
   - **Affected lines.** Scan the baseline generation's four published documents (and, when a pending plan is given, its `candidates/*.md`) for citations into selected chapters, and classify each line affected/unaffected/whole_chapter. Use `line_id = <doc>#<sha256(line)[:12]>@<occurrence>`.
   - **Annotations.** Find retained claims check annotations in the generation's `metadata/records` whose `source_sha256` equals the old digest and whose span intersects a change.
   - **Unknown members.** List `canon_events_timeline.md` and `reference/**` members as unknown when they cite a selected chapter or carry no citations.
   - **Follow-ups.** List `docs/npcs/*.md` citing a selected chapter as follow-ups.
   - Produce an `ImpactSet` with `impact_sha256`. Deterministic, no model.
-- [ ] T012 [US1] Implement `prepare` in `pipelines/summary_native/delta/rebase.py`:
+- [x] T012 [US1] Implement `prepare` in `pipelines/summary_native/delta/rebase.py`:
   - **Selection.** Validate that every `--source` is stale per inspect (`REBASE_NOTHING_TO_REBASE`, exit 2, otherwise; empty selection exit 2). Recover and snapshot the old and current bytes.
   - **Plan.** Create the rebase plan through `plan.create_plan(..., grounding_baseline_ref=<active ref>)` with `kind="rebase"`, `products=("grounding",)` and the derived `rebase_id`; save r1.
   - **Records.** Write `rebase/<id>/{inspection,snapshots,impact}.json` atomically. `--for-plan` includes that pending plan's candidates in the impact.
   - **Idempotency.** Identical inputs re-run as a no-op returning the same ids.
-- [ ] T013 [US1] Implement GM repairs and holds:
+- [x] T013 [US1] Implement GM repairs and holds:
   - `repair_add(root, plan_id, line_id, text, reason, reviewer)` in `rebase.py` creates a grounding edit proposal through `pipelines/summary_native/delta/grounding_edits.py`'s existing proposal model (origin `gm`, exact before = the affected line's bytes, category `source_correction`, evidence = the chapter diff ref).
   - In `grounding_edits.py`, support decision `hold`: a held edit produces no replacement, and instead appends exactly one marker line `⚠ held: superseded by correction to ch NNN — see rebase <id>` directly under the original line, which itself stays byte-identical.
   - Existing overlap/stale/duplicate validation must apply unchanged.
-- [ ] T014 [US1] Implement `rebase propose` in `rebase.py` / `cli_rebase.py`. The model input is only the affected lines, the selected chapters' entry diffs and the affected annotations, through the existing delta model invoker (`campaignlib` seam, `--backend/--model` required per family rules). Output is grounding edit proposals validated by the host (unknown line ids rejected). Never approves. Record the model input sources and call count for the receipt.
-- [ ] T015 [US1] Implement `rebase decide` in `rebase.py`, writing `rebase/<id>/decisions-r<N>.json` (append-only, reviewer required, reason required for `reject`/`attested-unaffected`). Validation per data-model.md:
+- [x] T014 [US1] Implement `rebase propose` in `rebase.py` / `cli_rebase.py`. The model input is only the affected lines, the selected chapters' entry diffs and the affected annotations, through the existing delta model invoker (`campaignlib` seam, `--backend/--model` required per family rules). Output is grounding edit proposals validated by the host (unknown line ids rejected). Never approves. Record the model input sources and call count for the receipt.
+- [x] T015 [US1] Implement `rebase decide` in `rebase.py`, writing `rebase/<id>/decisions-r<N>.json` (append-only, reviewer required, reason required for `reject`/`attested-unaffected`). Validation per data-model.md:
   - **`REBASE_SEMANTIC_CHANGE`:** `adopt-unaffected` on a chapter with any affected line or annotation; list them.
   - **`REBASE_UNRULED_IMPACT`:** `adopt-with-repairs` while an affected line lacks an approved repair or a hold.
   - **Unknown members:** each needs a ruling.
   - **`reject`:** removes the chapter from the rebase (it stays stale; a plan revision drops it from sources).
   - **Binding:** decisions bind `snapshots_sha256`, `impact_sha256`, `baseline_ref` and `edits_sha256`.
-- [ ] T016 [US1] Implement `rebase show` (writes `rebase/<id>/review.md`, and `--json` returns the same data): the per-source unified diff, affected lines with repair/hold/decision state, unknown members, follow-up consumers, and the decisions so far.
-- [ ] T017 [US1] Wire handlers in `pipelines/summary_native/delta/cli_rebase.py` for inspect, prepare, show, propose, repair and decide, with `--json` output shaped as `{ok, code, message, data}`, matching the other delta handlers.
-- [ ] T018 [P] [US1] Tests in `tests/test_rebase_us1.py`:
+- [x] T016 [US1] Implement `rebase show` (writes `rebase/<id>/review.md`, and `--json` returns the same data): the per-source unified diff, affected lines with repair/hold/decision state, unknown members, follow-up consumers, and the decisions so far.
+- [x] T017 [US1] Wire handlers in `pipelines/summary_native/delta/cli_rebase.py` for inspect, prepare, show, propose, repair and decide, with `--json` output shaped as `{ok, code, message, data}`, matching the other delta handlers.
+- [x] T018 [P] [US1] Tests in `tests/test_rebase_us1.py`:
   - inspect lists exactly chapters 2–5 (SC-008), with no file writes (snapshot the tree before and after) and model calls = 0;
   - prepare leaves summaries byte-identical and snapshots verify;
   - impact flags the ch2/3/4/5 cited lines and marks the timeline unknown;
