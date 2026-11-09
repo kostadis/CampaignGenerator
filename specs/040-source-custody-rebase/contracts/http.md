@@ -5,12 +5,12 @@ Thin routes in `server/routers/summary_native_delta.py`. They use `build_delta_a
 | CLI command | Route | Method |
 |---|---|---|
 | `delta rebase inspect` | `/rebase/inspect` (query `plan`) | GET |
-| `delta rebase prepare` | `/rebase` (body: `sources[]` required, non-empty; `old_bytes{}`; `for_plan`) | POST |
+| `delta rebase prepare` | `/rebase` (body: `sources[]` required, non-empty; `old_bytes{chapter: path}`; `for_plan`) | POST |
 | `delta rebase show` | `/rebase/{plan_id}` | GET |
 | `delta rebase propose` | `/rebase/{plan_id}/propose` (body: backend, model) | POST (stream) |
-| `delta rebase repair` | `/rebase/{plan_id}/repairs` (body: line, text, reason, reviewer) | POST |
+| `delta rebase repair` | `/rebase/{plan_id}/repairs` (body: `line`+`text`, or `hold_entry` `CH/ENTRY` for a bulk hold; `reason`, `reviewer`) | POST |
 | `delta rebase decide` | `/rebase/{plan_id}/decisions` (body: reviewer, source_decisions{}, member_decisions{}, reason) | POST |
-| `delta plan rebind` | `/plans/{plan_id}/rebind` (body: baseline) | POST |
+| `delta rebind` (top-level leaf) | `/plans/{plan_id}/rebind` (body: baseline) | POST |
 
 An empty `sources` returns 400 before any subprocess runs (Principle X). A missing `reviewer` returns 400. Exit codes map to HTTP status through the existing `_status_for`.
 

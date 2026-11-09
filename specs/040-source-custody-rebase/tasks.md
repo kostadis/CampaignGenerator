@@ -138,10 +138,10 @@ description: "Task list for spec 040: reviewed source-custody rebase"
 
 ## Phase 6: Parity (CLI + UI, GM ruling 2026-11-09)
 
-- [ ] T030 Add routes to `server/routers/summary_native_delta.py` per contracts/http.md, using `build_delta_argv` and the `_json`/`_sse` helpers. An empty `sources` → 400 before any subprocess; a missing reviewer → 400. No default literals.
-- [ ] T031 [P] Add argv tests in `tests/test_delta_router_argv.py` (extend) and parity in `tests/test_delta_parity.py`: every new CLI leaf has a route, and every route's argv matches the contract.
-- [ ] T032 Add the page `frontend/src/views/grounding/SourceRebase.vue` and the route `grounding-rebase` in `frontend/src/router.ts`, following `DeltaRun.vue` patterns: inspect table with checkboxes (nothing preselected; Prepare disabled when empty), per-source diff and impact review, repair editor, decision radios with no preselection and a required reviewer, and publish/rebind steps linking the existing grounding steps for the rebase plan id. No browser-only state.
-- [ ] T033 [P] Add Vitest `frontend/src/views/grounding/SourceRebase.test.ts`: empty selection disables Prepare; no decision is preselected; the reviewer is required; a POST body carries an explicit `sources` list. Run `npm test` and `npm run build` from `frontend/`.
+- [x] T030 Add routes to `server/routers/summary_native_delta.py` per contracts/http.md, using `build_delta_argv` and the `_json`/`_sse` helpers. An empty `sources` → 400 before any subprocess; a missing reviewer → 400. No default literals.
+- [x] T031 [P] Add argv tests in `tests/test_delta_router_argv.py` (extend) and parity in `tests/test_delta_parity.py`: every new CLI leaf has a route, and every route's argv matches the contract.
+- [x] T032 Add the page `frontend/src/views/grounding/SourceRebase.vue` and the route `grounding-rebase` in `frontend/src/router.ts`, following `DeltaRun.vue` patterns: inspect table with checkboxes (nothing preselected; Prepare disabled when empty), per-source diff and impact review, repair editor, decision radios with no preselection and a required reviewer, and publish/rebind steps linking the existing grounding steps for the rebase plan id. No browser-only state.
+- [x] T033 [P] Add Vitest `frontend/src/views/grounding/SourceRebase.test.ts`: empty selection disables Prepare; no decision is preselected; the reviewer is required; a POST body carries an explicit `sources` list. Run `npm test` and `npm run build` from `frontend/`.
 
 ---
 
