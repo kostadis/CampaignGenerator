@@ -1,0 +1,13 @@
+{
+  "model": "gpt-6.1-terra",
+  "effort": "medium",
+  "backend": "codex-cli",
+  "user_request": "bigger experiment without mneme to see if results still hold",
+  "scope": "100 new comparisons from 17 held-out chapters; supplied source narrative context and surface-only controls",
+  "planned_calls": 10,
+  "protocol_sha256": "224958ae1620b7f7864ba36203c273f07282c74791fda4daf05dac732220d8c8",
+  "gold_sha256": "348aa9ddf8973e4d9026887b7b454831d27be2f533babf2f1e18b8231db86923",
+  "blind_runner_sha256": "18a36a6a9f5005517e44d6ef11c0fd2703ddc1226ef510a8d0c97e8369a4a1ac",
+  "source_refs_verified": 136,
+  "gold_sent": false
+}

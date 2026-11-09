@@ -1,0 +1,65 @@
+{
+  "date_local": "2026-11-03",
+  "timezone": "America/Los_Angeles",
+  "campaign": "Phandalin",
+  "backend": "turbovec",
+  "embedding_provider": "ollama",
+  "embedding_model": "qwen3-embedding:0.6b",
+  "embedding_endpoint": "http://192.168.56.1:11434",
+  "selected_sources": {
+    "docs/summaries/003-session-untitled.md": {
+      "sha256": "0031368cb9f271eb1fc78b1883564206433315b8ccfa095a64021100d6881d58",
+      "mined_record_matches_current": true
+    },
+    "docs/summaries/004-session-untitled.md": {
+      "sha256": "d109cc9c91943da0f2bb5e84238f84ae5534b9deed14e0418a6f28f1ba2677b1",
+      "mined_record_matches_current": true
+    },
+    "docs/summaries/005-session-to-find-a-shapeshifter.md": {
+      "sha256": "797a23c039e02dfec65028d3f37af28194d4fec13748b1f7300329a3572ee657",
+      "mined_record_matches_current": true
+    },
+    "docs/summaries/018-session-freeing-big-al-petunia-and-watching-a-ranch-burn.md": {
+      "sha256": "36c1f4ed657c6accfad556bdf506e21b1b1167a8bae7743d952fe5dabb8d8530",
+      "mined_record_matches_current": true
+    },
+    "docs/summaries/039-session-a-dragon-defeated-a-bard-tempted-a-barbarians-vengeance.md": {
+      "sha256": "638c8a0130f5df77e6e57ffdd882a231464995cc3c2fad2c1116b790b6d98c32",
+      "mined_record_matches_current": true
+    },
+    "docs/summaries/042-session-the-charge-of-the-light-brigade.md": {
+      "sha256": "94289fd21ab000d019bbb43fb36607718375802d64952e769f83c07c5e3e4424",
+      "mined_record_matches_current": true
+    },
+    "docs/summaries/046-session-the-aasimar-has-landed.md": {
+      "sha256": "99130ee6fafac8ffa58aa3735f72194b360826c968508a75878c5c33610325bd",
+      "mined_record_matches_current": true
+    }
+  },
+  "palace_status": {
+    "corpus": "ok   Phandalin            index   stale                      palace differs from the corpus \u2014 see the corpus row",
+    "index": "ok   Phandalin            index   stale                      palace differs from the corpus \u2014 see the corpus row",
+    "store": "ok   Phandalin            faces   conformant                 right store everywhere",
+    "embedder": "ok   Phandalin            embedder conformant                 dim 1024 matches mempalace's embedder (declared: ollama:qwen3-embedding:0.6b @ http://192.168.56.1:11434)"
+  },
+  "corpus_mined_at": "2026-11-01T23:22:06+00:00",
+  "corpus_mined_record_sha256": "1e25ba8c2accaf31fec99c5783fae8a75b68bcc52de571fc76150540d282068a",
+  "toc_sha256": "b537e3fd40a92ea0c589fcdb0a58076e458e5ef959497990d8d5bdcaceb55c46",
+  "versions": {
+    "mneme": "4f20959ea465d656434807e7a82377939849bb4b",
+    "Mempalace": "d23d6a704305d7fd07a28f37e81941c95bb26f77",
+    "CampaignGenerator": "887a5c17aa3b34ff43d4e83c6ed7f8e40b29aa72"
+  },
+  "fixed_search_requests": 18,
+  "additional_exploratory_searches": 1,
+  "generative_model_calls": 0,
+  "embedding_inference_used": true,
+  "store_refresh_performed": false,
+  "frozen_source_files_unchanged": 7,
+  "notes": [
+    "Successful elevated status verified the declared embedding dimension matches 1024.",
+    "All 18 successful fixed searches emitted the unrecorded historical embedder identity warning.",
+    "Campaign-wide index has 52 unmined and 15 stale files; seven fixture chapters match their mined-record hashes.",
+    "Corpus summaries search is broader than the 14 selected passages used in the identity trial."
+  ]
+}

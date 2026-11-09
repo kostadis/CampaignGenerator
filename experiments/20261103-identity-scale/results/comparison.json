@@ -1,0 +1,2815 @@
+{
+  "protocol": {
+    "campaign": "Phandalin",
+    "source_chapters": [
+      9,
+      11,
+      14,
+      22,
+      24,
+      25,
+      26,
+      28,
+      29,
+      32,
+      33,
+      34,
+      36,
+      45,
+      48,
+      55,
+      56
+    ],
+    "source_files": 17,
+    "held_out_chapters_from_previous_fixture": true,
+    "case_count": 100,
+    "reference_count": 136,
+    "passage_count": 17,
+    "strict_cases": 84,
+    "exploratory_cases": 16,
+    "expected_relation_counts": {
+      "same_referent": 37,
+      "distinct_referents": 36,
+      "ambiguous": 9,
+      "overlap_or_membership": 16,
+      "separate_scope": 2
+    },
+    "strict_relation_counts": {
+      "same_referent": 33,
+      "distinct_referents": 34,
+      "overlap_or_membership": 15,
+      "separate_scope": 1,
+      "ambiguous": 1
+    },
+    "category_counts": {
+      "alias_role": 13,
+      "transformation": 9,
+      "reinforcements": 3,
+      "numbered": 10,
+      "same_location": 3,
+      "underspecified": 7,
+      "membership": 17,
+      "factions": 3,
+      "continuity": 12,
+      "cross_chapter": 5,
+      "scope": 2,
+      "life_state": 6,
+      "same_encounter": 6,
+      "rename": 1,
+      "part_whole": 1,
+      "same_label": 1,
+      "representation": 1
+    },
+    "shuffle_seed": 20261103,
+    "batch_size": 20,
+    "batches": [
+      {
+        "directory": "batch-01",
+        "cases": 20,
+        "payload_sha256": "61fe9bc6479c8a6f099c5fe2807065c8fb3d00bab64397cfa7e4eb399ed4f4fd"
+      },
+      {
+        "directory": "batch-02",
+        "cases": 20,
+        "payload_sha256": "546ef03dc950d15f828a0cc72c5eb162fc011e1dcc27ba456332f56a6d564632"
+      },
+      {
+        "directory": "batch-03",
+        "cases": 20,
+        "payload_sha256": "76e98d64847e960cec662ad96ff96f0e6f08fe14bf322bb4c191dd7f0f40f520"
+      },
+      {
+        "directory": "batch-04",
+        "cases": 20,
+        "payload_sha256": "f4c82398939ee82692b5197b1b750b188830e5f0e243ec02f0346c82a3ea4552"
+      },
+      {
+        "directory": "batch-05",
+        "cases": 20,
+        "payload_sha256": "86833d5a405aa7648df6ee6720c8ac6011e52501d8aa6561e2726ce1c05826f3"
+      }
+    ],
+    "model": "gpt-6.1-terra",
+    "effort": "medium",
+    "backend": "codex-cli",
+    "planned_model_arm_requests": 10,
+    "baseline_system_reused": true,
+    "mneme_used": false,
+    "gold_transmitted": false,
+    "context": "Full authored Summary sections for chapters referenced in each batch; no retrieval.",
+    "authority": "researcher source-based draft expectations; not independent GM adjudication",
+    "limits": [
+      "Related cases share passages and individuals; case counts are correlated.",
+      "Manually supplied references/context; not automatic extraction or retrieval.",
+      "Five relation classes; no held-out corrected_nonreferent examples."
+    ]
+  },
+  "arms": {
+    "context": {
+      "cases": 100,
+      "strict_cases": 84,
+      "strict_label_matches": 84,
+      "strict_label_and_evidence_matches": 83,
+      "all_evidence_failures": [
+        "q007"
+      ],
+      "strict_false_coidentity": [],
+      "strict_mismatches": [],
+      "abstentions": 7,
+      "exploratory_cases": 16,
+      "exploratory_label_matches": 13,
+      "expected_ambiguous_nonabstentions": [
+        "q006",
+        "q021"
+      ],
+      "prediction_counts": {
+        "same_referent": 39,
+        "distinct_referents": 35,
+        "ambiguous": 7,
+        "overlap_or_membership": 16,
+        "separate_scope": 3
+      }
+    },
+    "surface_only": {
+      "cases": 100,
+      "strict_cases": 84,
+      "strict_label_matches": 1,
+      "strict_label_and_evidence_matches": null,
+      "all_evidence_failures": [],
+      "strict_false_coidentity": [],
+      "strict_mismatches": [
+        "q001",
+        "q002",
+        "q003",
+        "q004",
+        "q005",
+        "q007",
+        "q008",
+        "q009",
+        "q011",
+        "q012",
+        "q014",
+        "q015",
+        "q016",
+        "q017",
+        "q018",
+        "q019",
+        "q020",
+        "q022",
+        "q023",
+        "q024",
+        "q025",
+        "q026",
+        "q027",
+        "q030",
+        "q031",
+        "q032",
+        "q033",
+        "q034",
+        "q035",
+        "q036",
+        "q037",
+        "q038",
+        "q040",
+        "q042",
+        "q043",
+        "q044",
+        "q045",
+        "q046",
+        "q047",
+        "q048",
+        "q049",
+        "q050",
+        "q053",
+        "q054",
+        "q055",
+        "q056",
+        "q057",
+        "q058",
+        "q059",
+        "q060",
+        "q061",
+        "q062",
+        "q063",
+        "q064",
+        "q065",
+        "q066",
+        "q067",
+        "q068",
+        "q069",
+        "q070",
+        "q071",
+        "q072",
+        "q074",
+        "q075",
+        "q077",
+        "q078",
+        "q079",
+        "q081",
+        "q082",
+        "q083",
+        "q084",
+        "q085",
+        "q086",
+        "q087",
+        "q089",
+        "q092",
+        "q093",
+        "q094",
+        "q095",
+        "q096",
+        "q097",
+        "q099",
+        "q100"
+      ],
+      "abstentions": 100,
+      "exploratory_cases": 16,
+      "exploratory_label_matches": 8,
+      "expected_ambiguous_nonabstentions": [],
+      "prediction_counts": {
+        "ambiguous": 100
+      }
+    }
+  },
+  "context_by_category": {
+    "alias_role": {
+      "cases": 13,
+      "strict_cases": 11,
+      "strict_label_matches": 11,
+      "strict_label_and_evidence_matches": 11,
+      "all_evidence_failures": [],
+      "strict_false_coidentity": [],
+      "strict_mismatches": [],
+      "abstentions": 0,
+      "exploratory_cases": 2,
+      "exploratory_label_matches": 2,
+      "expected_ambiguous_nonabstentions": [],
+      "prediction_counts": {
+        "same_referent": 13
+      }
+    },
+    "continuity": {
+      "cases": 12,
+      "strict_cases": 12,
+      "strict_label_matches": 12,
+      "strict_label_and_evidence_matches": 12,
+      "all_evidence_failures": [],
+      "strict_false_coidentity": [],
+      "strict_mismatches": [],
+      "abstentions": 0,
+      "exploratory_cases": 0,
+      "exploratory_label_matches": 0,
+      "expected_ambiguous_nonabstentions": [],
+      "prediction_counts": {
+        "same_referent": 12
+      }
+    },
+    "cross_chapter": {
+      "cases": 5,
+      "strict_cases": 2,
+      "strict_label_matches": 2,
+      "strict_label_and_evidence_matches": 2,
+      "all_evidence_failures": [],
+      "strict_false_coidentity": [],
+      "strict_mismatches": [],
+      "abstentions": 1,
+      "exploratory_cases": 3,
+      "exploratory_label_matches": 2,
+      "expected_ambiguous_nonabstentions": [
+        "q021"
+      ],
+      "prediction_counts": {
+        "distinct_referents": 1,
+        "separate_scope": 1,
+        "same_referent": 2,
+        "ambiguous": 1
+      }
+    },
+    "factions": {
+      "cases": 3,
+      "strict_cases": 3,
+      "strict_label_matches": 3,
+      "strict_label_and_evidence_matches": 3,
+      "all_evidence_failures": [],
+      "strict_false_coidentity": [],
+      "strict_mismatches": [],
+      "abstentions": 0,
+      "exploratory_cases": 0,
+      "exploratory_label_matches": 0,
+      "expected_ambiguous_nonabstentions": [],
+      "prediction_counts": {
+        "distinct_referents": 3
+      }
+    },
+    "life_state": {
+      "cases": 6,
+      "strict_cases": 6,
+      "strict_label_matches": 6,
+      "strict_label_and_evidence_matches": 6,
+      "all_evidence_failures": [],
+      "strict_false_coidentity": [],
+      "strict_mismatches": [],
+      "abstentions": 0,
+      "exploratory_cases": 0,
+      "exploratory_label_matches": 0,
+      "expected_ambiguous_nonabstentions": [],
+      "prediction_counts": {
+        "distinct_referents": 4,
+        "same_referent": 2
+      }
+    },
+    "membership": {
+      "cases": 17,
+      "strict_cases": 16,
+      "strict_label_matches": 16,
+      "strict_label_and_evidence_matches": 15,
+      "all_evidence_failures": [
+        "q007"
+      ],
+      "strict_false_coidentity": [],
+      "strict_mismatches": [],
+      "abstentions": 0,
+      "exploratory_cases": 1,
+      "exploratory_label_matches": 1,
+      "expected_ambiguous_nonabstentions": [],
+      "prediction_counts": {
+        "distinct_referents": 1,
+        "overlap_or_membership": 16
+      }
+    },
+    "numbered": {
+      "cases": 10,
+      "strict_cases": 10,
+      "strict_label_matches": 10,
+      "strict_label_and_evidence_matches": 10,
+      "all_evidence_failures": [],
+      "strict_false_coidentity": [],
+      "strict_mismatches": [],
+      "abstentions": 0,
+      "exploratory_cases": 0,
+      "exploratory_label_matches": 0,
+      "expected_ambiguous_nonabstentions": [],
+      "prediction_counts": {
+        "distinct_referents": 8,
+        "same_referent": 2
+      }
+    },
+    "part_whole": {
+      "cases": 1,
+      "strict_cases": 0,
+      "strict_label_matches": 0,
+      "strict_label_and_evidence_matches": null,
+      "all_evidence_failures": [],
+      "strict_false_coidentity": [],
+      "strict_mismatches": [],
+      "abstentions": 0,
+      "exploratory_cases": 1,
+      "exploratory_label_matches": 0,
+      "expected_ambiguous_nonabstentions": [],
+      "prediction_counts": {
+        "same_referent": 1
+      }
+    },
+    "reinforcements": {
+      "cases": 3,
+      "strict_cases": 3,
+      "strict_label_matches": 3,
+      "strict_label_and_evidence_matches": 3,
+      "all_evidence_failures": [],
+      "strict_false_coidentity": [],
+      "strict_mismatches": [],
+      "abstentions": 0,
+      "exploratory_cases": 0,
+      "exploratory_label_matches": 0,
+      "expected_ambiguous_nonabstentions": [],
+      "prediction_counts": {
+        "distinct_referents": 3
+      }
+    },
+    "rename": {
+      "cases": 1,
+      "strict_cases": 1,
+      "strict_label_matches": 1,
+      "strict_label_and_evidence_matches": 1,
+      "all_evidence_failures": [],
+      "strict_false_coidentity": [],
+      "strict_mismatches": [],
+      "abstentions": 0,
+      "exploratory_cases": 0,
+      "exploratory_label_matches": 0,
+      "expected_ambiguous_nonabstentions": [],
+      "prediction_counts": {
+        "same_referent": 1
+      }
+    },
+    "representation": {
+      "cases": 1,
+      "strict_cases": 0,
+      "strict_label_matches": 0,
+      "strict_label_and_evidence_matches": null,
+      "all_evidence_failures": [],
+      "strict_false_coidentity": [],
+      "strict_mismatches": [],
+      "abstentions": 0,
+      "exploratory_cases": 1,
+      "exploratory_label_matches": 1,
+      "expected_ambiguous_nonabstentions": [],
+      "prediction_counts": {
+        "distinct_referents": 1
+      }
+    },
+    "same_encounter": {
+      "cases": 6,
+      "strict_cases": 6,
+      "strict_label_matches": 6,
+      "strict_label_and_evidence_matches": 6,
+      "all_evidence_failures": [],
+      "strict_false_coidentity": [],
+      "strict_mismatches": [],
+      "abstentions": 0,
+      "exploratory_cases": 0,
+      "exploratory_label_matches": 0,
+      "expected_ambiguous_nonabstentions": [],
+      "prediction_counts": {
+        "distinct_referents": 6
+      }
+    },
+    "same_label": {
+      "cases": 1,
+      "strict_cases": 1,
+      "strict_label_matches": 1,
+      "strict_label_and_evidence_matches": 1,
+      "all_evidence_failures": [],
+      "strict_false_coidentity": [],
+      "strict_mismatches": [],
+      "abstentions": 0,
+      "exploratory_cases": 0,
+      "exploratory_label_matches": 0,
+      "expected_ambiguous_nonabstentions": [],
+      "prediction_counts": {
+        "distinct_referents": 1
+      }
+    },
+    "same_location": {
+      "cases": 3,
+      "strict_cases": 3,
+      "strict_label_matches": 3,
+      "strict_label_and_evidence_matches": 3,
+      "all_evidence_failures": [],
+      "strict_false_coidentity": [],
+      "strict_mismatches": [],
+      "abstentions": 0,
+      "exploratory_cases": 0,
+      "exploratory_label_matches": 0,
+      "expected_ambiguous_nonabstentions": [],
+      "prediction_counts": {
+        "distinct_referents": 3
+      }
+    },
+    "scope": {
+      "cases": 2,
+      "strict_cases": 1,
+      "strict_label_matches": 1,
+      "strict_label_and_evidence_matches": 1,
+      "all_evidence_failures": [],
+      "strict_false_coidentity": [],
+      "strict_mismatches": [],
+      "abstentions": 0,
+      "exploratory_cases": 1,
+      "exploratory_label_matches": 1,
+      "expected_ambiguous_nonabstentions": [],
+      "prediction_counts": {
+        "separate_scope": 2
+      }
+    },
+    "transformation": {
+      "cases": 9,
+      "strict_cases": 9,
+      "strict_label_matches": 9,
+      "strict_label_and_evidence_matches": 9,
+      "all_evidence_failures": [],
+      "strict_false_coidentity": [],
+      "strict_mismatches": [],
+      "abstentions": 0,
+      "exploratory_cases": 0,
+      "exploratory_label_matches": 0,
+      "expected_ambiguous_nonabstentions": [],
+      "prediction_counts": {
+        "same_referent": 5,
+        "distinct_referents": 4
+      }
+    },
+    "underspecified": {
+      "cases": 7,
+      "strict_cases": 0,
+      "strict_label_matches": 0,
+      "strict_label_and_evidence_matches": null,
+      "all_evidence_failures": [],
+      "strict_false_coidentity": [],
+      "strict_mismatches": [],
+      "abstentions": 6,
+      "exploratory_cases": 7,
+      "exploratory_label_matches": 6,
+      "expected_ambiguous_nonabstentions": [
+        "q006"
+      ],
+      "prediction_counts": {
+        "same_referent": 1,
+        "ambiguous": 6
+      }
+    }
+  },
+  "context_by_expected_relation": {
+    "ambiguous": {
+      "cases": 9,
+      "strict_cases": 1,
+      "strict_label_matches": 1,
+      "strict_label_and_evidence_matches": 1,
+      "all_evidence_failures": [],
+      "strict_false_coidentity": [],
+      "strict_mismatches": [],
+      "abstentions": 7,
+      "exploratory_cases": 8,
+      "exploratory_label_matches": 6,
+      "expected_ambiguous_nonabstentions": [
+        "q006",
+        "q021"
+      ],
+      "prediction_counts": {
+        "same_referent": 1,
+        "ambiguous": 7,
+        "separate_scope": 1
+      }
+    },
+    "distinct_referents": {
+      "cases": 36,
+      "strict_cases": 34,
+      "strict_label_matches": 34,
+      "strict_label_and_evidence_matches": 33,
+      "all_evidence_failures": [
+        "q007"
+      ],
+      "strict_false_coidentity": [],
+      "strict_mismatches": [],
+      "abstentions": 0,
+      "exploratory_cases": 2,
+      "exploratory_label_matches": 1,
+      "expected_ambiguous_nonabstentions": [],
+      "prediction_counts": {
+        "distinct_referents": 35,
+        "same_referent": 1
+      }
+    },
+    "overlap_or_membership": {
+      "cases": 16,
+      "strict_cases": 15,
+      "strict_label_matches": 15,
+      "strict_label_and_evidence_matches": 15,
+      "all_evidence_failures": [],
+      "strict_false_coidentity": [],
+      "strict_mismatches": [],
+      "abstentions": 0,
+      "exploratory_cases": 1,
+      "exploratory_label_matches": 1,
+      "expected_ambiguous_nonabstentions": [],
+      "prediction_counts": {
+        "overlap_or_membership": 16
+      }
+    },
+    "same_referent": {
+      "cases": 37,
+      "strict_cases": 33,
+      "strict_label_matches": 33,
+      "strict_label_and_evidence_matches": 33,
+      "all_evidence_failures": [],
+      "strict_false_coidentity": [],
+      "strict_mismatches": [],
+      "abstentions": 0,
+      "exploratory_cases": 4,
+      "exploratory_label_matches": 4,
+      "expected_ambiguous_nonabstentions": [],
+      "prediction_counts": {
+        "same_referent": 37
+      }
+    },
+    "separate_scope": {
+      "cases": 2,
+      "strict_cases": 1,
+      "strict_label_matches": 1,
+      "strict_label_and_evidence_matches": 1,
+      "all_evidence_failures": [],
+      "strict_false_coidentity": [],
+      "strict_mismatches": [],
+      "abstentions": 0,
+      "exploratory_cases": 1,
+      "exploratory_label_matches": 1,
+      "expected_ambiguous_nonabstentions": [],
+      "prediction_counts": {
+        "separate_scope": 2
+      }
+    }
+  },
+  "strict_confusion": [
+    {
+      "expected": "ambiguous",
+      "predicted": "ambiguous",
+      "count": 1
+    },
+    {
+      "expected": "distinct_referents",
+      "predicted": "distinct_referents",
+      "count": 34
+    },
+    {
+      "expected": "overlap_or_membership",
+      "predicted": "overlap_or_membership",
+      "count": 15
+    },
+    {
+      "expected": "same_referent",
+      "predicted": "same_referent",
+      "count": 33
+    },
+    {
+      "expected": "separate_scope",
+      "predicted": "separate_scope",
+      "count": 1
+    }
+  ],
+  "results": {
+    "context": [
+      {
+        "id": "q001",
+        "strict": true,
+        "category": "alias_role",
+        "expected": "same_referent",
+        "predicted": "same_referent",
+        "evidence_valid": true,
+        "evidence_errors": [],
+        "batch": "batch-01"
+      },
+      {
+        "id": "q002",
+        "strict": true,
+        "category": "transformation",
+        "expected": "same_referent",
+        "predicted": "same_referent",
+        "evidence_valid": true,
+        "evidence_errors": [],
+        "batch": "batch-01"
+      },
+      {
+        "id": "q003",
+        "strict": true,
+        "category": "reinforcements",
+        "expected": "distinct_referents",
+        "predicted": "distinct_referents",
+        "evidence_valid": true,
+        "evidence_errors": [],
+        "batch": "batch-01"
+      },
+      {
+        "id": "q004",
+        "strict": true,
+        "category": "numbered",
+        "expected": "distinct_referents",
+        "predicted": "distinct_referents",
+        "evidence_valid": true,
+        "evidence_errors": [],
+        "batch": "batch-01"
+      },
+      {
+        "id": "q005",
+        "strict": true,
+        "category": "same_location",
+        "expected": "distinct_referents",
+        "predicted": "distinct_referents",
+        "evidence_valid": true,
+        "evidence_errors": [],
+        "batch": "batch-01"
+      },
+      {
+        "id": "q006",
+        "strict": false,
+        "category": "underspecified",
+        "expected": "ambiguous",
+        "predicted": "same_referent",
+        "evidence_valid": true,
+        "evidence_errors": [],
+        "batch": "batch-01"
+      },
+      {
+        "id": "q007",
+        "strict": true,
+        "category": "membership",
+        "expected": "distinct_referents",
+        "predicted": "distinct_referents",
+        "evidence_valid": false,
+        "evidence_errors": [
+          "quote is from the passage but does not cover marked reference: r5937fb81a84f"
+        ],
+        "batch": "batch-01"
+      },
+      {
+        "id": "q008",
+        "strict": true,
+        "category": "factions",
+        "expected": "distinct_referents",
+        "predicted": "distinct_referents",
+        "evidence_valid": true,
+        "evidence_errors": [],
+        "batch": "batch-01"
+      },
+      {
+        "id": "q009",
+        "strict": true,
+        "category": "continuity",
+        "expected": "same_referent",
+        "predicted": "same_referent",
+        "evidence_valid": true,
+        "evidence_errors": [],
+        "batch": "batch-01"
+      },
+      {
+        "id": "q010",
+        "strict": false,
+        "category": "underspecified",
+        "expected": "ambiguous",
+        "predicted": "ambiguous",
+        "evidence_valid": true,
+        "evidence_errors": [],
+        "batch": "batch-01"
+      },
+      {
+        "id": "q011",
+        "strict": true,
+        "category": "numbered",
+        "expected": "distinct_referents",
+        "predicted": "distinct_referents",
+        "evidence_valid": true,
+        "evidence_errors": [],
+        "batch": "batch-01"
+      },
+      {
+        "id": "q012",
+        "strict": true,
+        "category": "same_location",
+        "expected": "distinct_referents",
+        "predicted": "distinct_referents",
+        "evidence_valid": true,
+        "evidence_errors": [],
+        "batch": "batch-01"
+      },
+      {
+        "id": "q013",
+        "strict": false,
+        "category": "alias_role",
+        "expected": "same_referent",
+        "predicted": "same_referent",
+        "evidence_valid": true,
+        "evidence_errors": [],
+        "batch": "batch-01"
+      },
+      {
+        "id": "q014",
+        "strict": true,
+        "category": "alias_role",
+        "expected": "same_referent",
+        "predicted": "same_referent",
+        "evidence_valid": true,
+        "evidence_errors": [],
+        "batch": "batch-01"
+      },
+      {
+        "id": "q015",
+        "strict": true,
+        "category": "reinforcements",
+        "expected": "distinct_referents",
+        "predicted": "distinct_referents",
+        "evidence_valid": true,
+        "evidence_errors": [],
+        "batch": "batch-01"
+      },
+      {
+        "id": "q016",
+        "strict": true,
+        "category": "membership",
+        "expected": "overlap_or_membership",
+        "predicted": "overlap_or_membership",
+        "evidence_valid": true,
+        "evidence_errors": [],
+        "batch": "batch-01"
+      },
+      {
+        "id": "q017",
+        "strict": true,
+        "category": "cross_chapter",
+        "expected": "distinct_referents",
+        "predicted": "distinct_referents",
+        "evidence_valid": true,
+        "evidence_errors": [],
+        "batch": "batch-01"
+      },
+      {
+        "id": "q018",
+        "strict": true,
+        "category": "continuity",
+        "expected": "same_referent",
+        "predicted": "same_referent",
+        "evidence_valid": true,
+        "evidence_errors": [],
+        "batch": "batch-01"
+      },
+      {
+        "id": "q019",
+        "strict": true,
+        "category": "continuity",
+        "expected": "same_referent",
+        "predicted": "same_referent",
+        "evidence_valid": true,
+        "evidence_errors": [],
+        "batch": "batch-01"
+      },
+      {
+        "id": "q020",
+        "strict": true,
+        "category": "transformation",
+        "expected": "distinct_referents",
+        "predicted": "distinct_referents",
+        "evidence_valid": true,
+        "evidence_errors": [],
+        "batch": "batch-01"
+      },
+      {
+        "id": "q021",
+        "strict": false,
+        "category": "cross_chapter",
+        "expected": "ambiguous",
+        "predicted": "separate_scope",
+        "evidence_valid": true,
+        "evidence_errors": [],
+        "batch": "batch-02"
+      },
+      {
+        "id": "q022",
+        "strict": true,
+        "category": "alias_role",
+        "expected": "same_referent",
+        "predicted": "same_referent",
+        "evidence_valid": true,
+        "evidence_errors": [],
+        "batch": "batch-02"
+      },
+      {
+        "id": "q023",
+        "strict": true,
+        "category": "membership",
+        "expected": "overlap_or_membership",
+        "predicted": "overlap_or_membership",
+        "evidence_valid": true,
+        "evidence_errors": [],
+        "batch": "batch-02"
+      },
+      {
+        "id": "q024",
+        "strict": true,
+        "category": "membership",
+        "expected": "overlap_or_membership",
+        "predicted": "overlap_or_membership",
+        "evidence_valid": true,
+        "evidence_errors": [],
+        "batch": "batch-02"
+      },
+      {
+        "id": "q025",
+        "strict": true,
+        "category": "reinforcements",
+        "expected": "distinct_referents",
+        "predicted": "distinct_referents",
+        "evidence_valid": true,
+        "evidence_errors": [],
+        "batch": "batch-02"
+      },
+      {
+        "id": "q026",
+        "strict": true,
+        "category": "membership",
+        "expected": "overlap_or_membership",
+        "predicted": "overlap_or_membership",
+        "evidence_valid": true,
+        "evidence_errors": [],
+        "batch": "batch-02"
+      },
+      {
+        "id": "q027",
+        "strict": true,
+        "category": "membership",
+        "expected": "overlap_or_membership",
+        "predicted": "overlap_or_membership",
+        "evidence_valid": true,
+        "evidence_errors": [],
+        "batch": "batch-02"
+      },
+      {
+        "id": "q028",
+        "strict": false,
+        "category": "scope",
+        "expected": "separate_scope",
+        "predicted": "separate_scope",
+        "evidence_valid": true,
+        "evidence_errors": [],
+        "batch": "batch-02"
+      },
+      {
+        "id": "q029",
+        "strict": false,
+        "category": "cross_chapter",
+        "expected": "same_referent",
+        "predicted": "same_referent",
+        "evidence_valid": true,
+        "evidence_errors": [],
+        "batch": "batch-02"
+      },
+      {
+        "id": "q030",
+        "strict": true,
+        "category": "life_state",
+        "expected": "distinct_referents",
+        "predicted": "distinct_referents",
+        "evidence_valid": true,
+        "evidence_errors": [],
+        "batch": "batch-02"
+      },
+      {
+        "id": "q031",
+        "strict": true,
+        "category": "numbered",
+        "expected": "distinct_referents",
+        "predicted": "distinct_referents",
+        "evidence_valid": true,
+        "evidence_errors": [],
+        "batch": "batch-02"
+      },
+      {
+        "id": "q032",
+        "strict": true,
+        "category": "transformation",
+        "expected": "same_referent",
+        "predicted": "same_referent",
+        "evidence_valid": true,
+        "evidence_errors": [],
+        "batch": "batch-02"
+      },
+      {
+        "id": "q033",
+        "strict": true,
+        "category": "continuity",
+        "expected": "same_referent",
+        "predicted": "same_referent",
+        "evidence_valid": true,
+        "evidence_errors": [],
+        "batch": "batch-02"
+      },
+      {
+        "id": "q034",
+        "strict": true,
+        "category": "membership",
+        "expected": "overlap_or_membership",
+        "predicted": "overlap_or_membership",
+        "evidence_valid": true,
+        "evidence_errors": [],
+        "batch": "batch-02"
+      },
+      {
+        "id": "q035",
+        "strict": true,
+        "category": "membership",
+        "expected": "overlap_or_membership",
+        "predicted": "overlap_or_membership",
+        "evidence_valid": true,
+        "evidence_errors": [],
+        "batch": "batch-02"
+      },
+      {
+        "id": "q036",
+        "strict": true,
+        "category": "membership",
+        "expected": "overlap_or_membership",
+        "predicted": "overlap_or_membership",
+        "evidence_valid": true,
+        "evidence_errors": [],
+        "batch": "batch-02"
+      },
+      {
+        "id": "q037",
+        "strict": true,
+        "category": "alias_role",
+        "expected": "same_referent",
+        "predicted": "same_referent",
+        "evidence_valid": true,
+        "evidence_errors": [],
+        "batch": "batch-02"
+      },
+      {
+        "id": "q038",
+        "strict": true,
+        "category": "continuity",
+        "expected": "same_referent",
+        "predicted": "same_referent",
+        "evidence_valid": true,
+        "evidence_errors": [],
+        "batch": "batch-02"
+      },
+      {
+        "id": "q039",
+        "strict": false,
+        "category": "underspecified",
+        "expected": "ambiguous",
+        "predicted": "ambiguous",
+        "evidence_valid": true,
+        "evidence_errors": [],
+        "batch": "batch-02"
+      },
+      {
+        "id": "q040",
+        "strict": true,
+        "category": "scope",
+        "expected": "separate_scope",
+        "predicted": "separate_scope",
+        "evidence_valid": true,
+        "evidence_errors": [],
+        "batch": "batch-02"
+      },
+      {
+        "id": "q041",
+        "strict": false,
+        "category": "underspecified",
+        "expected": "ambiguous",
+        "predicted": "ambiguous",
+        "evidence_valid": true,
+        "evidence_errors": [],
+        "batch": "batch-03"
+      },
+      {
+        "id": "q042",
+        "strict": true,
+        "category": "same_encounter",
+        "expected": "distinct_referents",
+        "predicted": "distinct_referents",
+        "evidence_valid": true,
+        "evidence_errors": [],
+        "batch": "batch-03"
+      },
+      {
+        "id": "q043",
+        "strict": true,
+        "category": "same_encounter",
+        "expected": "distinct_referents",
+        "predicted": "distinct_referents",
+        "evidence_valid": true,
+        "evidence_errors": [],
+        "batch": "batch-03"
+      },
+      {
+        "id": "q044",
+        "strict": true,
+        "category": "same_encounter",
+        "expected": "distinct_referents",
+        "predicted": "distinct_referents",
+        "evidence_valid": true,
+        "evidence_errors": [],
+        "batch": "batch-03"
+      },
+      {
+        "id": "q045",
+        "strict": true,
+        "category": "numbered",
+        "expected": "distinct_referents",
+        "predicted": "distinct_referents",
+        "evidence_valid": true,
+        "evidence_errors": [],
+        "batch": "batch-03"
+      },
+      {
+        "id": "q046",
+        "strict": true,
+        "category": "numbered",
+        "expected": "distinct_referents",
+        "predicted": "distinct_referents",
+        "evidence_valid": true,
+        "evidence_errors": [],
+        "batch": "batch-03"
+      },
+      {
+        "id": "q047",
+        "strict": true,
+        "category": "alias_role",
+        "expected": "same_referent",
+        "predicted": "same_referent",
+        "evidence_valid": true,
+        "evidence_errors": [],
+        "batch": "batch-03"
+      },
+      {
+        "id": "q048",
+        "strict": true,
+        "category": "continuity",
+        "expected": "same_referent",
+        "predicted": "same_referent",
+        "evidence_valid": true,
+        "evidence_errors": [],
+        "batch": "batch-03"
+      },
+      {
+        "id": "q049",
+        "strict": true,
+        "category": "transformation",
+        "expected": "distinct_referents",
+        "predicted": "distinct_referents",
+        "evidence_valid": true,
+        "evidence_errors": [],
+        "batch": "batch-03"
+      },
+      {
+        "id": "q050",
+        "strict": true,
+        "category": "continuity",
+        "expected": "same_referent",
+        "predicted": "same_referent",
+        "evidence_valid": true,
+        "evidence_errors": [],
+        "batch": "batch-03"
+      },
+      {
+        "id": "q051",
+        "strict": false,
+        "category": "underspecified",
+        "expected": "ambiguous",
+        "predicted": "ambiguous",
+        "evidence_valid": true,
+        "evidence_errors": [],
+        "batch": "batch-03"
+      },
+      {
+        "id": "q052",
+        "strict": false,
+        "category": "underspecified",
+        "expected": "ambiguous",
+        "predicted": "ambiguous",
+        "evidence_valid": true,
+        "evidence_errors": [],
+        "batch": "batch-03"
+      },
+      {
+        "id": "q053",
+        "strict": true,
+        "category": "membership",
+        "expected": "overlap_or_membership",
+        "predicted": "overlap_or_membership",
+        "evidence_valid": true,
+        "evidence_errors": [],
+        "batch": "batch-03"
+      },
+      {
+        "id": "q054",
+        "strict": true,
+        "category": "transformation",
+        "expected": "distinct_referents",
+        "predicted": "distinct_referents",
+        "evidence_valid": true,
+        "evidence_errors": [],
+        "batch": "batch-03"
+      },
+      {
+        "id": "q055",
+        "strict": true,
+        "category": "continuity",
+        "expected": "same_referent",
+        "predicted": "same_referent",
+        "evidence_valid": true,
+        "evidence_errors": [],
+        "batch": "batch-03"
+      },
+      {
+        "id": "q056",
+        "strict": true,
+        "category": "alias_role",
+        "expected": "same_referent",
+        "predicted": "same_referent",
+        "evidence_valid": true,
+        "evidence_errors": [],
+        "batch": "batch-03"
+      },
+      {
+        "id": "q057",
+        "strict": true,
+        "category": "numbered",
+        "expected": "distinct_referents",
+        "predicted": "distinct_referents",
+        "evidence_valid": true,
+        "evidence_errors": [],
+        "batch": "batch-03"
+      },
+      {
+        "id": "q058",
+        "strict": true,
+        "category": "numbered",
+        "expected": "distinct_referents",
+        "predicted": "distinct_referents",
+        "evidence_valid": true,
+        "evidence_errors": [],
+        "batch": "batch-03"
+      },
+      {
+        "id": "q059",
+        "strict": true,
+        "category": "life_state",
+        "expected": "same_referent",
+        "predicted": "same_referent",
+        "evidence_valid": true,
+        "evidence_errors": [],
+        "batch": "batch-03"
+      },
+      {
+        "id": "q060",
+        "strict": true,
+        "category": "alias_role",
+        "expected": "same_referent",
+        "predicted": "same_referent",
+        "evidence_valid": true,
+        "evidence_errors": [],
+        "batch": "batch-03"
+      },
+      {
+        "id": "q061",
+        "strict": true,
+        "category": "transformation",
+        "expected": "distinct_referents",
+        "predicted": "distinct_referents",
+        "evidence_valid": true,
+        "evidence_errors": [],
+        "batch": "batch-04"
+      },
+      {
+        "id": "q062",
+        "strict": true,
+        "category": "rename",
+        "expected": "same_referent",
+        "predicted": "same_referent",
+        "evidence_valid": true,
+        "evidence_errors": [],
+        "batch": "batch-04"
+      },
+      {
+        "id": "q063",
+        "strict": true,
+        "category": "continuity",
+        "expected": "same_referent",
+        "predicted": "same_referent",
+        "evidence_valid": true,
+        "evidence_errors": [],
+        "batch": "batch-04"
+      },
+      {
+        "id": "q064",
+        "strict": true,
+        "category": "factions",
+        "expected": "distinct_referents",
+        "predicted": "distinct_referents",
+        "evidence_valid": true,
+        "evidence_errors": [],
+        "batch": "batch-04"
+      },
+      {
+        "id": "q065",
+        "strict": true,
+        "category": "factions",
+        "expected": "distinct_referents",
+        "predicted": "distinct_referents",
+        "evidence_valid": true,
+        "evidence_errors": [],
+        "batch": "batch-04"
+      },
+      {
+        "id": "q066",
+        "strict": true,
+        "category": "life_state",
+        "expected": "distinct_referents",
+        "predicted": "distinct_referents",
+        "evidence_valid": true,
+        "evidence_errors": [],
+        "batch": "batch-04"
+      },
+      {
+        "id": "q067",
+        "strict": true,
+        "category": "alias_role",
+        "expected": "same_referent",
+        "predicted": "same_referent",
+        "evidence_valid": true,
+        "evidence_errors": [],
+        "batch": "batch-04"
+      },
+      {
+        "id": "q068",
+        "strict": true,
+        "category": "membership",
+        "expected": "overlap_or_membership",
+        "predicted": "overlap_or_membership",
+        "evidence_valid": true,
+        "evidence_errors": [],
+        "batch": "batch-04"
+      },
+      {
+        "id": "q069",
+        "strict": true,
+        "category": "numbered",
+        "expected": "distinct_referents",
+        "predicted": "distinct_referents",
+        "evidence_valid": true,
+        "evidence_errors": [],
+        "batch": "batch-04"
+      },
+      {
+        "id": "q070",
+        "strict": true,
+        "category": "membership",
+        "expected": "overlap_or_membership",
+        "predicted": "overlap_or_membership",
+        "evidence_valid": true,
+        "evidence_errors": [],
+        "batch": "batch-04"
+      },
+      {
+        "id": "q071",
+        "strict": true,
+        "category": "same_encounter",
+        "expected": "distinct_referents",
+        "predicted": "distinct_referents",
+        "evidence_valid": true,
+        "evidence_errors": [],
+        "batch": "batch-04"
+      },
+      {
+        "id": "q072",
+        "strict": true,
+        "category": "same_encounter",
+        "expected": "distinct_referents",
+        "predicted": "distinct_referents",
+        "evidence_valid": true,
+        "evidence_errors": [],
+        "batch": "batch-04"
+      },
+      {
+        "id": "q073",
+        "strict": false,
+        "category": "part_whole",
+        "expected": "distinct_referents",
+        "predicted": "same_referent",
+        "evidence_valid": true,
+        "evidence_errors": [],
+        "batch": "batch-04"
+      },
+      {
+        "id": "q074",
+        "strict": true,
+        "category": "alias_role",
+        "expected": "same_referent",
+        "predicted": "same_referent",
+        "evidence_valid": true,
+        "evidence_errors": [],
+        "batch": "batch-04"
+      },
+      {
+        "id": "q075",
+        "strict": true,
+        "category": "alias_role",
+        "expected": "same_referent",
+        "predicted": "same_referent",
+        "evidence_valid": true,
+        "evidence_errors": [],
+        "batch": "batch-04"
+      },
+      {
+        "id": "q076",
+        "strict": false,
+        "category": "underspecified",
+        "expected": "ambiguous",
+        "predicted": "ambiguous",
+        "evidence_valid": true,
+        "evidence_errors": [],
+        "batch": "batch-04"
+      },
+      {
+        "id": "q077",
+        "strict": true,
+        "category": "same_location",
+        "expected": "distinct_referents",
+        "predicted": "distinct_referents",
+        "evidence_valid": true,
+        "evidence_errors": [],
+        "batch": "batch-04"
+      },
+      {
+        "id": "q078",
+        "strict": true,
+        "category": "membership",
+        "expected": "overlap_or_membership",
+        "predicted": "overlap_or_membership",
+        "evidence_valid": true,
+        "evidence_errors": [],
+        "batch": "batch-04"
+      },
+      {
+        "id": "q079",
+        "strict": true,
+        "category": "transformation",
+        "expected": "same_referent",
+        "predicted": "same_referent",
+        "evidence_valid": true,
+        "evidence_errors": [],
+        "batch": "batch-04"
+      },
+      {
+        "id": "q080",
+        "strict": false,
+        "category": "alias_role",
+        "expected": "same_referent",
+        "predicted": "same_referent",
+        "evidence_valid": true,
+        "evidence_errors": [],
+        "batch": "batch-04"
+      },
+      {
+        "id": "q081",
+        "strict": true,
+        "category": "numbered",
+        "expected": "same_referent",
+        "predicted": "same_referent",
+        "evidence_valid": true,
+        "evidence_errors": [],
+        "batch": "batch-05"
+      },
+      {
+        "id": "q082",
+        "strict": true,
+        "category": "membership",
+        "expected": "overlap_or_membership",
+        "predicted": "overlap_or_membership",
+        "evidence_valid": true,
+        "evidence_errors": [],
+        "batch": "batch-05"
+      },
+      {
+        "id": "q083",
+        "strict": true,
+        "category": "continuity",
+        "expected": "same_referent",
+        "predicted": "same_referent",
+        "evidence_valid": true,
+        "evidence_errors": [],
+        "batch": "batch-05"
+      },
+      {
+        "id": "q084",
+        "strict": true,
+        "category": "membership",
+        "expected": "overlap_or_membership",
+        "predicted": "overlap_or_membership",
+        "evidence_valid": true,
+        "evidence_errors": [],
+        "batch": "batch-05"
+      },
+      {
+        "id": "q085",
+        "strict": true,
+        "category": "alias_role",
+        "expected": "same_referent",
+        "predicted": "same_referent",
+        "evidence_valid": true,
+        "evidence_errors": [],
+        "batch": "batch-05"
+      },
+      {
+        "id": "q086",
+        "strict": true,
+        "category": "continuity",
+        "expected": "same_referent",
+        "predicted": "same_referent",
+        "evidence_valid": true,
+        "evidence_errors": [],
+        "batch": "batch-05"
+      },
+      {
+        "id": "q087",
+        "strict": true,
+        "category": "continuity",
+        "expected": "same_referent",
+        "predicted": "same_referent",
+        "evidence_valid": true,
+        "evidence_errors": [],
+        "batch": "batch-05"
+      },
+      {
+        "id": "q088",
+        "strict": false,
+        "category": "membership",
+        "expected": "overlap_or_membership",
+        "predicted": "overlap_or_membership",
+        "evidence_valid": true,
+        "evidence_errors": [],
+        "batch": "batch-05"
+      },
+      {
+        "id": "q089",
+        "strict": true,
+        "category": "transformation",
+        "expected": "same_referent",
+        "predicted": "same_referent",
+        "evidence_valid": true,
+        "evidence_errors": [],
+        "batch": "batch-05"
+      },
+      {
+        "id": "q090",
+        "strict": false,
+        "category": "cross_chapter",
+        "expected": "same_referent",
+        "predicted": "same_referent",
+        "evidence_valid": true,
+        "evidence_errors": [],
+        "batch": "batch-05"
+      },
+      {
+        "id": "q091",
+        "strict": true,
+        "category": "cross_chapter",
+        "expected": "ambiguous",
+        "predicted": "ambiguous",
+        "evidence_valid": true,
+        "evidence_errors": [],
+        "batch": "batch-05"
+      },
+      {
+        "id": "q092",
+        "strict": true,
+        "category": "transformation",
+        "expected": "same_referent",
+        "predicted": "same_referent",
+        "evidence_valid": true,
+        "evidence_errors": [],
+        "batch": "batch-05"
+      },
+      {
+        "id": "q093",
+        "strict": true,
+        "category": "membership",
+        "expected": "overlap_or_membership",
+        "predicted": "overlap_or_membership",
+        "evidence_valid": true,
+        "evidence_errors": [],
+        "batch": "batch-05"
+      },
+      {
+        "id": "q094",
+        "strict": true,
+        "category": "life_state",
+        "expected": "same_referent",
+        "predicted": "same_referent",
+        "evidence_valid": true,
+        "evidence_errors": [],
+        "batch": "batch-05"
+      },
+      {
+        "id": "q095",
+        "strict": true,
+        "category": "life_state",
+        "expected": "distinct_referents",
+        "predicted": "distinct_referents",
+        "evidence_valid": true,
+        "evidence_errors": [],
+        "batch": "batch-05"
+      },
+      {
+        "id": "q096",
+        "strict": true,
+        "category": "life_state",
+        "expected": "distinct_referents",
+        "predicted": "distinct_referents",
+        "evidence_valid": true,
+        "evidence_errors": [],
+        "batch": "batch-05"
+      },
+      {
+        "id": "q097",
+        "strict": true,
+        "category": "same_label",
+        "expected": "distinct_referents",
+        "predicted": "distinct_referents",
+        "evidence_valid": true,
+        "evidence_errors": [],
+        "batch": "batch-05"
+      },
+      {
+        "id": "q098",
+        "strict": false,
+        "category": "representation",
+        "expected": "distinct_referents",
+        "predicted": "distinct_referents",
+        "evidence_valid": true,
+        "evidence_errors": [],
+        "batch": "batch-05"
+      },
+      {
+        "id": "q099",
+        "strict": true,
+        "category": "numbered",
+        "expected": "same_referent",
+        "predicted": "same_referent",
+        "evidence_valid": true,
+        "evidence_errors": [],
+        "batch": "batch-05"
+      },
+      {
+        "id": "q100",
+        "strict": true,
+        "category": "same_encounter",
+        "expected": "distinct_referents",
+        "predicted": "distinct_referents",
+        "evidence_valid": true,
+        "evidence_errors": [],
+        "batch": "batch-05"
+      }
+    ],
+    "surface_only": [
+      {
+        "id": "q001",
+        "strict": true,
+        "category": "alias_role",
+        "expected": "same_referent",
+        "predicted": "ambiguous",
+        "evidence_valid": null,
+        "evidence_errors": [],
+        "batch": "batch-01"
+      },
+      {
+        "id": "q002",
+        "strict": true,
+        "category": "transformation",
+        "expected": "same_referent",
+        "predicted": "ambiguous",
+        "evidence_valid": null,
+        "evidence_errors": [],
+        "batch": "batch-01"
+      },
+      {
+        "id": "q003",
+        "strict": true,
+        "category": "reinforcements",
+        "expected": "distinct_referents",
+        "predicted": "ambiguous",
+        "evidence_valid": null,
+        "evidence_errors": [],
+        "batch": "batch-01"
+      },
+      {
+        "id": "q004",
+        "strict": true,
+        "category": "numbered",
+        "expected": "distinct_referents",
+        "predicted": "ambiguous",
+        "evidence_valid": null,
+        "evidence_errors": [],
+        "batch": "batch-01"
+      },
+      {
+        "id": "q005",
+        "strict": true,
+        "category": "same_location",
+        "expected": "distinct_referents",
+        "predicted": "ambiguous",
+        "evidence_valid": null,
+        "evidence_errors": [],
+        "batch": "batch-01"
+      },
+      {
+        "id": "q006",
+        "strict": false,
+        "category": "underspecified",
+        "expected": "ambiguous",
+        "predicted": "ambiguous",
+        "evidence_valid": null,
+        "evidence_errors": [],
+        "batch": "batch-01"
+      },
+      {
+        "id": "q007",
+        "strict": true,
+        "category": "membership",
+        "expected": "distinct_referents",
+        "predicted": "ambiguous",
+        "evidence_valid": null,
+        "evidence_errors": [],
+        "batch": "batch-01"
+      },
+      {
+        "id": "q008",
+        "strict": true,
+        "category": "factions",
+        "expected": "distinct_referents",
+        "predicted": "ambiguous",
+        "evidence_valid": null,
+        "evidence_errors": [],
+        "batch": "batch-01"
+      },
+      {
+        "id": "q009",
+        "strict": true,
+        "category": "continuity",
+        "expected": "same_referent",
+        "predicted": "ambiguous",
+        "evidence_valid": null,
+        "evidence_errors": [],
+        "batch": "batch-01"
+      },
+      {
+        "id": "q010",
+        "strict": false,
+        "category": "underspecified",
+        "expected": "ambiguous",
+        "predicted": "ambiguous",
+        "evidence_valid": null,
+        "evidence_errors": [],
+        "batch": "batch-01"
+      },
+      {
+        "id": "q011",
+        "strict": true,
+        "category": "numbered",
+        "expected": "distinct_referents",
+        "predicted": "ambiguous",
+        "evidence_valid": null,
+        "evidence_errors": [],
+        "batch": "batch-01"
+      },
+      {
+        "id": "q012",
+        "strict": true,
+        "category": "same_location",
+        "expected": "distinct_referents",
+        "predicted": "ambiguous",
+        "evidence_valid": null,
+        "evidence_errors": [],
+        "batch": "batch-01"
+      },
+      {
+        "id": "q013",
+        "strict": false,
+        "category": "alias_role",
+        "expected": "same_referent",
+        "predicted": "ambiguous",
+        "evidence_valid": null,
+        "evidence_errors": [],
+        "batch": "batch-01"
+      },
+      {
+        "id": "q014",
+        "strict": true,
+        "category": "alias_role",
+        "expected": "same_referent",
+        "predicted": "ambiguous",
+        "evidence_valid": null,
+        "evidence_errors": [],
+        "batch": "batch-01"
+      },
+      {
+        "id": "q015",
+        "strict": true,
+        "category": "reinforcements",
+        "expected": "distinct_referents",
+        "predicted": "ambiguous",
+        "evidence_valid": null,
+        "evidence_errors": [],
+        "batch": "batch-01"
+      },
+      {
+        "id": "q016",
+        "strict": true,
+        "category": "membership",
+        "expected": "overlap_or_membership",
+        "predicted": "ambiguous",
+        "evidence_valid": null,
+        "evidence_errors": [],
+        "batch": "batch-01"
+      },
+      {
+        "id": "q017",
+        "strict": true,
+        "category": "cross_chapter",
+        "expected": "distinct_referents",
+        "predicted": "ambiguous",
+        "evidence_valid": null,
+        "evidence_errors": [],
+        "batch": "batch-01"
+      },
+      {
+        "id": "q018",
+        "strict": true,
+        "category": "continuity",
+        "expected": "same_referent",
+        "predicted": "ambiguous",
+        "evidence_valid": null,
+        "evidence_errors": [],
+        "batch": "batch-01"
+      },
+      {
+        "id": "q019",
+        "strict": true,
+        "category": "continuity",
+        "expected": "same_referent",
+        "predicted": "ambiguous",
+        "evidence_valid": null,
+        "evidence_errors": [],
+        "batch": "batch-01"
+      },
+      {
+        "id": "q020",
+        "strict": true,
+        "category": "transformation",
+        "expected": "distinct_referents",
+        "predicted": "ambiguous",
+        "evidence_valid": null,
+        "evidence_errors": [],
+        "batch": "batch-01"
+      },
+      {
+        "id": "q021",
+        "strict": false,
+        "category": "cross_chapter",
+        "expected": "ambiguous",
+        "predicted": "ambiguous",
+        "evidence_valid": null,
+        "evidence_errors": [],
+        "batch": "batch-02"
+      },
+      {
+        "id": "q022",
+        "strict": true,
+        "category": "alias_role",
+        "expected": "same_referent",
+        "predicted": "ambiguous",
+        "evidence_valid": null,
+        "evidence_errors": [],
+        "batch": "batch-02"
+      },
+      {
+        "id": "q023",
+        "strict": true,
+        "category": "membership",
+        "expected": "overlap_or_membership",
+        "predicted": "ambiguous",
+        "evidence_valid": null,
+        "evidence_errors": [],
+        "batch": "batch-02"
+      },
+      {
+        "id": "q024",
+        "strict": true,
+        "category": "membership",
+        "expected": "overlap_or_membership",
+        "predicted": "ambiguous",
+        "evidence_valid": null,
+        "evidence_errors": [],
+        "batch": "batch-02"
+      },
+      {
+        "id": "q025",
+        "strict": true,
+        "category": "reinforcements",
+        "expected": "distinct_referents",
+        "predicted": "ambiguous",
+        "evidence_valid": null,
+        "evidence_errors": [],
+        "batch": "batch-02"
+      },
+      {
+        "id": "q026",
+        "strict": true,
+        "category": "membership",
+        "expected": "overlap_or_membership",
+        "predicted": "ambiguous",
+        "evidence_valid": null,
+        "evidence_errors": [],
+        "batch": "batch-02"
+      },
+      {
+        "id": "q027",
+        "strict": true,
+        "category": "membership",
+        "expected": "overlap_or_membership",
+        "predicted": "ambiguous",
+        "evidence_valid": null,
+        "evidence_errors": [],
+        "batch": "batch-02"
+      },
+      {
+        "id": "q028",
+        "strict": false,
+        "category": "scope",
+        "expected": "separate_scope",
+        "predicted": "ambiguous",
+        "evidence_valid": null,
+        "evidence_errors": [],
+        "batch": "batch-02"
+      },
+      {
+        "id": "q029",
+        "strict": false,
+        "category": "cross_chapter",
+        "expected": "same_referent",
+        "predicted": "ambiguous",
+        "evidence_valid": null,
+        "evidence_errors": [],
+        "batch": "batch-02"
+      },
+      {
+        "id": "q030",
+        "strict": true,
+        "category": "life_state",
+        "expected": "distinct_referents",
+        "predicted": "ambiguous",
+        "evidence_valid": null,
+        "evidence_errors": [],
+        "batch": "batch-02"
+      },
+      {
+        "id": "q031",
+        "strict": true,
+        "category": "numbered",
+        "expected": "distinct_referents",
+        "predicted": "ambiguous",
+        "evidence_valid": null,
+        "evidence_errors": [],
+        "batch": "batch-02"
+      },
+      {
+        "id": "q032",
+        "strict": true,
+        "category": "transformation",
+        "expected": "same_referent",
+        "predicted": "ambiguous",
+        "evidence_valid": null,
+        "evidence_errors": [],
+        "batch": "batch-02"
+      },
+      {
+        "id": "q033",
+        "strict": true,
+        "category": "continuity",
+        "expected": "same_referent",
+        "predicted": "ambiguous",
+        "evidence_valid": null,
+        "evidence_errors": [],
+        "batch": "batch-02"
+      },
+      {
+        "id": "q034",
+        "strict": true,
+        "category": "membership",
+        "expected": "overlap_or_membership",
+        "predicted": "ambiguous",
+        "evidence_valid": null,
+        "evidence_errors": [],
+        "batch": "batch-02"
+      },
+      {
+        "id": "q035",
+        "strict": true,
+        "category": "membership",
+        "expected": "overlap_or_membership",
+        "predicted": "ambiguous",
+        "evidence_valid": null,
+        "evidence_errors": [],
+        "batch": "batch-02"
+      },
+      {
+        "id": "q036",
+        "strict": true,
+        "category": "membership",
+        "expected": "overlap_or_membership",
+        "predicted": "ambiguous",
+        "evidence_valid": null,
+        "evidence_errors": [],
+        "batch": "batch-02"
+      },
+      {
+        "id": "q037",
+        "strict": true,
+        "category": "alias_role",
+        "expected": "same_referent",
+        "predicted": "ambiguous",
+        "evidence_valid": null,
+        "evidence_errors": [],
+        "batch": "batch-02"
+      },
+      {
+        "id": "q038",
+        "strict": true,
+        "category": "continuity",
+        "expected": "same_referent",
+        "predicted": "ambiguous",
+        "evidence_valid": null,
+        "evidence_errors": [],
+        "batch": "batch-02"
+      },
+      {
+        "id": "q039",
+        "strict": false,
+        "category": "underspecified",
+        "expected": "ambiguous",
+        "predicted": "ambiguous",
+        "evidence_valid": null,
+        "evidence_errors": [],
+        "batch": "batch-02"
+      },
+      {
+        "id": "q040",
+        "strict": true,
+        "category": "scope",
+        "expected": "separate_scope",
+        "predicted": "ambiguous",
+        "evidence_valid": null,
+        "evidence_errors": [],
+        "batch": "batch-02"
+      },
+      {
+        "id": "q041",
+        "strict": false,
+        "category": "underspecified",
+        "expected": "ambiguous",
+        "predicted": "ambiguous",
+        "evidence_valid": null,
+        "evidence_errors": [],
+        "batch": "batch-03"
+      },
+      {
+        "id": "q042",
+        "strict": true,
+        "category": "same_encounter",
+        "expected": "distinct_referents",
+        "predicted": "ambiguous",
+        "evidence_valid": null,
+        "evidence_errors": [],
+        "batch": "batch-03"
+      },
+      {
+        "id": "q043",
+        "strict": true,
+        "category": "same_encounter",
+        "expected": "distinct_referents",
+        "predicted": "ambiguous",
+        "evidence_valid": null,
+        "evidence_errors": [],
+        "batch": "batch-03"
+      },
+      {
+        "id": "q044",
+        "strict": true,
+        "category": "same_encounter",
+        "expected": "distinct_referents",
+        "predicted": "ambiguous",
+        "evidence_valid": null,
+        "evidence_errors": [],
+        "batch": "batch-03"
+      },
+      {
+        "id": "q045",
+        "strict": true,
+        "category": "numbered",
+        "expected": "distinct_referents",
+        "predicted": "ambiguous",
+        "evidence_valid": null,
+        "evidence_errors": [],
+        "batch": "batch-03"
+      },
+      {
+        "id": "q046",
+        "strict": true,
+        "category": "numbered",
+        "expected": "distinct_referents",
+        "predicted": "ambiguous",
+        "evidence_valid": null,
+        "evidence_errors": [],
+        "batch": "batch-03"
+      },
+      {
+        "id": "q047",
+        "strict": true,
+        "category": "alias_role",
+        "expected": "same_referent",
+        "predicted": "ambiguous",
+        "evidence_valid": null,
+        "evidence_errors": [],
+        "batch": "batch-03"
+      },
+      {
+        "id": "q048",
+        "strict": true,
+        "category": "continuity",
+        "expected": "same_referent",
+        "predicted": "ambiguous",
+        "evidence_valid": null,
+        "evidence_errors": [],
+        "batch": "batch-03"
+      },
+      {
+        "id": "q049",
+        "strict": true,
+        "category": "transformation",
+        "expected": "distinct_referents",
+        "predicted": "ambiguous",
+        "evidence_valid": null,
+        "evidence_errors": [],
+        "batch": "batch-03"
+      },
+      {
+        "id": "q050",
+        "strict": true,
+        "category": "continuity",
+        "expected": "same_referent",
+        "predicted": "ambiguous",
+        "evidence_valid": null,
+        "evidence_errors": [],
+        "batch": "batch-03"
+      },
+      {
+        "id": "q051",
+        "strict": false,
+        "category": "underspecified",
+        "expected": "ambiguous",
+        "predicted": "ambiguous",
+        "evidence_valid": null,
+        "evidence_errors": [],
+        "batch": "batch-03"
+      },
+      {
+        "id": "q052",
+        "strict": false,
+        "category": "underspecified",
+        "expected": "ambiguous",
+        "predicted": "ambiguous",
+        "evidence_valid": null,
+        "evidence_errors": [],
+        "batch": "batch-03"
+      },
+      {
+        "id": "q053",
+        "strict": true,
+        "category": "membership",
+        "expected": "overlap_or_membership",
+        "predicted": "ambiguous",
+        "evidence_valid": null,
+        "evidence_errors": [],
+        "batch": "batch-03"
+      },
+      {
+        "id": "q054",
+        "strict": true,
+        "category": "transformation",
+        "expected": "distinct_referents",
+        "predicted": "ambiguous",
+        "evidence_valid": null,
+        "evidence_errors": [],
+        "batch": "batch-03"
+      },
+      {
+        "id": "q055",
+        "strict": true,
+        "category": "continuity",
+        "expected": "same_referent",
+        "predicted": "ambiguous",
+        "evidence_valid": null,
+        "evidence_errors": [],
+        "batch": "batch-03"
+      },
+      {
+        "id": "q056",
+        "strict": true,
+        "category": "alias_role",
+        "expected": "same_referent",
+        "predicted": "ambiguous",
+        "evidence_valid": null,
+        "evidence_errors": [],
+        "batch": "batch-03"
+      },
+      {
+        "id": "q057",
+        "strict": true,
+        "category": "numbered",
+        "expected": "distinct_referents",
+        "predicted": "ambiguous",
+        "evidence_valid": null,
+        "evidence_errors": [],
+        "batch": "batch-03"
+      },
+      {
+        "id": "q058",
+        "strict": true,
+        "category": "numbered",
+        "expected": "distinct_referents",
+        "predicted": "ambiguous",
+        "evidence_valid": null,
+        "evidence_errors": [],
+        "batch": "batch-03"
+      },
+      {
+        "id": "q059",
+        "strict": true,
+        "category": "life_state",
+        "expected": "same_referent",
+        "predicted": "ambiguous",
+        "evidence_valid": null,
+        "evidence_errors": [],
+        "batch": "batch-03"
+      },
+      {
+        "id": "q060",
+        "strict": true,
+        "category": "alias_role",
+        "expected": "same_referent",
+        "predicted": "ambiguous",
+        "evidence_valid": null,
+        "evidence_errors": [],
+        "batch": "batch-03"
+      },
+      {
+        "id": "q061",
+        "strict": true,
+        "category": "transformation",
+        "expected": "distinct_referents",
+        "predicted": "ambiguous",
+        "evidence_valid": null,
+        "evidence_errors": [],
+        "batch": "batch-04"
+      },
+      {
+        "id": "q062",
+        "strict": true,
+        "category": "rename",
+        "expected": "same_referent",
+        "predicted": "ambiguous",
+        "evidence_valid": null,
+        "evidence_errors": [],
+        "batch": "batch-04"
+      },
+      {
+        "id": "q063",
+        "strict": true,
+        "category": "continuity",
+        "expected": "same_referent",
+        "predicted": "ambiguous",
+        "evidence_valid": null,
+        "evidence_errors": [],
+        "batch": "batch-04"
+      },
+      {
+        "id": "q064",
+        "strict": true,
+        "category": "factions",
+        "expected": "distinct_referents",
+        "predicted": "ambiguous",
+        "evidence_valid": null,
+        "evidence_errors": [],
+        "batch": "batch-04"
+      },
+      {
+        "id": "q065",
+        "strict": true,
+        "category": "factions",
+        "expected": "distinct_referents",
+        "predicted": "ambiguous",
+        "evidence_valid": null,
+        "evidence_errors": [],
+        "batch": "batch-04"
+      },
+      {
+        "id": "q066",
+        "strict": true,
+        "category": "life_state",
+        "expected": "distinct_referents",
+        "predicted": "ambiguous",
+        "evidence_valid": null,
+        "evidence_errors": [],
+        "batch": "batch-04"
+      },
+      {
+        "id": "q067",
+        "strict": true,
+        "category": "alias_role",
+        "expected": "same_referent",
+        "predicted": "ambiguous",
+        "evidence_valid": null,
+        "evidence_errors": [],
+        "batch": "batch-04"
+      },
+      {
+        "id": "q068",
+        "strict": true,
+        "category": "membership",
+        "expected": "overlap_or_membership",
+        "predicted": "ambiguous",
+        "evidence_valid": null,
+        "evidence_errors": [],
+        "batch": "batch-04"
+      },
+      {
+        "id": "q069",
+        "strict": true,
+        "category": "numbered",
+        "expected": "distinct_referents",
+        "predicted": "ambiguous",
+        "evidence_valid": null,
+        "evidence_errors": [],
+        "batch": "batch-04"
+      },
+      {
+        "id": "q070",
+        "strict": true,
+        "category": "membership",
+        "expected": "overlap_or_membership",
+        "predicted": "ambiguous",
+        "evidence_valid": null,
+        "evidence_errors": [],
+        "batch": "batch-04"
+      },
+      {
+        "id": "q071",
+        "strict": true,
+        "category": "same_encounter",
+        "expected": "distinct_referents",
+        "predicted": "ambiguous",
+        "evidence_valid": null,
+        "evidence_errors": [],
+        "batch": "batch-04"
+      },
+      {
+        "id": "q072",
+        "strict": true,
+        "category": "same_encounter",
+        "expected": "distinct_referents",
+        "predicted": "ambiguous",
+        "evidence_valid": null,
+        "evidence_errors": [],
+        "batch": "batch-04"
+      },
+      {
+        "id": "q073",
+        "strict": false,
+        "category": "part_whole",
+        "expected": "distinct_referents",
+        "predicted": "ambiguous",
+        "evidence_valid": null,
+        "evidence_errors": [],
+        "batch": "batch-04"
+      },
+      {
+        "id": "q074",
+        "strict": true,
+        "category": "alias_role",
+        "expected": "same_referent",
+        "predicted": "ambiguous",
+        "evidence_valid": null,
+        "evidence_errors": [],
+        "batch": "batch-04"
+      },
+      {
+        "id": "q075",
+        "strict": true,
+        "category": "alias_role",
+        "expected": "same_referent",
+        "predicted": "ambiguous",
+        "evidence_valid": null,
+        "evidence_errors": [],
+        "batch": "batch-04"
+      },
+      {
+        "id": "q076",
+        "strict": false,
+        "category": "underspecified",
+        "expected": "ambiguous",
+        "predicted": "ambiguous",
+        "evidence_valid": null,
+        "evidence_errors": [],
+        "batch": "batch-04"
+      },
+      {
+        "id": "q077",
+        "strict": true,
+        "category": "same_location",
+        "expected": "distinct_referents",
+        "predicted": "ambiguous",
+        "evidence_valid": null,
+        "evidence_errors": [],
+        "batch": "batch-04"
+      },
+      {
+        "id": "q078",
+        "strict": true,
+        "category": "membership",
+        "expected": "overlap_or_membership",
+        "predicted": "ambiguous",
+        "evidence_valid": null,
+        "evidence_errors": [],
+        "batch": "batch-04"
+      },
+      {
+        "id": "q079",
+        "strict": true,
+        "category": "transformation",
+        "expected": "same_referent",
+        "predicted": "ambiguous",
+        "evidence_valid": null,
+        "evidence_errors": [],
+        "batch": "batch-04"
+      },
+      {
+        "id": "q080",
+        "strict": false,
+        "category": "alias_role",
+        "expected": "same_referent",
+        "predicted": "ambiguous",
+        "evidence_valid": null,
+        "evidence_errors": [],
+        "batch": "batch-04"
+      },
+      {
+        "id": "q081",
+        "strict": true,
+        "category": "numbered",
+        "expected": "same_referent",
+        "predicted": "ambiguous",
+        "evidence_valid": null,
+        "evidence_errors": [],
+        "batch": "batch-05"
+      },
+      {
+        "id": "q082",
+        "strict": true,
+        "category": "membership",
+        "expected": "overlap_or_membership",
+        "predicted": "ambiguous",
+        "evidence_valid": null,
+        "evidence_errors": [],
+        "batch": "batch-05"
+      },
+      {
+        "id": "q083",
+        "strict": true,
+        "category": "continuity",
+        "expected": "same_referent",
+        "predicted": "ambiguous",
+        "evidence_valid": null,
+        "evidence_errors": [],
+        "batch": "batch-05"
+      },
+      {
+        "id": "q084",
+        "strict": true,
+        "category": "membership",
+        "expected": "overlap_or_membership",
+        "predicted": "ambiguous",
+        "evidence_valid": null,
+        "evidence_errors": [],
+        "batch": "batch-05"
+      },
+      {
+        "id": "q085",
+        "strict": true,
+        "category": "alias_role",
+        "expected": "same_referent",
+        "predicted": "ambiguous",
+        "evidence_valid": null,
+        "evidence_errors": [],
+        "batch": "batch-05"
+      },
+      {
+        "id": "q086",
+        "strict": true,
+        "category": "continuity",
+        "expected": "same_referent",
+        "predicted": "ambiguous",
+        "evidence_valid": null,
+        "evidence_errors": [],
+        "batch": "batch-05"
+      },
+      {
+        "id": "q087",
+        "strict": true,
+        "category": "continuity",
+        "expected": "same_referent",
+        "predicted": "ambiguous",
+        "evidence_valid": null,
+        "evidence_errors": [],
+        "batch": "batch-05"
+      },
+      {
+        "id": "q088",
+        "strict": false,
+        "category": "membership",
+        "expected": "overlap_or_membership",
+        "predicted": "ambiguous",
+        "evidence_valid": null,
+        "evidence_errors": [],
+        "batch": "batch-05"
+      },
+      {
+        "id": "q089",
+        "strict": true,
+        "category": "transformation",
+        "expected": "same_referent",
+        "predicted": "ambiguous",
+        "evidence_valid": null,
+        "evidence_errors": [],
+        "batch": "batch-05"
+      },
+      {
+        "id": "q090",
+        "strict": false,
+        "category": "cross_chapter",
+        "expected": "same_referent",
+        "predicted": "ambiguous",
+        "evidence_valid": null,
+        "evidence_errors": [],
+        "batch": "batch-05"
+      },
+      {
+        "id": "q091",
+        "strict": true,
+        "category": "cross_chapter",
+        "expected": "ambiguous",
+        "predicted": "ambiguous",
+        "evidence_valid": null,
+        "evidence_errors": [],
+        "batch": "batch-05"
+      },
+      {
+        "id": "q092",
+        "strict": true,
+        "category": "transformation",
+        "expected": "same_referent",
+        "predicted": "ambiguous",
+        "evidence_valid": null,
+        "evidence_errors": [],
+        "batch": "batch-05"
+      },
+      {
+        "id": "q093",
+        "strict": true,
+        "category": "membership",
+        "expected": "overlap_or_membership",
+        "predicted": "ambiguous",
+        "evidence_valid": null,
+        "evidence_errors": [],
+        "batch": "batch-05"
+      },
+      {
+        "id": "q094",
+        "strict": true,
+        "category": "life_state",
+        "expected": "same_referent",
+        "predicted": "ambiguous",
+        "evidence_valid": null,
+        "evidence_errors": [],
+        "batch": "batch-05"
+      },
+      {
+        "id": "q095",
+        "strict": true,
+        "category": "life_state",
+        "expected": "distinct_referents",
+        "predicted": "ambiguous",
+        "evidence_valid": null,
+        "evidence_errors": [],
+        "batch": "batch-05"
+      },
+      {
+        "id": "q096",
+        "strict": true,
+        "category": "life_state",
+        "expected": "distinct_referents",
+        "predicted": "ambiguous",
+        "evidence_valid": null,
+        "evidence_errors": [],
+        "batch": "batch-05"
+      },
+      {
+        "id": "q097",
+        "strict": true,
+        "category": "same_label",
+        "expected": "distinct_referents",
+        "predicted": "ambiguous",
+        "evidence_valid": null,
+        "evidence_errors": [],
+        "batch": "batch-05"
+      },
+      {
+        "id": "q098",
+        "strict": false,
+        "category": "representation",
+        "expected": "distinct_referents",
+        "predicted": "ambiguous",
+        "evidence_valid": null,
+        "evidence_errors": [],
+        "batch": "batch-05"
+      },
+      {
+        "id": "q099",
+        "strict": true,
+        "category": "numbered",
+        "expected": "same_referent",
+        "predicted": "ambiguous",
+        "evidence_valid": null,
+        "evidence_errors": [],
+        "batch": "batch-05"
+      },
+      {
+        "id": "q100",
+        "strict": true,
+        "category": "same_encounter",
+        "expected": "distinct_referents",
+        "predicted": "ambiguous",
+        "evidence_valid": null,
+        "evidence_errors": [],
+        "batch": "batch-05"
+      }
+    ]
+  },
+  "global_coidentity_distinctness_conflicts": [],
+  "model_records": {
+    "batch-01": {
+      "context": {
+        "arm": "context",
+        "backend": "codex-cli",
+        "model": "gpt-6.1-terra",
+        "effort": "medium",
+        "payload_sha256": "61fe9bc6479c8a6f099c5fe2807065c8fb3d00bab64397cfa7e4eb399ed4f4fd",
+        "system_sha256": "b590d9eb3da72dbe33c811c13f39a1cbcfb8e5e06788a23bba2df99c9c8bdd90",
+        "prompt_sha256": "82e0c3370adc8e1643429bf515e746e05a9f6d37e19ffc05ee2bd090a3d8b829",
+        "response_sha256": "a13c0f163f4eceaab912634a408b2e10d5107fc30ae51c23bc624cd59205fa25",
+        "status": "response_received_not_yet_scored",
+        "gold_sent": false
+      },
+      "surface_only": {
+        "arm": "surface_only",
+        "backend": "codex-cli",
+        "model": "gpt-6.1-terra",
+        "effort": "medium",
+        "payload_sha256": "61fe9bc6479c8a6f099c5fe2807065c8fb3d00bab64397cfa7e4eb399ed4f4fd",
+        "system_sha256": "b590d9eb3da72dbe33c811c13f39a1cbcfb8e5e06788a23bba2df99c9c8bdd90",
+        "prompt_sha256": "03eedf962d0a3fa607f726912c0a3a667520714051bf7da1ed7c5df0205a4bfe",
+        "response_sha256": "6c1369e0d7ed0f0e7e64552ae6cf4e766a54884c3363da1276239ce8808f8c3e",
+        "status": "response_received_not_yet_scored",
+        "gold_sent": false
+      }
+    },
+    "batch-02": {
+      "context": {
+        "arm": "context",
+        "backend": "codex-cli",
+        "model": "gpt-6.1-terra",
+        "effort": "medium",
+        "payload_sha256": "546ef03dc950d15f828a0cc72c5eb162fc011e1dcc27ba456332f56a6d564632",
+        "system_sha256": "b590d9eb3da72dbe33c811c13f39a1cbcfb8e5e06788a23bba2df99c9c8bdd90",
+        "prompt_sha256": "1ae1e5f1cbf43195ec4bdade1a157e49c996986fa07fa64b01b5e0803243d4e4",
+        "response_sha256": "3d3b17fd07922bcb9063b4d447edaca1369206a4f6afce17d91467c4dd4ddefa",
+        "status": "response_received_not_yet_scored",
+        "gold_sent": false
+      },
+      "surface_only": {
+        "arm": "surface_only",
+        "backend": "codex-cli",
+        "model": "gpt-6.1-terra",
+        "effort": "medium",
+        "payload_sha256": "546ef03dc950d15f828a0cc72c5eb162fc011e1dcc27ba456332f56a6d564632",
+        "system_sha256": "b590d9eb3da72dbe33c811c13f39a1cbcfb8e5e06788a23bba2df99c9c8bdd90",
+        "prompt_sha256": "0ce5b61094d785a23c41d0766560819eaf125d30721a9050938f74815346d532",
+        "response_sha256": "d68a8236133ead9c6661662a4ba758768e98bb9b8692da068c07bc9ed8a54102",
+        "status": "response_received_not_yet_scored",
+        "gold_sent": false
+      }
+    },
+    "batch-03": {
+      "context": {
+        "arm": "context",
+        "backend": "codex-cli",
+        "model": "gpt-6.1-terra",
+        "effort": "medium",
+        "payload_sha256": "76e98d64847e960cec662ad96ff96f0e6f08fe14bf322bb4c191dd7f0f40f520",
+        "system_sha256": "b590d9eb3da72dbe33c811c13f39a1cbcfb8e5e06788a23bba2df99c9c8bdd90",
+        "prompt_sha256": "c9ba4261223a5a9f908ef45c2148724e8a08910cd5c01f4be3a2bf1092a0c08f",
+        "response_sha256": "50d0a123c0f6eed8147b080dbe0b3e09e6ada32f060fc289e380041b7d5c01b5",
+        "status": "response_received_not_yet_scored",
+        "gold_sent": false
+      },
+      "surface_only": {
+        "arm": "surface_only",
+        "backend": "codex-cli",
+        "model": "gpt-6.1-terra",
+        "effort": "medium",
+        "payload_sha256": "76e98d64847e960cec662ad96ff96f0e6f08fe14bf322bb4c191dd7f0f40f520",
+        "system_sha256": "b590d9eb3da72dbe33c811c13f39a1cbcfb8e5e06788a23bba2df99c9c8bdd90",
+        "prompt_sha256": "8df3838661ae60763abde21604fdce86831a9d7f0d2fd9c52d080c18b1f47321",
+        "response_sha256": "5ae2b44f825194344b0b7c2490b51fc27f2dc149917bc52fe6203cfab182a691",
+        "status": "response_received_not_yet_scored",
+        "gold_sent": false
+      }
+    },
+    "batch-04": {
+      "context": {
+        "arm": "context",
+        "backend": "codex-cli",
+        "model": "gpt-6.1-terra",
+        "effort": "medium",
+        "payload_sha256": "f4c82398939ee82692b5197b1b750b188830e5f0e243ec02f0346c82a3ea4552",
+        "system_sha256": "b590d9eb3da72dbe33c811c13f39a1cbcfb8e5e06788a23bba2df99c9c8bdd90",
+        "prompt_sha256": "eaea04fd29d3b23a1c013ce3dbfc1703f77472487f7e1a44957985c6af2833c5",
+        "response_sha256": "5db9036c232ad7acb011929e68bbfe294012feec780bdd06354433e643647608",
+        "status": "response_received_not_yet_scored",
+        "gold_sent": false
+      },
+      "surface_only": {
+        "arm": "surface_only",
+        "backend": "codex-cli",
+        "model": "gpt-6.1-terra",
+        "effort": "medium",
+        "payload_sha256": "f4c82398939ee82692b5197b1b750b188830e5f0e243ec02f0346c82a3ea4552",
+        "system_sha256": "b590d9eb3da72dbe33c811c13f39a1cbcfb8e5e06788a23bba2df99c9c8bdd90",
+        "prompt_sha256": "cf804d0bd89c05339f0a1865893c5ed9ff64bb0fb3c304ade2082f01f8f07d29",
+        "response_sha256": "ea394fc11ecd5336fd8170464ba9a4f7f0190dd13e3191bda5c244445a6e52c8",
+        "status": "response_received_not_yet_scored",
+        "gold_sent": false
+      }
+    },
+    "batch-05": {
+      "context": {
+        "arm": "context",
+        "backend": "codex-cli",
+        "model": "gpt-6.1-terra",
+        "effort": "medium",
+        "payload_sha256": "86833d5a405aa7648df6ee6720c8ac6011e52501d8aa6561e2726ce1c05826f3",
+        "system_sha256": "b590d9eb3da72dbe33c811c13f39a1cbcfb8e5e06788a23bba2df99c9c8bdd90",
+        "prompt_sha256": "48f01c34fa9ef7013d02fd00bb505ff7de4c488aa59054b1673bbfefc5a0552b",
+        "response_sha256": "78385002ddfceab056dad864b066eee8053b12c4be7e59b168f4a29e8f92fcf4",
+        "status": "response_received_not_yet_scored",
+        "gold_sent": false
+      },
+      "surface_only": {
+        "arm": "surface_only",
+        "backend": "codex-cli",
+        "model": "gpt-6.1-terra",
+        "effort": "medium",
+        "payload_sha256": "86833d5a405aa7648df6ee6720c8ac6011e52501d8aa6561e2726ce1c05826f3",
+        "system_sha256": "b590d9eb3da72dbe33c811c13f39a1cbcfb8e5e06788a23bba2df99c9c8bdd90",
+        "prompt_sha256": "fb8fab83074278427a3ebe524cf70f5cd24bc26f5c328554ec631c081efae950",
+        "response_sha256": "e326b45b80cc9e828d5950c87aa0f46b1ebda3e99b1b42b1a830d96bc5bae658",
+        "status": "response_received_not_yet_scored",
+        "gold_sent": false
+      }
+    }
+  },
+  "root_registration": {
+    "gold_sha256": "348aa9ddf8973e4d9026887b7b454831d27be2f533babf2f1e18b8231db86923",
+    "payload_sha256": "5c3638b541d67a3616127f9af116d0c540a020a8b53c142b77df13a9560efe43",
+    "input_hashes_sha256": "dd7ef069a85c585a372612dfe25760eae0718bbef6b31d5c8d9fce183437e6b8",
+    "status": "Researcher-authored expectations frozen before model calls; not GM adjudication"
+  },
+  "prior_small_trial": {
+    "strict_exact_matches": 13,
+    "strict_label_and_evidence_matches": 13,
+    "strict_cases": 13,
+    "evidence_failures": [],
+    "strict_false_coidentity": [],
+    "surface_only_abstentions": 16,
+    "exploratory_unresolved_coidentity": [],
+    "exploratory": [
+      {
+        "id": "q04",
+        "relation": "same_referent",
+        "draft_expected": "same_referent"
+      },
+      {
+        "id": "q14",
+        "relation": "ambiguous",
+        "draft_expected": "same_referent"
+      },
+      {
+        "id": "q16",
+        "relation": "ambiguous",
+        "draft_expected": "ambiguous"
+      }
+    ],
+    "coidentity_conflicts": []
+  },
+  "comparison_limit": "New chapters, longer narrative context and batches; not the identical original task or independent trials.",
+  "gold_rulings": "Researcher expectations; no independent GM adjudication; exploratory cases excluded from strict denominator."
+}

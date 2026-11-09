@@ -1,0 +1,27 @@
+{
+  "tests_passed": 7,
+  "fixed_search_requests": 18,
+  "failed_fixed_search_requests": 0,
+  "initial_exploratory_searches": 1,
+  "generative_model_calls": 0,
+  "embedding_inference_used": true,
+  "offline_retrieval_replay_matches": true,
+  "private_archive_files": 61,
+  "fixture_source_hashes_current": 7,
+  "original_raw_summaries_unchanged": 7,
+  "new_code_sha256": {
+    "evaluate_searches.py": "aa038e37f72c102bc42d91ef81ed005f520644f2e63c40301aaaf53635908614",
+    "expand_sources.py": "a2a92b2fe3ba0855d66593768571ce3feaf476373bea1d1e184faf49ebe22cb2",
+    "retrieval.py": "a6591e9d08c3395ae95b0df01755e23572edcc9463ed64572a73a8e0bc7e8ab2",
+    "run_searches.py": "f3e892d2d99230bd63478913eb937a2e833f3e2da944caebcd6ce90b9e24d5bf",
+    "test_retrieval.py": "357ad95c4f1394210d283bfcac996f0f0961a354dedd465d8ce3b1a1a14905eb"
+  },
+  "result_sha256": {
+    "environment.json": "ea766cd2a66ae808b24717e9ae10a80391f2b13a34fad4af6b553d3f2e824200",
+    "expanded.json": "e6fbbf9bba7d512e63304961f2e26ce29afbc9a124513b04753d8902ffc0e1e9",
+    "retrieval.json": "0ecbb79ab6242cef63f980f56ad73fe359f9dc0fd19d640e36300687030c0eeb"
+  },
+  "query_sha256": "859235c13aaa4610e841e8cf4b7b5ba20868a2591ecaa516f18626a3b996c768",
+  "private_inventory_sha256": "47f75ec4b4a3a589517742142699d878d29ca211f91824dd1442a69ecb82e4e0",
+  "production_or_campaign_writes": false
+}
