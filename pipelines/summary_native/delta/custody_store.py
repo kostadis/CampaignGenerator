@@ -34,6 +34,13 @@ def objects_dir(root: Path | str) -> Path:
     return Path(root) / CUSTODY_REL
 
 
+def object_rel(sha: str) -> str:
+    """The campaign-relative path of the object holding ``sha`` (for records that point at a snapshot)."""
+    if not _SHA.fullmatch(sha):
+        raise DeltaRefusal(f"not a SHA-256: {sha!r}", EXIT_REFUSAL)
+    return f"{CUSTODY_REL}/{sha}"
+
+
 def _object_path(root: Path | str, sha: str) -> Path:
     if not _SHA.fullmatch(sha):
         raise DeltaRefusal(f"not a SHA-256: {sha!r}", EXIT_REFUSAL)

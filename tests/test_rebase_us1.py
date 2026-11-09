@@ -248,6 +248,51 @@ def test_a_repair_of_an_unknown_line_is_refused_and_needs_a_reviewer(fx, capsys)
     assert run(capsys, fx.root, *base, expect=2)["code"] == "USAGE"  # no reviewer
 
 
+# --------------------------------------------------------------------------- bulk hold by entry
+
+def test_hold_entry_holds_every_affected_line_of_that_entry_explicitly(fx, capsys, monkeypatch):
+    boom = forbid_models(monkeypatch)
+    out = prepare(capsys, fx, [3, 5])["data"]
+    plan_id = out["plan_id"]
+    review = run(capsys, fx.root, "rebase", "show", "--plan", plan_id)["data"]
+    base = ["rebase", "repair", "--plan", plan_id, "--hold-entry", "3/003.01"]
+    # reviewer and reason are required, never implicit
+    assert run(capsys, fx.root, *base, "--reason", "r", expect=2)["code"] == "USAGE"
+    assert run(capsys, fx.root, *base, "--reviewer", "gm", expect=2)["code"] == "USAGE"
+    assert run(capsys, fx.root, "rebase", "repair", "--plan", plan_id, "--hold-entry", "three", "--reason", "r",
+               "--reviewer", "gm", expect=2)["ok"] is False
+    assert run(capsys, fx.root, *base, "--reason", "r", "--reviewer", "gm", "--line", "x", expect=2)["ok"] is False
+    unknown = run(capsys, fx.root, "rebase", "repair", "--plan", plan_id, "--hold-entry", "3/003.99", "--reason", "r",
+                  "--reviewer", "gm", expect=2)
+    assert unknown["code"] == "REBASE_UNKNOWN_ENTRY" and "3/003.01" in unknown["message"]
+    assert grounding_edits.load_decisions(fx.root, plan_id) is None  # every refusal wrote nothing
+    wanted = [l["line_id"] for l in review["affected_lines"] if l["chapter"] == 3 and l["entry"] == "003.01"
+              and l["origin"] == "baseline"]
+    other = [l["line_id"] for l in review["affected_lines"] if l["chapter"] != 3]
+    assert len(wanted) == 1450
+    # one line was already given a repair draft: it is left alone and reported, not silently held
+    first = repair(capsys, fx, plan_id, next(l for l in review["affected_lines"] if l["line_id"] == wanted[0]),
+                   "Fixture planning detail, corrected. [ch 003 / 003.01]")
+    held = run(capsys, fx.root, *base, "--reason", "entry corrected", "--reviewer", "gm")["data"]
+    assert held["count"] == 1449 and held["skipped_already_proposed"] == [wanted[0]]
+    assert sorted(held["held_lines"]) == sorted(wanted[1:]) and not set(held["held_lines"]) & set(other)
+    proposals = grounding_edits.load_proposals(fx.root, plan_id)
+    decisions = grounding_edits.current_decisions(fx.root, plan_id, proposals)
+    by_id = {p.proposal_id: p for p in proposals.proposals}
+    mine = {pid: d for pid, d in decisions.items() if d.decision == "hold"}
+    assert len(mine) == 1449 and all(d.reviewer == "gm" and "entry corrected" in d.reason for d in mine.values())
+    assert first["proposal_id"] not in decisions  # the repair draft is still undecided
+    assert all(p.hold_marker for pid, p in by_id.items() if pid in mine)
+    assert len({d.reason for d in mine.values()}) == 1449  # each decision names its own line
+    record = json.loads((fx.root / held["record"]).read_text())
+    assert record["held_lines"] == held["held_lines"] and record["reviewer"] == "gm"
+    shown = run(capsys, fx.root, "rebase", "show", "--plan", plan_id)["data"]
+    states = {l["line_id"]: l["state"] for l in shown["affected_lines"]}
+    assert {states[i] for i in held["held_lines"]} == {"held"} and states[wanted[0]] == "unruled"
+    assert {states[i] for i in other} == {"unruled"}  # lines of other entries and chapters are untouched
+    assert boom.calls == 0
+
+
 # --------------------------------------------------------------------------- SC-003
 
 def test_whitespace_only_correction_is_adopted_unaffected_with_zero_model_calls(tmp_path, capsys, monkeypatch):

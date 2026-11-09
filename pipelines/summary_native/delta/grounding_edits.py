@@ -352,6 +352,39 @@ def decide(campaign_dir: Path | str, plan_id: str, proposal_id: str, decision: s
     return record
 
 
+def decide_many(campaign_dir: Path | str, plan_id: str, decisions: Mapping[str, tuple[str, str | None]], *,
+                reviewer: str) -> DecisionSet:
+    """Record several decisions as ONE new revisioned file (``{proposal_id: (decision, reason)}``).
+
+    The same rules as :func:`decide` for each: an explicit decision value, a required reviewer, a known proposal,
+    and a hold only on a proposal that carries a hold marker.  The bulk hold of a rebase entry uses it so a
+    thousand held lines are one revision, not a thousand.
+    """
+    if not (reviewer or "").strip():
+        raise DeltaRefusal("--reviewer is required to record a grounding decision; there is no default reviewer",
+                           EXIT_USAGE)
+    if not decisions:
+        raise DeltaRefusal("no decisions to record", EXIT_USAGE)
+    proposal_set = load_proposals(campaign_dir, plan_id)
+    known = {p.proposal_id: p for p in proposal_set.proposals}
+    for proposal_id, (decision, _reason) in decisions.items():
+        if decision not in DECISION_VALUES:
+            raise DeltaRefusal(f"decision must be one of {DECISION_VALUES}; there is no default", EXIT_USAGE)
+        if proposal_id not in known:
+            raise DeltaRefusal(f"no such proposal {proposal_id} in plan {plan_id}", EXIT_REFUSAL)
+        if decision == "hold" and not known[proposal_id].hold_marker:
+            raise DeltaRefusal(f"proposal {proposal_id} cannot be held: only a source-correction repair carries a "
+                               "hold marker", EXIT_REFUSAL)
+    previous = load_decisions(campaign_dir, plan_id)
+    carried = dict(previous.decisions) if previous and previous.proposals_revision == proposal_set.revision else {}
+    for proposal_id, (decision, reason) in decisions.items():
+        carried[proposal_id] = DecisionEntry(decision=decision, reason=reason, reviewer=reviewer.strip())
+    record = DecisionSet(plan_id=plan_id, proposals_revision=proposal_set.revision,
+                         revision=(previous.revision + 1) if previous else 1, decisions=carried)
+    _write_new(edits_dir(campaign_dir, plan_id), "decisions", record.revision, record.model_dump(mode="json"))
+    return record
+
+
 def append_proposals(campaign_dir: Path | str, plan_id: str, baseline_ref: str, docs: Mapping[str, bytes],
                      new: list[Proposal], *, generated_by: dict[str, str] | None = None) -> ProposalSet:
     """Add proposals to the plan's set as a NEW revision, keeping the decisions already made on the others.

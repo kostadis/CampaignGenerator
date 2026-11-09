@@ -36,6 +36,28 @@ class Receipt(BaseModel):
     recovery_state: str | None = None
 
 
+class RebaseReceipt(Receipt):
+    """Spec 040 data-model RebaseReceipt: the delta receipt plus what a source-custody rebase did and did NOT read.
+
+    ``integrity_reads`` (every pinned source hashed), ``parsed_historical`` (what was parsed for impact: the
+    selected chapters, and, separately, any unselected one), ``cached_evidence_reused``, ``model_input_sources``
+    (what a model was ever shown), ``model_calls``, ``unselected_stale_remaining`` and ``followup_consumers`` are
+    reported separately and never summed into one count.
+    """
+
+    rebase_id: str
+    sources_and_decisions: list[dict[str, Any]] = Field(default_factory=list)
+    integrity_reads: int = 0
+    parsed_historical: dict[str, Any] = Field(default_factory=dict)
+    cached_evidence_reused: int = 0
+    model_input_sources: dict[str, Any] = Field(default_factory=dict)
+    model_calls: int = 0
+    unselected_stale_remaining: list[int] = Field(default_factory=list)
+    followup_consumers: list[str] = Field(default_factory=list)
+    new_generation_ref: str | None = None
+    parent_generation_ref: str | None = None
+
+
 def save_receipt(receipt: Receipt, path: Path | str) -> None:
     atomic_write_record(Path(path), receipt.model_dump(mode="json"))
 
@@ -45,7 +67,7 @@ def load_receipt(path: Path | str) -> Receipt:
     record.pop("schema", None)
     if record.get("schema_version") != SCHEMA_VERSION:
         raise DeltaRefusal(f"unsupported receipt schema_version {record.get('schema_version')!r}")
-    return Receipt.model_validate(record)
+    return (RebaseReceipt if "rebase_id" in record else Receipt).model_validate(record)
 
 
 def build_receipt(campaign_dir: Path | str, plan, state) -> Receipt:
@@ -136,4 +158,89 @@ def write_receipt(campaign_dir: Path | str, plan, state) -> Path:
 
     path = receipt_path(campaign_dir, plan.plan_id)
     save_receipt(build_receipt(campaign_dir, plan, state), path)
+    return path
+
+
+def _count_cached(value: Any) -> int:
+    """Claims runs a report says were served from cache (extraction reuse by input digest)."""
+    if isinstance(value, dict):
+        return sum(1 for k, v in value.items() if k == "cached" and v is True) + sum(
+            _count_cached(v) for v in value.values())
+    if isinstance(value, list):
+        return sum(_count_cached(v) for v in value)
+    return 0
+
+
+def build_rebase_receipt(campaign_dir: Path | str, plan) -> RebaseReceipt:
+    """The completion receipt of an APPLIED rebase, from its records and the active generation (spec 040 T022).
+
+    Refuses until the rebase's generation is the active one and its lineage parent is the plan's baseline.
+    """
+    from . import baseline as baseline_mod, grounding_publish as gp, rebase as rebase_mod, rebase_inspect
+    from .errors import EXIT_REFUSAL
+    from .records_io import read_json
+
+    root = Path(campaign_dir).absolute()
+    state = rebase_mod.load_state(root, plan.plan_id)
+    active = baseline_mod.bind(root)
+    manifest = baseline_mod._read_manifest(root, active.generation_id)
+    parent = baseline_mod._delta_parent(root, manifest)
+    if parent is None or f"{parent.generation_id}@{parent.manifest_sha256}" != plan.grounding_baseline_ref:
+        raise DeltaRefusal(f"rebase {state.rebase_id} is not applied: the active generation {active.generation_id} "
+                           f"is not a child of {plan.grounding_baseline_ref}; run `delta grounding apply` first",
+                           EXIT_REFUSAL)
+    lineage = json.loads((gp.grounding_dir(root, plan.plan_id) / "lineage.json").read_text(encoding="utf-8"))
+    block = lineage.get("rebase") or {}
+    decisions = read_json(root / block["decisions_ref"])
+    kept = {s["chapter"]: s for s in block.get("sources", [])}
+    rows = []
+    for chapter in state.chapters:
+        old, new = state.snapshot(chapter, "old"), state.snapshot(chapter, "current")
+        verdict = decisions["sources"][str(chapter)]
+        rows.append({"chapter": chapter, "path": old.path, "old_sha256": old.sha256, "new_sha256": new.sha256,
+                     "decision": verdict["decision"], "reason": verdict.get("reason"),
+                     "old_bytes_provider": old.provider, "rebased": chapter in kept})
+    proposals = sorted(state.directory.glob("propose-r*.json"))
+    model_calls, shown = 0, {"affected_lines": [], "entry_diffs": []}
+    for path in proposals:
+        rec = read_json(path)
+        model_calls += int(rec.get("model_calls", 0))
+        for key in shown:
+            shown[key] = sorted(set(shown[key]) | set((rec.get("model_input_sources") or {}).get(key, [])))
+    request = json.loads((gp.grounding_dir(root, plan.plan_id) / gp.PUBLISH_REQUEST_FILE).read_text(encoding="utf-8"))
+    cached, claims_report = 0, request.get("check_report")
+    if claims_report and (root / claims_report).is_file():
+        try:
+            cached = _count_cached(json.loads((root / claims_report).read_text(encoding="utf-8")))
+        except ValueError:
+            cached = 0
+    check_calls = 0
+    for path in sorted(gp.grounding_dir(root, plan.plan_id).glob("check-r*.json")):
+        check_calls += int(read_json(path).get("model_calls", 0))
+    parsed = sorted(s.chapter for s in state.impact.sources)
+    remaining = [e.chapter for e in rebase_inspect.inspect(root).stale]
+    return RebaseReceipt(
+        rebase_id=state.rebase_id, selected_chapters=sorted(kept),
+        inherited_coverage_and_gaps={"grounding_baseline_ref": plan.grounding_baseline_ref, "npc_horizons": {},
+                                     "missing_scope": [], "unresolved": []},
+        held=sorted(block.get("held_lines", [])), publication_hashes={"grounding": active.manifest_sha256},
+        decisions=[{"kind": "rebase", "id": state.rebase_id, "decision": "decided",
+                    "revision": decisions["revision"], "reviewer": decisions["reviewer"]}],
+        read_counts={"integrity_reads": state.inspection.get("integrity_reads", 0)},
+        call_counts={"model": model_calls + check_calls}, recovery_state="none",
+        sources_and_decisions=rows, integrity_reads=int(state.inspection.get("integrity_reads", 0)),
+        parsed_historical={"selected": parsed, "unselected": sorted(set(parsed) - set(state.chapters))},
+        cached_evidence_reused=cached,
+        model_input_sources=shown, model_calls=model_calls + check_calls,
+        unselected_stale_remaining=remaining,
+        followup_consumers=[f.path for f in state.impact.followup_consumers],
+        new_generation_ref=active.ref, parent_generation_ref=f"{parent.generation_id}@{parent.manifest_sha256}")
+
+
+def write_rebase_receipt(campaign_dir: Path | str, plan) -> Path:
+    """Build and atomically write the rebase plan's ``receipt.json``; returns its path."""
+    from .run import receipt_path
+
+    path = receipt_path(campaign_dir, plan.plan_id)
+    save_receipt(build_rebase_receipt(campaign_dir, plan), path)
     return path

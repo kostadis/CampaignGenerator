@@ -2,8 +2,7 @@
 
 ``--json`` output is ``{ok, code, message, data}`` on stdout for success and refusal alike, so a caller reads
 one shape; the exit code is the process's (contracts/cli.md).  No model call is made in this module: the one
-drafting call is :mod:`.rebase_propose`, reached only by ``rebase propose``.  ``rebind`` stays a stub until
-the story that implements it.
+drafting call is :mod:`.rebase_propose`, reached only by ``rebase propose``.
 """
 
 from __future__ import annotations
@@ -14,7 +13,7 @@ import re
 import sys
 from pathlib import Path
 
-from . import rebase, rebase_inspect, rebase_propose
+from . import rebase, rebase_inspect, rebase_propose, rebind as rebind_mod
 from .cli import DELTA_HANDLERS
 from .cli_plan import campaign_root, load_plan_arg, resolve_model_choice
 from .errors import EXIT_OK, EXIT_RECOVERY, EXIT_REFUSAL, EXIT_STALE, EXIT_USAGE, DeltaRefusal
@@ -63,11 +62,6 @@ def _pairs(values: list[str] | None, flag: str) -> dict[str, str]:
             raise DeltaRefusal(f"{flag} names {key.strip()!r} twice", EXIT_USAGE)
         out[key.strip()] = value.strip()
     return out
-
-
-def _stub(args: argparse.Namespace) -> int:
-    print(f"Error: summary_native delta {args.delta_leaf}: not implemented yet (spec 040)", file=sys.stderr)
-    return EXIT_USAGE
 
 
 @_guarded
@@ -123,6 +117,15 @@ def _propose(args: argparse.Namespace) -> int:
 def _repair(args: argparse.Namespace) -> int:
     root = campaign_root(args)
     plan = load_plan_arg(args, root)
+    if args.hold_entry:
+        if args.line or args.text is not None:
+            raise DeltaRefusal("--hold-entry holds lines without rewriting them; do not combine it with --line or "
+                               "--text", EXIT_USAGE)
+        data = rebase.hold_entry(root, plan.plan_id, args.hold_entry, args.reason or "", args.reviewer or "")
+        return _out(args, data, f"held {data['count']} line(s) citing {data['entry']} "
+                    f"(skipped {len(data['skipped_already_proposed'])} already proposed): "
+                    + ", ".join(data["held_lines"][:5]) + (" ..." if data["count"] > 5 else "")
+                    + f". Every line id is in {data['record']}.")
     if args.text is None:
         raise DeltaRefusal("--text is required to record a repair", EXIT_USAGE)
     data = rebase.repair_add(root, plan.plan_id, args.line or "", args.text, args.reason or "",
@@ -147,7 +150,20 @@ def _decide(args: argparse.Namespace) -> int:
     return _out(args, data, f"decisions {verb} by {data['reviewer']}")
 
 
-for _leaf, _fn in (("rebase inspect", _inspect), ("rebase prepare", _prepare), ("rebase show", _show),
+@_guarded
+def _rebind(args: argparse.Namespace) -> int:
+    root = campaign_root(args)
+    plan = load_plan_arg(args, root)
+    if not args.baseline:
+        raise DeltaRefusal("--baseline GENERATION_ID is required; there is no default", EXIT_USAGE)
+    data = rebind_mod.rebind(root, plan.plan_id, args.baseline)
+    verb = (f"rebound to {data['new_baseline_ref']} as revision {data['to_revision']}" if data["written"]
+            else "already rebound (no change)")
+    return _out(args, data, f"plan {plan.plan_id} {verb}: {len(data['reapplied_edits'])} edit(s) re-applied, "
+                f"{len(data['stale_edits'])} stale, {len(data['invalidated'])} artifact(s) invalidated, "
+                f"{len(data['npc_carried'])} NPC binding(s) carried. Next: {data['next']}")
+
+
+for _leaf, _fn in (("rebind", _rebind), ("rebase inspect", _inspect), ("rebase prepare", _prepare), ("rebase show", _show),
                    ("rebase propose", _propose), ("rebase repair", _repair), ("rebase decide", _decide)):
     DELTA_HANDLERS[_leaf] = _fn
-DELTA_HANDLERS.setdefault("rebind", _stub)

@@ -36,8 +36,9 @@ from . import baseline as baseline_mod, custody_store, grounding_edits, rebase_i
 from .cli_plan import campaign_identity
 from .errors import EXIT_REFUSAL, EXIT_STALE, EXIT_USAGE, DeltaRefusal
 from .plan import DELTA_ROOT_REL, DeltaPlan, PlanModels, create_plan, load_plan, plans_dir, save_plan
+from .lineage import RebaseBlock, RebaseSource
 from .rebase_impact import (
-    AffectedLine, ImpactSet, SourceChange, compute_impact, find_line, impact_digest,
+    AffectedLine, ImpactSet, SourceChange, compute_impact, find_line, impact_digest, indexed_lines,
 )
 from .records_io import read_json, write_json
 
@@ -296,9 +297,9 @@ def edits_sha256(root: Path | str, plan_id: str) -> str:
 
 
 def build_repair(docs: Mapping[str, bytes], state: RebaseState, line: AffectedLine, text: str, reason: str, *,
-                 origin: str, author: str | None) -> grounding_edits.Proposal:
+                 origin: str, author: str | None, index: Mapping | None = None) -> grounding_edits.Proposal:
     """A host-built ``source_correction`` proposal for one affected baseline line (exact before = its bytes)."""
-    found = find_line(docs, line.line_id)
+    found = index.get(line.line_id) if index is not None else find_line(docs, line.line_id)
     if found is None:
         raise _refuse("REBASE_STALE", f"line {line.line_id} no longer exists in the baseline documents; "
                       "re-run `delta rebase prepare`.", EXIT_STALE)
@@ -345,11 +346,87 @@ def repair_add(root: Path | str, plan_id: str, line_id: str, text: str, reason: 
                     "--decision approve|reject|discuss|hold --reviewer NAME"}
 
 
+def hold_entry(root: Path | str, plan_id: str, entry_ref: str, reason: str, reviewer: str) -> dict:
+    """Hold EVERY affected baseline line that cites one changed entry, as explicit per-line decisions (spec 040).
+
+    ``entry_ref`` is ``CH/ENTRY`` as the lines cite it (``3/003.01``).  The GM names the entry, a reason and a
+    reviewer; nothing is implicit.  Only the affected baseline lines citing exactly that chapter and entry are
+    touched; a line that already has a proposal (a repair or an earlier decision) is left alone and reported.
+    Each held line gets its own proposal and its own ``hold`` decision (one new proposals revision and one new
+    decisions revision for the whole batch), and the line ids are listed in the output and in the hold record
+    ``holds-r<N>.json`` beside the rebase's decisions.  Nothing here calls a model.
+    """
+    for label, value in (("--hold-entry", entry_ref), ("--reason", reason), ("--reviewer", reviewer)):
+        if not (value or "").strip():
+            raise DeltaRefusal(f"{label} is required to hold an entry; there is no default", EXIT_USAGE)
+    head, sep, tail = entry_ref.strip().partition("/")
+    try:
+        chapter = int(head)
+    except ValueError:
+        chapter = None
+    if not sep or chapter is None or not tail.strip():
+        raise DeltaRefusal(f"bad --hold-entry {entry_ref!r}; expected CH/ENTRY, for example 3/003.01", EXIT_USAGE)
+    entry = tail.strip()
+    state = load_state(root, plan_id)
+    require_fresh(state)
+    wanted = [l for l in state.impact.affected_lines
+              if l.origin == "baseline" and l.chapter == chapter and l.entry == entry]
+    if not wanted:
+        listed = sorted({f"{l.chapter}/{l.entry}" for l in state.impact.affected_lines if l.origin == "baseline"})
+        raise _refuse("REBASE_UNKNOWN_ENTRY", f"no affected baseline line cites {chapter}/{entry}; the entries that "
+                      f"do are: {', '.join(listed) or 'none'}.", EXIT_USAGE)
+    docs = baseline_docs(state)
+    index = _line_index(docs)
+    try:
+        existing = {p.target_id for p in grounding_edits.load_proposals(state.root, plan_id).proposals}
+    except DeltaRefusal:
+        existing = set()
+    why = reason.strip()
+    proposals, held, skipped = [], [], []
+    for line in wanted:
+        found = index.get(line.line_id)
+        if found is None:
+            raise _refuse("REBASE_STALE", f"line {line.line_id} no longer exists in the baseline documents; re-run "
+                          "`delta rebase prepare`.", EXIT_STALE)
+        if grounding_edits.line_target_id(found[0], found[1], found[2]) in existing:
+            skipped.append(line.line_id)
+            continue
+        text = found[2].decode("utf-8").rstrip("\r\n")
+        proposals.append(build_repair(docs, state, line, text, f"held: {why}", origin="gm", author=reviewer.strip(),
+                                      index=index))
+        held.append(line.line_id)
+    if proposals:
+        saved = grounding_edits.append_proposals(state.root, plan_id, state.plan.grounding_baseline_ref or "", docs,
+                                                 proposals)
+        grounding_edits.decide_many(
+            state.root, plan_id,
+            {p.proposal_id: ("hold", f"bulk hold of {chapter}/{entry} ({line_id}): {why}")
+             for p, line_id in zip(proposals, held)}, reviewer=reviewer.strip())
+        revision = saved.revision
+    else:
+        revision = grounding_edits.load_proposals(state.root, plan_id).revision
+    n = len(sorted(state.directory.glob("holds-r*.json"))) + 1
+    record = {"rebase_id": state.rebase_id, "plan_id": plan_id, "entry": f"{chapter}/{entry}", "reviewer": reviewer.strip(),
+              "reason": why, "held_lines": held, "proposal_ids": [p.proposal_id for p in proposals],
+              "skipped_already_proposed": skipped, "proposals_revision": revision,
+              "decided_at": datetime.now(timezone.utc).isoformat(timespec="seconds")}
+    path = state.directory / f"holds-r{n}.json"
+    write_json(path, record)
+    return {**record, "decision": "hold", "count": len(held), "record": path.relative_to(state.root).as_posix(),
+            "call_counts": {"model": 0}}
+
+
 # --------------------------------------------------------------------------- line state
+
+def _line_index(docs: Mapping[str, bytes]) -> dict[str, tuple[str, int, bytes]]:
+    """``line_id -> (document, line_no, line)`` for every line (one pass, so a loop over many lines stays linear)."""
+    return {lid: (name, n, raw) for name in docs for lid, n, raw in indexed_lines(name, docs[name])}
+
 
 def _line_states(state: RebaseState) -> dict[str, dict]:
     """``line_id -> {state, proposal_id}`` for each affected line: unruled | approved | rejected | held | discuss."""
     docs = baseline_docs(state)
+    index = _line_index(docs)
     try:
         proposals = grounding_edits.load_proposals(state.root, state.plan.plan_id)
     except DeltaRefusal:
@@ -363,7 +440,7 @@ def _line_states(state: RebaseState) -> dict[str, dict]:
         if line.origin != "baseline":
             out[line.line_id] = {"state": "pending-plan", "proposal_id": None}
             continue
-        found = find_line(docs, line.line_id)
+        found = index.get(line.line_id)
         target = grounding_edits.line_target_id(found[0], found[1], found[2]) if found else None
         verdicts = []
         for p in by_target.get(target, []):
@@ -408,6 +485,39 @@ def _describe(lines: list[AffectedLine]) -> str:
     return "; ".join(f"{l.line_id} ({l.document} line {l.line_no}, {l.citation}, {l.reason})" for l in lines)
 
 
+def check_rulings(state: RebaseState, sources: Mapping[int, str], ruled_members: set[str]) -> None:
+    """The FR-009 gate, shared by ``decide`` and the candidate build.
+
+    A semantic change cannot be adopted by hash replacement alone, ``adopt-with-repairs`` needs an approved repair
+    or an explicit hold for every affected baseline line, and every unknown-impact member needs a ruling.
+    """
+    for ch, d in sorted(sources.items()):
+        if d == "adopt-unaffected":
+            lines, notes = state.impact.lines_of(ch), state.impact.annotations_of(ch)
+            if lines or notes:
+                raise _refuse(
+                    "REBASE_SEMANTIC_CHANGE",
+                    f"chapter {ch} changed in a way its citing lines depend on, so it cannot be adopted unaffected. "
+                    f"Affected lines: {_describe(lines) or 'none'}. Affected annotations: "
+                    f"{', '.join(a.annotation_id for a in notes) or 'none'}. Use adopt-with-repairs (with a repair "
+                    "or hold for each line) or reject.")
+    line_state = _line_states(state)
+    unruled: list[str] = []
+    for ch, d in sorted(sources.items()):
+        if d != "adopt-with-repairs":
+            continue
+        for line in state.impact.lines_of(ch, "baseline"):
+            if line_state[line.line_id]["state"] not in ("approved", "held"):
+                unruled.append(f"ch {ch}: {line.line_id} ({line.document} line {line.line_no}, {line.citation}) is "
+                               f"{line_state[line.line_id]['state']}")
+    open_members = sorted({m.member for m in state.impact.unknown_members} - ruled_members)
+    if open_members:
+        unruled.append("unknown-impact member(s) without a ruling: " + ", ".join(open_members))
+    if unruled:
+        raise _refuse("REBASE_UNRULED_IMPACT", "; ".join(unruled) + ". Approve a repair or hold with `delta "
+                      "grounding decide`, and rule every unknown-impact member with --member-decision.")
+
+
 def decide(root: Path | str, plan_id: str, *, reviewer: str | None, source_decisions: Mapping[int | str, str],
            member_decisions: Mapping[str, str] | None = None, reason: str | None = None) -> dict:
     """Record per-source and per-unknown-member decisions as a NEW ``decisions-r<N>.json`` (append-only)."""
@@ -438,36 +548,11 @@ def decide(root: Path | str, plan_id: str, *, reviewer: str | None, source_decis
         raise DeltaRefusal("--reason is required for each reject and each attested-unaffected decision", EXIT_USAGE)
     require_fresh(state)
 
-    # semantic change cannot be adopted by hash replacement alone (FR-009)
-    for ch, d in sorted(sources.items()):
-        if d == "adopt-unaffected":
-            lines, notes = state.impact.lines_of(ch), state.impact.annotations_of(ch)
-            if lines or notes:
-                raise _refuse(
-                    "REBASE_SEMANTIC_CHANGE",
-                    f"chapter {ch} changed in a way its citing lines depend on, so it cannot be adopted unaffected. "
-                    f"Affected lines: {_describe(lines) or 'none'}. Affected annotations: "
-                    f"{', '.join(a.annotation_id for a in notes) or 'none'}. Use adopt-with-repairs (with a repair "
-                    "or hold for each line) or reject.")
     missing = sorted(set(state.chapters) - set(sources))
     if missing:
         raise DeltaRefusal(f"a decision is required for every selected chapter; missing: "
                            f"{', '.join(map(str, missing))}", EXIT_USAGE)
-    line_state = _line_states(state)
-    unruled: list[str] = []
-    for ch, d in sorted(sources.items()):
-        if d != "adopt-with-repairs":
-            continue
-        for line in state.impact.lines_of(ch, "baseline"):
-            if line_state[line.line_id]["state"] not in ("approved", "held"):
-                unruled.append(f"ch {ch}: {line.line_id} ({line.document} line {line.line_no}, {line.citation}) is "
-                               f"{line_state[line.line_id]['state']}")
-    open_members = sorted(unknown_names - set(members))
-    if open_members:
-        unruled.append("unknown-impact member(s) without a ruling: " + ", ".join(open_members))
-    if unruled:
-        raise _refuse("REBASE_UNRULED_IMPACT", "; ".join(unruled) + ". Approve a repair or hold with `delta "
-                      "grounding decide`, and rule every unknown-impact member with --member-decision.")
+    check_rulings(state, sources, set(members))
     why = (reason or "").strip() or None
     record = {
         "rebase_id": state.rebase_id, "plan_id": plan_id, "reviewer": reviewer.strip(),
@@ -490,6 +575,75 @@ def decide(root: Path | str, plan_id: str, *, reviewer: str | None, source_decis
         raise DeltaRefusal(f"{path.name} already exists", EXIT_STALE)
     write_json(path, record)
     return {**record, "written": True, "path": path.relative_to(state.root).as_posix(), "call_counts": {"model": 0}}
+
+
+# --------------------------------------------------------------------------- candidate build (T019)
+
+@dataclass
+class RebaseCandidate:
+    candidate: dict[str, bytes]
+    docs: dict[str, bytes]
+    block: RebaseBlock
+    decisions: dict
+    decisions_path: Path
+    chapters: list[int]  # the sources the new generation re-pins (every chapter not rejected)
+
+
+def current_bound(state: RebaseState) -> dict:
+    return {"snapshots_sha256": state.snapshots_sha256, "impact_sha256": state.impact.impact_sha256,
+            "baseline_ref": state.plan.grounding_baseline_ref, "edits_sha256": edits_sha256(state.root, state.plan.plan_id)}
+
+
+def require_decided(state: RebaseState) -> tuple[dict, Path]:
+    """The latest decisions, refused (``REBASE_UNRULED_IMPACT``) when missing, stale against what they bound, or incomplete."""
+    files = _decisions_files(state.directory)
+    if not files:
+        raise _refuse("REBASE_UNRULED_IMPACT", f"rebase {state.rebase_id} has no decisions; record them with "
+                      f"`delta rebase decide --plan {state.plan.plan_id}`.")
+    path = files[-1][1]
+    decisions = read_json(path)
+    now = current_bound(state)
+    changed = sorted(k for k in now if decisions.get("bound", {}).get(k) != now[k])
+    if changed:
+        raise _refuse("REBASE_UNRULED_IMPACT", f"the decisions in {path.name} are stale: {', '.join(changed)} changed "
+                      f"since they were recorded; re-run `delta rebase decide --plan {state.plan.plan_id}`.")
+    sources = {int(c): v["decision"] for c, v in decisions["sources"].items()}
+    members = set(decisions["unknown_members"])
+    if set(sources) != set(state.chapters):
+        raise _refuse("REBASE_UNRULED_IMPACT", f"{path.name} does not rule every selected chapter")
+    check_rulings(state, sources, members)
+    if all(d == "reject" for d in sources.values()):
+        raise _refuse("REBASE_UNRULED_IMPACT", "every selected chapter is rejected; there is nothing to rebase")
+    return decisions, path
+
+
+def build_candidate(root: Path | str, plan: DeltaPlan, docs: Mapping[str, bytes] | None = None) -> RebaseCandidate:
+    """The bound baseline's four documents with only the approved repairs and holds applied, plus the lineage block."""
+    state = load_state(root, plan.plan_id)
+    require_fresh(state)
+    decisions, path = require_decided(state)
+    docs = dict(docs if docs is not None else baseline_docs(state))
+    try:
+        candidate = grounding_edits.reconstruct_for_plan(state.root, plan.plan_id, docs)
+    except DeltaRefusal as exc:
+        raise _refuse("REBASE_UNRULED_IMPACT", exc.message) from exc
+    line_state = _line_states(state)
+    chapters = sorted(int(c) for c, v in decisions["sources"].items() if v["decision"] != "reject")
+    block = RebaseBlock(
+        rebase_id=state.rebase_id, decisions_ref=path.relative_to(state.root).as_posix(),
+        decisions_sha256=_sha(path.read_bytes()),
+        sources=[RebaseSource(chapter=c, path=state.snapshot(c, "old").path, old_sha256=state.snapshot(c, "old").sha256,
+                              new_sha256=state.snapshot(c, "current").sha256,
+                              old_snapshot=custody_store.object_rel(state.snapshot(c, "old").sha256),
+                              current_snapshot=custody_store.object_rel(state.snapshot(c, "current").sha256))
+                 for c in chapters],
+        repaired_lines=sorted(i for i, v in line_state.items() if v["state"] == "approved"),
+        held_lines=sorted(i for i, v in line_state.items() if v["state"] == "held"),
+        attested_members=sorted(m for m, v in decisions["unknown_members"].items()
+                                if v["decision"] == "attested-unaffected"),
+        unchanged_members=sorted(f"{n}.md" for n in docs if candidate[n] == docs[n]))
+    return RebaseCandidate(candidate=candidate, docs=docs, block=block, decisions=decisions, decisions_path=path,
+                           chapters=chapters)
 
 
 # --------------------------------------------------------------------------- show

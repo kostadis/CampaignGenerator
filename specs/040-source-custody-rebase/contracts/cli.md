@@ -24,6 +24,7 @@ These commands extend spec 039's `delta` family (`specs/039-incremental-campaign
 | `delta rebase show` | Render the review: per-source diffs, affected lines and annotations, unknown-impact members, follow-up consumers, repairs and decisions so far | `--plan ID` | `rebase/<id>/review.md` |
 | `delta rebase propose` | Model-drafted repairs for affected lines only (drafts; never approved) | `--plan ID --backend --model` | grounding edit proposals |
 | `delta rebase repair` | GM-authored repair for one affected line | `--plan ID --line LINE_ID --text TEXT --reason TEXT --reviewer NAME` | grounding edit proposal (origin `gm`) |
+| `delta rebase repair --hold-entry` | Bulk hold: one explicit hold decision for EVERY affected baseline line citing one changed entry (a changed scene repeated across a document is otherwise one decision per line). Only the lines citing exactly that chapter and entry; a line that already has a proposal is left alone and reported; the entry must be one the impact lists (`REBASE_UNKNOWN_ENTRY`, exit 2). Every held line id is printed and written to the hold record | `--plan ID --hold-entry CH/ENTRY --reason TEXT --reviewer NAME` (reason and reviewer required, no default; not combinable with `--line`/`--text`) | one proposals revision and one decisions revision (decision `hold`, one per line, reason names the line), `rebase/<id>/holds-r<N>.json` |
 | `delta rebase decide` | Per-source and per-unknown-member decisions | `--plan ID --reviewer NAME --source-decision CH=adopt-unaffected\|adopt-with-repairs\|reject…`, `--member-decision MEMBER=repaired\|held\|attested-unaffected…`, `--reason TEXT` (required for each `attested-unaffected` and `reject`) | `decisions-r<N>.json` |
 | `delta rebind` (deviation: `plan` is itself a leaf, so `plan rebind` cannot coexist with `plan --source`) | Rebind a pending delta plan to the now-active rebase generation | `--plan ID --baseline GENERATION_ID` | plan r+1, `rebind-<plan>-r<N>.json` |
 
@@ -39,7 +40,8 @@ Everything after decisions uses existing leaves on the rebase plan id: `delta gr
 | `REBASE_OLD_BYTES_MISMATCH` / 1 | Supplied or recovered bytes hash differently. Shows expected and actual |
 | `REBASE_NOTHING_TO_REBASE` / 2 | The selected source matches its pin |
 | `REBASE_SEMANTIC_CHANGE` / 1 | `adopt-unaffected` was requested with affected lines or annotations. Lists them |
-| `REBASE_UNRULED_IMPACT` / 1 | Preview or apply was attempted with an unruled unknown member or an affected line without a repair or hold |
+| `REBASE_UNRULED_IMPACT` / 1 | `grounding check` on a rebase plan found the decisions missing, stale against what they bound, or incomplete (an unruled unknown member, or an affected line without a repair or hold) |
+| `REBASE_UNKNOWN_ENTRY` / 2 | `rebase repair --hold-entry CH/ENTRY` names an entry no affected baseline line cites. Lists the entries that are cited |
 | `REBASE_STALE` / 3 | The current bytes of a selected source, the active baseline, impact, edits, decisions or preview changed since they were bound. Names the input |
 | `REBIND_NOT_CHILD` / 1 | `--baseline` is not active, or its lineage parent is not the plan's baseline |
 | `CLAIMS_SOURCE_STALE` (existing code) | The message now includes the chapter, path, expected and actual digests, and `run: summary_native delta rebase inspect` |

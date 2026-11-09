@@ -140,6 +140,9 @@ def _rebase_extras(leaf: str, p: argparse.ArgumentParser) -> None:
         _plan_id(p)
         p.add_argument("--line", default=None, metavar="LINE_ID")
         p.add_argument("--text", default=None, metavar="TEXT")
+        p.add_argument("--hold-entry", default=None, metavar="CH/ENTRY",
+                       help="hold EVERY affected baseline line citing this changed entry (for example 3/003.01): "
+                            "one explicit hold decision per line, every line id listed; needs --reason and --reviewer")
         p.add_argument("--reason", default=None)
         p.add_argument("--reviewer", default=None, metavar="NAME")
     elif leaf == "rebase decide":

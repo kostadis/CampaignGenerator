@@ -61,6 +61,7 @@ ALLOWED_MODEL_FUNCTIONS: dict[str, frozenset[str]] = {
     "rebase_inspect.py": frozenset(),
     "rebase_impact.py": frozenset(),
     "rebase.py": frozenset(),
+    "rebind.py": frozenset(),
     # the one drafting call of the rebase family; the host validates every repair and the GM decides each
     "rebase_propose.py": frozenset({"propose"}),
 }
