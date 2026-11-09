@@ -10,7 +10,7 @@
  * POST body lists each path; there is no "all" flag, glob or implicit default.
  * Decisions have no default: each is one of three buttons (approve / reject / discuss).
  */
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, getCurrentInstance } from 'vue'
 import {
   DECISIONS, type Decision, type DeltaStatus, type ChapterFile,
   fetchChapters, createPlan, fetchStatus, fetchBaseline, fetchReceipt, fetchReview, reviewHandoff,
@@ -207,7 +207,20 @@ async function apply() {
   })
 }
 
-onMounted(refresh)
+// `?plan=ID` (a link from the Source Rebase page) preselects and loads that plan. Read through the
+// instance's $route so the page still mounts without a router.
+function queryPlan(): string {
+  const route = (getCurrentInstance()?.proxy as unknown as { $route?: { query?: Record<string, unknown> } } | null)?.$route as { query?: Record<string, unknown> } | undefined
+  const q = route?.query?.plan
+  const v = Array.isArray(q) ? q[0] : q
+  return v ? String(v) : ''
+}
+
+onMounted(() => {
+  const fromLink = queryPlan()
+  if (fromLink) planId.value = fromLink
+  return refresh()
+})
 </script>
 
 <template>

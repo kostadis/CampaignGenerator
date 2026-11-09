@@ -31,10 +31,12 @@ _SERVICE_NAME = "summary_native.delta"
 _FLAG_ORDER: tuple[str, ...] = (
     "campaign_dir", "config", "plan", "product", "stop", "source", "member", "resolve",
     "decision", "reason", "publication", "preview_sha", "review", "claims_report", "request_id",
-    "canonical", "reviewer", "backend", "model", "json", "force",
+    "canonical", "old_bytes", "for_plan", "line", "text", "hold_entry", "source_decision",
+    "member_decision", "baseline", "reviewer", "backend", "model", "json", "force",
 )
 _BOOL_FLAGS = frozenset({"json", "force"})
-_LIST_FLAGS = frozenset({"source", "product", "member", "resolve"})
+_LIST_FLAGS = frozenset({"source", "product", "member", "resolve", "old_bytes", "source_decision",
+                         "member_decision"})
 
 
 def build_delta_argv(command: list[str], **flags: Any) -> list[str]:
@@ -128,6 +130,27 @@ class _Body(BaseModel):
     claims_report: str | None = None
     request_id: str | None = None
     canonical: str | None = None
+    # spec 040 (rebase): every field optional; a route reads only what its CLI leaf takes.
+    old_bytes: dict[str, str] | None = None
+    for_plan: str | None = None
+    line: str | None = None
+    text: str | None = None
+    hold_entry: str | None = None
+    source_decisions: dict[str, str] | None = None
+    member_decisions: dict[str, str] | None = None
+    baseline: str | None = None
+
+
+def _pairs(values: dict[str, str] | None) -> list[str] | None:
+    """``{"3": "adopt-with-repairs"}`` -> ``["3=adopt-with-repairs"]``; the CLI validates the values."""
+    return [f"{k}={v}" for k, v in values.items()] if values else None
+
+
+def _require_reviewer(reviewer: str | None) -> str:
+    if not reviewer or not reviewer.strip():
+        raise HTTPException(status_code=400, detail="reviewer is required; a decision is recorded against a "
+                            "named reviewer and is never defaulted.")
+    return reviewer.strip()
 
 
 def _root(request: Request) -> str:
@@ -292,3 +315,47 @@ async def transfer_verify(request: Request, body: _Body):
 @router.post("/transfer/bind")
 async def transfer_bind(request: Request, body: _Body):
     return await _json(request, ["transfer", "bind"], plan=body.plan, canonical=body.canonical)
+
+
+# ── spec 040: source-custody rebase (contracts/http.md) ────────────────────
+
+@router.get("/rebase/inspect")
+async def rebase_inspect(request: Request, plan: str | None = None):
+    return await _json(request, ["rebase", "inspect"], plan=plan)
+
+
+@router.post("/rebase")
+async def rebase_prepare(request: Request, body: _Body):
+    sources = _require_sources(body.sources)
+    return await _json(request, ["rebase", "prepare"], source=sources, old_bytes=_pairs(body.old_bytes),
+                       for_plan=body.for_plan)
+
+
+@router.get("/rebase/{plan_id}")
+async def rebase_show(request: Request, plan_id: str):
+    return await _json(request, ["rebase", "show"], plan=plan_id)
+
+
+@router.post("/rebase/{plan_id}/propose")
+async def rebase_propose(request: Request, plan_id: str, body: _Body | None = None):
+    return _sse(request, ["rebase", "propose"], models=body, use_models=True, plan=plan_id)
+
+
+@router.post("/rebase/{plan_id}/repairs")
+async def rebase_repair(request: Request, plan_id: str, body: _Body):
+    reviewer = _require_reviewer(body.reviewer)
+    return await _json(request, ["rebase", "repair"], plan=plan_id, line=body.line, text=body.text,
+                       hold_entry=body.hold_entry, reason=body.reason, reviewer=reviewer)
+
+
+@router.post("/rebase/{plan_id}/decisions")
+async def rebase_decide(request: Request, plan_id: str, body: _Body):
+    reviewer = _require_reviewer(body.reviewer)
+    return await _json(request, ["rebase", "decide"], plan=plan_id, reviewer=reviewer,
+                       source_decision=_pairs(body.source_decisions),
+                       member_decision=_pairs(body.member_decisions), reason=body.reason)
+
+
+@router.post("/plans/{plan_id}/rebind")
+async def plan_rebind(request: Request, plan_id: str, body: _Body | None = None):
+    return await _json(request, ["rebind"], plan=plan_id, baseline=body.baseline if body else None)

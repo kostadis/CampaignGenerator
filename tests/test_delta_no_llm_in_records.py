@@ -54,6 +54,16 @@ ALLOWED_MODEL_FUNCTIONS: dict[str, frozenset[str]] = {
     "evidence.py": frozenset(),
     "grounding_candidates.py": frozenset(),
     "records_io.py": frozenset(),
+    # spec 040: custody and the rebase CLI surface never call a model (rebase propose's own module will be
+    # added with its handler)
+    "custody_store.py": frozenset(),
+    "cli_rebase.py": frozenset(),
+    "rebase_inspect.py": frozenset(),
+    "rebase_impact.py": frozenset(),
+    "rebase.py": frozenset(),
+    "rebind.py": frozenset(),
+    # the one drafting call of the rebase family; the host validates every repair and the GM decides each
+    "rebase_propose.py": frozenset({"propose"}),
 }
 FORBIDDEN_CALLS = frozenset({"stream_api", "call_api", "make_client"})
 
@@ -113,4 +123,5 @@ def test_the_map_covers_every_delta_module():
 def test_only_the_named_functions_may_call_a_model():
     assert {n: sorted(f) for n, f in ALLOWED_MODEL_FUNCTIONS.items() if f} == {
         "associations.py": ["propose"], "census.py": ["propose_triage_hints"],
-        "grounding_check.py": ["propose_consistency_findings"], "grounding_edits.py": ["propose_edits"]}
+        "grounding_check.py": ["propose_consistency_findings"], "grounding_edits.py": ["propose_edits"],
+        "rebase_propose.py": ["propose"]}

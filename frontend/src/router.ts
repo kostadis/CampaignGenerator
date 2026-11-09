@@ -99,6 +99,11 @@ const routes = [
         component: () => import('./views/grounding/DeltaRun.vue'),
       },
       {
+        path: 'rebase',
+        name: 'grounding-rebase',
+        component: () => import('./views/grounding/SourceRebase.vue'),
+      },
+      {
         path: 'authority',
         name: 'grounding-authority',
         component: () => import('./views/grounding/GroundingAuthority.vue'),

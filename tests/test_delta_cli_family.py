@@ -82,7 +82,7 @@ def test_decision_has_no_default_and_is_required(capsys):
         p = _delta_leaves(parser)[leaf]
         action = next(a for a in p._actions if "--decision" in a.option_strings)
         assert action.default is None and action.required
-        assert set(action.choices) == {"approve", "reject", "discuss"}
+        assert set(action.choices) == {"approve", "reject", "discuss", "hold"}
         with pytest.raises(SystemExit) as e:
             parser.parse_args(["delta", *leaf.split(" "), "X"])
         assert e.value.code == 2
@@ -107,3 +107,28 @@ def test_plan_product_and_stop_choices():
 def test_handler_dict_replaces_stub(monkeypatch):
     monkeypatch.setitem(delta_cli.DELTA_HANDLERS, "plan", lambda a: 0)
     assert cli.main(["delta", "plan", "--source", "x"]) == 0
+
+
+def test_rebase_leaves_parse_with_their_flags():
+    p = cli.build_parser()
+    a = p.parse_args(["delta", "rebase", "prepare", "--source", "a.md", "--old-bytes", "2=o.md", "--for-plan", "P"])
+    assert a.delta_leaf == "rebase prepare" and a.old_bytes == ["2=o.md"] and a.for_plan == "P"
+    a = p.parse_args(["delta", "rebase", "decide", "--plan", "R", "--reviewer", "gm", "--source-decision", "5=reject",
+                      "--member-decision", "timeline=held", "--reason", "x"])
+    assert a.source_decision == ["5=reject"] and a.member_decision == ["timeline=held"]
+    a = p.parse_args(["delta", "rebase", "repair", "--plan", "R", "--line", "L", "--text", "t", "--reason", "r",
+                      "--reviewer", "gm"])
+    assert a.line == "L" and a.reviewer == "gm"
+    a = p.parse_args(["delta", "rebind", "--plan", "P", "--baseline", "G"])
+    assert a.delta_leaf == "rebind" and a.baseline == "G"
+    assert p.parse_args(["delta", "rebase", "decide"]).reviewer is None  # never defaulted
+
+
+def test_plan_still_takes_source_with_rebind_present():
+    assert cli.build_parser().parse_args(["delta", "plan", "--source", "x.md"]).delta_leaf == "plan"
+
+
+@pytest.mark.parametrize("leaf", [l for l in delta_cli.LEAVES if l.startswith("rebase ") or l == "rebind"])
+def test_rebase_leaf_has_a_handler(leaf):
+    delta_cli.load_handlers()
+    assert leaf in delta_cli.DELTA_HANDLERS

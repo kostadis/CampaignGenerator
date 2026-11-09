@@ -420,6 +420,13 @@ def _custody_rows(campaign_dir: Path, manifest: GenerationManifest,
     (``selected_range``), a legacy adoption's configured range (``grounding.yaml summary_native``
     ``out_root`` + ``range_since``/``range_until``), and summaries pinned as external dependencies.
     """
+    return {c: (path, sha) for c, (path, sha, _gid) in _custody_rows_pinned_by(campaign_dir, manifest, seen).items()}
+
+
+def _custody_rows_pinned_by(campaign_dir: Path, manifest: GenerationManifest,
+                            seen: tuple[str, ...] = ()) -> dict[int, tuple[str, str, str]]:
+    """``_custody_rows`` plus the id of the generation in the delta chain whose records pinned each row
+    (spec 040: the stale-pin report names it).  The row values are exactly ``_custody_rows``'."""
     import yaml
 
     if manifest.generation_id in seen:
@@ -427,12 +434,13 @@ def _custody_rows(campaign_dir: Path, manifest: GenerationManifest,
     # a delta-published generation holds only its own range's summaries; follow its lineage back to the
     # generation(s) holding the rest (each hop digest-verified), then let this generation's own rows win
     parent = _delta_parent(campaign_dir, manifest)
-    rows: dict[int, tuple[str, str]] = (
-        _custody_rows(campaign_dir, parent, (*seen, manifest.generation_id)) if parent is not None else {})
+    gid = manifest.generation_id
+    rows: dict[int, tuple[str, str, str]] = (
+        _custody_rows_pinned_by(campaign_dir, parent, (*seen, manifest.generation_id)) if parent is not None else {})
     for dep in manifest.external_dependencies:
         m = _CHAPTER_FILE.match(Path(dep.path).name)
         if m:
-            rows[int(m.group(1))] = (dep.path, dep.sha256)
+            rows[int(m.group(1))] = (dep.path, dep.sha256, gid)
     out_root = since = until = None
     if manifest.selected_range is not None:
         out_root, since, until = (manifest.selected_range.out_root, manifest.selected_range.since,
@@ -455,7 +463,7 @@ def _custody_rows(campaign_dir: Path, manifest: GenerationManifest,
         for item in files:
             if isinstance(item, dict) and isinstance(item.get("chapter"), int) \
                     and isinstance(item.get("path"), str) and isinstance(item.get("sha256"), str):
-                rows[item["chapter"]] = (item["path"], item["sha256"])
+                rows[item["chapter"]] = (item["path"], item["sha256"], gid)
     return rows
 
 

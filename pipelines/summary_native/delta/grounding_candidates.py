@@ -25,7 +25,9 @@ from typing import Mapping
 from .baseline import DOCUMENT_NAMES, GroundingBaseline, _read_manifest
 from .errors import EXIT_REFUSAL, EXIT_STALE, EXIT_USAGE, DeltaRefusal
 from .grounding_edits import edits_dir
-from .lineage import BaselineRef, CustodyRef, DeltaLineageRecord, LineageMember, load_lineage, save_lineage
+from .lineage import (
+    BaselineRef, CustodyRef, DeltaLineageRecord, LineageMember, RebaseBlock, load_lineage, save_lineage,
+)
 
 CANDIDATES_DIR = "candidates"
 LINEAGE_FILE = "lineage.json"
@@ -49,7 +51,8 @@ def write_candidates(campaign_dir: Path | str, plan_id: str, candidate: Mapping[
 
 
 def build_lineage(campaign_dir: Path | str, plan_id: str, baseline: GroundingBaseline,
-                  candidate: Mapping[str, bytes], *, check_ref: str, check_passed: bool) -> DeltaLineageRecord:
+                  candidate: Mapping[str, bytes], *, check_ref: str, check_passed: bool,
+                  rebase: RebaseBlock | None = None) -> DeltaLineageRecord:
     root = Path(campaign_dir).absolute()
     manifest = _read_manifest(root, baseline.generation_id)
     members: list[LineageMember] = []
@@ -78,15 +81,19 @@ def build_lineage(campaign_dir: Path | str, plan_id: str, baseline: GroundingBas
     return DeltaLineageRecord(
         plan_ref=plan_id, baseline=BaselineRef(generation_id=baseline.generation_id,
                                                manifest_sha256=baseline.manifest_sha256),
-        members=members)
+        members=members, rebase=rebase)
 
 
 def materialize(campaign_dir: Path | str, plan_id: str, baseline: GroundingBaseline,
-                candidate: Mapping[str, bytes], *, check_path: str, check_passed: bool) -> DeltaLineageRecord:
-    """Write the candidates and lineage; return the lineage.  ``check_path`` is campaign-relative."""
+                candidate: Mapping[str, bytes], *, check_path: str, check_passed: bool,
+                rebase: RebaseBlock | None = None) -> DeltaLineageRecord:
+    """Write the candidates and lineage; return the lineage.  ``check_path`` is campaign-relative.
+
+    ``rebase`` (spec 040) is the source-custody block of a rebase plan's lineage; ``None`` leaves the record
+    byte-identical to the one a delta plan has always produced."""
     write_candidates(campaign_dir, plan_id, candidate)
     lineage = build_lineage(campaign_dir, plan_id, baseline, candidate, check_ref=check_path,
-                            check_passed=check_passed)
+                            check_passed=check_passed, rebase=rebase)
     save_lineage(lineage, edits_dir(campaign_dir, plan_id) / LINEAGE_FILE)
     return lineage
 
@@ -172,11 +179,21 @@ def stage_for_promotion(campaign_dir: Path | str, plan, *, review: str | None = 
         raise DeltaRefusal("no lineage record; run `delta grounding check`", EXIT_USAGE)
     lineage = load_lineage(lineage_path)
     require_check_binding(root, candidates, lineage)
-    chapters = sorted({s.chapter for s in plan.sources})
-    if chapters != list(range(chapters[0], chapters[-1] + 1)):
-        raise DeltaRefusal(
-            f"the selected chapters {chapters} are not contiguous; a promotion range would claim chapters "
-            "the delta did not select. Plan contiguous chapters (or one delta per run).", EXIT_USAGE)
+    rebase = plan.kind == "rebase"
+    if rebase:
+        # a custody rebase re-pins only the chapters its decisions kept; the range label is their span and
+        # `range.gaps` names every chapter in the span it did not select (research R3)
+        if lineage.rebase is None:
+            raise DeltaRefusal("a rebase plan's lineage has no rebase block; run `delta grounding check`", EXIT_USAGE)
+        chapters = sorted(s.chapter for s in lineage.rebase.sources)
+        gaps = [c for c in range(chapters[0], chapters[-1] + 1) if c not in set(chapters)]
+    else:
+        chapters = sorted({s.chapter for s in plan.sources})
+        gaps = []
+        if chapters != list(range(chapters[0], chapters[-1] + 1)):
+            raise DeltaRefusal(
+                f"the selected chapters {chapters} are not contiguous; a promotion range would claim chapters "
+                "the delta did not select. Plan contiguous chapters (or one delta per run).", EXIT_USAGE)
     since, until = chapters[0], chapters[-1]
     try:
         config_path = root / "config" / "config.yaml"
@@ -192,19 +209,22 @@ def stage_for_promotion(campaign_dir: Path | str, plan, *, review: str | None = 
     state = range_dir / "state"
     drafts = schema.draft_dir(range_dir, "world_state")
     manifest_files = []
-    for source in plan.sources:
+    for source in (lineage.rebase.sources if rebase else plan.sources):
         try:
-            rel = Path(source.path).absolute().relative_to(root).as_posix()
+            rel = source.path if rebase else Path(source.path).absolute().relative_to(root).as_posix()
         except ValueError as exc:
             raise DeltaRefusal(f"selected source is outside the campaign: {source.path}", EXIT_USAGE) from exc
-        manifest_files.append({"path": rel, "chapter": source.chapter, "sha256": source.sha256})
+        manifest_files.append({"path": rel, "chapter": source.chapter,
+                               "sha256": source.new_sha256 if rebase else source.sha256})
     record_bytes = lineage_path.read_bytes()
     record_sha = _sha(record_bytes)
     _put(range_dir / STAGED_MARKER, (json.dumps({"delta_staged": True, "plan": plan.plan_id}, sort_keys=True) + "\n").encode())
-    _put(range_dir / "manifest.json", (json.dumps({
-        "kind": "summary_native", "schema": 1, "complete": True,
-        "range": {"since": since, "until": until, "gaps": []},
-        "files": sorted(manifest_files, key=lambda f: f["chapter"])}, indent=2, sort_keys=True) + "\n").encode())
+    manifest = {"kind": "summary_native", "schema": 1, "complete": True,
+                "range": {"since": since, "until": until, "gaps": gaps},
+                "files": sorted(manifest_files, key=lambda f: f["chapter"])}
+    if rebase:
+        manifest["kind"] = "custody_rebase"
+    _put(range_dir / "manifest.json", (json.dumps(manifest, indent=2, sort_keys=True) + "\n").encode())
     for name in DOCUMENT_NAMES:
         # one record path per document (a bundle's paths are unique), all with the same lineage bytes
         record_rel = f"runs/delta-{plan.plan_id}-{name}/record.json"

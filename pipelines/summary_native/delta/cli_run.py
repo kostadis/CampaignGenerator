@@ -64,10 +64,13 @@ def _resume(args: argparse.Namespace) -> int:
 def _receipt(args: argparse.Namespace) -> int:
     root = campaign_root(args)
     plan = load_plan_arg(args, root)
-    state = _state(root, plan)
-    if state is None:
-        raise DeltaRefusal(f"plan {plan.plan_id} has no run yet; run `delta run resume` first", EXIT_USAGE)
-    path = receipt_mod.write_receipt(root, plan, state)
+    if plan.kind == "rebase":  # a rebase is applied by `grounding apply`, so there is no run state to read
+        path = receipt_mod.write_rebase_receipt(root, plan)
+    else:
+        state = _state(root, plan)
+        if state is None:
+            raise DeltaRefusal(f"plan {plan.plan_id} has no run yet; run `delta run resume` first", EXIT_USAGE)
+        path = receipt_mod.write_receipt(root, plan, state)
     rec = receipt_mod.load_receipt(path)
     return emit(args, {"path": str(path), "receipt": rec.model_dump(mode="json")},
                 f"receipt written: {path}")

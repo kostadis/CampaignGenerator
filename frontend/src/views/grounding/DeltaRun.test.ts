@@ -229,4 +229,12 @@ describe('DeltaRun', () => {
     const post = calls.find(c => c.url.includes('/attest'))!
     expect(post.body).toEqual({ reason: 'no change', publication: 'deadbeef' })
   })
+
+  it('preselects and loads the plan named by ?plan=', async () => {
+    const calls = stub()
+    const w = mount(DeltaRun, { global: { mocks: { $route: { query: { plan: 'p9' } } } } })
+    await flushPromises()
+    expect((w.get('[data-testid=plan-id]').element as HTMLInputElement).value).toBe('p9')
+    expect(calls.some(c => c.url.endsWith('/plans/p9/status'))).toBe(true)
+  })
 })

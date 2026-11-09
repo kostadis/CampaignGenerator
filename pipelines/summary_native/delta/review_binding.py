@@ -113,8 +113,12 @@ def _grounding_hashes(root: Path, plan: DeltaPlan) -> dict[str, str]:
     candidates, lineage, request = gp.load_inputs(root, plan.plan_id)
     cand = _combine({**{n: _sha(b) for n, b in candidates.items()},
                      "lineage": _sha(gp.lineage_bytes(lineage)), "request": _sha(request)})
-    return {"candidate_sha256": cand,
-            "evidence_sha256": _combine({"sources": _file_sha(selection_path(root, plan.plan_id))})}
+    evidence = {"sources": _file_sha(selection_path(root, plan.plan_id))}
+    if plan.kind == "rebase":  # spec 040 T027: delta digests are untouched; only a rebase binds its own inputs
+        from . import rebase
+
+        evidence["rebase"] = _combine(rebase.bound_inputs(root, plan))
+    return {"candidate_sha256": cand, "evidence_sha256": _combine(evidence)}
 
 
 def _npc_state_rows(root: Path, plan: DeltaPlan, slugs: Iterable[str] | None):
@@ -220,6 +224,10 @@ def make_binding(campaign_dir: Path | str, plan: DeltaPlan, product: str, scope:
     hashes = current_hashes(campaign_dir, plan, product, slugs)
     inherited, outstanding = collect_findings(campaign_dir, plan, product, slugs)
     per, shared = _npc_parts(Path(campaign_dir), plan, slugs) if product == "npc" else ({}, "")
+    if product == "grounding" and plan.kind == "rebase":  # the named inputs, so a stale review can say which moved
+        from . import rebase
+
+        per = {"rebase": rebase.bound_inputs(campaign_dir, plan)}
     return ReviewBinding(plan_id=plan.plan_id, product=product, approval_scope=scope, **hashes,
                          members=slugs or [], review_id=review_id, reviewer=reviewer,
                          decisions=decisions or [], inherited_findings=inherited, outstanding_findings=outstanding,
@@ -272,11 +280,52 @@ def _npc_stale_reasons(root: Path, plan: DeltaPlan, binding: ReviewBinding, chos
     if binding.shared_sha256 and binding.shared_sha256 != shared:
         reasons.append(f"evidence (census/associations) changed since review (bound {binding.shared_sha256[:12]}, "
                        f"now {shared[:12]})")
-    if plan_digest(plan) != binding.plan_sha256:
+    if plan_digest(plan) != binding.plan_sha256 and not npc_binding_carried(root, plan, binding):
         reasons.append("plan changed since review")
     if rules_digest(root) != binding.rules_sha256:
         reasons.append("rules changed since review")
     return reasons
+
+
+#: Plan fields that never reach an NPC draft, a sign-off or a publication: the grounding baseline a rebase
+#: moves, and the revision bookkeeping a rebind adds.  Everything else in the plan is the NPC projection.
+_NPC_PROJECTION_EXCLUDED = ("grounding_baseline_ref", "revision", "created_at", "kind", "rebase_id")
+
+
+def npc_projection_sha256(plan: DeltaPlan) -> str:
+    """Digest of everything in a plan an NPC binding depends on: sources, NPC baselines, products, backend, model
+    (the whole plan but its grounding baseline and revision bookkeeping, so any other difference is a difference)."""
+    data = plan.model_dump(mode="json")
+    for key in _NPC_PROJECTION_EXCLUDED:
+        data.pop(key, None)
+    data["sources"] = [{**src, "path": Path(src["path"]).name} for src in data["sources"]]
+    return _sha(json.dumps(data, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode("utf-8"))
+
+
+def npc_binding_carried(root: Path, plan: DeltaPlan, binding: ReviewBinding) -> bool:
+    """A plan-digest mismatch is NOT stale when a rebind record of this plan lists ``binding.plan_sha256`` as
+    ``plan_sha256_from`` AND the NPC projection of that older revision equals the current one byte for byte.
+
+    The only route is a rebind record (spec 040 R6); any other change to the plan, however it was made, fails
+    the equality and the binding stays stale."""
+    from .plan import load_plan, plans_dir
+    from .rebind import rebind_records
+
+    try:
+        records = rebind_records(root, plan.plan_id)
+    except (OSError, ValueError, KeyError):
+        return False
+    now = npc_projection_sha256(plan)
+    for record in records:
+        if not any(c.get("plan_sha256_from") == binding.plan_sha256 for c in record.get("npc_carried", [])):
+            continue
+        try:
+            older = load_plan(plans_dir(root), plan.plan_id, int(record["from_revision"]))
+        except DeltaRefusal:
+            continue
+        if plan_digest(older) == binding.plan_sha256 and npc_projection_sha256(older) == now:
+            return True
+    return False
 
 
 def blockers(binding: ReviewBinding, *, members: Iterable[str] | None = None) -> list[str]:
@@ -402,6 +451,15 @@ def require_fresh(campaign_dir: Path | str, plan: DeltaPlan, product: str, *, sc
         reasons = _npc_stale_reasons(root, plan, binding, chosen if chosen is not None else binding.members)
     else:
         covered = binding.members if product == "npc" else None
+        if product == "grounding" and plan.kind == "rebase" and "rebase" in binding.member_hashes:
+            from . import rebase
+
+            moved = rebase.baseline_moved(root, plan)
+            named = ([moved] if moved else []) + rebase.changed_inputs(binding.member_hashes["rebase"],
+                                                                       rebase.bound_inputs(root, plan))
+            if named:
+                raise DeltaRefusal("REBASE_STALE: the review is stale: " + "; ".join(named)
+                                   + "; review again with `delta review handoff`", EXIT_STALE)
         reasons = is_stale(binding, current_hashes(root, plan, product, covered))
     if reasons:
         raise DeltaRefusal("the review is stale: " + "; ".join(reasons) + "; review again with `delta review handoff`",
