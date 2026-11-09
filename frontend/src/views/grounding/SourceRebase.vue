@@ -167,9 +167,9 @@ async function submitDecisions() {
 
 async function rebind() {
   if (!forPlan.value.trim()) { error.value = 'enter the pending plan id to rebind.'; return }
+  if (!rebindBaseline.value.trim()) { error.value = 'enter the rebase generation id to rebind onto.'; return }
   await guard(async () => {
-    const body: Record<string, unknown> = {}
-    if (rebindBaseline.value.trim()) body.baseline = rebindBaseline.value.trim()
+    const body: Record<string, unknown> = { baseline: rebindBaseline.value.trim() }
     detail.value = await apiPost(`${DELTA_BASE}/plans/${encodeURIComponent(forPlan.value.trim())}/rebind`, body)
   })
 }
@@ -273,8 +273,8 @@ async function rebind() {
         <router-link :to="{ name: 'grounding-delta', query: { plan: rebasePlan.trim() } }" data-testid="delta-link">incremental update page</router-link>
         (the plan id is filled in for you).</p>
       <div class="row">
-        <label>Baseline generation (optional) <input v-model="rebindBaseline" data-testid="rebind-baseline" /></label>
-        <button type="button" data-testid="rebind" :disabled="busy || !forPlan.trim()" @click="rebind">Rebind pending plan</button>
+        <label>Rebase generation (required) <input v-model="rebindBaseline" data-testid="rebind-baseline" /></label>
+        <button type="button" data-testid="rebind" :disabled="busy || !forPlan.trim() || !rebindBaseline.trim()" @click="rebind">Rebind pending plan</button>
       </div>
       <p v-if="!forPlan.trim()" class="hint">Rebind needs the pending plan id (step 1).</p>
       <p v-else>Then finish the pending plan on the
