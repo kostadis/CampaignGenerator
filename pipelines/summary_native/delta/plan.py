@@ -14,9 +14,9 @@ import re
 from datetime import datetime, timezone
 from enum import Enum
 from pathlib import Path
-from typing import Any
+from typing import Any, Literal
 
-from pydantic import BaseModel, ConfigDict, Field, field_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator, model_serializer
 
 from .errors import EXIT_USAGE, DeltaRefusal
 
@@ -90,9 +90,23 @@ class DeltaPlan(BaseModel):
     census: dict[str, Any] = Field(default_factory=dict)
     created_at: str
     revision: int = Field(default=1, ge=1)
+    #: Spec 040: ``"rebase"`` for a source-custody rebase plan.  Both fields below are OMITTED from every
+    #: serialisation (hence every digest and the file on disk) while they hold their defaults, so a plan built
+    #: before spec 040 keeps its exact digest (research R10; pinned by tests/test_rebase_digest_stability.py).
+    kind: Literal["delta", "rebase"] = "delta"
+    rebase_id: str | None = None
     #: In-memory only (never serialised): the campaign root the source paths were resolved against.
     #: On disk a plan stores campaign-root-relative paths, so a moved campaign copy still resolves.
     campaign_root: str | None = Field(default=None, exclude=True)
+
+    @model_serializer(mode="wrap")
+    def _omit_defaults(self, handler):
+        data = handler(self)
+        if data.get("kind") == "delta":
+            data.pop("kind")
+        if data.get("rebase_id") is None:
+            data.pop("rebase_id", None)
+        return data
 
     @field_validator("products")
     @classmethod

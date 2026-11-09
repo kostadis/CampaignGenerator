@@ -16,7 +16,7 @@ import re
 from pathlib import Path
 from typing import Any, Literal
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, model_serializer
 
 SCHEMA_VERSION = 1
 KIND = "delta"
@@ -48,6 +48,30 @@ class BaselineRef(BaseModel):
     manifest_sha256: str
 
 
+class RebaseSource(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    chapter: int
+    path: str
+    old_sha256: str
+    new_sha256: str
+    old_snapshot: str
+    current_snapshot: str
+
+
+class RebaseBlock(BaseModel):
+    """Spec 040 data-model: present only on a rebase plan's lineage record."""
+
+    model_config = ConfigDict(extra="forbid")
+    rebase_id: str
+    decisions_ref: str
+    decisions_sha256: str
+    sources: list[RebaseSource] = Field(default_factory=list)
+    repaired_lines: list[str] = Field(default_factory=list)
+    held_lines: list[str] = Field(default_factory=list)
+    attested_members: list[str] = Field(default_factory=list)
+    unchanged_members: list[str] = Field(default_factory=list)
+
+
 class DeltaLineageRecord(BaseModel):
     model_config = ConfigDict(extra="forbid")
     schema_version: int = SCHEMA_VERSION
@@ -55,6 +79,15 @@ class DeltaLineageRecord(BaseModel):
     plan_ref: str
     baseline: BaselineRef
     members: list[LineageMember] = Field(default_factory=list)
+    #: Omitted from serialisation and digest when None (research R10), so pre-spec-040 records are byte-stable.
+    rebase: RebaseBlock | None = None
+
+    @model_serializer(mode="wrap")
+    def _omit_absent_rebase(self, handler):
+        data = handler(self)
+        if data.get("rebase") is None:
+            data.pop("rebase", None)
+        return data
 
 
 def _sha_ok(value: object) -> bool:

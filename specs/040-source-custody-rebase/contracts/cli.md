@@ -25,7 +25,7 @@ These commands extend spec 039's `delta` family (`specs/039-incremental-campaign
 | `delta rebase propose` | Model-drafted repairs for affected lines only (drafts; never approved) | `--plan ID --backend --model` | grounding edit proposals |
 | `delta rebase repair` | GM-authored repair for one affected line | `--plan ID --line LINE_ID --text TEXT --reason TEXT --reviewer NAME` | grounding edit proposal (origin `gm`) |
 | `delta rebase decide` | Per-source and per-unknown-member decisions | `--plan ID --reviewer NAME --source-decision CH=adopt-unaffected\|adopt-with-repairs\|reject…`, `--member-decision MEMBER=repaired\|held\|attested-unaffected…`, `--reason TEXT` (required for each `attested-unaffected` and `reject`) | `decisions-r<N>.json` |
-| `delta plan rebind` | Rebind a pending delta plan to the now-active rebase generation | `--plan ID --baseline GENERATION_ID` | plan r+1, `rebind-<plan>-r<N>.json` |
+| `delta rebind` (deviation: `plan` is itself a leaf, so `plan rebind` cannot coexist with `plan --source`) | Rebind a pending delta plan to the now-active rebase generation | `--plan ID --baseline GENERATION_ID` | plan r+1, `rebind-<plan>-r<N>.json` |
 
 Repairs are approved, rejected or held with the existing `delta grounding decide PROPOSAL_ID --decision approve|reject|discuss|hold --reviewer NAME`. (`hold` is added to `DECISIONS`; a hold appends a marker under the line, see research R5.)
 

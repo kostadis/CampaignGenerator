@@ -20,7 +20,7 @@ from campaignlib.selection import BACKENDS
 
 PRODUCTS = ("grounding", "npc")
 STOP_STAGES = ("plan", "prepare", "propose", "verify", "review", "preview", "apply")
-DECISIONS = ("approve", "reject", "discuss")
+DECISIONS = ("approve", "reject", "discuss", "hold")
 
 #: The complete leaf set, as the space-joined path under ``delta``.
 LEAVES: tuple[str, ...] = (
@@ -30,6 +30,10 @@ LEAVES: tuple[str, ...] = (
     "grounding propose", "grounding decide", "grounding check", "grounding preview", "grounding apply",
     "run status", "run resume", "receipt",
     "review show", "review handoff", "transfer verify", "transfer bind",
+    # spec 040. ``rebind`` is a top-level leaf, not ``plan rebind``: ``plan`` is itself a leaf and argparse
+    # cannot make it both (recorded in specs/040-source-custody-rebase/contracts/cli.md).
+    "rebase inspect", "rebase prepare", "rebase show", "rebase propose", "rebase repair", "rebase decide",
+    "rebind",
 )
 
 DeltaHandler = Callable[[argparse.Namespace], int]
@@ -72,6 +76,8 @@ def _extras(leaf: str, p: argparse.ArgumentParser) -> None:
         p.add_argument("--stop", choices=STOP_STAGES, default=None)
         p.add_argument("--backend", choices=BACKENDS, default=None)
         p.add_argument("--model", default=None)
+    elif leaf.startswith("rebase ") or leaf == "rebind":
+        _rebase_extras(leaf, p)
     elif leaf == "baseline adopt":
         _plan_id(p)
         p.add_argument("--resolve", action="append", default=None, metavar="HUNK=accept|reject")
@@ -121,6 +127,37 @@ def _extras(leaf: str, p: argparse.ArgumentParser) -> None:
         _plan_id(p)
 
 
+def _rebase_extras(leaf: str, p: argparse.ArgumentParser) -> None:
+    """Spec 040 flags (contracts/cli.md).  No reviewer, decision or selection is ever defaulted."""
+    if leaf == "rebase prepare":
+        p.add_argument("--old-bytes", action="append", default=None, metavar="CHAPTER=PATH",
+                       help="a file holding a chapter's pre-correction bytes; repeatable, verified against the pin")
+        p.add_argument("--for-plan", default=None, metavar="ID",
+                       help="a pending delta plan whose candidates join the impact analysis")
+    elif leaf == "rebase propose":
+        _model(p)
+    elif leaf == "rebase repair":
+        _plan_id(p)
+        p.add_argument("--line", default=None, metavar="LINE_ID")
+        p.add_argument("--text", default=None, metavar="TEXT")
+        p.add_argument("--reason", default=None)
+        p.add_argument("--reviewer", default=None, metavar="NAME")
+    elif leaf == "rebase decide":
+        _plan_id(p)
+        p.add_argument("--reviewer", default=None, metavar="NAME",
+                       help="who is deciding; required (exit 2 without it), never defaulted")
+        p.add_argument("--source-decision", action="append", default=None, metavar="CH=DECISION",
+                       help="adopt-unaffected | adopt-with-repairs | reject; repeatable")
+        p.add_argument("--member-decision", action="append", default=None, metavar="MEMBER=DECISION",
+                       help="repaired | held | attested-unaffected; repeatable")
+        p.add_argument("--reason", default=None, help="required for each attested-unaffected and reject")
+    elif leaf == "rebind":
+        _plan_id(p)
+        p.add_argument("--baseline", default=None, metavar="GENERATION_ID")
+    else:  # inspect, show
+        _plan_id(p)
+
+
 def add_delta_parser(sub) -> argparse.ArgumentParser:
     """Register ``delta`` on the top-level subparsers; returns the ``delta`` parser."""
     delta = sub.add_parser("delta", help="incremental campaign grounding and NPC updates")
@@ -153,6 +190,7 @@ HANDLER_MODULES: tuple[str, ...] = (
     "pipelines.summary_native.delta.cli_review",
     "pipelines.summary_native.delta.cli_run",
     "pipelines.summary_native.delta.cli_transfer",
+    "pipelines.summary_native.delta.cli_rebase",
 )
 
 

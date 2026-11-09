@@ -54,6 +54,10 @@ ALLOWED_MODEL_FUNCTIONS: dict[str, frozenset[str]] = {
     "evidence.py": frozenset(),
     "grounding_candidates.py": frozenset(),
     "records_io.py": frozenset(),
+    # spec 040: custody and the rebase CLI surface never call a model (rebase propose's own module will be
+    # added with its handler)
+    "custody_store.py": frozenset(),
+    "cli_rebase.py": frozenset(),
 }
 FORBIDDEN_CALLS = frozenset({"stream_api", "call_api", "make_client"})
 

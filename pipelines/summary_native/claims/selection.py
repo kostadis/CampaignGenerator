@@ -124,8 +124,10 @@ def _discovered_rows(root: Path, bundle: BundleSelection, inherited: InheritedCu
             if not entry:
                 raise PromotionError(f"cited chapter {chapter} is absent from the selected corpus inventory", code="CLAIMS_SOURCE_MISSING")
             path = root / entry["path"]
-            if not path.is_file() or hashlib.sha256(path.read_bytes()).hexdigest() != entry.get("sha256"):
-                raise PromotionError("cited corpus source is stale or missing", code="CLAIMS_SOURCE_STALE")
+            actual = hashlib.sha256(path.read_bytes()).hexdigest() if path.is_file() else "missing"
+            if actual != entry.get("sha256"):
+                raise PromotionError(_stale_message(f"chapter {chapter}", entry["path"], entry.get("sha256"), actual),
+                                     code="CLAIMS_SOURCE_STALE")
             key = (entry["path"], f"ch {chapter} / {match.group(2).strip()}", "citation")
             if key in seen:
                 continue
@@ -211,6 +213,12 @@ def _discovered_rows(root: Path, bundle: BundleSelection, inherited: InheritedCu
     return discovered, ambiguities
 
 
+def _stale_message(what: str, path: str, expected: str | None, actual: str) -> str:
+    """An actionable CLAIMS_SOURCE_STALE: which source, what was pinned, what is there now, and the next command."""
+    return (f"cited corpus source is stale or missing: {what}, {path}: expected sha256 {expected}, "
+            f"actual sha256 {actual}; run: summary_native delta rebase inspect")
+
+
 def _read_bound(root: Path, identity: ContentIdentity) -> bytes:
     data = _read_private_regular(root, Path(identity.path), code="CLAIMS_SOURCE_INVALID")
     path = root / identity.path
@@ -218,8 +226,10 @@ def _read_bound(root: Path, identity: ContentIdentity) -> bytes:
         path.relative_to(root.resolve())
     except ValueError as exc:
         raise PromotionError("claim source escapes campaign", code="CLAIMS_SELECTION_INVALID") from exc
-    if hashlib.sha256(data).hexdigest() != identity.sha256 or len(data) != identity.size:
-        raise PromotionError(f"claim source changed: {identity.path}", code="CLAIMS_SOURCE_STALE")
+    actual = hashlib.sha256(data).hexdigest()
+    if actual != identity.sha256 or len(data) != identity.size:
+        raise PromotionError(_stale_message("claim source", identity.path, identity.sha256, actual),
+                             code="CLAIMS_SOURCE_STALE")
     return data
 
 
