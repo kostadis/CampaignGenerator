@@ -139,6 +139,7 @@ file or want to tweak the synthesis prompt.
 |---|---|
 | New sessions added to summaries (full-range rerender; existing caches are reused) | Re-run normally (extraction + synthesis), then promote through the managed bundle promotion. Never copy output over a live document by hand |
 | One newly reviewed session, published baseline exists (native delta) | `summary_native delta plan` ... `grounding apply`; see [delta_howto.md](delta_howto.md) |
+| A summary the published generation cites was corrected afterwards (`CLAIMS_SOURCE_STALE`) | `summary_native delta rebase inspect` ... `delta rebind`; see [source_custody_rebase_howto.md](source_custody_rebase_howto.md) |
 | A small fix to a published line (explicit local editable-live correction) | Edit the live file yourself; this is not the delta feature, and `delta baseline adopt` reports it as drift |
 | Edited a dossier, want updated planning.md | `--synthesize-only` with `--extract-dir` |
 | Extraction files are stale or corrupt | Delete `*_extractions/` dir, re-run |

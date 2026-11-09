@@ -270,13 +270,15 @@ async function rebind() {
       <h2>4. Publish and rebind</h2>
       <p>Rebase plan <code data-testid="rebase-plan-id">{{ rebasePlan.trim() }}</code> publishes through the existing grounding gates
         (check, preview, apply) on the
-        <router-link :to="{ name: 'grounding-delta' }" data-testid="delta-link">incremental update page</router-link>;
-        enter this plan id there.</p>
+        <router-link :to="{ name: 'grounding-delta', query: { plan: rebasePlan.trim() } }" data-testid="delta-link">incremental update page</router-link>
+        (the plan id is filled in for you).</p>
       <div class="row">
         <label>Baseline generation (optional) <input v-model="rebindBaseline" data-testid="rebind-baseline" /></label>
         <button type="button" data-testid="rebind" :disabled="busy || !forPlan.trim()" @click="rebind">Rebind pending plan</button>
       </div>
       <p v-if="!forPlan.trim()" class="hint">Rebind needs the pending plan id (step 1).</p>
+      <p v-else>Then finish the pending plan on the
+        <router-link :to="{ name: 'grounding-delta', query: { plan: forPlan.trim() } }" data-testid="pending-link">incremental update page</router-link>.</p>
     </section>
 
     <pre v-if="detail" data-testid="detail">{{ JSON.stringify(detail, null, 2) }}</pre>

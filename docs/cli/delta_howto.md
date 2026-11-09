@@ -359,6 +359,10 @@ not at all.
 
 An `INCOMPLETE` preview lists its problems; do not apply it. Git stays a separate operator action.
 
+## A cited summary was corrected after publication
+
+If `claims select` stops with `CLAIMS_SOURCE_STALE`, a summary the published generation pins has changed. Do not re-plan: use `summary_native delta rebase inspect | prepare | show | repair | decide`, publish the rebase plan through the same grounding gates, then `summary_native delta rebind --plan PENDING --baseline NEW_GENERATION`. See [source_custody_rebase_howto.md](source_custody_rebase_howto.md).
+
 ## Baseline adoption (what and when)
 
 Adopt when `baseline status` shows `DRIFT` (someone edited a live grounding file after promotion), and

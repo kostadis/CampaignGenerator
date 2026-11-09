@@ -147,9 +147,9 @@ description: "Task list for spec 040: reviewed source-custody rebase"
 
 ## Phase 7: Polish & cross-cutting
 
-- [ ] T034 [P] Write the operator runbook `docs/cli/source_custody_rebase_howto.md` (FR-020): when you need it (the `CLAIMS_SOURCE_STALE` message), inspect, old-byte providers, the decision types and why hash-only adoption is refused, holds, unknown-impact rulings, apply via the existing gates, rebind, recovery, every refusal code, the limits (NPC dossiers are follow-ups, not changed), and a ToEE ch43-shaped worked example. Add rows to `docs/README.md`, the CLAUDE.md "Detailed docs" table, and the delta CLI doc if one lists leaves (`docs/cli/` search for `delta grounding apply`).
-- [ ] T035 [P] Add the new no-LLM modules (`custody_store`, `rebase_inspect`, `rebase_impact`, `rebind`, `rebase` except the propose path, if separable) to the repo's AST no-LLM guard test list, and confirm `tests/test_retrieve_render_isolation.py` passes.
-- [ ] T036 Run the full suite `python -m pytest tests/ -q` and the frontend `npm test && npm run build`. Fix regressions. Record the results in `specs/040-source-custody-rebase/validation.md`.
+- [x] T034 [P] Write the operator runbook `docs/cli/source_custody_rebase_howto.md` (FR-020): when you need it (the `CLAIMS_SOURCE_STALE` message), inspect, old-byte providers, the decision types and why hash-only adoption is refused, holds, unknown-impact rulings, apply via the existing gates, rebind, recovery, every refusal code, the limits (NPC dossiers are follow-ups, not changed), and a ToEE ch43-shaped worked example. Add rows to `docs/README.md`, the CLAUDE.md "Detailed docs" table, and the delta CLI doc if one lists leaves (`docs/cli/` search for `delta grounding apply`).
+- [x] T035 [P] Add the new no-LLM modules (`custody_store`, `rebase_inspect`, `rebase_impact`, `rebind`, `rebase` except the propose path, if separable) to the repo's AST no-LLM guard test list, and confirm `tests/test_retrieve_render_isolation.py` passes.
+- [x] T036 Run the full suite `python -m pytest tests/ -q` and the frontend `npm test && npm run build`. Fix regressions. Record the results in `specs/040-source-custody-rebase/validation.md`.
 
 ---
 

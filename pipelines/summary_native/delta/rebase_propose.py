@@ -18,7 +18,10 @@ import json
 import re
 from pathlib import Path
 
-from campaignlib import make_client, stream_api
+from types import SimpleNamespace
+
+from campaignlib import stream_api
+from campaignlib.api.client import client_from_args
 
 from . import custody_store, grounding_edits
 from .errors import EXIT_REFUSAL, DeltaRefusal
@@ -124,7 +127,7 @@ def propose(root: Path | str, plan_id: str, *, backend: str | None, model: str, 
                            "(`delta rebase show` lists the lines and their state)", EXIT_REFUSAL)
     user, sources = build_prompt(state, docs, candidates)
     if client is None:
-        client = make_client(backend=backend, model_override=model)
+        client = client_from_args(SimpleNamespace(backend=backend, model=model, endpoint=None))
     raw = stream_api(client, SYSTEM_PROMPT, user, model, max_tokens=max_tokens, silent=True)
     value = parse_output(raw)
     allowed = {l.line_id: l for l in candidates}

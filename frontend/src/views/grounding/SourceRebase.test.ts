@@ -116,4 +116,18 @@ describe('SourceRebase', () => {
     expect(w.get('[data-testid=error]').text()).toContain('reviewer')
     expect(calls.some(c => c.url.endsWith('/repairs'))).toBe(false)
   })
+
+  it('deep-links publish and rebind steps to the incremental update page with ?plan=', async () => {
+    const calls = stub()
+    void calls
+    const w = mount(SourceRebase, { global: { stubs: { 'router-link': { props: ['to'], template: '<a><slot /></a>' } } } })
+    await w.get('[data-testid=inspect]').trigger('click')
+    await flushPromises()
+    await w.get('[data-testid=for-plan]').setValue('plan-pending')
+    await w.findAll('[data-testid=stale-source]')[0].setValue(true)
+    await w.get('[data-testid=prepare]').trigger('click')
+    await flushPromises()
+    expect((w.getComponent('[data-testid=delta-link]') as any).props('to')).toEqual({ name: 'grounding-delta', query: { plan: 'r1' } })
+    expect((w.getComponent('[data-testid=pending-link]') as any).props('to')).toEqual({ name: 'grounding-delta', query: { plan: 'plan-pending' } })
+  })
 })
