@@ -486,7 +486,7 @@ def rrun(cap, root, *argv, expect=0):
     return out["data"] if expect == 0 else out
 
 
-def do_rebase(fx: RebaseFixture, cap) -> Rebased:
+def do_rebase(fx: RebaseFixture, cap, *, apply: bool = True) -> Rebased:
     """The whole US1+US2 repair through the public CLI and the REAL gates, ending with the new generation active.
 
     prepare (with the pending plan's candidates) -> GM repairs (chapters 2, 4, 5), one hold, and the bulk hold of
@@ -497,7 +497,7 @@ def do_rebase(fx: RebaseFixture, cap) -> Rebased:
     root = fx.root
     before = sha_tree(root, *HISTORY)
     prep = rrun(cap, root, "rebase", "prepare", *[a for c in (2, 3, 4, 5) for a in ("--source", str(fx.paths[c]))],
-               "--for-plan", fx.pending_plan_id)
+               *(["--for-plan", fx.pending_plan_id] if fx.pending_plan_id else []))
     pid = prep["plan_id"]
     review = rrun(cap, root, "rebase", "show", "--plan", pid)
     from pipelines.summary_native.delta import rebase as rebase_mod, rebase_impact
@@ -533,7 +533,7 @@ def do_rebase(fx: RebaseFixture, cap) -> Rebased:
         argv += ["--member-decision", f"{m['member']}=attested-unaffected"]
     decided = rrun(cap, root, *argv)
     checked = run(cap, root, "grounding", "check", "--plan", pid)
-    applied = claims_and_signoffs(cap, root, pid, since=2, until=5, review_id="rebase-review")
+    applied = claims_and_signoffs(cap, root, pid, since=2, until=5, review_id="rebase-review", apply=apply)
     from pipelines.summary_native.delta import baseline as bl
     return Rebased(plan_id=pid, rebase_id=prep["rebase_id"], prepared=prep, review=review, repairs=made, hold=hold,
                    decided=decided, checked=checked, applied=applied, history_before=before,

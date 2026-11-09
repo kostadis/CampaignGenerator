@@ -113,8 +113,12 @@ def _grounding_hashes(root: Path, plan: DeltaPlan) -> dict[str, str]:
     candidates, lineage, request = gp.load_inputs(root, plan.plan_id)
     cand = _combine({**{n: _sha(b) for n, b in candidates.items()},
                      "lineage": _sha(gp.lineage_bytes(lineage)), "request": _sha(request)})
-    return {"candidate_sha256": cand,
-            "evidence_sha256": _combine({"sources": _file_sha(selection_path(root, plan.plan_id))})}
+    evidence = {"sources": _file_sha(selection_path(root, plan.plan_id))}
+    if plan.kind == "rebase":  # spec 040 T027: delta digests are untouched; only a rebase binds its own inputs
+        from . import rebase
+
+        evidence["rebase"] = _combine(rebase.bound_inputs(root, plan))
+    return {"candidate_sha256": cand, "evidence_sha256": _combine(evidence)}
 
 
 def _npc_state_rows(root: Path, plan: DeltaPlan, slugs: Iterable[str] | None):
@@ -220,6 +224,10 @@ def make_binding(campaign_dir: Path | str, plan: DeltaPlan, product: str, scope:
     hashes = current_hashes(campaign_dir, plan, product, slugs)
     inherited, outstanding = collect_findings(campaign_dir, plan, product, slugs)
     per, shared = _npc_parts(Path(campaign_dir), plan, slugs) if product == "npc" else ({}, "")
+    if product == "grounding" and plan.kind == "rebase":  # the named inputs, so a stale review can say which moved
+        from . import rebase
+
+        per = {"rebase": rebase.bound_inputs(campaign_dir, plan)}
     return ReviewBinding(plan_id=plan.plan_id, product=product, approval_scope=scope, **hashes,
                          members=slugs or [], review_id=review_id, reviewer=reviewer,
                          decisions=decisions or [], inherited_findings=inherited, outstanding_findings=outstanding,
@@ -443,6 +451,15 @@ def require_fresh(campaign_dir: Path | str, plan: DeltaPlan, product: str, *, sc
         reasons = _npc_stale_reasons(root, plan, binding, chosen if chosen is not None else binding.members)
     else:
         covered = binding.members if product == "npc" else None
+        if product == "grounding" and plan.kind == "rebase" and "rebase" in binding.member_hashes:
+            from . import rebase
+
+            moved = rebase.baseline_moved(root, plan)
+            named = ([moved] if moved else []) + rebase.changed_inputs(binding.member_hashes["rebase"],
+                                                                       rebase.bound_inputs(root, plan))
+            if named:
+                raise DeltaRefusal("REBASE_STALE: the review is stale: " + "; ".join(named)
+                                   + "; review again with `delta review handoff`", EXIT_STALE)
         reasons = is_stale(binding, current_hashes(root, plan, product, covered))
     if reasons:
         raise DeltaRefusal("the review is stale: " + "; ".join(reasons) + "; review again with `delta review handoff`",

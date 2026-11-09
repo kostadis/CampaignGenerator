@@ -279,6 +279,55 @@ def require_fresh(state: RebaseState) -> None:
         raise _refuse("REBASE_STALE", "; ".join(reasons) + ". Re-run `delta rebase prepare`.", EXIT_STALE)
 
 
+def bound_inputs(root: Path | str, plan: DeltaPlan) -> dict[str, str]:
+    """``{input name: digest}`` of everything a rebase review covers beyond the candidate (spec 040 T027).
+
+    The decisions file, the impact record, the snapshot table, each selected source's CURRENT bytes and the
+    repair draft (the grounding edit proposals and the decisions made on them).  A record that cannot be read
+    hashes as ``unreadable`` rather than raising, so a damaged one is reported as a changed input."""
+    root = Path(root).absolute()
+    try:
+        state = load_state(root, plan.plan_id)
+    except DeltaRefusal:
+        return {"rebase records": "unreadable"}
+    files = _decisions_files(state.directory)
+    out = {"rebase decisions": _sha(files[-1][1].read_bytes()) if files else "absent",
+           "impact record": _sha((state.directory / "impact.json").read_bytes()),
+           "custody snapshots": state.snapshots_sha256,
+           "repair draft": edits_sha256(root, plan.plan_id)}
+    for snap in sorted((s for s in state.snapshots if s.role == "current"), key=lambda s: s.chapter):
+        try:
+            actual = _sha((root / snap.path).read_bytes())
+        except OSError:
+            actual = "missing"
+        out[f"selected source ch {snap.chapter:03d} ({snap.path})"] = actual
+    return out
+
+
+def baseline_moved(root: Path | str, plan: DeltaPlan) -> str | None:
+    """Why the active baseline is not the one this rebase was prepared against, or ``None``.
+
+    Not asked once the plan's own publication has committed: then the baseline legitimately IS the new
+    generation, and an identical re-apply must reach the original receipt (FR-017)."""
+    from .grounding_recovery import COMMITTED, inspect
+
+    try:
+        if inspect(root, plan).state == COMMITTED:
+            return None
+        active = baseline_mod.bind(Path(root)).ref
+    except DeltaRefusal as exc:
+        return f"cannot bind the active baseline: {exc.message}"
+    if active != plan.grounding_baseline_ref:
+        return (f"the active baseline is {active}, not the {plan.grounding_baseline_ref} this rebase was "
+                "prepared against (another generation was activated)")
+    return None
+
+
+def changed_inputs(bound: Mapping[str, str], now: Mapping[str, str]) -> list[str]:
+    return [f"{name} changed since review (bound {str(bound.get(name, 'absent'))[:12]}, now {now.get(name, 'absent')[:12]})"
+            for name in sorted(set(bound) | set(now)) if bound.get(name) != now.get(name)]
+
+
 def baseline_docs(state: RebaseState) -> dict[str, bytes]:
     return baseline_mod.baseline_documents(baseline_mod.bind(state.root), state.root)
 
