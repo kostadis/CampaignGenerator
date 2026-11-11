@@ -61,3 +61,26 @@ def test_router_registered_in_main():
     assert main_mod.summary_native_delta is router_mod
     text = Path(main_mod.__file__).read_text(encoding="utf-8")
     assert 'include_router(summary_native_delta.router, prefix="/api/summary-native/delta"' in text
+
+
+def test_rebase_flags_emit_in_contract_order():
+    argv = router_mod.build_delta_argv(
+        ["rebase", "decide"], plan="r1", source_decision=["3=reject"], member_decision=["A=held", "B=repaired"],
+        reason="r", reviewer="gm", campaign_dir="/c", json=True)
+    assert argv == [
+        console_script("summary_native"), "delta", "rebase", "decide", "--campaign-dir", "/c", "--plan", "r1",
+        "--reason", "r", "--source-decision", "3=reject", "--member-decision", "A=held",
+        "--member-decision", "B=repaired", "--reviewer", "gm", "--json",
+    ]
+
+
+def test_rebase_pairs_and_reviewer_helpers():
+    from fastapi import HTTPException
+    assert router_mod._pairs({"3": "x", "4": "y"}) == ["3=x", "4=y"]
+    assert router_mod._pairs({}) is None and router_mod._pairs(None) is None
+    with pytest.raises(HTTPException) as e:
+        router_mod._require_reviewer(None)
+    assert e.value.status_code == 400
+    with pytest.raises(HTTPException):
+        router_mod._require_reviewer("   ")
+    assert router_mod._require_reviewer(" gm ") == "gm"

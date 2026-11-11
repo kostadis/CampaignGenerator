@@ -378,6 +378,10 @@ If the adopted document had no inline reading-contract metadata, the delta valid
 reference, timeline, dossier and summary paths using the pinned bundle and selected plan instead.
 An existing inline contract is always checked normally; the legacy path cannot conceal a damaged one.
 
+## A cited summary was corrected after publication
+
+If `claims select` stops with `CLAIMS_SOURCE_STALE`, a summary the published generation pins has changed. Do not re-plan: use `summary_native delta rebase inspect | prepare | show | repair | decide`, publish the rebase plan through the same grounding gates, then `summary_native delta rebind --plan PENDING --baseline NEW_GENERATION`. See [source_custody_rebase_howto.md](source_custody_rebase_howto.md).
+
 ## Baseline adoption (what and when)
 
 Adopt when `baseline status` shows `DRIFT` (someone edited a live grounding file after promotion), and

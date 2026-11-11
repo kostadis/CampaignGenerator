@@ -567,7 +567,11 @@ def advance(campaign_dir: Path | str, plan: DeltaPlan, *, batch_size: int = DEFA
         src_shas = [(s.chapter, s.sha256) for s in plan.sources]
 
         if "census" in npc:
-            d = digest_of("census", plan_digest(plan), src_shas, registry, sha_file(rulings))
+            # a rebind moves only the grounding baseline: the census (and so the drafts and publications already
+            # made from it) is the same work, and recomputing it after an NPC was published would re-draft that NPC
+            from .rebind import carried_plan_digest
+
+            d = digest_of("census", carried_plan_digest(root, plan), src_shas, registry, sha_file(rulings))
             if run_stage(root, state, "census", d, lambda: [census_mod.run_census(root, plan)[1]],
                          save=save, force=force):
                 reused.append("census")

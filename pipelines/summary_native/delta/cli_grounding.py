@@ -11,7 +11,7 @@ import argparse
 import hashlib
 from pathlib import Path
 
-from . import baseline as baseline_mod, grounding_candidates, grounding_check, grounding_edits
+from . import baseline as baseline_mod, grounding_candidates, grounding_check, grounding_edits, rebase as rebase_mod
 from .cli import DELTA_HANDLERS
 from .cli_plan import campaign_root, emit, guarded, load_plan_arg
 from .errors import EXIT_REFUSAL, EXIT_STALE, EXIT_USAGE, DeltaRefusal
@@ -121,14 +121,27 @@ def _grounding_check(args: argparse.Namespace) -> int:
     plan = load_plan_arg(args, root)
     _plan, baseline = _bound(args, root)
     docs = baseline_docs_for(root, baseline)
-    candidate = grounding_edits.reconstruct_for_plan(root, plan.plan_id, docs)
-    texts = _source_texts(plan)
-    new_targets = grounding_check.new_targets_for_sources(
-        {s.chapter: texts[s.path] for s in plan.sources})
-    report = grounding_check.check_documents(
-        docs, candidate, new_targets=new_targets, custody=baseline_mod.custody_resolver(baseline, root))
+    rebase_block = None
+    if plan.kind == "rebase":
+        # spec 040: only approved repairs and holds are applied, the decisions must be complete and current, and
+        # no model is consulted (the one drafting call of a rebase is `rebase propose`)
+        built = rebase_mod.build_candidate(root, plan, docs)
+        candidate, rebase_block = built.candidate, built.block
+        kept = set(built.chapters)
+        texts = _source_texts(plan)
+        new_targets = grounding_check.new_targets_for_sources(
+            {s.chapter: texts[s.path] for s in plan.sources if s.chapter in kept})
+    else:
+        candidate = grounding_edits.reconstruct_for_plan(root, plan.plan_id, docs)
+        texts = _source_texts(plan)
+        new_targets = grounding_check.new_targets_for_sources(
+            {s.chapter: texts[s.path] for s in plan.sources})
+    custody = baseline_mod.custody_resolver(baseline, root)
+    if plan.kind == "rebase":
+        custody = rebase_mod.rejected_custody_resolver(rebase_mod.load_state(root, plan.plan_id), custody, kept)
+    report = grounding_check.check_documents(docs, candidate, new_targets=new_targets, custody=custody)
     calls = 0
-    if any(candidate[k] != docs[k] for k in candidate):
+    if plan.kind != "rebase" and any(candidate[k] != docs[k] for k in candidate):
         backend, model = _choice(args, plan, "consistency")
         report.findings += grounding_check.propose_consistency_findings(
             docs, candidate, texts, backend=backend, model=model)
@@ -139,7 +152,8 @@ def _grounding_check(args: argparse.Namespace) -> int:
     saved["call_counts"] = {"model": calls}
     lineage = grounding_candidates.materialize(
         root, plan.plan_id, baseline, candidate,
-        check_path=Path(saved["path"]).relative_to(root).as_posix(), check_passed=report.passed)
+        check_path=Path(saved["path"]).relative_to(root).as_posix(), check_passed=report.passed,
+        rebase=rebase_block)
     saved["lineage"] = {m.name: m.mode for m in lineage.members}
     saved["candidates"] = sorted(candidate)
     code = emit(args, saved, f"check {'passed' if report.passed else 'BLOCKED'}: "

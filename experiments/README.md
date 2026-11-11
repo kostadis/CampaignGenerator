@@ -1,8 +1,20 @@
 # Experiments
 
+## Who is who in Curse of the Hags — 2026-11-07
+
+[Series report](20261107-cos-identity-series/README.md): the 2026-11-03 identity method applied to a live campaign. Masked Marron/Merrin attribution ([code](20261107-aasimar-control-resolution/)) and unnamed-character identities ([code](20261107-unnamed-identity/)), both taken through GM review: 24 bible lines changed, 57 identities ruled. Methodology, outcomes, and before/after tables are in the report.
+
 ## Provenance and contextual identity — 2026-11-03–04
 
 Start with [the series overview](20261104-provenance-identity-series/README.md) for the designs, evaluation protocol, results, NVIDIA comparison, code map and archive verification. It covers the provenance graph, synthetic same-label bugbears, actual orc/ogre passages, Sol/Terra/local Qwen comparisons, and saved-resolution reuse. These are experiments, with no production registry or campaign changes.
+
+## Contextual identity at scale, and mneme retrieval — 2026-11-03
+
+Two follow-ups to the provenance/identity series. [Identity at scale](20261103-identity-scale/README.md): 100 new mention pairs across 17 chapters, no mneme; Terra medium matched 84/84 clearer relations (83/84 with valid exact-target evidence), zero false coidentity. [mneme search comparison](20261103-mneme-search-comparison/README.md): can `mneme mp search` find the evidence for the 16 orc/ogre pairs? Encounter-context queries reach both source chapters for 14/16 at top 5, but the exact target neighborhoods only 4/16 directly — retrieval finds sources, not identity answers. Frozen payloads and raw responses stay in each directory's Git-ignored `private-runtime/`.
+
+## Two-stage extraction — 2026-09-25
+
+[Measurement pass](20260925-two-stage-extraction/README.md) behind `docs/design/TwoStageExtraction_proposal.md`: what it costs that the fact merge never reads `quote_offset`, a prototype span-first claim pass, and the langextract comparison that rejected it. Derived OOTA outputs are Git-ignored.
 
 ## Narration gap-marking experiments — 2026-09-07
 

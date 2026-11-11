@@ -63,6 +63,26 @@ def _expected_cli(root) -> list[tuple[str, str, dict | None, list[str], bool]]:
          ["transfer", "verify", *c, "--plan", "p1", "--canonical", "/canon", "--json"], False),
         ("POST", "/transfer/bind", {"canonical": "/canon"},
          ["transfer", "bind", *c, "--canonical", "/canon", "--json"], False),
+        # spec 040
+        ("GET", "/rebase/inspect?plan=p1", None, ["rebase", "inspect", *c, "--plan", "p1", "--json"], False),
+        ("GET", "/rebase/inspect", None, ["rebase", "inspect", *c, "--json"], False),
+        ("POST", "/rebase", {"sources": ["docs/summaries/003.md"], "old_bytes": {"3": "/tmp/old.md"}, "for_plan": "p1"},
+         ["rebase", "prepare", *c, "--source", "docs/summaries/003.md", "--old-bytes", "3=/tmp/old.md",
+          "--for-plan", "p1", "--json"], False),
+        ("GET", "/rebase/r1", None, ["rebase", "show", *c, "--plan", "r1", "--json"], False),
+        ("POST", "/rebase/r1/propose", {}, ["rebase", "propose", *c, "--plan", "r1"], True),
+        ("POST", "/rebase/r1/repairs", {"line": "L1", "text": "fixed", "reason": "why", "reviewer": "gm"},
+         ["rebase", "repair", *c, "--plan", "r1", "--line", "L1", "--text", "fixed", "--reason", "why",
+          "--reviewer", "gm", "--json"], False),
+        ("POST", "/rebase/r1/repairs", {"hold_entry": "3/003.01", "reason": "why", "reviewer": "gm"},
+         ["rebase", "repair", *c, "--plan", "r1", "--hold-entry", "3/003.01", "--reason", "why",
+          "--reviewer", "gm", "--json"], False),
+        ("POST", "/rebase/r1/decisions",
+         {"reviewer": "gm", "source_decisions": {"3": "adopt-with-repairs"},
+          "member_decisions": {"Brannoc": "held"}, "reason": "r"},
+         ["rebase", "decide", *c, "--plan", "r1", "--source-decision", "3=adopt-with-repairs",
+          "--member-decision", "Brannoc=held", "--reason", "r", "--reviewer", "gm", "--json"], False),
+        ("POST", "/plans/p1/rebind", {"baseline": "g1"}, ["rebind", *c, "--plan", "p1", "--baseline", "g1", "--json"], False),
     ]
 
 
@@ -177,3 +197,32 @@ def _association_store(pid):
                              span="the Envoy"),
         relationship_support="same speaker", scope="faction offer")])
     return store.model_dump(mode="json")
+
+
+def test_every_rebase_leaf_has_a_route():
+    """Principle XI: each spec-040 CLI leaf is reachable over HTTP."""
+    from pipelines.summary_native.delta.cli import LEAVES
+    leaves = {l for l in LEAVES if l.startswith("rebase ") or l == "rebind"}
+    routed = {
+        "rebase inspect": "/rebase/inspect", "rebase prepare": "/rebase", "rebase show": "/rebase/{plan_id}",
+        "rebase propose": "/rebase/{plan_id}/propose", "rebase repair": "/rebase/{plan_id}/repairs",
+        "rebase decide": "/rebase/{plan_id}/decisions", "rebind": "/plans/{plan_id}/rebind",
+    }
+    assert leaves == set(routed)
+    paths = {r.path for r in router_mod.router.routes}
+    assert set(routed.values()) <= paths
+
+
+def test_rebase_refusals_before_spawn(tmp_path, monkeypatch):
+    root = copy_fixture(tmp_path)
+    client = client_for(root, monkeypatch)
+
+    async def boom(*a, **k):
+        raise AssertionError("subprocess spawned")
+
+    monkeypatch.setattr(router_mod, "_run_json", boom)
+    monkeypatch.setattr(router_mod, "_stream", boom)
+    assert client.post(f"{BASE}/rebase", json={"sources": []}).status_code == 400
+    assert client.post(f"{BASE}/rebase", json={}).status_code == 400
+    assert client.post(f"{BASE}/rebase/r1/repairs", json={"line": "L", "text": "t"}).status_code == 400
+    assert client.post(f"{BASE}/rebase/r1/decisions", json={"reviewer": "  "}).status_code == 400

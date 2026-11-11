@@ -59,8 +59,9 @@ def fake_model(monkeypatch, target, line, after_text, support=SUPPORT):
         monkeypatch.setattr(module, "make_client", lambda **k: object())
 
 
-def prepare(capsys, root, source, monkeypatch, after_text, support=SUPPORT):
-    plan = run(capsys, root, "plan", "--source", str(source), "--product", "grounding", "--stop", "apply")
+def prepare(capsys, root, source, monkeypatch, after_text, support=SUPPORT, products=("grounding",)):
+    plan = run(capsys, root, "plan", "--source", str(source),
+               *[a for p in products for a in ("--product", p)], "--stop", "apply")
     pid = plan["plan_id"]
     target, line = anchor(root)
     fake_model(monkeypatch, target, line, after_text.format(line=line), support)

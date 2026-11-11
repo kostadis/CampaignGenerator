@@ -29,7 +29,7 @@ from typing import Any, Callable
 
 from pydantic import BaseModel, ConfigDict
 
-from .errors import EXIT_REFUSAL, EXIT_STALE, EXIT_USAGE, DeltaRefusal
+from .errors import EXIT_RECOVERY, EXIT_REFUSAL, EXIT_STALE, EXIT_USAGE, DeltaRefusal
 from .lineage import DeltaLineageRecord, delta_record_problems, load_lineage
 from .grounding_candidates import CANDIDATES_DIR, LINEAGE_FILE, _range_name, require_check_binding
 from .grounding_edits import edits_dir
@@ -127,6 +127,22 @@ def preview(plan: DeltaPlan, candidates: dict[str, bytes], lineage: DeltaLineage
     )
 
 
+def _staged_bundle_digest(campaign_dir: Path, request: dict[str, Any]) -> str:
+    """Digest of the promotion bundle the request's staged range would publish now (read-only)."""
+    from campaignlib.grounding_config import promotion_config_from_summary_native
+    from pipelines.summary_native.promotion.cli import _campaign_id
+    from pipelines.summary_native.promotion.manifest import build_bundle_selection
+    from pipelines.summary_native.promotion.settings import load_settings, resolve_out_root
+
+    settings = load_settings(request.get("config"))
+    rules = promotion_config_from_summary_native(settings.summary_native).rule_versions
+    bundle = build_bundle_selection(
+        settings.root, out_root=resolve_out_root(settings, request.get("out_root")), since=request["since"],
+        until=request["until"], campaign_id=_campaign_id(settings.root), review_id=request["review"],
+        rule_versions=rules, config_path=settings.grounding_path)
+    return bundle.digest
+
+
 def default_publisher(campaign_dir: Path, plan: DeltaPlan, request: dict[str, Any]) -> dict[str, Any]:
     """Delegate to ``promotion.cli.run``: dry-run for its own preview digest, then commit it."""
     from pipelines.summary_native.promotion import cli as promotion_cli
@@ -134,6 +150,26 @@ def default_publisher(campaign_dir: Path, plan: DeltaPlan, request: dict[str, An
     missing = [k for k in ("since", "until", "review", "check_report") if k not in request]
     if missing:
         raise DeltaRefusal(f"{PUBLISH_REQUEST_FILE} lacks {', '.join(missing)}", EXIT_USAGE)
+    from pipelines.summary_native.promotion.errors import PromotionError
+    from pipelines.summary_native.promotion.publish import committed_replay, joined_receipt
+
+    request_id = request.get("request_id") or f"delta-{plan.plan_id}"
+    try:
+        replayed = committed_replay(campaign_dir, request_id)
+        if replayed is not None:
+            # An identical repeat is a no-op that returns the original receipt (FR-017).  "Identical" is the
+            # promotion layer's own test: the committed intent's bundle digest equals the staged bundle's now.
+            # A request id that matches while the content differs (a revised or rebound plan after commit)
+            # must not hand back the old receipt, as it would present the old publication as the new one.
+            if replayed[0].bundle_digest != _staged_bundle_digest(campaign_dir, request):
+                raise DeltaRefusal(
+                    f"request id {request_id} already committed a different publication than the one now staged "
+                    "(the plan or its candidates changed after it was applied); rebuild the candidates with a new "
+                    "--request-id and preview again", EXIT_STALE)
+            joined = joined_receipt(campaign_dir, replayed[1].activation_id)
+            return {"receipt": joined.get("receipt", joined.get("publication")), "activation": joined["activation"]}
+    except PromotionError as exc:
+        raise DeltaRefusal(f"{exc.code}: {exc}", EXIT_RECOVERY if "HISTORY" in exc.code else EXIT_REFUSAL) from exc
     base = dict(config=request.get("config"), since=request["since"], until=request["until"],
                 out_root=request.get("out_root"), review=request["review"],
                 check_report=request["check_report"], json=True)
@@ -151,7 +187,6 @@ def default_publisher(campaign_dir: Path, plan: DeltaPlan, request: dict[str, An
     if code != 0:
         raise DeltaRefusal(f"promotion preview refused: {dry.get('message', 'blocked')}", EXIT_REFUSAL)
     sha = dry["data"]["preview"]["preview_sha256"]
-    request_id = request.get("request_id") or f"delta-{plan.plan_id}"
     code, done = run(dry_run=False, preview_sha256=sha, request_id=request_id)
     if code != 0:
         raise DeltaRefusal(f"promotion refused: {done.get('message', 'failed')}", EXIT_STALE if code == 3 else EXIT_REFUSAL)

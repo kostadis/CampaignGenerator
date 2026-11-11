@@ -1,0 +1,443 @@
+{
+  "modes": {
+    "bare": {
+      "cases": 16,
+      "both_target_anchors_after_expansion": {
+        "1": 0,
+        "5": 6,
+        "10": 9
+      },
+      "results": [
+        {
+          "id": "q01",
+          "target_ranks": {
+            "left": 2,
+            "right": 2
+          },
+          "coverage": {
+            "1": false,
+            "5": true,
+            "10": true
+          }
+        },
+        {
+          "id": "q02",
+          "target_ranks": {
+            "left": 2,
+            "right": 2
+          },
+          "coverage": {
+            "1": false,
+            "5": true,
+            "10": true
+          }
+        },
+        {
+          "id": "q03",
+          "target_ranks": {
+            "left": 2,
+            "right": 2
+          },
+          "coverage": {
+            "1": false,
+            "5": true,
+            "10": true
+          }
+        },
+        {
+          "id": "q04",
+          "target_ranks": {
+            "left": 2,
+            "right": 1
+          },
+          "coverage": {
+            "1": false,
+            "5": true,
+            "10": true
+          }
+        },
+        {
+          "id": "q05",
+          "target_ranks": {
+            "left": 3,
+            "right": 3
+          },
+          "coverage": {
+            "1": false,
+            "5": true,
+            "10": true
+          }
+        },
+        {
+          "id": "q06",
+          "target_ranks": {
+            "left": 3,
+            "right": 3
+          },
+          "coverage": {
+            "1": false,
+            "5": true,
+            "10": true
+          }
+        },
+        {
+          "id": "q07",
+          "target_ranks": {
+            "left": 3,
+            "right": null
+          },
+          "coverage": {
+            "1": false,
+            "5": false,
+            "10": false
+          }
+        },
+        {
+          "id": "q08",
+          "target_ranks": {
+            "left": 9,
+            "right": 9
+          },
+          "coverage": {
+            "1": false,
+            "5": false,
+            "10": true
+          }
+        },
+        {
+          "id": "q09",
+          "target_ranks": {
+            "left": 9,
+            "right": 9
+          },
+          "coverage": {
+            "1": false,
+            "5": false,
+            "10": true
+          }
+        },
+        {
+          "id": "q10",
+          "target_ranks": {
+            "left": null,
+            "right": null
+          },
+          "coverage": {
+            "1": false,
+            "5": false,
+            "10": false
+          }
+        },
+        {
+          "id": "q11",
+          "target_ranks": {
+            "left": null,
+            "right": null
+          },
+          "coverage": {
+            "1": false,
+            "5": false,
+            "10": false
+          }
+        },
+        {
+          "id": "q12",
+          "target_ranks": {
+            "left": null,
+            "right": 2
+          },
+          "coverage": {
+            "1": false,
+            "5": false,
+            "10": false
+          }
+        },
+        {
+          "id": "q13",
+          "target_ranks": {
+            "left": null,
+            "right": 2
+          },
+          "coverage": {
+            "1": false,
+            "5": false,
+            "10": false
+          }
+        },
+        {
+          "id": "q14",
+          "target_ranks": {
+            "left": null,
+            "right": null
+          },
+          "coverage": {
+            "1": false,
+            "5": false,
+            "10": false
+          }
+        },
+        {
+          "id": "q15",
+          "target_ranks": {
+            "left": null,
+            "right": null
+          },
+          "coverage": {
+            "1": false,
+            "5": false,
+            "10": false
+          }
+        },
+        {
+          "id": "q16",
+          "target_ranks": {
+            "left": 9,
+            "right": 9
+          },
+          "coverage": {
+            "1": false,
+            "5": false,
+            "10": true
+          }
+        }
+      ]
+    },
+    "context": {
+      "cases": 16,
+      "both_target_anchors_after_expansion": {
+        "1": 11,
+        "5": 14,
+        "10": 14
+      },
+      "results": [
+        {
+          "id": "q01",
+          "target_ranks": {
+            "left": 1,
+            "right": 1
+          },
+          "coverage": {
+            "1": true,
+            "5": true,
+            "10": true
+          }
+        },
+        {
+          "id": "q02",
+          "target_ranks": {
+            "left": 1,
+            "right": 1
+          },
+          "coverage": {
+            "1": true,
+            "5": true,
+            "10": true
+          }
+        },
+        {
+          "id": "q03",
+          "target_ranks": {
+            "left": 1,
+            "right": 1
+          },
+          "coverage": {
+            "1": true,
+            "5": true,
+            "10": true
+          }
+        },
+        {
+          "id": "q04",
+          "target_ranks": {
+            "left": 1,
+            "right": null
+          },
+          "coverage": {
+            "1": false,
+            "5": false,
+            "10": false
+          }
+        },
+        {
+          "id": "q05",
+          "target_ranks": {
+            "left": 1,
+            "right": 1
+          },
+          "coverage": {
+            "1": true,
+            "5": true,
+            "10": true
+          }
+        },
+        {
+          "id": "q06",
+          "target_ranks": {
+            "left": 1,
+            "right": 1
+          },
+          "coverage": {
+            "1": true,
+            "5": true,
+            "10": true
+          }
+        },
+        {
+          "id": "q07",
+          "target_ranks": {
+            "left": 1,
+            "right": 4
+          },
+          "coverage": {
+            "1": false,
+            "5": true,
+            "10": true
+          }
+        },
+        {
+          "id": "q08",
+          "target_ranks": {
+            "left": 1,
+            "right": 1
+          },
+          "coverage": {
+            "1": true,
+            "5": true,
+            "10": true
+          }
+        },
+        {
+          "id": "q09",
+          "target_ranks": {
+            "left": 1,
+            "right": 1
+          },
+          "coverage": {
+            "1": true,
+            "5": true,
+            "10": true
+          }
+        },
+        {
+          "id": "q10",
+          "target_ranks": {
+            "left": 1,
+            "right": 1
+          },
+          "coverage": {
+            "1": true,
+            "5": true,
+            "10": true
+          }
+        },
+        {
+          "id": "q11",
+          "target_ranks": {
+            "left": 1,
+            "right": 1
+          },
+          "coverage": {
+            "1": true,
+            "5": true,
+            "10": true
+          }
+        },
+        {
+          "id": "q12",
+          "target_ranks": {
+            "left": null,
+            "right": 2
+          },
+          "coverage": {
+            "1": false,
+            "5": false,
+            "10": false
+          }
+        },
+        {
+          "id": "q13",
+          "target_ranks": {
+            "left": 1,
+            "right": 4
+          },
+          "coverage": {
+            "1": false,
+            "5": true,
+            "10": true
+          }
+        },
+        {
+          "id": "q14",
+          "target_ranks": {
+            "left": 2,
+            "right": 2
+          },
+          "coverage": {
+            "1": false,
+            "5": true,
+            "10": true
+          }
+        },
+        {
+          "id": "q15",
+          "target_ranks": {
+            "left": 1,
+            "right": 1
+          },
+          "coverage": {
+            "1": true,
+            "5": true,
+            "10": true
+          }
+        },
+        {
+          "id": "q16",
+          "target_ranks": {
+            "left": 1,
+            "right": 1
+          },
+          "coverage": {
+            "1": true,
+            "5": true,
+            "10": true
+          }
+        }
+      ]
+    }
+  },
+  "opened_sources": {
+    "docs/summaries/004-session-untitled.md": "d109cc9c91943da0f2bb5e84238f84ae5534b9deed14e0418a6f28f1ba2677b1",
+    "docs/summaries/032-session-drones-dread-and-dangerous-deliveries.md": "9beb67d0b794fab720f6bc5229cf89a707f6f44d579e439563975354d3bf8f66",
+    "docs/summaries/005-session-to-find-a-shapeshifter.md": "797a23c039e02dfec65028d3f37af28194d4fec13748b1f7300329a3572ee657",
+    "docs/summaries/033-session-a-cheesy-compromise-in-the-mine.md": "820ffea4d838af270f9b4b72163bb7b501a18e1685a9aa1d64f53a3cb9cf878e",
+    "docs/summaries/025-session-when-boars-are-more-than-just-boars.md": "ed0564ac29bd800de0d37f4333dc0514bcb2c7fc83578e4ca7ee9d36981e33d6",
+    "docs/summaries/011-session-untitled.md": "689cb8de3dc70a85ed1994dfb6aa19c6a16f72cef00a54333864f8ff55389635",
+    "docs/summaries/045-session-a-storm-of-bolts-and-orcs.md": "dc3a6bffb63a4f637df9f7d10b698929c26e40268dcb897eac11b8fd54903830",
+    "docs/summaries/030-session-sisters-against-the-machine.md": "c21338e31171aca7867568ac6128ae1144fe677ea0b977e1b60c70f5d386f2cf",
+    "docs/summaries/022-session-to-the-loggers-camp.md": "d32927be512813cce6807579ed89e90bd43a7a3cfc00f41a265b414e6331e331",
+    "docs/summaries/055-session-combat-at-last.md": "017d9f90c0d4a5340bcc08d66dd3ea23932afa9fca488f97903f8a53a6474df3",
+    "docs/summaries/046-session-the-aasimar-has-landed.md": "99130ee6fafac8ffa58aa3735f72194b360826c968508a75878c5c33610325bd",
+    "docs/summaries/043-session-the-power-of-the-darkness-and-the-light.md": "d10f2b30989163f90149e5754c0e93242c69b23e4aa85fe2002d7ce679526745",
+    "docs/summaries/017-session-the-butterskull-quest.md": "f79f0fc8a3d8ada8879062cbac861f742995c3825564558b8116882aa7a86972",
+    "docs/summaries/018-session-freeing-big-al-petunia-and-watching-a-ranch-burn.md": "36c1f4ed657c6accfad556bdf506e21b1b1167a8bae7743d952fe5dabb8d8530",
+    "docs/summaries/010-session-untitled.md": "9f765122029acbbb24a9fbe9dca5b8969a19687bc3e64cdbbdac6f8b4eac9df9",
+    "docs/summaries/042-session-the-charge-of-the-light-brigade.md": "94289fd21ab000d019bbb43fb36607718375802d64952e769f83c07c5e3e4424",
+    "docs/summaries/048-session-victory-lap.md": "fc13b759dc95dc772df0d603f1a5dfeba1e3f9542b7ecbb7bca8254fc7df7ede",
+    "docs/summaries/020-session-blood-money-clean-gold-and-fine-wine.md": "8abe81894cf29753e930d55c2a459cc943b55c0132c6439f3c67612adf92d12b",
+    "docs/summaries/052-session-untitled.md": "62bba139cfee8ac7cc449c76e106c29ad02bbaeb0c07c0827f917fe4ea9778ba",
+    "docs/summaries/003-session-untitled.md": "0031368cb9f271eb1fc78b1883564206433315b8ccfa095a64021100d6881d58",
+    "docs/summaries/039-session-a-dragon-defeated-a-bard-tempted-a-barbarians-vengeance.md": "638c8a0130f5df77e6e57ffdd882a231464995cc3c2fad2c1116b790b6d98c32",
+    "docs/summaries/034-session-brewbarrys-bloody-axe-and-the-beer-blight.md": "42c21d10344372aaea8e332661e7d79c5c9df74cb2d92b8b1deca9f69df269c3",
+    "docs/summaries/026-session-from-retreat-to-redemption-and-cheese.md": "220e5e5eb4215d0c0fdef28b0938d687110b04e4d7217ee21b6c5a132be7e6f3",
+    "docs/summaries/050-session-neverwinter-never-a-dull-moment.md": "4bc78d7e02a5145a5d3836ea09d608fd538acfed35c666610b3bb0ccd6616560",
+    "docs/summaries/036-session-silencing-the-sirens-warning.md": "38cd5308af0c0be30c61f8c64eed8f7b7dadd1b071752904b12ac5d053b2668f",
+    "docs/summaries/049-session-universal-basic-treasure.md": "fbc7c9e6661e481afede6ba7e6fe2f182a2e2f535d584afb0b3dc998b72f4fdc",
+    "docs/summaries/053-session-the-broads-of-the-common-chord-and-the-board-laid-bare.md": "d11122f287822411cc1d07584a132bf6cd88d3b8c71a2cc3bf2b4a2522f002a2",
+    "docs/summaries/059-session-untitled.md": "d5a6893612fffec363165334fbb6ad0411e41806d14cd24fa3b93c237510cc51"
+  },
+  "declared_summary_files": 59,
+  "gold_read": false,
+  "new_searches": 0,
+  "generative_model_calls": 0,
+  "limit": "Full source expansion increases context size; it establishes evidence availability, not identity accuracy."
+}
