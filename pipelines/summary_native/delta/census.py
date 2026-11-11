@@ -57,7 +57,7 @@ _STRENGTH = {"entry": 3, "event": 2, "prose": 1}
 class Span(BaseModel):
     model_config = ConfigDict(extra="forbid")
     chapter: int
-    kind: str  # entry | scene | moment
+    kind: str  # entry | scene | moment | association (exact approved quote)
     id: str
     strength: str  # entry | event | prose
     text: str
@@ -240,6 +240,27 @@ def build_census(campaign_dir: Path | str, plan: DeltaPlan, *, npc_root: Path | 
                 name = " ".join(toks)
                 add_unresolved(name, Span(chapter=ch, kind=kind, id=uid, strength=strength,
                                           text=_snippet(masked, m.start(), m.end())))
+
+    # An approved scoped association is presence evidence, even when its name is
+    # generic. Keep that form withheld everywhere else and retain only the quote.
+    from .associations import selected_approved
+
+    for a, src in selected_approved(root, plan):
+        if a.canonical_id in spans:
+            spans[a.canonical_id].append(Span(chapter=src.chapter, kind="association", id=a.id,
+                                             strength="event", text=a.relationship_support))
+            # Resolve only the reviewed occurrence; other occurrences remain in
+            # triage. A generic canonical entry must not shadow its selected row.
+            for name in list(unresolved):
+                if _fold(name) != _fold(a.name):
+                    continue
+                unresolved[name] = [s for s in unresolved[name] if not (
+                    s.chapter == src.chapter and (
+                        s.id == a.source.scene or
+                        (s.kind == "entry" and a.source.scene == "entry" and a.relationship_support in s.text)
+                    ))]
+                if not unresolved[name]:
+                    del unresolved[name]
 
     entries: list[CensusEntry] = []
     for n in sorted(subjects, key=str.casefold):

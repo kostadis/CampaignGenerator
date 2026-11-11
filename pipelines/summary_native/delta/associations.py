@@ -25,7 +25,7 @@ from campaignlib.registry import find_registry, load_registry
 
 from .census import read_pinned_source
 from .errors import EXIT_REFUSAL, EXIT_USAGE, DeltaRefusal
-from .plan import DELTA_ROOT_REL, DeltaPlan
+from .plan import DELTA_ROOT_REL, DeltaPlan, PlanSource
 from .records_io import read_json, write_json
 
 ASSOC_REL = f"{DELTA_ROOT_REL}/associations"
@@ -209,3 +209,20 @@ def require_approved(campaign_dir: Path | str, plan_id: str, assoc_id: str) -> A
         raise DeltaRefusal(f"association {assoc_id} is {state}, not approved; only an approved "
                            "association can be drafting evidence", EXIT_REFUSAL)
     return a
+
+
+def selected_approved(campaign_dir: Path | str, plan: DeltaPlan) -> list[tuple[Association, PlanSource]]:
+    """Approved, still-pinned support in this plan only; never expand a scoped quote to its scene."""
+    selected = {str(Path(s.path).resolve()): s for s in plan.sources}
+    out = []
+    for a in approved_associations(campaign_dir, plan.plan_id, audience="gm"):
+        src = selected.get(str(Path(a.source.path).resolve()))
+        if src is None or a.source.revision != src.sha256:
+            raise DeltaRefusal(f"association {a.id}: support is outside the pinned selection")
+        text = read_pinned_source(src)
+        if (not a.relationship_support or a.source.span != a.relationship_support
+                or a.relationship_support not in text
+                or not _scene_has(Path(campaign_dir), src.path, a.source.scene, a.relationship_support)):
+            raise DeltaRefusal(f"association {a.id}: support no longer resolves in its exact scope")
+        out.append((a, src))
+    return out
