@@ -30,6 +30,12 @@ def check_paths(document: Path, campaign: Path) -> list[str]:
         text = document.read_text(encoding="utf-8")
     except (OSError, UnicodeError) as exc:
         return [f"cannot read {document}: {exc}"]
+    return check_text_paths(text, document, campaign)
+
+
+def check_text_paths(text: str, document: Path, campaign: Path) -> list[str]:
+    """Check an explicit reading contract against real files; never writes a document."""
+    document, campaign = Path(document), Path(campaign)
     contracts = _CONTRACT_PATHS.findall(text)
     if len(contracts) != 1:
         return ["expected one reading-contract path record; regenerate the document with summary_native synth"]

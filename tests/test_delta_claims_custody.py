@@ -79,3 +79,35 @@ def test_stale_custody_bytes_refused(tmp_path):
     (tmp_path / "baseline/001.md").write_text("tampered\n")
     with pytest.raises(PromotionError, match="stale"):
         selection._discovered_rows(tmp_path, bundle, lambda c, e: base)
+
+
+def test_inherited_summary_is_verified_but_not_reopened_for_link_discovery(tmp_path, monkeypatch):
+    bundle, _ = _bundle(tmp_path, "Inherited. [ch 001 / forge]\nNew. [ch 003 / fire]\n")
+    old = _ident(tmp_path, "baseline/001.md", "Old prose [obsolete export](zoom_summary.md).\n[ch 002 / older]\n")
+    read_text = Path.read_text
+
+    def no_historical_parse(path, *args, **kwargs):
+        if path == tmp_path / old.path:
+            raise AssertionError("historical summary body was reopened for discovery")
+        return read_text(path, *args, **kwargs)
+
+    monkeypatch.setattr(Path, "read_text", no_historical_parse)
+    rows, ambiguities = selection._discovered_rows(
+        tmp_path, bundle, lambda chapter, entry: old if chapter == 1 else None)
+    assert not ambiguities
+    assert {row[0].path for row in rows} == {old.path, "docs/summaries/003.md"}
+    # Custody remains pinned; bypassing recursive interpretation cannot hide drift.
+    (tmp_path / old.path).write_text("changed\n")
+    with pytest.raises(PromotionError, match="stale"):
+        selection._discovered_rows(tmp_path, bundle, lambda chapter, entry: old)
+
+
+def test_selected_summary_still_traverses_and_refuses_missing_links(tmp_path):
+    bundle, _ = _bundle(tmp_path, "New. [ch 003 / fire]\n")
+    (tmp_path / "docs/summaries/003.md").write_text("New [missing](zoom_summary.md).\n")
+    data = (tmp_path / "docs/summaries/003.md").read_bytes()
+    manifest = tmp_path / "out/ch003-003/manifest.json"
+    manifest.write_text(json.dumps({"files": [{"chapter": 3, "path": "docs/summaries/003.md",
+                                               "sha256": hashlib.sha256(data).hexdigest()}]}))
+    with pytest.raises(PromotionError, match="linked claim source is missing"):
+        selection._discovered_rows(tmp_path, bundle, lambda chapter, entry: None)

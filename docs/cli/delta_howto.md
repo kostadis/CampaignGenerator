@@ -242,6 +242,10 @@ summary_native delta associate decide ASSOC_ID --plan PLAN --decision approve --
 
 Only an `approve`d association can be drafting evidence. A proposal whose evidence does not match the
 cited source text is dropped and counted, not kept. `--reviewer` is required.
+Re-run `census` after approval: the scoped support can select the canonical NPC for drafting even
+when its name is a withheld generic word. Only the approved quote becomes evidence; other uses of
+the word and unrelated text in the scene stay outside that association's scope. Exclusions and
+deferrals still take precedence.
 If the name is genuinely a new entity, add it to the registry (`registry add`) and re-run `census`; an
 association never creates an identity.
 
@@ -359,6 +363,21 @@ not at all.
 
 An `INCOMPLETE` preview lists its problems; do not apply it. Git stays a separate operator action.
 
+The claims source closure keeps inherited summary dependencies pinned to baseline custody and
+verifies their identity, targets and bytes. It does not reopen their prose to discover further
+citations or Markdown links. Selected chapters still undergo normal link discovery and missing-link
+checks. Custody verification may read historical file bytes; this is distinct from parsing historical
+content or selecting it for a model. Only explicitly selected chunks enter claims extraction.
+
+A checked delta can preserve the format of an adopted legacy document, including its introduction,
+additional sections, and section order. Promotion verifies the pinned baseline and exact checked
+candidate before using this inherited contract; required/nonempty sections, heading preservation,
+inherited order, tables, pointers, custody, and exact sign-offs still apply. Fresh synthesis and deltas
+without this verified legacy format keep the strict generated-document outline.
+If the adopted document had no inline reading-contract metadata, the delta validates its real
+reference, timeline, dossier and summary paths using the pinned bundle and selected plan instead.
+An existing inline contract is always checked normally; the legacy path cannot conceal a damaged one.
+
 ## Baseline adoption (what and when)
 
 Adopt when `baseline status` shows `DRIFT` (someone edited a live grounding file after promotion), and
@@ -449,7 +468,9 @@ summary_native delta transfer bind   --canonical /path/to/canonical --campaign-d
 `verify` compares the worktree's `docs/reviews/campaign.json` and every plan in it with the canonical
 campaign's, and changes nothing. `bind` verifies and then writes `docs/summaries/delta/transfer/binding-N.json`
 in the worktree (never `campaign.json`); after that, delta commands in the worktree accept the canonical
-identity. Re-binding an identical transfer returns the existing file. A tampered or stale binding is refused.
+identity, including native review handoff and subsequent review operations. Review rechecks the
+binding, the canonical identity and plan identities; the canonical campaign must remain accessible.
+Re-binding an identical transfer returns the existing file. A tampered or stale binding is refused.
 
 | Message | Exit |
 |---|---|

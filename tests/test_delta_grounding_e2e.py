@@ -406,3 +406,99 @@ def test_second_delta_resolves_chapter_one_through_the_chain_and_coverage_stays_
     with pytest.raises(DeltaRefusal) as err:
         bl.bind(root)
     assert err.value.exit_code in (3, 5)  # stale (our hop check) or recovery (promotion history refuses first)
+
+
+def test_real_delta_publishes_inherited_legacy_document_shape(tmp_path, capsys, monkeypatch):
+    from tests.support.delta_grounding_fixture import FACTORY
+
+    root = FACTORY.create_campaign(tmp_path / "campaign", baseline="legacy")
+    for name in FACTORY.DOCUMENTS:
+        p = root / f"docs/{name}.md"
+        old = "\n".join(line for line in p.read_text().splitlines()
+                        if "summary_native pointers:" not in line) + "\n"
+        p.write_text(f"# Retained legacy {name}\n\n## Legacy snapshot\nHistorical context.\n\n" + old)
+    FACTORY.initialize_managed(root, "legacy-fixture")
+    source = add_new_chapter(root)
+    publish_delta(capsys, root, source, monkeypatch, 4, "legacy-shape-review", "{line}\n" + NEW_LINE)
+    assert "# Retained legacy world_state" in (root / "docs/world_state.md").read_text()
+    assert NEW_LINE in (root / "docs/world_state.md").read_text()
+
+
+def test_preserved_contract_still_checks_required_sections_order_and_tables():
+    from pipelines.summary_native.delta.outline_contract import preserved_outline_problems
+    from pipelines.summary_native.outline import load_outline
+
+    heads = load_outline("world_state")
+    base = ("# Legacy title\n\n" + "\n\n".join(h + "\nRetained content." for h in heads) + "\n").encode()
+    assert preserved_outline_problems("world_state", base, base) == []
+    missing = base.replace(heads[0].encode(), b"## Renamed section")
+    assert any("missing heading" in p for p in preserved_outline_problems("world_state", base, missing))
+    empty = base.replace((heads[0] + "\nRetained content.").encode(), heads[0].encode())
+    assert any("empty body" in p for p in preserved_outline_problems("world_state", base, empty))
+    swapped = base.replace(heads[0].encode(), b"TEMP").replace(heads[1].encode(), heads[0].encode()).replace(b"TEMP", heads[1].encode())
+    assert any("order" in p for p in preserved_outline_problems("world_state", base, swapped))
+    table = base + b"\n| A | B |\n| x |\n"
+    assert any("column" in p for p in preserved_outline_problems("world_state", base, table))
+
+
+def test_legacy_contract_requires_checked_bytes_and_pinned_lineage(tmp_path, capsys, monkeypatch):
+    from campaignlib.grounding_config import promotion_config_from_summary_native
+    from pipelines.summary_native.delta.outline_contract import legacy_delta_outline
+    from pipelines.summary_native.promotion.manifest import build_bundle_selection
+    from pipelines.summary_native.promotion.settings import load_settings
+    from pipelines.summary_native.review.store import load_campaign_identity
+    from tests.support.delta_grounding_fixture import FACTORY
+
+    root = FACTORY.create_campaign(tmp_path / "campaign", baseline="legacy")
+    p = root / "docs/world_state.md"
+    old = "\n".join(line for line in p.read_text().splitlines()
+                    if "summary_native pointers:" not in line) + "\n"
+    p.write_text("# Legacy title\n\n" + old)
+    FACTORY.initialize_managed(root, "legacy-fixture")
+    source = add_new_chapter(root)
+    pid, _ = prepare(capsys, root, source, monkeypatch, "{line}\n" + NEW_LINE)
+    assert run(capsys, root, "grounding", "check", "--plan", pid)["passed"]
+    run(capsys, root, "grounding", "preview", "--plan", pid)
+    settings = load_settings(str(root / "config/config.yaml"))
+    bundle = build_bundle_selection(root, out_root="docs/summary_native", since=4, until=4,
+        campaign_id=str(load_campaign_identity(root).campaign_id), review_id="r",
+        rule_versions=promotion_config_from_summary_native(settings.summary_native).rule_versions,
+        config_path=root / "config/grounding.yaml")
+    document = next(x for x in bundle.documents if x.document_id.value == "world_state")
+    text = (root / document.path).read_text()
+    assert legacy_delta_outline(root, bundle, "world_state", text) == []
+    from pipelines.summary_native.delta.outline_contract import legacy_delta_paths
+    from pipelines.summary_native import pointers
+    path = root / document.path
+    assert pointers.check_paths(path, root)  # The strict checker still requires an inline contract.
+    assert legacy_delta_paths(root, bundle, "world_state", path) == []
+    reference = path.parent / "reference/factions.md"
+    data = reference.read_bytes()
+    reference.unlink()
+    assert any("missing file" in p for p in legacy_delta_paths(root, bundle, "world_state", path))
+    reference.write_bytes(data)
+    assert legacy_delta_outline(root, bundle, "world_state", text + "unreviewed") is None
+    assert legacy_delta_outline(root, bundle.model_copy(update={"retained_records": ()}), "world_state", text) is None
+    published_path(root, "world_state").write_text("changed baseline")
+    assert legacy_delta_outline(root, bundle, "world_state", text) is None
+
+
+def test_legacy_pointer_fallback_never_replaces_an_existing_contract(tmp_path, capsys, monkeypatch):
+    from campaignlib.grounding_config import promotion_config_from_summary_native
+    from pipelines.summary_native.delta.outline_contract import legacy_delta_paths
+    from pipelines.summary_native.promotion.manifest import build_bundle_selection
+    from pipelines.summary_native.promotion.settings import load_settings
+    from pipelines.summary_native.review.store import load_campaign_identity
+
+    root = make_grounding_campaign(tmp_path)
+    source = add_new_chapter(root)
+    pid, _ = prepare(capsys, root, source, monkeypatch, "{line}\n" + NEW_LINE)
+    run(capsys, root, "grounding", "check", "--plan", pid)
+    run(capsys, root, "grounding", "preview", "--plan", pid)
+    settings = load_settings(str(root / "config/config.yaml"))
+    bundle = build_bundle_selection(root, out_root="docs/summary_native", since=4, until=4,
+        campaign_id=str(load_campaign_identity(root).campaign_id), review_id="r",
+        rule_versions=promotion_config_from_summary_native(settings.summary_native).rule_versions,
+        config_path=root / "config/grounding.yaml")
+    path = root / next(x.path for x in bundle.documents if x.document_id.value == "world_state")
+    assert legacy_delta_paths(root, bundle, "world_state", path) is None

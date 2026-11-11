@@ -111,6 +111,7 @@ def _discovered_rows(root: Path, bundle: BundleSelection, inherited: InheritedCu
         for match in _CITATION.finditer(text):
             chapter = int(match.group(1))
             entry = chapters.get(chapter)
+            inherited_entry = False
             if not entry and inherited is not None:
                 custody = inherited(chapter, match.group(2).strip())
                 if custody is None:
@@ -121,6 +122,7 @@ def _discovered_rows(root: Path, bundle: BundleSelection, inherited: InheritedCu
                         code="CLAIMS_SOURCE_MISSING",
                     )
                 entry = {"path": custody.path, "sha256": custody.sha256}
+                inherited_entry = True
             if not entry:
                 raise PromotionError(f"cited chapter {chapter} is absent from the selected corpus inventory", code="CLAIMS_SOURCE_MISSING")
             path = root / entry["path"]
@@ -135,7 +137,11 @@ def _discovered_rows(root: Path, bundle: BundleSelection, inherited: InheritedCu
                    AuthorityClass.TABLE, "mapping_evidence", key[1], (), {}, "gm")
             discovered.append(row)
             linked_paths.add(found_identity.path)
-            if found_identity.path not in queued:
+            # A delta's baseline vouches for this exact inherited dependency.
+            # Keep it in custody and verify its bytes, but do not reinterpret its
+            # prose/links and recursively reopen historical chapters. Selected
+            # sources still traverse normally, including missing-link refusals.
+            if not inherited_entry and found_identity.path not in queued:
                 queued.add(found_identity.path)
                 queue.append(found_identity)
         for match in _MARKDOWN_LINK.finditer(text):

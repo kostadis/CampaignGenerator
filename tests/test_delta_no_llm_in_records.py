@@ -27,6 +27,7 @@ ALLOWED_MODEL_FUNCTIONS: dict[str, frozenset[str]] = {
     "attest.py": frozenset(),
     "npc_baseline.py": frozenset(),
     "lineage.py": frozenset(),
+    "outline_contract.py": frozenset(),
     "grounding_publish.py": frozenset(),
     "run.py": frozenset(),
     "receipt.py": frozenset(),

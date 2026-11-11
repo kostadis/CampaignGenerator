@@ -82,8 +82,18 @@ def check_bundle_structure(campaign_dir: Path, bundle: BundleSelection) -> tuple
             text = data.decode("utf-8")
             outline = check_outline(text, load_outline(member.document_id.value))
             if outline:
+                from pipelines.summary_native.delta.outline_contract import legacy_delta_outline
+                inherited = legacy_delta_outline(root, bundle, member.document_id.value, text)
+                if inherited is not None:
+                    outline = inherited
+            if outline:
                 raise ValueError(outline[0])
             pointer_problems = pointers.check_paths(path, root)
+            if pointer_problems:
+                from pipelines.summary_native.delta.outline_contract import legacy_delta_paths
+                inherited_paths = legacy_delta_paths(root, bundle, member.document_id.value, path)
+                if inherited_paths is not None:
+                    pointer_problems = inherited_paths
             if pointer_problems:
                 raise ValueError(pointer_problems[0])
         except (OSError, UnicodeError, ValueError) as exc:
@@ -144,7 +154,18 @@ def check_copied_bundle(
         for member in bundle.documents:
             document = target / f"{member.document_id.value}.md"
             problems = check_outline(document.read_text(encoding="utf-8"), load_outline(member.document_id.value))
-            problems.extend(pointers.check_paths(document, root))
+            if problems:
+                from pipelines.summary_native.delta.outline_contract import legacy_delta_outline
+                inherited = legacy_delta_outline(root, bundle, member.document_id.value, document.read_text(encoding="utf-8"))
+                if inherited is not None:
+                    problems = inherited
+            path_problems = pointers.check_paths(document, root)
+            if path_problems:
+                from pipelines.summary_native.delta.outline_contract import legacy_delta_paths
+                inherited_paths = legacy_delta_paths(root, bundle, member.document_id.value, document)
+                if inherited_paths is not None:
+                    path_problems = inherited_paths
+            problems.extend(path_problems)
             if problems:
                 raise ValueError(f"{member.document_id.value}: {problems[0]}")
     except (OSError, UnicodeError, ValueError) as exc:

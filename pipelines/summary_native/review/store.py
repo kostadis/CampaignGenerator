@@ -167,8 +167,6 @@ def initialize_campaign(campaign_dir: Path) -> CampaignReviewIdentity:
             )
         if path.exists():
             identity = load_campaign_identity(root)
-            if identity.canonical_root != str(root):
-                raise ReviewStoreError("REVIEW_CAMPAIGN_MOVED: deliberate verified rebind is required")
             return identity
         _reject_symlinks(root, path)
         identity = CampaignReviewIdentity(1, uuid.uuid4(), str(root))
@@ -198,7 +196,20 @@ def load_campaign_identity(campaign_dir: Path) -> CampaignReviewIdentity:
     except (OSError, ValueError, TypeError, KeyError) as exc:
         raise ReviewStoreError("REVIEW_NOT_INITIALIZED: run review init") from exc
     if identity.canonical_root != str(root):
-        raise ReviewStoreError("REVIEW_CAMPAIGN_MOVED: deliberate verified rebind is required")
+        # A deliberate delta transfer retains canonical identity bytes. Review
+        # must consume its proof too, rather than accepting planning but refusing
+        # every subsequent review operation. Unbound/moved copies still refuse.
+        from pipelines.summary_native.delta.errors import DeltaRefusal
+        from pipelines.summary_native.delta.transfer import bound_identity
+
+        try:
+            cid = bound_identity(root)
+            if cid != str(identity.campaign_id):
+                raise ValueError("transfer identity mismatch")
+        except (DeltaRefusal, OSError, ValueError, KeyError, TypeError) as exc:
+            raise ReviewStoreError(
+                f"REVIEW_CAMPAIGN_MOVED: deliberate verified rebind is required ({exc})"
+            ) from exc
     return identity
 
 

@@ -214,6 +214,23 @@ def _new_spans(root: Path, plan: DeltaPlan, entry: CensusEntry, forms: set[str],
             continue
         wanted.setdefault(sp.chapter, set()).add((sp.kind, sp.id))
     spans: list[EvidenceSpan] = []
+    approved = {a.id: (a, src) for a, src in associations.selected_approved(root, plan)
+                if a.canonical_id == entry.subject}
+    for sp in entry.evidence:
+        if sp.kind != "association" or (horizon is not None and sp.chapter <= horizon):
+            continue
+        if sp.id not in approved:
+            raise DeltaRefusal(f"{entry.subject}: association {sp.id} is no longer approved")
+        a, src = approved[sp.id]
+        target = a.source.scene
+        if target in ("moment", "moments"):
+            kind = "moment"
+        elif target == "entry" or target.startswith("npcs/"):
+            kind = "entry"
+        else:
+            kind = "scene"
+        spans.append(EvidenceSpan(src.chapter, kind, target if kind == "scene" else kind,
+                                  a.relationship_support, _rel(root, Path(src.path)), src.sha256, "new"))
     for src in plan.sources:
         if src.chapter not in wanted:
             continue

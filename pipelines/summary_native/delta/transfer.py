@@ -1,10 +1,10 @@
 """Verified canonical -> worktree/artifact transfer (T080, FR-022).
 
 The review store refuses a campaign whose ``docs/reviews/campaign.json`` names another root
-(``REVIEW_CAMPAIGN_MOVED``).  That guard stays exactly as it is.  A transfer is made usable by a
+(``REVIEW_CAMPAIGN_MOVED``). A transfer is made usable by a
 *separate* binding record, written in the worktree, that says "this copy was verified to carry the
-canonical campaign's identity".  Nothing here writes ``campaign.json`` or touches the guard; the
-identity file is only ever read, as bytes.  No model call.
+canonical campaign's identity". Review storage revalidates this proof before accepting
+a moved root. Nothing here writes ``campaign.json``; identity bytes are read only. No model call.
 """
 
 from __future__ import annotations
@@ -158,4 +158,7 @@ def bound_identity(worktree_dir: Path | str) -> str:
     if digest != rec["identity_sha256"] or cid != rec["campaign_id"]:
         raise DeltaRefusal("the campaign identity changed since the transfer was bound; re-verify with "
                            "`delta transfer verify --canonical DIR`", EXIT_STALE)
+    proof = verify(rec["canonical_root"], worktree)
+    if croot != rec["canonical_root"] or proof.campaign_id != cid:
+        raise DeltaRefusal("the transfer no longer matches the canonical campaign", EXIT_REFUSAL)
     return cid
