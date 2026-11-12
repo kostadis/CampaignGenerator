@@ -84,6 +84,7 @@ def test_lossless_adapter_retains_every_legacy_code_and_all_seven_categories():
         },
     )
     lines = [f"draft line {number}" for number in range(1, 14)]
+    lines.append("In Chapter 036 the witness waited. [ch 003 / entry]")  # yields one noise-label item
 
     items = _adapt(_selection(
         result,
@@ -99,6 +100,7 @@ def test_lossless_adapter_retains_every_legacy_code_and_all_seven_categories():
         "later-source-supersedes",
         "knowledge-leak",
         "verifier-timeout",
+        "noise-label",
     }
     by_code = {item.diagnostics[0].legacy_code: item for item in items}
     assert set(by_code) == expected_codes

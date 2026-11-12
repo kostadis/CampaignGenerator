@@ -22,6 +22,7 @@ from campaignlib.review_config import (
     ReviewConfig,
     load_campaign_review_config,
 )
+from pipelines.summary_native import noise
 from server.platform_config_service import require_platform
 from server.subprocess_runner import BoundedJSONError, console_script, run_bounded_json, stream_subprocess
 
@@ -133,6 +134,14 @@ class GrantIssueRequest(StrictRequest):
 class GrantRevokeRequest(StrictRequest):
     grant: str = Field(min_length=1, max_length=128, pattern=r"^[A-Za-z0-9_.-]+$")
 
+class NoiseDecideRequest(StrictRequest):
+    noise_class: Literal[noise.CLASSES]  # derived: a new class is accepted without a second list
+    verdict: Literal["approve", "reject"]
+    reviewer: str = Field(min_length=1, max_length=256)
+    note: str = Field(min_length=1)
+    write: bool = False
+
+
 class RefreshRequest(StrictRequest): expected_generation:int=Field(ge=1)
 class RerunPreviewRequest(StrictRequest): selection:str=Field(min_length=1); mode:Literal["unresolved","selected"]
 class RerunRunRequest(StrictRequest): selection_sha256:str=Field(pattern=r"^[0-9a-f]{64}$")
@@ -218,7 +227,17 @@ def _error(exc: BoundedJSONError) -> JSONResponse:
     )
 
 
+_EXACT_STATUS = {
+    "REVIEW_NOISE_UNKNOWN_CLASS": 400,
+    "REVIEW_NOISE_NOTHING_TO_DECIDE": 409,
+    "REVIEW_NOISE_NOTE_REQUIRED": 400,
+    "REVIEW_NOISE_NOTE_TOO_LONG": 400,
+}
+
+
 def _status_for(code: str) -> int:
+    if code in _EXACT_STATUS:
+        return _EXACT_STATUS[code]
     if "STALE" in code or code.endswith("_CONFLICT"):
         return 409
     if "RECOVER" in code or "PENDING_TRANSACTION" in code:
@@ -307,6 +326,20 @@ async def show(
 @router.get("/{review_id}/status")
 async def status(request: Request, review_id: str):
     return await _run(_root(request), "status", review_id)
+
+
+@router.get("/{review_id}/noise")
+async def noise(request: Request, review_id: str):
+    return await _run(_root(request), "noise", review_id)
+
+
+@router.post("/{review_id}/noise/decide")
+async def noise_decide(request: Request, review_id: str, payload: NoiseDecideRequest):
+    arguments = ["noise", "decide", review_id, "--class", payload.noise_class, "--verdict", payload.verdict,
+                 "--reviewer", payload.reviewer, "--note", payload.note]
+    if payload.write:
+        arguments.append("--write")
+    return await _run(_root(request), *arguments)
 
 
 @router.post("/{review_id}/decisions")

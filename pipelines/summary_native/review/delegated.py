@@ -14,6 +14,7 @@ import json
 from pathlib import Path
 
 from campaignlib.review_config import load_campaign_review_config
+from pipelines.summary_native import noise
 from pipelines.summary_native.review.store import (
     ReviewStoreError,
     _validate_action_decision,
@@ -93,13 +94,13 @@ def npc_signoff_blocker(root: Path, item) -> tuple[str, str] | None:
     return None
 
 
-def _decision(item, *, expected: int, disposition: str, note: str) -> dict:
+def _decision(item, *, expected: int, disposition: str, note: str, verdict: str = "approve") -> dict:
     return {
         "item_id": item.item_id,
         "item_revision": item.revision,
         "review_digest": item.review_digest,
         "expected_decision_revision": expected,
-        "verdict": "approve",
+        "verdict": verdict,
         "disposition": disposition,
         "note": note,
     }
@@ -247,6 +248,126 @@ def plan_policy(root: Path, review_id: str, *, policy: dict[str, str], policy_la
         "approvable": approvable,
         "ineligible": ineligible,
         "already_decided": already,
+    }
+
+
+# ---------------------------------------------------------------- classified noise (spec 041 US4)
+
+def _noise_members(items, noise_class: str):
+    """Items whose single legacy_code is ``noise-<class>`` (the same single-code rule as ``plan_policy``)."""
+    code = noise.legacy_code(noise_class)
+    return [item for item in items if _legacy_codes(item) == [code]]
+
+
+def _noise_details(item) -> dict:
+    return next((dict(d.details) for d in item.diagnostics if str(d.legacy_code).startswith("noise-")), {})
+
+
+def _draft_stem_name(source_path: str | None) -> str | None:
+    """Fallback NPC name: the draft file's stem without its ``npc_`` prefix."""
+    stem = Path(str(source_path or "")).name
+    stem = stem[:-len(".md")] if stem.endswith(".md") else stem
+    if stem.endswith(".verify"):
+        stem = stem[:-len(".verify")]
+    stem = stem[len("npc_"):] if stem.startswith("npc_") else stem
+    return stem or None
+
+
+def _occurrence(item, event: dict | None, current: bool) -> dict:
+    details = _noise_details(item)
+    ref = item.subject_ref
+    return {
+        "item_id": item.item_id,
+        # The store keeps no separate NPC name; the entity subject's registry name is the only one.
+        "npc": getattr(ref, "registry_name", None) or _draft_stem_name(item.locator.source_path),
+        "draft_path": item.locator.source_path,
+        "line": details.get("line", item.locator.display_line),
+        "token": details.get("token"),
+        "sentence": details.get("sentence"),
+        "cited_scenes": list(details.get("cited_scenes", [])),
+        "resolved_by": details.get("resolved_by"),
+        "decision": (
+            {"verdict": event.get("verdict"), "disposition": event.get("disposition"), "reviewer": event.get("reviewer")}
+            if current and event else None
+        ),
+    }
+
+
+def list_noise(root: Path, review_id: str) -> dict:
+    """Read-only: every noise class (precedence order, empty ones included) with its occurrences."""
+    manifest, items, events, stale = read_review_state(root, review_id)
+    classes = []
+    for cls in noise.CLASSES:
+        occurrences, tally = [], {"approve": 0, "reject": 0, "undecided": 0, "discuss": 0}
+        for item in _noise_members(items, cls):
+            event = _latest(events, item.item_id)
+            current = _current_decision(event, item, stale)
+            occurrences.append(_occurrence(item, event, current))
+            tally[event.get("verdict") if current else "undecided"] += 1
+        classes.append({
+            "noise_class": cls,
+            "legacy_code": noise.legacy_code(cls),
+            "count": len(occurrences),
+            "undecided": tally["undecided"],
+            "approved": tally["approve"],
+            "rejected": tally["reject"],
+            "occurrences": occurrences,
+        })
+    return {"review_id": review_id, "review_generation": manifest.generation, "classes": classes}
+
+
+_NOISE_VERDICTS = {"approve": "accept_no_change", "reject": "reject_action"}
+
+
+def plan_noise_class(root: Path, review_id: str, *, noise_class: str, verdict: str, note: str) -> dict:
+    """Plan one GM class verdict as one decision per undecided occurrence of ``noise_class``.
+
+    Already-decided occurrences are skipped and listed, never overwritten.  Writing goes through
+    ``submit_decisions``; nothing here saves.
+    """
+    if noise_class not in noise.CLASSES:
+        raise ReviewStoreError(
+            f"REVIEW_NOISE_UNKNOWN_CLASS: {noise_class}; expected one of {', '.join(noise.CLASSES)}",
+            "REVIEW_NOISE_UNKNOWN_CLASS",
+        )
+    if verdict not in _NOISE_VERDICTS:
+        raise ReviewStoreError(f"REVIEW_INVALID_BATCH: verdict must be approve or reject, got {verdict!r}", "REVIEW_INVALID_BATCH")
+    note = (note or "").strip()
+    if not note:
+        raise ReviewStoreError("REVIEW_NOISE_NOTE_REQUIRED: --note must be nonblank", "REVIEW_NOISE_NOTE_REQUIRED")
+    manifest, items, events, stale = read_review_state(root, review_id)
+    max_note = load_campaign_review_config(root).max_note_chars
+    disposition = _NOISE_VERDICTS[verdict]
+    pending, already = [], []
+    for item in _noise_members(items, noise_class):
+        if _current_decision(_latest(events, item.item_id), item, stale):
+            already.append(item.item_id)
+            continue
+        _validate_action_decision(item, verdict=verdict, disposition=disposition)
+        pending.append(item)
+    if not pending:
+        raise ReviewStoreError(
+            f"REVIEW_NOISE_NOTHING_TO_DECIDE: class {noise_class} has no undecided occurrences",
+            "REVIEW_NOISE_NOTHING_TO_DECIDE",
+        )
+    full_note = f"GM class verdict on batch card [{noise.legacy_code(noise_class)}] ({len(pending)} occurrences): {note}"
+    if len(full_note) > max_note:
+        raise ReviewStoreError(
+            f"REVIEW_NOISE_NOTE_TOO_LONG: the note is {len(full_note)} characters once prefixed; the limit is {max_note}",
+            "REVIEW_NOISE_NOTE_TOO_LONG",
+        )
+    return {
+        "review_id": review_id,
+        "review_generation": manifest.generation,
+        "noise_class": noise_class,
+        "verdict": verdict,
+        "planned": [item.item_id for item in pending],
+        "already_decided": already,
+        "decisions": [
+            _decision(item, expected=_active_revision(events, item.item_id), disposition=disposition,
+                      note=full_note, verdict=verdict)
+            for item in pending
+        ],
     }
 
 

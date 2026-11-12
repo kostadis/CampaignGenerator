@@ -24,6 +24,7 @@ from campaignlib.util import atomic_write_text
 from pipelines.summary_native import npc_check, npc_link, parse, schema
 from pipelines.summary_native.delta.evidence import EvidenceIndex as CorpusEvidence
 from pipelines.summary_native.delta.evidence import FullEvidence
+from pipelines.summary_native.noise import CLASSES, CheckAccounting, NoiseRecord
 from pipelines.summary_native.scheduler import FailureEnvelope
 
 PASS, FAIL = "pass", "fail"
@@ -152,13 +153,19 @@ class VerificationResult:
     counts: dict[str, int]  # every FAIL_CODE, plus typography-normalised, status-claim-unsupported, placeholder-speaker
     totals: dict = field(default_factory=dict)
     manual: list[ManualUse] = field(default_factory=list)
+    noise: tuple = ()  # noise.NoiseRecord, spec 041
+    accounting: dict = field(default_factory=dict)  # check id -> CheckAccounting.to_dict()
+    number_findings: tuple = ()  # Finding: reporting only, raised in review (spec 041 FR-013)
 
     @property
     def passed(self) -> bool:
         return self.verdict == PASS
 
     def to_dict(self) -> dict:
+        extra = ({"number_findings": [f.__dict__ for f in self.number_findings]}
+                 if self.number_findings else {})
         return {
+            **extra,
             "verdict": self.verdict,
             "counts": dict(sorted(self.counts.items())),
             "totals": self.totals,
@@ -167,6 +174,8 @@ class VerificationResult:
             "manual": [
                 {"n": m.n, "text": m.text, "cited": [list(c) for c in m.cited]} for m in self.manual
             ],
+            "noise": [r.to_dict() for r in self.noise],
+            "accounting": {k: dict(v) for k, v in self.accounting.items()},
         }
 
     @classmethod
@@ -197,6 +206,9 @@ class VerificationResult:
             {str(key): int(count) for key, count in value.get("counts", {}).items()},
             dict(value.get("totals", {})),
             [manual(raw) for raw in value.get("manual", []) if isinstance(raw, dict)],
+            tuple(NoiseRecord.from_dict(raw) for raw in value.get("noise", []) if isinstance(raw, dict)),
+            {str(k): dict(v) for k, v in value.get("accounting", {}).items() if isinstance(v, dict)},
+            tuple(finding(raw) for raw in value.get("number_findings", []) if isinstance(raw, dict)),
         )
 
     def summary_line(self) -> str:
@@ -244,6 +256,8 @@ class ScopedCheckResult:
     advisories: list[Finding] = field(default_factory=list)
     totals: dict = field(default_factory=dict)
     manual: list[ManualUse] = field(default_factory=list)
+    noise: tuple = ()  # noise.NoiseRecord, spec 041
+    accounting: dict = field(default_factory=dict)  # check id -> CheckAccounting.to_dict()
 
 
 def build_context(
@@ -399,23 +413,17 @@ def check_manual(context: VerificationContext) -> ScopedCheckResult:
 
 
 def check_status_words(context: VerificationContext) -> ScopedCheckResult:
-    """Check only deterministic status words against the complete evidence text."""
+    """Check only deterministic status words against the complete evidence text (spec 041)."""
 
-    advisories: list[Finding] = []
-    ev_text = context.evidence.text
-    flo, fl = context.sections.get(LAST_STATE, (0, []))
-    scopes = [(flo, fl), context.sections.get(schema.MAP_SECTIONS[0], (0, []))]
-    seen: set[tuple[int, str]] = set()
-    for start, sl in scopes:
-        for off, ln in enumerate(sl):
-            for m in _STATUS_RE.finditer(ln):
-                w = m.group(1).casefold()
-                if (start + off, w) in seen:
-                    continue
-                seen.add((start + off, w))
-                if not re.search(rf"\b{w}\b", ev_text, re.IGNORECASE):
-                    advisories.append(Finding(STATUS_UNSUPPORTED, start + off + 1, ln.strip(), f'"{w}" appears nowhere in the evidence'))
-    return ScopedCheckResult(advisories=advisories)
+    from pipelines.summary_native import noise
+
+    findings, records, accounting = noise.classify_status(
+        context.draft_text, context.sections, context.evidence)
+    return ScopedCheckResult(
+        advisories=findings,
+        noise=tuple(records),
+        accounting={STATUS_CHECK: accounting.to_dict()},
+    )
 
 
 def scoped_checkers() -> dict[str, object]:
@@ -458,13 +466,27 @@ def verify_scoped(
     advisories: list[Finding] = []
     totals: dict = {}
     manual_uses: list[ManualUse] = []
+    noise_records: list[NoiseRecord] = []
+    accounting: dict = {}
+    number_findings: list[Finding] = []
     for check_id in selected:
         result = checkers[check_id](context)
         failures.extend(result.failures)
         advisories.extend(result.advisories)
         totals.update(result.totals)
+        noise_records.extend(result.noise)
+        accounting.update(result.accounting)
         if check_id == MANUAL_CHECK:
             manual_uses = result.manual
+
+    if set(selected) == set(CHECK_IDS):
+        # Reporting only (spec 041 FR-013): number findings are emitted by the review adapter, so
+        # they are deliberately not added to failures/advisories; only noise and accounting are.
+        from pipelines.summary_native import noise
+
+        number_findings, records, number_accounting = noise.classify_numbers(draft_text, context.evidence)
+        noise_records.extend(records)
+        accounting["number"] = number_accounting.to_dict()
 
     counts = {k: 0 for k in FAIL_CODES}
     for f in failures:
@@ -478,6 +500,9 @@ def verify_scoped(
         counts=counts,
         totals=totals,
         manual=manual_uses,
+        noise=tuple(noise_records),
+        accounting=accounting,
+        number_findings=tuple(number_findings),
     )
 
 
@@ -540,7 +565,39 @@ def render_verify_md(result: VerificationResult, npc: str = "") -> str:
             out.append(f"- {a.code} (line {a.line}): {a.text}" + (f" -- {a.detail}" if a.detail else ""))
     else:
         out.append("None.")
+    out += _noise_section(result)
     return "\n".join(out) + "\n"
+
+
+def _noise_section(result: VerificationResult) -> list[str]:
+    """The ``## Classified noise`` block; empty when nothing was examined (spec 041, T022)."""
+    accts = {k: CheckAccounting.from_dict(v) for k, v in result.accounting.items()}
+    examined = sum(a.examined for a in accts.values())
+    if examined == 0:
+        return []
+    supported = sum(a.supported for a in accts.values())
+    findings = sum(a.findings for a in accts.values())
+    counts = {c: sum(a.noise.get(c, 0) for a in accts.values()) for c in CLASSES}
+    out = ["", "## Classified noise", ""]
+    out += [f"- {c}: {counts[c]}" for c in CLASSES]
+    out.append("")
+    for r in result.noise:
+        by = f" (resolved by: {r.resolved_by})" if r.resolved_by else ""
+        out.append(f'- [{r.noise_class}] line {r.line}: "{r.token}" — {r.sentence}{by}')
+    if result.noise:
+        out.append("")
+    if result.number_findings:
+        out += ["### Number/ordinal findings (raised in review; do not change the verdict)", ""]
+        for f in result.number_findings:
+            out.append(f"- {f.code} (line {f.line}): {f.text}" + (f" -- {f.detail}" if f.detail else ""))
+        out.append("")
+    for key, label in (("number", "number"), (STATUS_CHECK, "status")):
+        a = accts.get(key)
+        if a is not None and a.examined:
+            out.append(f"{label}: examined {a.examined} = supported {a.supported} + noise "
+                       f"{sum(a.noise.values())} + findings {a.findings}")
+    out.append(f"examined {examined} = supported {supported} + noise {sum(counts.values())} + findings {findings}")
+    return out
 
 
 def load_context(root: Path, report) -> tuple[CorpusIndex, str]:

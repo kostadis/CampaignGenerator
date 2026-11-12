@@ -233,6 +233,87 @@ def test_status_claim_unsupported_is_reported_but_leaves_the_verdict_at_pass():
     assert check(CLEAN.replace("he kept the first watch.", "he was killed."), evidence=ev).advisories == []
 
 
+# ── US3: status words accept reviewed synonyms and ignore negated statements (spec 041) ──
+
+def _status(last_state, evidence_extra=""):
+    return check(CLEAN.replace("As of chapter 006 he kept the first watch. [ch 006 / 006.02]", last_state),
+                 evidence=EVIDENCE + evidence_extra)
+
+
+def test_status_synonym_in_evidence_is_noise_not_a_finding():
+    r = _status("He departed. [ch 006 / 006.02]", "\nJimjar leaves at dawn.\n")
+    assert r.advisories == []
+    assert [(n.noise_class, n.token, n.resolved_by, n.check) for n in r.noise] == [
+        ("synonym", "departed", "leaves", "status")]
+    a = r.accounting["status-word"]
+    assert (a["examined"], a["supported"], a["findings"], a["noise"]["synonym"]) == (1, 0, 0, 1)
+
+
+def test_not_established_sentence_negates_each_status_word():
+    r = _status("No further status (alive, dead) is established. [ch 006 / 006.02]")
+    assert r.advisories == []
+    assert [(n.noise_class, n.token) for n in r.noise] == [("negated-status", "alive"), ("negated-status", "dead")]
+    assert r.noise[0].resolved_by.lower().startswith("no further status")
+    assert r.accounting["status-word"]["examined"] == 2
+
+
+def test_unsupported_status_word_is_one_finding_naming_word_sentence_and_scenes():
+    r = _status("Belg was captured. [ch 006 / 006.02]")
+    assert len(r.advisories) == 1 and r.noise == ()
+    f = r.advisories[0]
+    assert f.code == "status-claim-unsupported" and f.text.startswith("Belg was captured.")
+    assert '"captured"' in f.detail and "ch 006 / 006.02" in f.detail
+
+
+def test_off_table_synonym_is_still_flagged():
+    r = _status("He was captured. [ch 006 / 006.02]", "\nJimjar was apprehended.\n")
+    assert [a.code for a in r.advisories] == ["status-claim-unsupported"]
+
+
+def test_a_bare_negation_does_not_negate_a_later_status_claim():
+    r = _status("He did not flee; he died. [ch 006 / 006.02]")
+    assert [a.code for a in r.advisories] == ["status-claim-unsupported"] and '"died"' in r.advisories[0].detail
+
+
+def test_is_not_established_closed_patterns():
+    from pipelines.summary_native.noise import is_not_established
+    assert is_not_established("It is unknown whether he is alive.")
+    assert is_not_established("He did not flee; he died.") is None
+
+
+def test_verification_result_round_trips_noise_and_loads_old_dicts():
+    r = _status("He departed. [ch 006 / 006.02]", "\nJimjar leaves at dawn.\n")
+    back = npc_verify.VerificationResult.from_dict(r.to_dict())
+    assert back.noise == r.noise and back.accounting == r.accounting
+    d = r.to_dict(); d.pop("noise"); d.pop("accounting")
+    old = npc_verify.VerificationResult.from_dict(d)
+    assert old.noise == () and old.accounting == {}
+
+
+def test_verify_md_has_classified_noise_section():
+    r = _status("He departed. [ch 006 / 006.02]", "\nJimjar leaves at dawn.\n")
+    md = npc_verify.render_verify_md(r, "Jimjar")
+    assert "## Classified noise" in md and "- synonym: 1" in md
+    assert "(resolved by: leaves)" in md and "examined 1 = supported 0 + noise 1 + findings 0" in md
+
+
+def test_verify_md_reports_number_noise_and_accounting_without_new_findings():
+    draft = CLEAN.replace("As of chapter 006 he kept the first watch.", "In Chapter 006 he kept the first watch.")
+    r = check(draft)
+    assert any(n.check == "number" and n.noise_class == "label" for n in r.noise)
+    assert r.accounting["number"]["examined"] >= 1 and "status-word" in r.accounting
+    md = npc_verify.render_verify_md(r, "Jimjar")
+    assert "[label]" in md and "number: examined" in md and "status: examined" not in md or "number: examined" in md
+    # reporting only: verdict, failures and advisories match the scoped (no number analysis) run
+    scoped = npc_verify.verify_scoped(draft, EVIDENCE, CORPUS, "", MANUAL, npc_verify.CHECK_IDS)
+    assert r.failures == scoped.failures and r.advisories == scoped.advisories and r.verdict == scoped.verdict
+    assert not any("number-inconsistency" in a.code or "ordinal-inconsistency" in a.code for a in r.advisories)
+    # a number the evidence lacks is not surfaced here
+    bad = check(CLEAN.replace("he kept the first watch.", "he kept 99 watches."))
+    assert bad.failures == [] and all(a.code != "number-inconsistency" for a in bad.advisories)
+    assert bad.accounting["number"]["findings"] == 1
+
+
 # ── through the CLI ─────────────────────────────────────────────────────────
 
 OUT = "docs/npcs/summary_native/ch002-006"
@@ -439,3 +520,13 @@ def test_edits_refuse_unknown_stems_malformed_entries_and_resume(drafted, tmp_pa
     assert rc == 2 and "nonempty" in err
     rc, _, err = run_cli(_args(root, "npc-verify", "--resume", "--edits", _write_edits(tmp_path, [{"stem": "npc_jimjar", "old": "ok", "new": "y"}])))
     assert rc == 2 and "--resume" in err
+
+
+def test_verify_md_lists_the_number_findings_the_accounting_counts():
+    d = CLEAN.replace("Guides the party out of the pens. [ch 002 / 002.01]",
+                      "Guides the party out of the pens, 9999 times. [ch 002 / 002.01]")
+    r = check(d)
+    assert r.passed and r.advisories == [] and r.number_findings
+    md = npc_verify.render_verify_md(r, "Jimjar")
+    assert "Number/ordinal findings" in md and "number-inconsistency" in md and "9999" in md
+    assert npc_verify.VerificationResult.from_dict(r.to_dict()).number_findings == r.number_findings

@@ -254,6 +254,7 @@ class FindingCategory(str, Enum):
     KNOWLEDGE_LEAK = "knowledge_leak"
     TYPOGRAPHY_PRESENTATION = "typography_presentation"
     VERIFIER_TRANSPORT_PROTOCOL = "verifier_transport_protocol"
+    CLASSIFIED_NOISE = "classified_noise"
 
 
 class SupportAssessment(str, Enum):

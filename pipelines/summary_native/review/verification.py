@@ -16,7 +16,7 @@ from pathlib import Path, PurePosixPath
 from typing import Sequence
 from uuid import UUID, uuid5
 
-from pipelines.summary_native import npc_check, npc_verify
+from pipelines.summary_native import noise, npc_check, npc_verify
 from pipelines.summary_native.npc_verify import Finding, VerificationResult
 from pipelines.summary_native.review.models import (
     AssignmentBasis,
@@ -94,16 +94,6 @@ _DIRECT_CATEGORIES: dict[str, frozenset[FindingCategory]] = {
     "knowledge-leak": frozenset({FindingCategory.KNOWLEDGE_LEAK}),
 }
 _OPAQUE_ID = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_.-]{0,127}$")
-_ORDINAL_WORDS = (
-    "first", "second", "third", "fourth", "fifth", "sixth", "seventh",
-    "eighth", "ninth", "tenth", "eleventh", "twelfth",
-)
-_MARKER_RE = re.compile(
-    r"\b(?:"
-    + "|".join(_ORDINAL_WORDS)
-    + r"|\d+(?:st|nd|rd|th)?)\b",
-    re.IGNORECASE,
-)
 
 
 def _valid_opaque_id(value: str) -> bool:
@@ -121,7 +111,13 @@ def _valid_relative_path(value: str) -> bool:
     )
 
 
+def _is_noise(code: str) -> bool:
+    return code.startswith("noise-")
+
+
 def _categories(code: str, *, blocking: bool) -> frozenset[FindingCategory]:
+    if _is_noise(code):  # explicit, before the generic "number"/"status" substring branches
+        return frozenset({FindingCategory.CLASSIFIED_NOISE})
     direct = _DIRECT_CATEGORIES.get(code)
     if direct is not None:
         return direct
@@ -141,6 +137,8 @@ def _categories(code: str, *, blocking: bool) -> frozenset[FindingCategory]:
 
 
 def _severity(code: str, *, blocking: bool) -> Severity:
+    if _is_noise(code):
+        return Severity.ADVISORY
     if blocking:
         return Severity.BLOCKING
     if code == "typography-normalised":
@@ -149,6 +147,8 @@ def _severity(code: str, *, blocking: bool) -> Severity:
 
 
 def _basis(code: str, *, blocking: bool) -> AssignmentBasis:
+    if _is_noise(code):
+        return AssignmentBasis.MECHANICAL
     if blocking or code in {
         "typography-normalised",
         "later-source-supersedes",
@@ -159,7 +159,9 @@ def _basis(code: str, *, blocking: bool) -> AssignmentBasis:
 
 
 def _action(code: str, categories: frozenset[FindingCategory]) -> ProposedAction:
-    if FindingCategory.VERIFIER_TRANSPORT_PROTOCOL in categories:
+    if FindingCategory.CLASSIFIED_NOISE in categories:
+        action = "review_classified_noise"
+    elif FindingCategory.VERIFIER_TRANSPORT_PROTOCOL in categories:
         action = "rerun_selected_check"
     elif FindingCategory.MISSING_SOURCE_OR_POINTER in categories:
         action = "repair_or_recheck_pointer"
@@ -201,91 +203,87 @@ def run_selected_npc_checks(
         raise VerificationAdapterError(str(exc)) from exc
 
 
-def _claim_without_pointers(line: str) -> str:
-    value = npc_check.BRACKET_RE.sub("", line)
-    return re.sub(r"\s+", " ", value).strip()
+def _evidence_index(selection: SelectedNpcVerification) -> npc_check.EvidenceIndex:
+    """The parsed evidence, or one synthetic item for the single-excerpt caller.
 
-
-def _markers(text: str) -> frozenset[str]:
-    return frozenset(match.group(0).casefold() for match in _MARKER_RE.finditer(text))
-
-
-def _marker_skeleton(text: str) -> str:
-    return re.sub(r"[^a-z]+", " ", _MARKER_RE.sub(" <value> ", text.casefold())).strip()
-
-
-def _cited_claims(selection: SelectedNpcVerification):
-    """Yield exact claim lines paired with the exact parsed evidence occurrence they cite."""
-
+    Some callers supply one already-selected evidence excerpt rather than a structured dossier.
+    It can bind exactly one cited line with exactly one citation, but never broadens to a
+    whole-draft comparison or guesses among multiple occurrences.
+    """
     evidence_text = selection.evidence_text or ""
-    evidence = npc_check.EvidenceIndex.of(npc_check.split_chapters(evidence_text))
-    candidates = []
-    for line_number, line in enumerate(selection.draft_text.splitlines(), 1):
-        claim = _claim_without_pointers(line)
-        if not claim:
+    index = npc_check.EvidenceIndex.of(npc_check.split_chapters(evidence_text))
+    lines = selection.draft_text.splitlines()
+    if any(
+        len(index.items_at(*cit)) == 1
+        for line in lines for _b, cit in npc_check.citation_parts(line) if cit[0] >= 0
+    ):
+        return index
+    cited_lines = [parts for parts in (npc_check.citation_parts(line) for line in lines) if len(parts) == 1]
+    if len(cited_lines) == 1 and evidence_text.strip() and cited_lines[0][0][1][0] >= 0:
+        chapter, target = cited_lines[0][0][1]
+        return npc_check.EvidenceIndex((npc_check.Item(chapter, target, "scene", evidence_text.strip()),))
+    return index
+
+
+def _marker_set(claim: str, citations=()) -> tuple[frozenset, str]:
+    """Number/ordinal marker set and the claim's marker-free skeleton, for same-citation checks."""
+    toks = noise.tokens(claim, tuple(c[0] for c in citations))
+    counted = [t for t in toks if not t.label and not t.idiom and not noise.is_bare_one(t)]
+    skeleton = claim.casefold()
+    for t in sorted(toks, key=lambda t: t.span[0], reverse=True):
+        skeleton = skeleton[:t.span[0]] + " <value> " + skeleton[t.span[1]:]
+    return frozenset(noise.token_key(t) for t in counted), re.sub(r"[^a-z]+", " ", skeleton).strip()
+
+
+@dataclass(frozen=True)
+class _SemanticResult:
+    findings: tuple[Finding, ...]
+    infos: dict
+    noise: tuple[noise.NoiseRecord, ...]
+    noise_texts: tuple
+    accounting: noise.CheckAccounting
+
+
+def _deterministic_semantic_advisories(selection: SelectedNpcVerification) -> _SemanticResult:
+    evidence = _evidence_index(selection)
+    analysis = noise.analyse_numbers(selection.draft_text, evidence)
+    findings: list[Finding] = list(analysis.findings)
+    infos = dict(analysis.infos)
+
+    by_occurrence: dict[tuple[tuple[int, str], str], list[tuple[int, str, frozenset]]] = {}
+    sentence_index: dict[int, int] = {}
+    for sc in noise.sentence_claims(selection.draft_text):
+        idx = sentence_index.get(sc.line, 0)
+        sentence_index[sc.line] = idx + 1
+        markers, skeleton = _marker_set(sc.claim, sc.citations)
+        if not markers:
             continue
-        for bracket, target in npc_check.citation_parts(line):
-            chapter, item_id = target
-            if chapter < 0:
-                continue
-            occurrences = evidence.items_at(chapter, item_id)
-            if len(occurrences) == 1:
-                candidates.append((line_number, claim, bracket, target, occurrences[0].text))
-    if candidates:
-        return tuple(candidates)
-
-    # Some callers supply one already-selected evidence excerpt rather than a
-    # structured dossier. It can bind one cited claim, but never broadens to a
-    # whole-draft comparison or guesses among multiple occurrences.
-    cited_lines = []
-    for line_number, line in enumerate(selection.draft_text.splitlines(), 1):
-        parts = npc_check.citation_parts(line)
-        if len(parts) == 1:
-            cited_lines.append((line_number, _claim_without_pointers(line), *parts[0]))
-    if len(cited_lines) == 1 and evidence_text.strip():
-        line_number, claim, bracket, target = cited_lines[0]
-        return ((line_number, claim, bracket, target, evidence_text.strip()),)
-    return ()
-
-
-def _deterministic_semantic_advisories(selection: SelectedNpcVerification) -> tuple[Finding, ...]:
-    cited = _cited_claims(selection)
-    findings: list[Finding] = []
-    by_occurrence: dict[tuple[tuple[int, str], str], list[tuple[int, str, frozenset[str]]]] = {}
-    for line, claim, bracket, target, evidence_text in cited:
-        claim_markers = _markers(claim)
-        evidence_markers = _markers(evidence_text)
-        if claim_markers and not claim_markers <= evidence_markers:
-            ordinal = any(
-                marker in _ORDINAL_WORDS or re.fullmatch(r"\d+(?:st|nd|rd|th)", marker)
-                for marker in claim_markers
-            )
-            code = "ordinal-inconsistency" if ordinal else "number-inconsistency"
-            findings.append(Finding(
-                code,
-                line,
-                claim,
-                f"{bracket} does not contain the claim's exact number/ordinal; GM semantic review required",
-            ))
-        if claim_markers:
-            key = (target, _marker_skeleton(claim))
-            by_occurrence.setdefault(key, []).append((line, claim, claim_markers))
+        for cit in sc.citations:
+            if len(evidence.items_at(*cit)) == 1:
+                by_occurrence.setdefault((cit, skeleton), []).append(((sc.line, idx), sc.sentence, markers))
 
     for (target, _skeleton), claims in by_occurrence.items():
         marker_sets = {markers for _, _, markers in claims}
         if len(claims) < 2 or len(marker_sets) < 2:
             continue
-        first_line = min(line for line, _, _ in claims)
-        for line, claim, _markers_for_claim in claims:
-            if line == first_line:
+        first_key = min(key for key, _, _ in claims)
+        first_line = first_key[0]
+        for key, sentence, _markers_for_claim in claims:
+            if key == first_key:
                 continue
-            findings.append(Finding(
+            line = key[0]
+            finding = Finding(
                 "same-citation-inconsistency",
                 line,
-                claim,
+                sentence,
                 f"the same citation [ch {target[0]:03d} / {target[1]}] has a conflicting number/ordinal at line {first_line}",
-            ))
-    return tuple(findings)
+            )
+            findings.append(finding)
+            infos[finding] = noise.FindingInfo(
+                (), sentence, (noise.scene_name(target),),
+                (evidence.items_at(*target)[0].text,))
+    return _SemanticResult(
+        tuple(findings), infos, analysis.noise, analysis.noise_texts, analysis.accounting)
 
 
 def _explicit_metadata_findings(
@@ -331,7 +329,17 @@ def _explicit_metadata_findings(
     return tuple(failures), tuple(advisories)
 
 
-def _stable_payload(selection: SelectedNpcVerification, finding: Finding, *, group: str, ordinal: int) -> str:
+def _stable_payload(selection: SelectedNpcVerification, finding: Finding, *, group: str, ordinal: int,
+                    noise_key: tuple | None = None) -> str:
+    if noise_key is not None:
+        # Noise ids must survive an unrelated noise occurrence appearing or vanishing, and must not
+        # depend on which selection carried the draft: no ordinal, no selection id.
+        check, noise_class, line, token, sentence, occurrence = noise_key
+        return json.dumps(
+            {"draft_path": selection.draft_path, "group": group, "check": check,
+             "noise_class": noise_class, "line": line, "token": token, "sentence": sentence,
+             "occurrence": occurrence},
+            ensure_ascii=False, sort_keys=True, separators=(",", ":"))
     return json.dumps(
         {
             "selection_id": selection.selection_id,
@@ -349,31 +357,18 @@ def _stable_payload(selection: SelectedNpcVerification, finding: Finding, *, gro
     )
 
 
-def _evidence(selection: SelectedNpcVerification, finding: Finding) -> Evidence:
+def _evidence(selection: SelectedNpcVerification, finding: Finding, bound_text: str | None = None) -> Evidence:
     evidence_text = selection.evidence_text
-    if finding.code in {
-        "ordinal-inconsistency",
-        "number-inconsistency",
-        "same-citation-inconsistency",
-    }:
-        occurrence = next(
-            (
-                cited_text
-                for line, _claim, _bracket, _target, cited_text in _cited_claims(selection)
-                if line == finding.line
-            ),
-            None,
+    if bound_text:
+        return Evidence(
+            source_id=selection.evidence_source_id,
+            source_path=selection.evidence_path,
+            anchor=f"verifier:{finding.code}:line:{finding.line}",
+            exact_excerpt=bound_text,
+            selected_span_sha256=hashlib.sha256(bound_text.encode("utf-8")).hexdigest(),
+            citation_resolved=True,
+            support=SupportAssessment.UNASSESSED,
         )
-        if occurrence:
-            return Evidence(
-                source_id=selection.evidence_source_id,
-                source_path=selection.evidence_path,
-                anchor=f"verifier:{finding.code}:line:{finding.line}",
-                exact_excerpt=occurrence,
-                selected_span_sha256=hashlib.sha256(occurrence.encode("utf-8")).hexdigest(),
-                citation_resolved=True,
-                support=SupportAssessment.UNASSESSED,
-            )
     if evidence_text is not None and finding.text and finding.text in evidence_text:
         excerpt = finding.text
         return Evidence(
@@ -404,6 +399,9 @@ def _item(
     finding: Finding,
     group: str,
     ordinal: int,
+    bound_text: str | None = None,
+    extra_details: dict | None = None,
+    noise_key: tuple | None = None,
 ) -> ReviewItem:
     lines = selection.draft_text.splitlines()
     if finding.line < 0 or finding.line > len(lines):
@@ -423,9 +421,9 @@ def _item(
         and any(rule.rule_id == "claimed-verbatim" for rule in selection.rule_versions)
     )
     categories = _categories(finding.code, blocking=blocking)
-    stable = _stable_payload(selection, finding, group=group, ordinal=ordinal)
+    stable = _stable_payload(selection, finding, group=group, ordinal=ordinal, noise_key=noise_key)
     fingerprint = hashlib.sha256(stable.encode("utf-8")).hexdigest()
-    evidence = _evidence(selection, finding)
+    evidence = _evidence(selection, finding, bound_text)
     draft_semantic = claim_text or failure_context or ""
     evidence_semantic = evidence.exact_excerpt or evidence.missing_reason or ""
     rules = selection.rule_versions or (RuleBinding(rule_id="npc-verify", version="1"),)
@@ -451,11 +449,12 @@ def _item(
                 legacy_code=finding.code,
                 message=finding.detail or finding.code,
                 blocking=blocking,
-                details={
+                details=extra_details if group == "noise" else {
                     "detail": finding.detail,
                     "line": finding.line,
                     "text": finding.text,
                     "verdict": "fail" if blocking else "advisory",
+                    **(extra_details or {}),
                 },
             ),),
             categories=categories,
@@ -485,6 +484,51 @@ def _item(
         raise VerificationAdapterError(
             f"{selection.selection_id}: verifier result cannot form a strict review item: {exc}"
         ) from exc
+
+
+_NOISE_MESSAGES = {
+    "label": '"{token}" is a chapter or scene label, not a story fact',
+    "idiom": '"{token}" is part of the idiom "{resolved_by}"',
+    "negated-status": '"{token}" appears only in a statement that no status is established',
+    "spelled-number": '"{token}" matches "{resolved_by}" in the cited evidence once number spelling is normalised',
+    "synonym": '"{token}" is supported by "{resolved_by}" in the evidence',
+    "other-citation": '"{token}" is in {resolved_by}, which this sentence also cites',
+}
+
+
+def _noise_finding(record: noise.NoiseRecord) -> Finding:
+    message = _NOISE_MESSAGES[record.noise_class].format(
+        token=record.token, resolved_by=record.resolved_by)
+    return Finding(record.legacy_code, record.line, record.sentence, message)
+
+
+def _semantic_kwargs(semantic: _SemanticResult, finding: Finding) -> dict:
+    info = semantic.infos.get(finding)
+    if info is None:
+        return {}
+    kwargs: dict = {"bound_text": info.evidence_texts[0] if info.evidence_texts else None}
+    if finding.code in {"number-inconsistency", "ordinal-inconsistency"}:
+        kwargs["extra_details"] = {
+            "check": "number",
+            "tokens": list(info.tokens),
+            "sentence": info.sentence,
+            "cited_scenes": list(info.cited_scenes),
+        }
+    return kwargs
+
+
+def _status_details(selection: SelectedNpcVerification, finding: Finding) -> dict:
+    """Structured details for a ``status-claim-unsupported`` finding (spec 041, T023)."""
+    word = re.search(r'draft says "([^"]+)"', finding.detail)
+    lines = selection.draft_text.splitlines()
+    line_text = lines[finding.line - 1] if 0 < finding.line <= len(lines) else ""
+    cits = noise._valid_citations(finding.text) or noise._valid_citations(line_text)
+    return {
+        "check": "status",
+        "tokens": [word.group(1)] if word else [],
+        "sentence": finding.text,
+        "cited_scenes": [noise.scene_name(c) for c in cits],
+    }
 
 
 def adapt_selected_verifications(
@@ -518,13 +562,15 @@ def adapt_selected_verifications(
             raise VerificationAdapterError("selection revision must be positive")
 
     items: list[ReviewItem] = []
+    noise_emitted_for: set[tuple[str, str]] = set()
     for selection in materialized:
         metadata_failures, metadata_advisories = _explicit_metadata_findings(selection)
         failures = tuple(selection.result.failures) + metadata_failures
+        semantic = _deterministic_semantic_advisories(selection)
         advisories = (
             tuple(selection.result.advisories)
             + metadata_advisories
-            + _deterministic_semantic_advisories(selection)
+            + semantic.findings
         )
         failures = tuple(dict.fromkeys(failures))
         advisories = tuple(dict.fromkeys(advisories))
@@ -545,6 +591,47 @@ def adapt_selected_verifications(
                 finding=finding,
                 group="advisory",
                 ordinal=ordinal,
+                **(
+                    {"extra_details": _status_details(selection, finding)}
+                    if finding.code == npc_verify.STATUS_UNSUPPORTED
+                    else _semantic_kwargs(semantic, finding)
+                ),
+            ))
+        draft_key = (selection.draft_path, hashlib.sha256(selection.draft_text.encode("utf-8")).hexdigest())
+        if draft_key in noise_emitted_for:
+            continue  # the same draft bytes were already reported by an earlier selection
+        noise_emitted_for.add(draft_key)
+        status_noise = [r for r in selection.result.noise if r.check == "status"]
+        seen_occurrences: dict[tuple, int] = {}
+
+        def _noise_key(record: noise.NoiseRecord) -> tuple:
+            base = (record.check, record.noise_class, record.line, record.token, record.sentence)
+            n = seen_occurrences.get(base, 0)
+            seen_occurrences[base] = n + 1
+            return base + (n,)
+
+        for ordinal, (record, bound) in enumerate(zip(semantic.noise, semantic.noise_texts)):
+            items.append(_item(
+                campaign_id=campaign_id,
+                review_id=review_id,
+                selection=selection,
+                finding=_noise_finding(record),
+                group="noise",
+                ordinal=ordinal,
+                bound_text=bound,
+                extra_details=record.to_dict(),
+                noise_key=_noise_key(record),
+            ))
+        for ordinal, record in enumerate(status_noise, start=len(semantic.noise)):
+            items.append(_item(
+                campaign_id=campaign_id,
+                review_id=review_id,
+                selection=selection,
+                finding=_noise_finding(record),
+                group="noise",
+                ordinal=ordinal,
+                extra_details=record.to_dict(),
+                noise_key=_noise_key(record),
             ))
     return tuple(items)
 
