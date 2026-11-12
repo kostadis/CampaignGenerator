@@ -20,6 +20,7 @@ It builds a packet from REVIEW's undecided items and stores it in the review (re
 - `--out FILE` also writes a byte-identical copy of the stored packet to FILE, for the kit. The stored copy remains the authority.
 - `artifacts` lists the stored path, and FILE when given.
 - The text mode prints one line: `packet <id>: <n> cards (<k> members) for review <r>`. Any skipped sign-offs follow, one per line.
+- A sign-off is skipped (not a failed export) when it is blocked, or when its draft path is refused by the store (a symlink: `REVIEW_PATH`) or its bytes are not UTF-8 (`REVIEW_CARDS_DRAFT_NOT_UTF8`). The draft is read once; its card body is those bytes decoded with no newline translation, and `draftSha256` is their hash.
 
 ## `review cards decide REVIEW --decisions FILE|- --reviewer NAME [--write --plan-sha256 HEX]`
 
@@ -28,7 +29,7 @@ It builds a packet from REVIEW's undecided items and stores it in the review (re
 | Dry run (the default) | `REVIEW_CARDS_PLAN` | DecisionPlan (data-model.md) |
 | Written | `REVIEW_CARDS_SAVED` | DecisionPlan plus `saved` |
 | `--write` without `--plan-sha256` | `REVIEW_CARDS_PLAN_REQUIRED` | |
-| The hash differs from the rebuilt plan | `REVIEW_CARDS_PLAN_CHANGED` (exit 5) | the new plan |
+| The hash differs from the rebuilt plan (the review changed, or `--reviewer` differs from the planned one: the reviewer is in the hash) | `REVIEW_CARDS_PLAN_CHANGED` (exit 5) | the new plan |
 | Nothing to record (all noop or unmarked) with `--write` | `REVIEW_CARDS_SAVED` with `saved: []` | idempotent re-apply (SC-003) |
 | A batch failed after earlier batches committed | the inner code (for example `REVIEW_STALE_DECISION`) | `{recorded, not_recorded, cause}` (R9) |
 
@@ -49,6 +50,7 @@ Whole-file refusals record nothing (research R7):
 Per-card refusals appear in the plan under `state: refused`, and the rest of the file proceeds:
 
 - the `npc_signoff_blocker` codes, on an Approve of a sign-off;
+- `REVIEW_CARDS_NOTE_TOO_LONG`, on an Approve of a sign-off whose note, once the rejected findings are named (R16), is over `max_note_chars`;
 - `REVIEW_CARDS_MEMBER_STALE`;
 - `REVIEW_STALE_CUSTODY`, carrying the spec 042 detail.
 
@@ -56,6 +58,7 @@ The text mode prints:
 
 - one line per card: `approve noise-class:label → 12 record, 0 supersede, 2 noop`;
 - each supersede as `item X: reject/reject_action → approve/accept_no_change`;
+- under an approved sign-off that has rejected findings on its draft, `  approved with N rejected finding(s): <item id> L<line>, ...` (GM ruling 2026-11-12, "approval is yes with the no": the sign-off is recorded, and its note carries `; with rejected finding(s): <item id> L<line>, ...` after the GM's note);
 - the refused cards, with their codes;
 - a final line `plan <sha256>` and the exact `--write --plan-sha256 …` command to run.
 
@@ -65,6 +68,7 @@ The text mode prints:
 verdict        = the card verdict
 disposition    = DISPOSITION_FOR[(member.action, verdict)]        (R4)
 note           = "GM card verdict [<cardId>]" + (": <note>" if note else "")
+                 + ("; with rejected finding(s): <item id> L<line>, ..." on an approved sign-off whose draft has rejected findings, R16)
 item_revision, review_digest = the packet member's (must still equal the live item's)
 expected_decision_revision   = live active revision                (R5)
 request_id     = "cards-<packetId>-<sha256(reviewer, batch)[:20]>" (R6)

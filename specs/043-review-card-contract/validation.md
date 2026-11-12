@@ -162,3 +162,16 @@ or caching the snapshot between batches would be the lever, if ever needed.
 - Full Python suite (pinned `PYTHONPATH`): **9981 passed, 389 skipped, 0 failed**, in 19m17s.
 - Frontend: `npm test` passed, `npm run build` was clean, and `npm run test:e2e` (system Chrome) gave **100 passed**.
 - Quickstart: §1 contract suites are inside the full run. §2's manual round trip is covered end to end by `test_us1_*` and `test_us3_*`, and by the mytools kit's e2e test (shim, page, `read_decisions --npc`, then `cards decide`, plan with 2 records). §3 is `test_us2_*` (sha_tree). §4 scale: export 1.2 s, plan 2.6 s, write 26.7 s for 802 items. §5 is the frontend results above. §6 is T042. §7 is the full suite above.
+
+## T046 — code-review fixes (2026-11-12)
+
+Fixes: approval is yes with the no (GM ruling, research R16), exact sign-off bytes, skipped (not failed) symlinked
+and non-UTF-8 drafts, reviewer in the plan hash, one snapshot and one stale report in `plan_decide`, one event
+index, one action table (`store.ACTION_DECISIONS`), `plan_noise_class` through `cards.expand`. Regression tests:
+`tests/test_summary_native_review_cards_review_fixes.py` (17 tests; 16 fail on 5985a52, the 17th is a control).
+Goldens in `tests/fixtures/review_cards/` were regenerated because the finding card's `rejectMeans` changed (new packet id).
+
+- Targeted suites (cards, cards_contract, cards_review_fixes, action_table, delegated, noise_cli, decisions, no_llm, item_custody, routes, http): **343 passed**. noise_cli and delegated pass unchanged.
+- Frontend: `npm test` 67 passed (Vitest asserts the "approved with N rejected finding(s)" line), `npm run build` clean. e2e not re-run (no change to a page the specs drive).
+- Scale (802 items), before -> after: export 1.2 s -> 1.2 s, plan 2.6 s -> 1.6 s, write 26.7 s -> 25.6 s (write is dominated by per-batch store transactions, not touched).
+- Full Python suite (pinned `PYTHONPATH`): **9998 passed, 389 skipped, 0 failed**, in 18m20s.

@@ -69,7 +69,8 @@ The file has no reviewer, disposition, revision or digest fields (FR-005). Any o
 | Field | Type | Meaning |
 |---|---|---|
 | `reviewId`, `packetId`, `generation` | | Echoed |
-| `planSha256` | str | sha256 of the canonical `cards` list below. `--write` must present it (R8) |
+| `reviewer` | str | The `--reviewer` the plan was made for |
+| `planSha256` | str | sha256 of the canonical `{cards, reviewer}` below, so a different reviewer is a different plan. `--write` must present it (R8) |
 | `cards` | list[PlannedCard] | In packet order |
 | `counts` | `{record, supersede, noop, unmarked, refused}` | Member counts, except `unmarked`, which counts cards |
 | `saved` | list \| absent | Write mode only: the `submit_decisions` results (request ids and event ids) |
@@ -80,7 +81,8 @@ The file has no reviewer, disposition, revision or digest fields (FR-005). Any o
 - `verdict`, or null when unmarked;
 - `state`: `unmarked`, `refused` or `applied`;
 - `refusal`: `{code, message, data}` or null;
-- `members`, a list of PlannedMember.
+- `members`, a list of PlannedMember;
+- `withRejectedFindings`: a sign-off card that is approved only, present only when non-empty. A list of `{itemId, line, note}`: the findings rejected on the same draft (exact path equality), in this file or already in the store. The recorded sign-off note carries them (R16). The card is **not** blocked.
 
 **PlannedMember**:
 

@@ -293,7 +293,7 @@ A **signoff** card is an NPC's draft: its `body` is exactly the draft bytes, and
 draft's `draftSha256`.
 
 **Skipped sign-offs.** An NPC whose draft cannot be signed today (a mechanical blocker, a stale
-draft) gets no card. Each is printed after the packet line, one per line, and listed in
+draft, a symlinked draft path `REVIEW_PATH`, a draft that is not UTF-8 `REVIEW_CARDS_DRAFT_NOT_UTF8`) gets no card. Each is printed after the packet line, one per line, and listed in
 `data.skippedSignoffs` as `{itemId, npc, code, message}`. Fix what the blocker names and export
 a new packet; the page is never offered a card it could not honour.
 
@@ -322,11 +322,12 @@ to record it: summary_native review cards decide npc-review-000000000000 --decis
 
 The default is a dry run (`REVIEW_CARDS_PLAN`). To record it, run the printed command: `--write`
 with the plan's hash. `--write` with no hash is `REVIEW_CARDS_PLAN_REQUIRED`. A hash that no
-longer matches the rebuilt plan is `REVIEW_CARDS_PLAN_CHANGED` (exit 5) and prints the new plan,
+longer matches the rebuilt plan is `REVIEW_CARDS_PLAN_CHANGED` (exit 5). The reviewer is part of the plan hash, so
+writing with a different `--reviewer` than the one you planned is also `REVIEW_CARDS_PLAN_CHANGED` and prints the new plan,
 so you can confirm that one instead:
 
 ```text
-REVIEW_CARDS_PLAN_CHANGED: the plan differs from the one confirmed (the review changed after the dry run); run the dry run again and confirm the new plan
+REVIEW_CARDS_PLAN_CHANGED: the plan differs from the one confirmed (the review changed after the dry run, or a different --reviewer was given); run the dry run again and confirm the new plan
 ```
 
 Success is `REVIEW_CARDS_SAVED`:
@@ -339,6 +340,22 @@ Decide expands each verdict from the **stored packet**, never from the decisions
 file's `members` and `draftSha256` are echoes that are compared and never trusted. The stored
 note is `GM card verdict [<cardId>]: <your note>`, and each request id is
 `cards-<packetId>-<hash>`, so `review history` shows which decisions came from which packet.
+**Approval is yes with the no** (GM ruling 2026-11-12). Rejecting a finding does not block the
+sign-off of the same draft. When a file approves a sign-off and the same draft has rejected
+findings (rejected in this file, or already in the store; linked by the draft path, exactly),
+the sign-off is still recorded and its note carries them: `GM card verdict [<cardId>]: <your
+note>; with rejected finding(s): <item id> L<line>, ...`. The plan shows it, and so does the
+launcher:
+
+```text
+approve npc-signoff-f2d9a8ff74a448b132d5 → 1 record, 0 supersede, 0 noop
+  approved with 1 rejected finding(s): npc-c15262fd8bd54d563f5302d5 L16
+```
+
+A finding whose draft cannot be determined is not linked. If the composed note exceeds
+`max_note_chars` that sign-off card alone is refused with `REVIEW_CARDS_NOTE_TOO_LONG` (shorten
+your note); nothing is truncated.
+
 Approve on a sign-off records `document_signoff`; approve on a finding records
 `accept_no_change`; reject is `reject_action` and discuss is `defer` for every card.
 
@@ -394,7 +411,7 @@ the next export with a `previousDiscussion` line, rendered as plain text beside 
 Previously discussed by GM: check the quote
 ```
 
-A sign-off card's `body` stays byte-identical to the draft; the line is a separate field. On a
+A sign-off card's `body` stays byte-identical to the draft (read once as bytes, shown with no newline translation, so CRLF is kept; `draftSha256` is the hash of those same bytes); the line is a separate field. On a
 noise-class card the line sits per occurrence inside `body` and `previousDiscussion` is null. It
 is display only, and decide ignores it.
 

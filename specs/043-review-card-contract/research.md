@@ -159,7 +159,7 @@ So "which decisions came from packet P" is a filter on `request_id`. `review his
 **Decision**:
 
 - **Dry run by default.** `cards decide` follows `carry`, `policy` and `noise decide` (XII): it is a dry run unless `--write`. It needs `--reviewer`, because the decisions file carries no reviewer (FR-005) and the store requires one.
-- **The plan hash.** The plan is a canonical document: per card and member, it gives the category and, for records, the exact decision dict including `expected_decision_revision`. Its `plan_sha256` is reported.
+- **The plan hash.** The plan is a canonical document: per card and member, it gives the category and, for records, the exact decision dict including `expected_decision_revision`. Its `plan_sha256` is reported. The hash also covers the **reviewer** (T046): the reviewer is recorded on every decision, so a write under a different `--reviewer` than the one planned is `REVIEW_CARDS_PLAN_CHANGED`.
 - **`--write` requires `--plan-sha256`.** The flag is spelled as `review migrate` spells it. Decide rebuilds the plan, and refuses with `REVIEW_CARDS_PLAN_CHANGED` if the hash differs.
 
 So what is recorded is exactly what the GM saw (US1: "shows a plan … then records exactly that"). A concurrent CLI decision between plan and write cannot slip a different set through.
@@ -275,8 +275,22 @@ Refusals render the CLI message and `data` exactly as the existing panel does (U
 **Decision**:
 
 - **Export** reads the snapshot once under a shared lock. It hashes each NPC draft once, for the sign-off blockers, about 165 drafts, then writes one file.
-- **Decide** reads the snapshot once. It runs `custody.stale_report` once over the to-be-recorded items, which is spec 042's per-item cost. It re-hashes each approved sign-off's draft once, and submits ⌈n/100⌉ transactions.
+- **Decide** reads the snapshot once (manifest, items, events and custody from one `read_review_state(..., with_custody=True)`), indexes the events once (`delegated.index_events`: latest event and active revision per item; export and decide share it), and runs `custody.stale_report` once over the members of the marked cards, which is spec 042's per-item cost. A refused card's own report is `custody.slice_report` of that one. It re-hashes each approved sign-off's draft once, and submits ⌈n/100⌉ transactions.
 - **The 800-item test.** `_custody_fixture.build(extra_npcs=…)` scales to about 800 items. A test asserts that export and a full decide each finish well inside 60 s, timed loosely to avoid CI flake. The real stormgiants review is never written to (standing rule). An optional `STORMGIANTS` replay may run **export only** against a copy in `tmp_path`.
+
+## R16: Approval is yes with the no (GM ruling, 2026-11-12; T046)
+
+**Ruling**: "approval is yes with the no". The earlier wording of a finding card's Reject ("no sign-off for this draft until it is corrected") promised something the code never did, and the GM ruled the code right.
+
+**Decision**:
+
+- A sign-off Approve is **never blocked** by a rejected finding on the same draft. The sign-off is recorded, and its recorded note carries the rejections: `card_note(...)` (so the GM's note is kept) plus `; with rejected finding(s): <item id> L<line>, ...`, ordered by line then id. A finding card's id is its item id; a noise-class occurrence is named by its item id.
+- **Which findings count.** A finding stands rejected after this file is applied when (a) the store holds a fresh `reject` on it (the current revision and digest, not stale), or (b) an applied card in this file rejects it. An applied card in this file that approves or discusses it overrides (a). A card refused (stale item, stale custody) records nothing, so it does not count.
+- **Linking is by the draft the finding is about, by exact path equality.** The finding's draft is its proposed action's `details.draft_path` if it has one, else its locator's `source_path`; the sign-off's is its `details.draft_path`. No name or stem similarity. A finding whose draft cannot be determined from either is **not linked** to any sign-off.
+- **The plan.** The sign-off's plan card gains `withRejectedFindings: [{itemId, line, note}]` (only when non-empty; `note` is the GM's note, or the stored decision's note with the card prefix removed). The CLI text plan prints `  approved with N rejected finding(s): <id> L<line>, ...` under the card, and the launcher shows the same line under "Approved with rejected findings".
+- **`max_note_chars`.** `parse_decisions` checks the GM's note as before. The composed sign-off note is checked at plan time; if it is longer than the limit the card is refused (per card, the rest of the file proceeds) with `REVIEW_CARDS_NOTE_TOO_LONG`, and nothing is truncated.
+- **Re-saves.** The composed note is the note compared by R5. A later reject on the same draft changes the composed note, so re-applying supersedes the sign-off with the new note, as for any changed verdict. The finding card's `rejectMeans` now says the rejection is recorded and travels with the draft's sign-off; it does not promise to block.
+- The sign-off card's reading of the draft (T046): the draft is read as bytes once, `draftSha256` is the hash of those bytes, and the body is those bytes decoded as UTF-8 with no newline translation (CRLF is preserved). A draft that is not UTF-8, or whose path is a symlink or otherwise refused by the store's path rule, is a skipped sign-off (`REVIEW_CARDS_DRAFT_NOT_UTF8`, `REVIEW_PATH`), never a failed export.
 
 ## R15: Testing in a worktree
 

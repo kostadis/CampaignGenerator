@@ -295,7 +295,7 @@ description: "Task list for 043 review card contract (#643 slice 1, #655)"
   Fix the two lines that say the review-artifact kit reads the store (:256, :346). Add a row to the CLAUDE.md docs table only if a new doc file is created (none planned).
 - [X] T044 [P] Run `SC-007` scale: in `tests/test_summary_native_review_cards.py`, add `test_scale_800_items_export_and_decide_under_60s`, using `_custody_fixture.build(extra_npcs=…)` sized to about 800 items. The timing assertion is loose (< 60 s each), and wall times are recorded in `validation.md`.
 - [X] T045 Run the full Python suite and the frontend `npm test`, `npm run build` and `npm run test:e2e` (with `PLAYWRIGHT_CHROME_EXECUTABLE_PATH=/usr/bin/google-chrome`). Walk quickstart.md sections 1–7. Record everything in `validation.md`.
-- [ ] T046 One code-review pass over the CampaignGenerator diff and the mytools diff (`/code-review`). Fix the confirmed findings, then re-run the affected suites.
+- [X] T046 One code-review pass over the CampaignGenerator diff and the mytools diff (`/code-review`). Fix the confirmed findings, then re-run the affected suites.
 - [ ] T047 File follow-up issues (GitHub MCP, `kostadis/CampaignGenerator`):
   - the third latest-decision copy in `cli._fresh_decision` and `store.review_status`, which does not check item revision or digest (research R3);
   - `#643` slice 2 linkage, a comment on #643 with what slice 1 shipped;
