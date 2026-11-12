@@ -27,8 +27,8 @@ description: "Task list for 042 per-item source custody (#624, #633)"
 
 ## Phase 1: Setup
 
-- [ ] T001 Verify that `PYTHONPATH=<worktree> ~/.venv/bin/python -c "import pipelines; print(pipelines.__file__)"` prints the worktree path. Then run `tests/test_summary_native_review_decisions.py tests/test_summary_native_review_delegated.py tests/test_summary_native_npc_publish.py tests/test_delta_freshness.py tests/test_summary_native_review_routes.py tests/test_summary_native_review_http.py -q` on the unmodified branch. Record the pass counts in a new `specs/042-per-item-custody/validation.md`.
-- [ ] T002 [P] Read-only, record the stormgiants measurements in `specs/042-per-item-custody/validation.md`:
+- [X] T001 Verify that `PYTHONPATH=<worktree> ~/.venv/bin/python -c "import pipelines; print(pipelines.__file__)"` prints the worktree path. Then run `tests/test_summary_native_review_decisions.py tests/test_summary_native_review_delegated.py tests/test_summary_native_npc_publish.py tests/test_delta_freshness.py tests/test_summary_native_review_routes.py tests/test_summary_native_review_http.py -q` on the unmodified branch. Record the pass counts in a new `specs/042-per-item-custody/validation.md`.
+- [X] T002 [P] Read-only, record the stormgiants measurements in `specs/042-per-item-custody/validation.md`:
   - source counts by role: 164/164/84;
   - items per NPC: mean 4.8, max 19;
   - the 8 NPCs whose evidence names `docs/summaries/010-session-the-seer.md`;
@@ -42,15 +42,15 @@ description: "Task list for 042 per-item source custody (#624, #633)"
 
 **Purpose**: the one seam `review/custody.py`, the error detail and the shared fixture. See data-model.md and R2–R7, R12.
 
-- [ ] T003 [P] In `pipelines/summary_native/review/store.py`, extend `ReviewStoreError.__init__(self, message, code=None, *, detail=None)` to store `self.detail`. Every existing raise is unchanged. Add a test in `tests/test_summary_native_review_custody.py` that `detail` defaults to `None` and that code-prefix inference still works.
-- [ ] T004 [P] Create `tests/_custody_fixture.py` with `build(tmp_path) -> CustodyFixture`. It builds a **real** `npc_verification` review through `summary_native review create --kind npc_verification` with a `dossiers` selection, the same way `tests/test_summary_native_npc_publish.py::_create_real_review` does, under `docs/npcs/summary_native/ch001-003/{draft,evidence,gm}/`. Use summaries `docs/summaries/001-a.md`, `002-b.md` and `003-c.md`. Every dossier entry passes all three summaries, as the full-range build does. The NPCs are:
+- [X] T003 [P] In `pipelines/summary_native/review/store.py`, extend `ReviewStoreError.__init__(self, message, code=None, *, detail=None)` to store `self.detail`. Every existing raise is unchanged. Add a test in `tests/test_summary_native_review_custody.py` that `detail` defaults to `None` and that code-prefix inference still works.
+- [X] T004 [P] Create `tests/_custody_fixture.py` with `build(tmp_path) -> CustodyFixture`. It builds a **real** `npc_verification` review through `summary_native review create --kind npc_verification` with a `dossiers` selection, the same way `tests/test_summary_native_npc_publish.py::_create_real_review` does, under `docs/npcs/summary_native/ch001-003/{draft,evidence,gm}/`. Use summaries `docs/summaries/001-a.md`, `002-b.md` and `003-c.md`. Every dossier entry passes all three summaries, as the full-range build does. The NPCs are:
   - **A**: evidence names only `001-a.md`, and it has at least one finding item;
   - **B**: evidence names only `002-b.md`, and it has at least one finding item;
   - **C**: evidence names `001-a.md` and `003-c.md`, and its verification raises **no** finding, so it has a sign-off item only. This exercises the R6 layout path;
   - **D**: evidence uses `- Source: selected evidence`, the delta form, which exercises the R5 fallback.
 
   Expose the root, the review id, the generation, items by NPC, and helpers `touch(path)`, `restore(path)`, `delete(path)`, `decide(items, verdict, …)` (CLI `review decide --json`) and `sign(npc)` (CLI `review npc sign --json`).
-- [ ] T005 Write `tests/test_summary_native_review_custody.py`, the unit tests for T006–T010. They must fail now. Cover:
+- [X] T005 Write `tests/test_summary_native_review_custody.py`, the unit tests for T006–T010. They must fail now. Cover:
   - `role_of` for each prefix, and `other`;
   - `evidence_summary_paths`:
     - the stormgiants-shaped `npc_nug` text (copy its structure inline, without reading the checkout) gives `{"docs/summaries/004-session-clan-licehair.md"}`;
@@ -74,25 +74,25 @@ description: "Task list for 042 per-item source custody (#624, #633)"
   - the comparison uses the custody generation's sha, not `binding.custody_sha256`. Build an item whose binding sha is older than custody's, with the file equal to custody, and expect current (R3);
   - `refusal_detail` matches contracts/custody-refusal.md: key set, sort orders, `remedy.command` spelled `summary_native review refresh <id> --expected-generation <n>`, and `remedy.note` only when a draft-role file changed;
   - `npc_label`: `registry_name` first, else the stem without `npc_`.
-- [ ] T006 Create `pipelines/summary_native/review/custody.py` with:
+- [X] T006 Create `pipelines/summary_native/review/custody.py` with:
   - a module docstring: deterministic, no model call, one seam for item custody (Constitution V);
   - `SourceRole` and `role_of(source_id)` (R4);
   - `FileState`;
   - `disk_probe(root)`. It hashes each path at most once per probe, raises `ReviewStoreError("REVIEW_PATH…")` through `store._reject_symlinks` for a symlink, maps `OSError` to `unreadable`, and maps a non-file to `missing`;
   - frozen dataclasses `ChangedFile`, `DependencySet` and `StaleReport` (data-model.md).
-- [ ] T007 In `pipelines/summary_native/review/custody.py`, add `evidence_summary_paths(evidence_bytes, custody_paths) -> frozenset[str] | None`, implementing R5 rules 1–4 exactly. Read frontmatter with `yaml.safe_load` on the leading `---` block only. Any other shape returns `None`.
-- [ ] T008 In `pipelines/summary_native/review/custody.py`, add:
+- [X] T007 In `pipelines/summary_native/review/custody.py`, add `evidence_summary_paths(evidence_bytes, custody_paths) -> frozenset[str] | None`, implementing R5 rules 1–4 exactly. Read frontmatter with `yaml.safe_load` on the leading `---` block only. Any other shape returns `None`.
+- [X] T008 In `pipelines/summary_native/review/custody.py`, add:
   - `npc_evidence(item, items, custody)`: the R6 union, returning `(source_ids, basis)`;
   - `dependency_sets(kind, custody, items, item_ids, state)`, per data-model.md "Construction". It parses an evidence file only when `state(source) is FileState.current`, reading the bytes through the probe's cached read. The non-NPC rule is R7.
-- [ ] T009 In `pipelines/summary_native/review/custody.py`, add:
+- [X] T009 In `pipelines/summary_native/review/custody.py`, add:
   - `stale_report(...)`;
   - `refusal_detail(report, *, review_id, generation, operation, items) -> dict`, per contracts/custody-refusal.md;
   - `refusal_message(report)`, with the one-line `REVIEW_STALE_CUSTODY: …` text;
   - `refusal_text_lines(detail)`, for CLI text mode;
   - `stale_by_npc(report, items) -> dict`, per contracts/review-status.md;
   - `remedy(review_id, generation, has_draft)`.
-- [ ] T010 Move the NPC label rule into `custody.npc_label(item)`: `subject_ref.registry_name`, else `_draft_stem_name(locator.source_path)`. Make `pipelines/summary_native/review/delegated.py::_occurrence` use it, and delete the local helper (XII). Confirm that `tests/test_summary_native_review_noise_cli.py` still passes unchanged.
-- [ ] T011 [P] In `tests/test_summary_native_no_llm.py`, add an explicit assertion that `review/custody.py` is among the files `test_review_package_makes_no_model_call` walks (FR-015).
+- [X] T010 Move the NPC label rule into `custody.npc_label(item)`: `subject_ref.registry_name`, else `_draft_stem_name(locator.source_path)`. Make `pipelines/summary_native/review/delegated.py::_occurrence` use it, and delete the local helper (XII). Confirm that `tests/test_summary_native_review_noise_cli.py` still passes unchanged.
+- [X] T011 [P] In `tests/test_summary_native_no_llm.py`, add an explicit assertion that `review/custody.py` is among the files `test_review_package_makes_no_model_call` walks (FR-015).
 
 **Checkpoint**: `pytest tests/test_summary_native_review_custody.py tests/test_summary_native_no_llm.py tests/test_summary_native_review_noise_cli.py -q` passes.
 

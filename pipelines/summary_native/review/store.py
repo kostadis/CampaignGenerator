@@ -44,8 +44,12 @@ _CODE_PREFIX = re.compile(r"([A-Z][A-Z0-9_]+):")
 class ReviewStoreError(ValueError):
     """A safe, actionable refusal at the review storage boundary."""
 
-    def __init__(self, message: str, code: str | None = None):
+    def __init__(self, message: str, code: str | None = None, *, detail: dict | None = None):
         super().__init__(message)
+        # Optional JSON-safe payload for a refusal that can say more than one line
+        # (spec 042: REVIEW_STALE_CUSTODY names files, items and NPCs). Built only by
+        # review/custody.py; ``None`` for every other refusal.
+        self.detail = detail
         # Most refusals spell their code as the message prefix
         # ("REVIEW_INVALID_BATCH: ...").  Without an explicit code that prefix
         # is the code, so callers and HTTP adapters see the real refusal class.
