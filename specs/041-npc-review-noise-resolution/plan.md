@@ -16,7 +16,7 @@ The summary_native NPC number/ordinal and status checks will resolve the noise t
 
 Each noise occurrence becomes its own review item with a single legacy code `noise-<class>`. That makes the existing `review policy` the standing auto-approve with no change.
 
-A new `review noise` / `review noise decide` CLI gives the GM one batch verdict per class (Q1 = B), written as one ordinary decision per occurrence through the existing validated decision path. The review routes expose it as a UI face. The shared review-artifact kit in mytools renders it as one card per class (see the GM ruling needed under Constitution XI).
+A new `review noise` / `review noise decide` CLI gives the GM one batch verdict per class (Q1 = B), written as one ordinary decision per occurrence through the existing validated decision path. The review routes expose it as a UI face. The shared review-artifact kit in mytools renders it as one card per class (GM ruling under Constitution XI).
 
 ## Technical Context
 
@@ -53,11 +53,11 @@ A new `review noise` / `review noise decide` CLI gives the GM one batch verdict 
 | VIII. State discoverable | ✅ | `review noise --json` plus the `verify.md` "Classified noise" section with accounting (SC-005). |
 | IX. UI mechanizes | ✅ | The UI only invokes `noise` / `noise decide`. |
 | X. No silent "all" | ✅ | `--class` is required and there is no all-classes form. An empty class refuses. |
-| XI. Every CLI capability has a face | ⚠️ **GM ruling needed** | The in-repo face (`review_routes.py`) is planned. The page the GM actually uses is the mytools review-artifact kit (#616). This plan includes the kit change (render the class card, expand the class verdict on read-back) as tasks. **If the GM rules it out of scope, record the ruling here and file a follow-up issue.** |
+| XI. Every CLI capability has a face | ✅ (GM ruling 2026-11-12) | Two faces. In CG, `review_routes.py` gains `noise` and `noise decide` routes. In mytools, the GM's actual review page (the review-artifact kit, #616) is **edited in place**: `npc_review_items.py` renders one card per noise class and `read_decisions.py` expands a class verdict to its member item ids. The GM ruled the kit stays in mytools, not moved into CG and not made a CG-native NPC page. This is a cross-repo change, done on its own mytools branch and PR. |
 | XII. One spelling per option | ✅ | Reuses `--reviewer`, `--note`, `--write`, `--json` and the dry-run default exactly as `carry`/`policy` do. |
 | XIII. Breaking state changes migrate | ✅ no trigger | Additive only: a new `FindingCategory` member, new legacy codes and new diagnostic detail keys. Existing reviews keep their items and decisions (spec Edge Cases). No migration document is needed. |
 
-**Post-design re-check (after Phase 1)**: unchanged. XI is still awaiting the GM's ruling. No other violations, so Complexity Tracking stays empty.
+**Post-design re-check (after Phase 1)**: unchanged. XI resolved by GM ruling (kit edited in mytools). No violations, so Complexity Tracking stays empty.
 
 ## Project Structure
 
@@ -104,7 +104,7 @@ tests/
 ├── test_summary_native_noise_baseline.py        # NEW: read-only replay of ~/storm-giant/stormgiants vs GM noise rulings (skips w/o checkout)
 └── test_summary_native_no_llm.py                # + "noise" in the guarded set
 
-# cross-repo (pending the GM's XI ruling)
+# cross-repo, own branch and PR in mytools (GM ruling: edit the kit in place)
 ~/src/mytools/dotfiles/claude/skills/_shared/review-artifact/
 ├── npc_review_items.py              # one card per noise class
 └── read_decisions.py                # expand a class verdict to member item ids
@@ -118,7 +118,7 @@ tests/
 2. **US1 + US2, number check**: rewire `_deterministic_semantic_advisories` and `same-citation-inconsistency` onto noise. Noise items. Sentence and token details and messages.
 3. **US3, status check**: rewire `check_status_words`. Synonym and negation classes. The `verify.md` section.
 4. **US4, audit and decide**: `FindingCategory.CLASSIFIED_NOISE`; the `review noise` and `noise decide` CLI; policy-compatibility test; routes.
-5. **Kit face** (mytools, pending the XI ruling).
+5. **Kit face** in mytools (own branch and PR).
 6. **Docs and polish**: the two docs, the no-LLM guard, the full suite.
 
 ## Complexity Tracking

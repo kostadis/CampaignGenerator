@@ -99,7 +99,7 @@ The GM's actual review page is built by the shared review-artifact kit in **myto
 - (a) In CG: add `noise` and `noise decide` routes to `server/routers/review_routes.py`, each shelling out to the CLI (Principle VI).
 - (b) In mytools: `npc_review_items.py` emits one card per noise class (card id `noise-class:<class>`, listing the member item ids). `read_decisions.py` expands a class verdict into the per-item decisions the kit already produces. Its page explains that one verdict covers every listed occurrence.
 
-**Open for the GM**: (b) is a cross-repo change. It is planned as a task in this feature, so the batch card actually reaches the page the GM uses. The GM may instead rule it out of scope and file it as a follow-up issue. That ruling would be recorded in plan.md's Constitution Check.
+**GM ruling (2026-11-12)**: (b) is in scope. The kit stays in mytools and is edited in place there, on its own branch and PR. It is not moved into CG, and no CG-native NPC page is built. #616 stays open.
 
 ## R11 — Interaction with existing behaviour
 
