@@ -26,18 +26,38 @@ from pipelines.summary_native.review.store import (
 )
 
 
-def _latest(events: list[dict], item_id: str) -> dict | None:
-    matches = [event for event in events if event.get("item_id") == item_id]
-    return matches[-1] if matches else None
+class EventIndex:
+    """Per item: the latest event, and the decision revision ``save_decisions`` expects next.
+
+    The one place the latest-decision rule lives (spec 043 T046).  Build it once per snapshot and pass
+    it to ``_latest`` / ``_active_revision`` to turn the per-item scans into dict lookups.
+    """
+
+    __slots__ = ("latest", "revision")
+
+    def __init__(self, events: list[dict]):
+        self.latest: dict[str, dict] = {}
+        self.revision: dict[str, int] = {}
+        for event in events:
+            item_id = event.get("item_id")
+            if item_id is None:
+                continue
+            self.latest[item_id] = event
+            if "decision_revision" in event:
+                self.revision[item_id] = int(event["decision_revision"])
 
 
-def _active_revision(events: list[dict], item_id: str) -> int:
+def index_events(events: list[dict]) -> EventIndex:
+    return EventIndex(events)
+
+
+def _latest(events: list[dict], item_id: str, index: EventIndex | None = None) -> dict | None:
+    return (index or EventIndex(events)).latest.get(item_id)
+
+
+def _active_revision(events: list[dict], item_id: str, index: EventIndex | None = None) -> int:
     """The decision revision ``save_decisions`` expects next for ``item_id``."""
-    revision = 0
-    for event in events:
-        if event.get("item_id") == item_id and "decision_revision" in event:
-            revision = int(event["decision_revision"])
-    return revision
+    return (index or EventIndex(events)).revision.get(item_id, 0)
 
 
 def _current_decision(event: dict | None, item, stale_ids: set[str]) -> bool:
@@ -351,6 +371,9 @@ def plan_noise_class(root: Path, review_id: str, *, noise_class: str, verdict: s
             f"REVIEW_NOISE_NOTE_TOO_LONG: the note is {len(full_note)} characters once prefixed; the limit is {max_note}",
             "REVIEW_NOISE_NOTE_TOO_LONG",
         )
+    # The written decisions come from the same expansion, with the final note (spec 043 T046).
+    final = cards.expand(snapshot, member_ids=[item.item_id for item in pending], verdict=verdict,
+                         disposition_for=lambda _item: disposition, gm_note=full_note)
     return {
         "review_id": review_id,
         "review_generation": manifest.generation,
@@ -358,11 +381,7 @@ def plan_noise_class(root: Path, review_id: str, *, noise_class: str, verdict: s
         "verdict": verdict,
         "planned": [item.item_id for item in pending],
         "already_decided": already,
-        "decisions": [
-            _decision(item, expected=_active_revision(events, item.item_id), disposition=disposition,
-                      note=full_note, verdict=verdict)
-            for item in pending
-        ],
+        "decisions": [m.decision for m in final.members],
     }
 
 

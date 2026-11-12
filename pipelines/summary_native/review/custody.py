@@ -181,6 +181,21 @@ class StaleReport:
     unreferenced_changed: tuple[ChangedFile, ...] = ()
 
 
+def slice_report(report: StaleReport, item_ids: Iterable[str]) -> StaleReport:
+    """The part of ``report`` that concerns ``item_ids``: what ``stale_report`` would return for just those.
+
+    A dependency set is per item, so a card's own report is a slice of one whole-batch report; this
+    avoids re-running ``stale_report`` for every refused card (spec 043 T046).
+    """
+    ids = [i for i in dict.fromkeys(item_ids) if i in report.dependency_sets]
+    stale = {i: report.stale[i] for i in ids if i in report.stale}
+    union = {c.source_id: c for files in stale.values() for c in files}
+    return StaleReport(
+        stale=stale, changed_files=tuple(sorted(union.values(), key=lambda c: c.path)),
+        dependency_sets={i: report.dependency_sets[i] for i in ids},
+        no_dependency=frozenset(i for i in ids if i in report.no_dependency), unreferenced_changed=())
+
+
 # ── NPC label ──────────────────────────────────────────────────────────────
 
 def draft_stem_name(source_path: str | None) -> str | None:
