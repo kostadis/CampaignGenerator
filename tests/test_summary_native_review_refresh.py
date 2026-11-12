@@ -85,7 +85,7 @@ def refresh_campaign(tmp_path: Path) -> tuple[Path, ReviewItem]:
         severity="needs_judgment",
         assignment_basis="advisory_candidate",
         rationale="The exact claim and evidence require semantic judgment.",
-        proposed_action={"action": "accept_no_change_or_correct"},
+        proposed_action={"action": "review_claim_against_evidence"},
         scope={"kind": "evidence", "value": "vault"},
         rule_versions=({"rule_id": "ordinal-check", "version": "1"},),
         input_bindings=({

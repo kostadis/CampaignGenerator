@@ -179,7 +179,7 @@ def _build_correction_campaign(
             assignment_basis="gm_confirmed",
             rationale="The source and generated draft have been compared directly.",
             proposed_action={
-                "action": "correct_reviewed_layer",
+                "action": "prepare_claim_source_correction",
                 "details": {
                     **definition,
                     "rejected_claim": "third simulacrum",

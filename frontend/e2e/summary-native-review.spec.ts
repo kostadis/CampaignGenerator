@@ -102,7 +102,7 @@ function makeItems(): ReviewItem[] {
       categories: [category],
       severity: number % 5 ? 'needs_judgment' : 'warning',
       rationale: `Rationale ${number}: the citation is valid but the meaning needs review.`,
-      proposed_action: { action: 'accept_no_change_or_correct' },
+      proposed_action: { action: 'review_claim_against_evidence' },
       freshness: 'current',
     }
   })

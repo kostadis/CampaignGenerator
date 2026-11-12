@@ -29,3 +29,16 @@ Actions involved (neither is produced by any pipeline code; grep of pipelines/ a
 - `correct_reviewed_layer` — test_summary_native_review_corrections.py:182 (pair approve/source_correction). Test artifact.
 
 Per R4 the table was not widened and no test was edited. Awaiting a GM ruling.
+
+### T005 resolution (GM ruling 2026-11-12: repoint test fixtures)
+
+Fixtures repointed to actions the pipelines produce: `accept_no_change_or_correct` ->
+`review_claim_against_evidence` (tests/test_summary_native_review_{decisions,delegated,refresh,http}.py and
+frontend/e2e/summary-native-review.spec.ts:105); `correct_reviewed_layer` -> `prepare_claim_source_correction`
+(tests/test_summary_native_review_corrections.py:182). store.py and the R4 table untouched. No other occurrences.
+
+- The five Python test files: 48 passed.
+- Full suite `tests/ -q`: **9914 passed, 388 skipped, 0 failed** (17m52s).
+- e2e spec: not run (frontend/node_modules absent in the worktree).
+
+T005 is complete.
