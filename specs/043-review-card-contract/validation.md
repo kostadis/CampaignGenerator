@@ -53,3 +53,8 @@ Notes: (1) T008/T009 were written implementation-first in one pass, so the test 
 (2) cards.py imports `delegated` lazily inside `expand`; delegated imports `cards` lazily inside `plan_noise_class`
 (avoids a cycle). (3) `expand`'s `snapshot` is the `read_review_state` tuple. (4) plan_noise_class passes an empty
 placeholder note to `expand` (identical/differs are both "already decided") and builds its own note, so output is unchanged.
+
+## Phase 3 (T011-T020)
+
+T011: the US1 tests were written first and run against the Phase 2 code. `-k us1` gave **13 failed, 6 deselected**
+(no `cards export`/`decide` subcommand, no `build_packet`/`load_packet`/`parse_decisions`/`pack_batches`).
