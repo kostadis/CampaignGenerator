@@ -80,3 +80,31 @@ Replay method for T036:
   - An occurrence marked Discuss counts as decided, so a class verdict never overwrites a GM mark.
   - The route rejects an unknown class with 422 (pydantic Literal), before it reaches the CLI.
 - Result: 190 passed (noise_cli, delegated, routes, http, adapter, no_llm, npc_verify, noise).
+
+## T036 — baseline replay on real stormgiants data (read-only)
+
+Run:
+
+```
+STORMGIANTS=~/storm-giant/stormgiants PYTHONPATH=<wt> python -m pytest tests/test_summary_native_noise_baseline.py -s
+```
+
+Result: 3 passed. Without the env var: 3 skipped.
+
+| Criterion | Result |
+|---|---|
+| SC-001: GM-facing number/ordinal findings, full replay of 177 current drafts | **49** (≤ 100 ✅). 7 of them are in the 20 drafts edited since the review (approximate) |
+| SC-004: genuinely unsupported numbers (absent from every scene the line cites) still flagged | **48 / 48** (0 misses ✅), over 377 exact-bytes items. 34 were skipped because their evidence changed |
+| SC-002: GM-ruled synonym words still flagged | **0 / 16** ✅ |
+| SC-005: accounting partition | holds on every draft and every item ✅ |
+| SC-007: noise classes seen | 4 (label 257, other-citation 110, spelled-number 27, idiom 7) ✅ |
+| GM bulk noise rulings (informational) | 296 / 308 now cleared; 12 still reach the GM |
+
+### Two corrections to the replay's first draft (orchestrator)
+
+1. **SC-004 oracle.** The first draft treated "not in the GM's bulk noise rulings" as a confirmed true positive. That reported 26 misses. But **no review in the checkout records a reject on any number/ordinal item**. Across all 7 NPC reviews, every decided number item was approved. The 76 non-ruled items in this review are 55 approved after reading plus 21 undecided, so the wrong claims were fixed by re-drafting. "Not ruled noise" therefore is not "confirmed wrong". The test now uses SC-004's own definition (the #617 analysis): a token absent from every scene its line cites, compared by value, labels excluded. The 26 former misses were all, by design, `other-citation`, comma-equivalent (1,800 = 1800), spelled-number or `idiom`.
+2. **SC-002 granularity.** The first draft required zero status findings per *line*. Diana's line also carries "alive", which the old checker flagged as its **own** item (`npc-ceb9…`) and the GM did *not* rule a synonym. The test now checks the specific ruled word named in each item's diagnostic.
+
+### Noted for follow-up (not blocking)
+
+- A bare parenthesised chapter reference such as "(004)", with no "chapter" word before it, is not recognised as a label. It surfaced as `other-citation` in Veradaa's line. A candidate rule for a later table or label change.

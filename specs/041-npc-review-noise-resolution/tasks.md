@@ -216,7 +216,7 @@ description: "Task list for 041 NPC review noise resolution (#621)"
 ## Phase 8: Baseline oracle (SC-001, SC-002, SC-004, SC-005, SC-007)
 
 - [X] T035 Inspect, **read-only**, `~/storm-giant/stormgiants/docs/reviews/npc-review-6ee694eebf5b/requests/gm-number-noise-*.json` and `gm-status-synonym-*.json` (top-level keys `request_sha256`, `result`). Also inspect the review's `items/`, `sources/` and `manifest.json`, and `docs/npcs/summary_native/ch001-086/`. Document in `specs/041-npc-review-noise-resolution/validation.md` how to recover, for each GM-ruled noise item, its draft path, line and flagged token, and how to get each draft's exact draft and evidence bytes. Never write to that checkout.
-- [ ] T036 Create `tests/test_summary_native_noise_baseline.py`. It is skipped unless the env var `STORMGIANTS` points at an existing checkout. It replays every draft of `npc-review-6ee694eebf5b` through `noise.classify_numbers` and `noise.classify_status`, and asserts:
+- [X] T036 Create `tests/test_summary_native_noise_baseline.py`. It is skipped unless the env var `STORMGIANTS` points at an existing checkout. It replays every draft of `npc-review-6ee694eebf5b` through `noise.classify_numbers` and `noise.classify_status`, and asserts:
   - SC-001: GM-facing number/ordinal findings ≤ 100;
   - SC-002: zero status findings on GM-ruled synonym items;
   - SC-004: every token the GM did **not** rule as noise is still a GM-facing finding (print any misses);
