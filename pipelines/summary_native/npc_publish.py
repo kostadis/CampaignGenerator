@@ -101,6 +101,8 @@ class PublishItem:
     forced: list[str] = field(default_factory=list)  # which refusals --force overrode
     draft_sha256: str | None = None  # the draft bytes a refusal or a publication concerns
     candidate_body_sha256: str | None = None  # digest of the body that would be published
+    draft_path: Path | None = None  # summary_native: the checked draft file
+    custody_changed: list[dict] | None = None  # [{"path", "state"}] when custody is why it is held
 
 
 @dataclass(frozen=True)
@@ -232,24 +234,39 @@ def read_verdict(npc_range_dir: Path, stem: str) -> str | None:
     return None
 
 
-def _current_draft_signoff(root: Path, draft_path: Path, draft_sha256: str, *,
-                           dependency_graph=None, graph_item: str | None = None,
-                           current_digests=None) -> bool:
-    """Whether authority contains a current signoff for these exact draft bytes.
+@dataclass(frozen=True)
+class SignoffFreshness:
+    """Whether a draft has a current sign-off and, when not, which custody files changed (spec 042).
 
-    The review item carries the verifier outcome as well as the digest.  A human
-    approval of a mechanically failing item therefore cannot become publication
-    authority, and a custody refresh that marks the item stale reopens the gate.
+    ``changed`` are ``(campaign-relative path, state)`` pairs from the most recent stale matching
+    record; ``review_id`` names that record's review for the remedy command.
+    """
 
-    With ``dependency_graph`` and ``graph_item`` (spec 039 R5, FR-014) freshness is scoped to the
-    item's own dependencies instead of the whole review: only custody sources the item
-    depends on can stale it, and any recorded dependency whose digest in ``current_digests``
-    differs (or is missing) makes it stale. A graph that does not know ``graph_item`` is stale. Without
-    them the behaviour is unchanged.
+    current: bool
+    changed: tuple[tuple[str, str], ...] = ()
+    review_id: str | None = None
+    generation: int | None = None
+
+    def __bool__(self) -> bool:
+        return self.current
+
+
+def signoff_freshness(root: Path, draft_path: Path, draft_sha256: str, *,
+                      dependency_graph=None, graph_item: str | None = None,
+                      current_digests=None, probe=None) -> SignoffFreshness:
+    """Whether authority holds a current sign-off for these exact draft bytes (spec 042 FR-011).
+
+    Each ledger sign-off record is matched to its review item FIRST (approve, disposition, verdict,
+    exact draft sha, binding). Only then is freshness decided from the item's own dependency set
+    (``custody.dependency_sets``: bound sources, its evidence, the summaries that evidence names).
+    A ``dependency_graph`` may ADD dependencies (custody paths) and its ``item_stale`` is kept; it
+    never narrows the set. Current iff any record is current; otherwise the changed files of the
+    most recent stale record are reported.
     """
 
     from pipelines.summary_native.authority import AuthorityError, ReviewDecisionRecord, load_ledger
-    from pipelines.summary_native.review.store import _reject_symlinks, read_review_state, read_snapshot
+    from pipelines.summary_native.review import custody as review_custody
+    from pipelines.summary_native.review.store import read_review_state, read_snapshot
 
     root = Path(root).resolve()
     try:
@@ -260,10 +277,15 @@ def _current_draft_signoff(root: Path, draft_path: Path, draft_sha256: str, *,
         # the caller reports the ledger's own refusal, which names the command.
         raise
     except (OSError, ValueError):
-        return False
+        return SignoffFreshness(False)
     if ledger is None:
-        return False
+        return SignoffFreshness(False)
+    probe = probe if probe is not None else review_custody.disk_probe(root)
+    graph_paths: set[str] = set()
+    if dependency_graph is not None and graph_item is not None:
+        graph_paths = {n.key for n in dependency_graph.dependencies(graph_item)}
     states: dict[str, tuple] = {}
+    stale_best: tuple | None = None  # (recorded_at, changed, review_id)
     for record in ledger.records:
         if (
             not isinstance(record, ReviewDecisionRecord)
@@ -276,24 +298,10 @@ def _current_draft_signoff(root: Path, draft_path: Path, draft_sha256: str, *,
             if record.review_id not in states:
                 _manifest, items, events, stale = read_review_state(root, record.review_id)
                 _manifest, custody, _items = read_snapshot(root, record.review_id)
-                states[record.review_id] = (items, events, stale, custody)
-            items, events, stale, custody = states[record.review_id]
-            relevant = None
-            if dependency_graph is not None and graph_item is not None:
-                relevant = {n.key for n in dependency_graph.dependencies(graph_item)} | {relative}
-            custody_current = all(
-                (path := _reject_symlinks(root, root / source.path)).is_file()
-                and sha256_text(path.read_bytes()) == source.sha256
-                for source in custody.sources
-                if relevant is None or source.path in relevant
-            )
+                states[record.review_id] = (_manifest, items, events, stale, custody)
+            manifest, items, events, stale, custody = states[record.review_id]
         except (OSError, ValueError):
             continue
-        if record.item_id in stale or not custody_current:
-            continue
-        if dependency_graph is not None and graph_item is not None:
-            if dependency_graph.item_stale(graph_item, current_digests or {}):
-                continue
         item = next(
             (
                 candidate
@@ -317,7 +325,7 @@ def _current_draft_signoff(root: Path, draft_path: Path, draft_sha256: str, *,
         )
         details = item.proposed_action.details
         binding = next((value for value in item.input_bindings if value.path == relative), None)
-        if (
+        if not (
             current is not None
             and current.get("event_id") == record.event_id
             and current.get("verdict") == "approve"
@@ -330,8 +338,41 @@ def _current_draft_signoff(root: Path, draft_path: Path, draft_sha256: str, *,
             and binding is not None
             and binding.custody_sha256 == draft_sha256
         ):
-            return True
-    return False
+            continue
+        # The record is this draft's exact approval; now only custody can make it stale.
+        try:
+            dep = review_custody.dependency_sets(
+                manifest.kind, custody, items, [item.item_id], probe).get(item.item_id)
+            by_id = {s.source_id: s for s in custody.sources}
+            ids = set(dep.source_ids) if dep is not None else set(by_id)
+            by_path = {s.path: s for s in custody.sources}
+            ids |= {by_path[k].source_id for k in graph_paths if k in by_path}  # graph only adds
+            changed = []
+            for sid in ids:
+                src = by_id[sid]
+                state = probe(src)
+                if state is not review_custody.FileState.current:
+                    changed.append((src.path, state.value))
+            changed.sort()
+        except (OSError, ValueError):
+            continue
+        graph_stale = (dependency_graph is not None and graph_item is not None
+                       and dependency_graph.item_stale(graph_item, current_digests or {}))
+        if not changed and record.item_id not in stale and not graph_stale:
+            return SignoffFreshness(True)
+        if stale_best is None or record.recorded_at >= stale_best[0]:
+            stale_best = (record.recorded_at, tuple(changed), record.review_id, manifest.generation)
+    if stale_best is None:
+        return SignoffFreshness(False)
+    return SignoffFreshness(False, stale_best[1], stale_best[2], stale_best[3])
+
+
+def _current_draft_signoff(root: Path, draft_path: Path, draft_sha256: str, *,
+                           dependency_graph=None, graph_item: str | None = None,
+                           current_digests=None) -> bool:
+    """Boolean form of :func:`signoff_freshness` (kept for existing callers and the checker seam)."""
+    return signoff_freshness(root, draft_path, draft_sha256, dependency_graph=dependency_graph,
+                             graph_item=graph_item, current_digests=current_digests).current
 
 
 def _range_name(npc_range_dir: Path) -> str:
@@ -339,7 +380,7 @@ def _range_name(npc_range_dir: Path) -> str:
 
 
 def _plan_summary_native(root: Path, npc_range_dir: Path, stem: str, subject: str, item: PublishItem,
-                         signoff_checker: Callable[[Path, str], bool]) -> None:
+                         signoff_checker: Callable[[Path, str], "bool | SignoffFreshness"]) -> None:
     gm_path = Path(npc_range_dir) / npc_compose.GM_DIR / f"{stem}.md"
     text = gm_path.read_text(encoding="utf-8")
     m = _GM_HEADER_RE.match(text)
@@ -359,9 +400,13 @@ def _plan_summary_native(root: Path, npc_range_dir: Path, stem: str, subject: st
         return
     draft_sha256 = sha256_text(draft_bytes)
     item.draft_sha256 = draft_sha256
+    item.draft_path = draft_path
     item.candidate_body_sha256 = sha256_text(rewrite_manual_citations(text[m.end():]))
     if m.group("draft") != draft_sha256:
-        item.refusal = "draft changed after composition; run `summary_native npc-compose` and recheck it"
+        shown = schema.display_path(draft_path, root)
+        item.refusal = (f"draft changed after composition: {shown} (changed); "
+                        "run `summary_native npc-compose` and recheck it")
+        item.custody_changed = [{"path": shown, "state": "changed"}]
         return
     verdict = read_verdict(npc_range_dir, stem)
     if verdict != "pass":
@@ -377,6 +422,16 @@ def _plan_summary_native(root: Path, npc_range_dir: Path, stem: str, subject: st
         signed = signoff_checker(draft_path, draft_sha256)
     except AuthorityError as exc:
         item.refusal = str(exc)
+        return
+    if isinstance(signed, SignoffFreshness) and not signed.current and signed.changed:
+        item.custody_changed = [{"path": p, "state": st} for p, st in signed.changed]
+        rid = signed.review_id or "<review-id>"
+        gen = signed.generation if signed.generation is not None else "<n>"
+        listed = ", ".join(f"{p} ({st})" for p, st in signed.changed)
+        item.refusal = (
+            f"NPC_DRAFT_SIGNOFF_STALE: sources changed since review {rid} was built: {listed}; "
+            f"run `summary_native review refresh {rid} --expected-generation {gen}`, then re-verify and re-sign"
+        )
         return
     if not signed:
         item.refusal = (
@@ -468,11 +523,25 @@ def plan_publish(
     Writes nothing.
     """
     root, npc_range_dir = Path(root), Path(npc_range_dir)
-    def _default_checker(path: Path, digest: str) -> bool:
+    probe = None
+
+    def _default_checker(path: Path, digest: str) -> "bool | SignoffFreshness":
+        # The bool function stays the seam (callers patch it); only when it says "not current" is the
+        # richer answer (which custody files changed) computed, on one probe shared by the call.
+        nonlocal probe
         if dependency_graph is None:
-            return _current_draft_signoff(root, path, digest)
-        return _current_draft_signoff(root, path, digest, dependency_graph=dependency_graph,
-                                      graph_item=Path(path).stem, current_digests=current_digests)
+            if _current_draft_signoff(root, path, digest):
+                return True
+            graph_kw: dict = {}
+        else:
+            graph_kw = dict(dependency_graph=dependency_graph, graph_item=Path(path).stem,
+                            current_digests=current_digests)
+            if _current_draft_signoff(root, path, digest, **graph_kw):
+                return True
+        if probe is None:
+            from pipelines.summary_native.review import custody as review_custody
+            probe = review_custody.disk_probe(root)
+        return signoff_freshness(root, path, digest, probe=probe, **graph_kw)
 
     signoff_checker = _signoff_checker or _default_checker
     names = [n for n in names if n and n.strip()]
@@ -703,6 +772,8 @@ def publish(
                    "draft_sha256": facts.draft_sha if facts else it.draft_sha256,
                    "body_sha256": sha256_text(it.body) if it.body is not None else it.candidate_body_sha256,
                    "intent_id": None, "reconciled": False, "at": clock().isoformat(timespec="seconds")}
+            if it.custody_changed:
+                rec["custody_changed"] = it.custody_changed
             rec.update(extra)
             _put_revisioned(receipt_dir, _receipt_path(receipt_dir, it.slug), _dumps(rec))
             return rec
@@ -737,6 +808,20 @@ def publish(
                     results.append(PublishResult(it.name, it.slug, it.source, True, None, tuple(it.forced),
                                                  outcome="published", receipt=rec))
                     continue
+                if it.source == SOURCE_SN and it.draft_path is not None:
+                    shown = schema.display_path(it.draft_path, root)
+                    try:
+                        now_sha = sha256_text(Path(it.draft_path).read_bytes())
+                        state = None if now_sha == it.draft_sha256 else "changed"
+                    except OSError:
+                        state = "missing"
+                    if state is not None:
+                        it.custody_changed = [{"path": shown, "state": state}]
+                        reason = (f"NPC_DRAFT_CHANGED_AT_WRITE: {shown} changed after its sign-off was "
+                                  "checked; nothing was written for this NPC")
+                        results.append(PublishResult(it.name, it.slug, it.source, False, reason,
+                                                     receipt=receipt_for(it, "held", reason)))
+                        continue
                 if receipt_dir is not None:
                     _put_revisioned(receipt_dir, _intent_path(receipt_dir, it.slug), _dumps({
                         "intent_id": intent_id, "slug": it.slug, "name": it.name, "source": it.source,

@@ -424,7 +424,8 @@ def test_public_cli_signoff_authorizes_only_the_exact_verified_draft(w, capsys):
     evidence_before = evidence.read_bytes()
     evidence.write_bytes(evidence_before + b"\n")
     stale_evidence = npc_publish.publish(w.root, w.rd, names=["Jimjar"])[0]
-    assert not stale_evidence.published and "NPC_DRAFT_SIGNOFF_REQUIRED" in stale_evidence.reason
+    assert not stale_evidence.published and "NPC_DRAFT_SIGNOFF_STALE" in stale_evidence.reason
+    assert not (w.npcs / "jimjar.md").exists()
     evidence.write_bytes(evidence_before)
 
     draft.write_text(draft.read_text() + "\n", encoding="utf-8")
