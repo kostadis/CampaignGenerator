@@ -21,9 +21,7 @@ from pathlib import Path
 from pydantic import BaseModel, ConfigDict, Field
 
 import campaignlib
-from types import SimpleNamespace
-
-from campaignlib.api.client import client_from_args
+from pipelines.summary_native.delta.client import delta_client
 from campaignlib.registry import find_registry, load_registry
 
 from .census import read_pinned_source
@@ -116,7 +114,8 @@ def _scene_has(root: Path, path: str, scene: str, support: str) -> bool:
 
 
 def propose(campaign_dir: Path | str, plan: DeltaPlan, names: list[dict], *, backend: str | None = None,
-            model: str | None = None, client=None, caller=None, now: str | None = None) -> AssocStore:
+            model: str | None = None, client=None, caller=None, now: str | None = None,
+            client_options: dict | None = None) -> AssocStore:
     """Ask a model for scoped association proposals; verify them mechanically; store as unresolved.
 
     ``names`` is ``[{"name": str, "evidence": [{"path"?, "scene", "text"}]}]`` (typically the census'
@@ -132,7 +131,7 @@ def propose(campaign_dir: Path | str, plan: DeltaPlan, names: list[dict], *, bac
     canon = sorted(e.name for e in load_registry(rpath).entities)
     texts = {s.path: (read_pinned_source(s), s.sha256) for s in plan.sources}  # exit 3 if a source moved
     if caller is None:
-        client = client or client_from_args(SimpleNamespace(backend=backend, model=None, endpoint=None))
+        client = client or delta_client(backend, None, client_options)
         caller = campaignlib.call_api
     prompt = (
         "Registry canonical names (use these exactly):\n" + "\n".join(f"- {c}" for c in canon)

@@ -17,6 +17,7 @@ import sys
 from typing import Callable
 
 from campaignlib import add_backend_args
+from campaignlib.selection import BACKENDS
 from campaignlib.api.client import resolve_cli_model
 
 PRODUCTS = ("grounding", "npc")
@@ -75,8 +76,9 @@ def _extras(leaf: str, p: argparse.ArgumentParser) -> None:
     if leaf == "plan":
         p.add_argument("--product", action="append", choices=PRODUCTS, default=None)
         p.add_argument("--stop", choices=STOP_STAGES, default=None)
+        # `plan` makes no model call (it only records the choice), so it takes no endpoint/effort flags.
+        p.add_argument("--backend", choices=BACKENDS, default=None)
         p.add_argument("--model", default=None)
-        add_backend_args(p, default_backend=None)  # no parser default: flag > grounding.yaml > schema
     elif leaf.startswith("rebase ") or leaf == "rebind":
         _rebase_extras(leaf, p)
     elif leaf == "baseline adopt":

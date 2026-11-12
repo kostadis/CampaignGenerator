@@ -18,12 +18,10 @@ import json
 import re
 from pathlib import Path
 
-from types import SimpleNamespace
-
 from campaignlib import stream_api
-from campaignlib.api.client import client_from_args
 
 from . import custody_store, grounding_edits
+from .client import delta_client
 from .errors import EXIT_REFUSAL, DeltaRefusal
 from .rebase import RebaseState, baseline_docs, build_repair, load_state, require_fresh
 from .rebase_impact import AffectedLine, find_line
@@ -103,7 +101,7 @@ def parse_output(text: str) -> dict:
 
 
 def propose(root: Path | str, plan_id: str, *, backend: str | None, model: str, client=None,
-            max_tokens: int = 8000) -> dict:
+            max_tokens: int = 8000, client_options: dict | None = None) -> dict:
     """One model call over the affected baseline lines; saves DRAFT proposals and a ``propose-r<N>.json`` record."""
     state = load_state(root, plan_id)
     require_fresh(state)
@@ -127,7 +125,7 @@ def propose(root: Path | str, plan_id: str, *, backend: str | None, model: str, 
                            "(`delta rebase show` lists the lines and their state)", EXIT_REFUSAL)
     user, sources = build_prompt(state, docs, candidates)
     if client is None:
-        client = client_from_args(SimpleNamespace(backend=backend, model=model, endpoint=None))
+        client = delta_client(backend, model, client_options)
     raw = stream_api(client, SYSTEM_PROMPT, user, model, max_tokens=max_tokens, silent=True)
     value = parse_output(raw)
     allowed = {l.line_id: l for l in candidates}

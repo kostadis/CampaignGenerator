@@ -40,6 +40,7 @@ from campaignlib.util import atomic_write_text
 from pipelines.summary_native import npc_authored, npc_check, npc_compose, npc_draft, npc_link, npc_slug, npc_verify, parse, schema
 from pipelines.summary_native.freshness import DepNode, DependencyGraph
 
+from .client import pinned_backend
 from . import associations, npc_baseline
 from .census import Census, CensusEntry, load_census
 from .errors import EXIT_REFUSAL, EXIT_STALE, EXIT_USAGE, DeltaRefusal
@@ -648,7 +649,8 @@ def _state_path(root: Path, plan_id: str) -> Path:
 
 def draft(campaign_dir: Path | str, plan: DeltaPlan, *, backend: str | None = None, model: str | None = None,
           audience: str = "gm", subjects: Iterable[str] | None = None, dump_only: bool = False,
-          resume: str | None = None, force: bool = False, max_tokens: int | None = None, now=None) -> DraftOutcome:
+          resume: str | None = None, force: bool = False, max_tokens: int | None = None, now=None,
+          client_options: dict | None = None) -> DraftOutcome:
     """Draft the census' changed and new NPCs through ``npc_draft.run_draft``.
 
     Order: audience gate (before any input is read) -> census -> baselines -> drafting inputs ->
@@ -680,10 +682,12 @@ def draft(campaign_dir: Path | str, plan: DeltaPlan, *, backend: str | None = No
 
     choice = plan.models.generation
     args = _draft_args([m.subject for m in members], backend or choice.backend, model or choice.model,
-                       dump_only=dump_only, resume=resume, force=force, max_tokens=max_tokens)
-    code = npc_draft.run_draft(
-        args, root=root, range_dir=rdir, npc_range_dir=rdir, report=None, registry_path=None, canon_path=None,
-        recent_chapters=None, recurring_min=None, now=now, delta=spec)
+                       dump_only=dump_only, resume=resume, force=force, max_tokens=max_tokens,
+                       client_options=client_options)
+    with pinned_backend(args.backend):  # a plan that records `anthropic` stays anthropic under CG_BACKEND
+        code = npc_draft.run_draft(
+            args, root=root, range_dir=rdir, npc_range_dir=rdir, report=None, registry_path=None, canon_path=None,
+            recent_chapters=None, recurring_min=None, now=now, delta=spec)
 
     reads = {k: sum(m.reads[k] for m in members) for k in ("parsed_historical", "reused_artifact")}
     write_json(_state_path(root, plan.plan_id), {
@@ -709,12 +713,15 @@ def npc_publish_verdict(range_dir: Path, stem: str) -> str | None:
 
 
 def _draft_args(names: list[str], backend: str, model: str, *, dump_only: bool, resume: str | None,
-                force: bool, max_tokens: int | None):
+                force: bool, max_tokens: int | None, client_options: dict | None = None):
     import argparse
-    return argparse.Namespace(
+    ns = argparse.Namespace(
         name=names, all=False, recent_chapters=None, recurring_min=None, dump_only=dump_only, force=force,
         model=model, backend=backend, max_tokens=max_tokens or schema.DEFAULT_MAX_TOKENS, mode="one-shot",
         chunk_chars=None, endpoints=None, parallel=None, resume=resume)
+    for key, value in (client_options or {}).items():
+        setattr(ns, key, value)
+    return ns
 
 
 def load_state(campaign_dir: Path | str, plan_id: str) -> dict:

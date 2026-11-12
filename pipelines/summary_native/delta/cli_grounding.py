@@ -11,6 +11,7 @@ import argparse
 import hashlib
 from pathlib import Path
 
+from .client import client_options
 from . import baseline as baseline_mod, grounding_candidates, grounding_check, grounding_edits, rebase as rebase_mod
 from .cli import DELTA_HANDLERS
 from .cli_plan import campaign_root, emit, guarded, load_plan_arg
@@ -80,7 +81,7 @@ def _grounding_propose(args: argparse.Namespace) -> int:
     backend, model = _choice(args, plan, "generation")
     proposal_set = grounding_edits.propose_edits(
         docs, _source_texts(plan), plan_id=plan.plan_id, baseline_ref=baseline.ref,
-        backend=backend, model=model)
+        backend=backend, model=model, client_options=client_options(args))
     saved = grounding_edits.save_proposals(root, proposal_set)
     record = {"plan_id": plan.plan_id, "revision": saved.revision, "status": "draft",
               "proposals": [p.model_dump() for p in saved.proposals],
@@ -144,7 +145,7 @@ def _grounding_check(args: argparse.Namespace) -> int:
     if plan.kind != "rebase" and any(candidate[k] != docs[k] for k in candidate):
         backend, model = _choice(args, plan, "consistency")
         report.findings += grounding_check.propose_consistency_findings(
-            docs, candidate, texts, backend=backend, model=model)
+            docs, candidate, texts, backend=backend, model=model, client_options=client_options(args))
         calls = 1
     saved = grounding_check.save_check_report(
         root, plan.plan_id, report,

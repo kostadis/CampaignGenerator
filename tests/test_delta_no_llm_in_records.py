@@ -23,6 +23,7 @@ ALLOWED_MODEL_FUNCTIONS: dict[str, frozenset[str]] = {
     "plan.py": frozenset(),
     "sources.py": frozenset(),
     "census.py": frozenset({"propose_triage_hints"}),
+    "client.py": frozenset(),
     "associations.py": frozenset({"propose"}),
     "attest.py": frozenset(),
     "npc_baseline.py": frozenset(),

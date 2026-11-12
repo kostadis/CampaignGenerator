@@ -23,9 +23,7 @@ from typing import Mapping
 from pydantic import BaseModel, ConfigDict, Field
 
 from campaignlib import stream_api
-from types import SimpleNamespace
-
-from campaignlib.api.client import client_from_args
+from pipelines.summary_native.delta.client import delta_client
 
 from .errors import EXIT_REFUSAL, DeltaRefusal
 from .grounding_edits import _revisions, _write_new, edits_dir
@@ -262,13 +260,14 @@ def _changed_view(baseline: Mapping[str, bytes], candidate: Mapping[str, bytes])
 
 def propose_consistency_findings(baseline: Mapping[str, bytes], candidate: Mapping[str, bytes],
                                  source_texts: Mapping[str, str], *, backend: str | None = None,
-                                 model: str, client=None, max_tokens: int = 4000) -> list[Finding]:
+                                 model: str, client=None, max_tokens: int = 4000,
+                                 client_options: dict | None = None) -> list[Finding]:
     """Bounded model review of the changed lines.  Returns findings only; sets no approval."""
     view = _changed_view(baseline, candidate)
     if not view:
         return []
     if client is None:
-        client = client_from_args(SimpleNamespace(backend=backend, model=model, endpoint=None))
+        client = delta_client(backend, model, client_options)
     user = ("## Selected sources\n" + "\n\n".join(f"### {p}\n{t}" for p, t in sorted(source_texts.items()))
             + "\n\n## Changed lines\n" + view)
     raw = stream_api(client, _SYSTEM, user, model, max_tokens=max_tokens, silent=True)

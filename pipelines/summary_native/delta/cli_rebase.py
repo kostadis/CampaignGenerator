@@ -13,6 +13,7 @@ import re
 import sys
 from pathlib import Path
 
+from .client import client_options
 from . import rebase, rebase_inspect, rebase_propose, rebind as rebind_mod
 from .cli import DELTA_HANDLERS
 from .cli_plan import campaign_root, load_plan_arg, resolve_model_choice
@@ -108,7 +109,8 @@ def _propose(args: argparse.Namespace) -> int:
     plan = load_plan_arg(args, root)
     backend = args.backend or plan.models.generation.backend
     model = args.model or plan.models.generation.model
-    data = rebase_propose.propose(root, plan.plan_id, backend=backend, model=model)
+    data = rebase_propose.propose(root, plan.plan_id, backend=backend, model=model,
+                                    client_options=client_options(args))
     return _out(args, data, f"{len(data['proposals'])} draft repair(s), {len(data['rejected'])} rejected; none "
                 "approved. Decide each with `delta grounding decide`.")
 
