@@ -501,6 +501,20 @@ def _semantic_kwargs(semantic: _SemanticResult, finding: Finding) -> dict:
     return kwargs
 
 
+def _status_details(selection: SelectedNpcVerification, finding: Finding) -> dict:
+    """Structured details for a ``status-claim-unsupported`` finding (spec 041, T023)."""
+    word = re.search(r'draft says "([^"]+)"', finding.detail)
+    lines = selection.draft_text.splitlines()
+    line_text = lines[finding.line - 1] if 0 < finding.line <= len(lines) else ""
+    cits = noise._valid_citations(finding.text) or noise._valid_citations(line_text)
+    return {
+        "check": "status",
+        "tokens": [word.group(1)] if word else [],
+        "sentence": finding.text,
+        "cited_scenes": [noise.scene_name(c) for c in cits],
+    }
+
+
 def adapt_selected_verifications(
     *,
     campaign_id: UUID,
@@ -560,7 +574,11 @@ def adapt_selected_verifications(
                 finding=finding,
                 group="advisory",
                 ordinal=ordinal,
-                **_semantic_kwargs(semantic, finding),
+                **(
+                    {"extra_details": _status_details(selection, finding)}
+                    if finding.code == npc_verify.STATUS_UNSUPPORTED
+                    else _semantic_kwargs(semantic, finding)
+                ),
             ))
         for ordinal, (record, bound) in enumerate(zip(semantic.noise, semantic.noise_texts)):
             items.append(_item(
@@ -571,6 +589,17 @@ def adapt_selected_verifications(
                 group="noise",
                 ordinal=ordinal,
                 bound_text=bound,
+                extra_details=record.to_dict(),
+            ))
+        status_noise = [r for r in selection.result.noise if r.check == "status"]
+        for ordinal, record in enumerate(status_noise, start=len(semantic.noise)):
+            items.append(_item(
+                campaign_id=campaign_id,
+                review_id=review_id,
+                selection=selection,
+                finding=_noise_finding(record),
+                group="noise",
+                ordinal=ordinal,
                 extra_details=record.to_dict(),
             ))
     return tuple(items)

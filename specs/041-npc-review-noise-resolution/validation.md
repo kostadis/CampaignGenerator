@@ -60,3 +60,12 @@ Replay method for T036:
   - `tests/test_backend_seam_guardrails.py`: 9 failed on main `e6c13a9` and the same 9 on this branch.
   - `tests/test_codex_cli_family.py::test_direct_inventory_contains_27_model_bearing_commands` also fails on main.
   - Both concern `delta/` code this feature does not touch.
+
+## Phase 5 (T019–T023) — US3, the status check
+
+- Sonnet implementer; reviewed by the orchestrator. On review, two follow-ups were sent back and completed:
+  - **Adapter tests** for status noise items and status-finding details. The adapter ignores number noise in `result.noise` (check "number") and recomputes it itself, so there are no duplicate items; a test asserts this.
+  - **Number noise and accounting** now appear in `verify.md` (FR-013, SC-005). This is reporting only: `verify_scoped` runs `classify_numbers` when the full CHECK_IDS set is selected and adds nothing to failures or advisories. A test asserts the verdict, failures and advisories are unchanged.
+- **Golden changed:** `tests/fixtures/delta/golden/verify_full.md`, 28 lines added and 0 removed. It is a new `## Classified noise` section for the two fixture drafts that contain "chapter 002" (correctly classed as `label`). No existing golden line changed.
+- Result: 231 passed (npc_verify, noise, adapter, review_verification, scoped_verification, verifier_golden_full, editor_verify_routes, npc_draft, review_rerun, no_llm).
+- Main-only failures filed as **#644** (14 tests in the backend-seam and codex-CLI-family guardrails, in `delta/` and `npc_agent`).

@@ -312,3 +312,54 @@ def test_same_citation_inconsistency_ignores_labels():
     draft = ("In Chapter 5 the gate held. [ch 085 / 085.08]\n"
              "In Chapter 6 the gate held. [ch 085 / 085.08]\n")
     assert "same-citation-inconsistency" not in _by_code(_adapt_one(draft))
+
+
+# ---- spec 041 US3: status noise and status finding details (T023) ----------------------------
+
+def _status_selection(draft, noise_records=(), advisories=()):
+    base = _noise_selection(draft, EV)
+    return SelectedNpcVerification(**{**base.__dict__, "result": VerificationResult(
+        verdict="pass", failures=[], advisories=list(advisories), counts={}, noise=tuple(noise_records))})
+
+
+def _adapt_sel(sel):
+    return adapt_selected_verifications(campaign_id=CAMPAIGN_ID, review_id="npc-review", selected=[sel])
+
+
+def test_status_noise_in_the_result_becomes_noise_items():
+    draft = "He departed. [ch 085 / 085.07]\nNo further status (alive) is established. [ch 085 / 085.07]\n"
+    recs = (
+        noise_mod.NoiseRecord("status", "synonym", 1, "departed", "He departed. [ch 085 / 085.07]",
+                              ("ch 085 / 085.07",), "leaves"),
+        noise_mod.NoiseRecord("status", "negated-status", 2, "alive",
+                              "No further status (alive) is established. [ch 085 / 085.07]",
+                              ("ch 085 / 085.07",), "No further status (alive) is established"),
+    )
+    codes = _by_code(_adapt_sel(_status_selection(draft, recs)))
+    assert set(codes) == {"noise-synonym", "noise-negated-status"}
+    for cls, rec in (("synonym", recs[0]), ("negated-status", recs[1])):
+        item, = codes[f"noise-{cls}"]
+        _assert_noise_shape(item, cls)
+        d = item.diagnostics[0].details
+        assert d["check"] == "status" and d["token"] == rec.token and d["sentence"] == rec.sentence
+        assert list(d["cited_scenes"]) == ["ch 085 / 085.07"] and d["resolved_by"] == rec.resolved_by
+
+
+def test_status_finding_details_are_structured():
+    draft = "Belg was captured. [ch 085 / 085.07]\n"
+    f = Finding("status-claim-unsupported", 1, "Belg was captured. [ch 085 / 085.07]",
+                'draft says "captured"; neither it nor a listed synonym appears in the evidence '
+                "(sentence cites: ch 085 / 085.07)")
+    item, = _adapt_sel(_status_selection(draft, advisories=[f]))
+    d = item.diagnostics[0].details
+    assert d["check"] == "status" and list(d["tokens"]) == ["captured"]
+    assert d["sentence"] == f.text and list(d["cited_scenes"]) == ["ch 085 / 085.07"]
+
+
+def test_number_noise_in_the_result_is_not_duplicated_by_the_adapter():
+    draft = "In Chapter 036 the witness waited. [ch 085 / 085.07]\n"
+    rec = noise_mod.NoiseRecord("number", "label", 1, "036", draft.strip(), ("ch 085 / 085.07",), "")
+    without = _adapt_sel(_status_selection(draft))
+    with_rec = _adapt_sel(_status_selection(draft, (rec,)))
+    assert [i.diagnostics[0].legacy_code for i in with_rec] == [i.diagnostics[0].legacy_code for i in without]
+    assert len(with_rec) == len(without) == 1

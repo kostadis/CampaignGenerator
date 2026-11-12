@@ -25,6 +25,20 @@ None.
 
 None.
 
+## Classified noise
+
+- label: 1
+- idiom: 0
+- negated-status: 0
+- spelled-number: 0
+- synonym: 0
+- other-citation: 0
+
+- [label] line 22: "002" — As of chapter 002 the forge is still cold. [ch 002 / 002.02]
+
+number: examined 1 = supported 0 + noise 1 + findings 0
+examined 1 = supported 0 + noise 1 + findings 0
+
 === sella (fixture draft) ===
 # Verification: Envoy Sella Marr
 
@@ -51,6 +65,20 @@ None.
 ## Advisories (do not change the verdict)
 
 None.
+
+## Classified noise
+
+- label: 1
+- idiom: 0
+- negated-status: 0
+- spelled-number: 0
+- synonym: 0
+- other-citation: 0
+
+- [label] line 16: "001" — As of chapter 001 she is in the Emberfall square. [ch 001 / 001.02]
+
+number: examined 1 = supported 0 + noise 1 + findings 0
+examined 1 = supported 0 + noise 1 + findings 0
 
 === synthetic citation kinds ===
 # Verification: Brannoc Ironvein

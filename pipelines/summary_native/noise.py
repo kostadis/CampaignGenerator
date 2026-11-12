@@ -537,3 +537,77 @@ def classify_numbers(draft_text: str, evidence):
     """``(findings, noise_records, accounting)`` for the number/ordinal check."""
     a = analyse_numbers(draft_text, evidence)
     return list(a.findings), list(a.noise), a.accounting
+
+
+# ---------------------------------------------------------------- status classification
+
+_NOT_ESTABLISHED_PATTERNS = (
+    re.compile(r"\bno (?:further )?status\b.*\bestablished\b", re.IGNORECASE | re.DOTALL),
+    re.compile(r"\bstatus\b.*\b(?:is|remains) (?:not|un)\s?(?:established|known|stated|confirmed)\b",
+               re.IGNORECASE | re.DOTALL),
+    re.compile(r"\b(?:not|un)known whether\b", re.IGNORECASE),
+    re.compile(r"\bunclear whether\b", re.IGNORECASE),
+)
+
+
+def is_not_established(sentence: str) -> str | None:
+    """The matched phrase if the sentence is a closed-pattern "status not established" non-claim (R7)."""
+    for pattern in _NOT_ESTABLISHED_PATTERNS:
+        m = pattern.search(sentence)
+        if m:
+            return m.group(0)
+    return None
+
+
+def classify_status(draft_text: str, sections: dict, evidence_text: str):
+    """``(findings, noise_records, accounting)`` for the status-word check (spec 041, R7).
+
+    Scope is unchanged: the Last Observed State section plus the first MAP section, compared against
+    the whole evidence text. Work is per sentence; accounting counts status-word occurrences.
+    """
+    from . import schema
+    from .npc_verify import LAST_STATE, STATUS_UNSUPPORTED, _STATUS_RE, Finding
+
+    synonyms = load_status_synonyms()
+    scopes = [sections.get(LAST_STATE, (0, [])), sections.get(schema.MAP_SECTIONS[0], (0, []))]
+    findings: list = []
+    records: list[NoiseRecord] = []
+    noise_counts = {c: 0 for c in CLASSES}
+    examined = supported = 0
+    seen: set[tuple[int, str, str]] = set()
+
+    def present(word: str) -> bool:
+        return re.search(rf"\b{re.escape(word)}\b", evidence_text, re.IGNORECASE) is not None
+
+    for start, lines in scopes:
+        for off, ln in enumerate(lines):
+            lineno = start + off + 1
+            line_cits = _valid_citations(ln)
+            for sentence in split_sentences(ln):
+                cits = _valid_citations(sentence) or line_cits
+                scenes = tuple(scene_name(c) for c in cits)
+                phrase = is_not_established(sentence)
+                for m in _STATUS_RE.finditer(sentence):
+                    w = m.group(1).casefold()
+                    if (lineno, sentence, w) in seen:
+                        continue
+                    seen.add((lineno, sentence, w))
+                    examined += 1
+                    if phrase is not None:
+                        noise_counts["negated-status"] += 1
+                        records.append(NoiseRecord("status", "negated-status", lineno, w, sentence, scenes, phrase))
+                    elif present(w):
+                        supported += 1
+                    else:
+                        syn = next((s for s in synonyms[w] if present(s)), None)
+                        if syn is not None:
+                            noise_counts["synonym"] += 1
+                            records.append(NoiseRecord("status", "synonym", lineno, w, sentence, scenes, syn))
+                        else:
+                            findings.append(Finding(
+                                STATUS_UNSUPPORTED, lineno, sentence,
+                                f'draft says "{w}"; neither it nor a listed synonym appears in the evidence '
+                                f'(sentence cites: {", ".join(scenes) if scenes else "none"})'))
+    accounting = CheckAccounting(examined, supported, noise_counts, len(findings))
+    accounting.check()
+    return findings, records, accounting
