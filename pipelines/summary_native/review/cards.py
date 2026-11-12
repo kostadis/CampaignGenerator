@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import re
 from pathlib import Path
 from typing import Any, Callable, Literal
 
@@ -271,6 +272,23 @@ def _who(item) -> str:
     return str(item.proposed_action.details.get("npc") or custody.npc_label(item) or item.item_id)
 
 
+_CARD_NOTE_PREFIX = re.compile(r"^GM card verdict \[[^\]]*\](?:: )?")
+
+
+def _previous_discuss(events, item, stale) -> str | None:
+    """``Previously discussed by <reviewer>: <note>`` for an item whose current decision is a Discuss.
+
+    Display only (spec 043 R2, GM ruling 2026-11-12): it reads the same latest-decision helpers decide
+    uses and changes nothing decide records.
+    """
+    from pipelines.summary_native.review import delegated
+    latest = delegated._latest(events, item.item_id)
+    if not (delegated._current_decision(latest, item, stale) and latest.get("verdict") == "discuss"):
+        return None
+    note = _CARD_NOTE_PREFIX.sub("", str(latest.get("note") or "")).strip()
+    return f"Previously discussed by {latest.get('reviewer')}" + (f": {note}" if note else "")
+
+
 def _member(item, events) -> Member:
     from pipelines.summary_native.review import delegated
     return Member(
@@ -279,7 +297,7 @@ def _member(item, events) -> Member:
         line=item.locator.display_line)
 
 
-def _noise_card(noise_class: str, members: list, events) -> Card:
+def _noise_card(noise_class: str, members: list, events, stale=frozenset()) -> Card:
     from pipelines.summary_native.review import delegated
     rows = []
     for item in members:
@@ -289,7 +307,8 @@ def _noise_card(noise_class: str, members: list, events) -> Card:
         sentence = details.get("sentence") or item.claim_text or ""
         rows.append(
             f"{_who(item)}{' L' + str(line) if line else ''} ({item.locator.source_path}): "
-            f"token {details.get('token', '')}\n  {sentence}\n  cited: {scenes}; resolved by: {details.get('resolved_by', '')}")
+            f"token {details.get('token', '')}\n  {sentence}\n  cited: {scenes}; resolved by: {details.get('resolved_by', '')}"
+            + (f"\n  {previous}" if (previous := _previous_discuss(events, item, stale)) else ""))
     n = len(members)
     plural = "s" if n != 1 else ""
     return Card(
@@ -303,12 +322,14 @@ def _noise_card(noise_class: str, members: list, events) -> Card:
         evidence=(), members=tuple(_member(item, events) for item in members), draft_sha256=None)
 
 
-def _finding_card(item, events) -> Card:
+def _finding_card(item, events, stale=frozenset()) -> Card:
     where = item.locator.source_path or ""
     line = item.locator.display_line
     action = item.proposed_action.action
     checker = sorted({d.message for d in item.diagnostics if d.message})
     body = f"Claim: {item.claim_text or ''}" + "".join(f"\nChecker: {m}" for m in checker)
+    if (previous := _previous_discuss(events, item, stale)):
+        body += f"\n{previous}"
     evidence = tuple(
         EvidenceRow(source=ev.source_path or "", anchor=ev.anchor, excerpt=ev.exact_excerpt,
                     missing_reason=ev.missing_reason)
@@ -324,12 +345,14 @@ def _finding_card(item, events) -> Card:
         evidence=evidence, members=(_member(item, events),), draft_sha256=None)
 
 
-def _signoff_card(root: Path, item, events) -> Card:
+def _signoff_card(root: Path, item, events, stale=frozenset()) -> Card:
     from pipelines.summary_native.review.store import _reject_symlinks
     details = item.proposed_action.details
     draft_sha = str(details.get("draft_sha256"))
     text = _reject_symlinks(Path(root), Path(root) / str(details.get("draft_path"))).read_text(encoding="utf-8")
     who = _who(item)
+    if (previous := _previous_discuss(events, item, stale)):
+        text = f"{previous}\n\n{text}"
     return Card(
         id=item.item_id, kind="signoff", npc=who, title=f"Sign off {who}'s draft for publication", body=text,
         approve_means=f"Record a GM sign-off for these exact bytes (sha256 {draft_sha[:16]}...); publish can then "
@@ -381,7 +404,7 @@ def build_packet(root: Path, review_id: str, *, item_ids: list[str] | None = Non
     for noise_class in noise.CLASSES:
         members = sorted(delegated._noise_members(candidates, noise_class), key=order)
         if members:
-            built.append(_noise_card(noise_class, members, events))
+            built.append(_noise_card(noise_class, members, events, stale))
             used.update(item.item_id for item in members)
     skipped: list[dict] = []
     for item in sorted((i for i in candidates if i.item_id not in used), key=order):
@@ -390,9 +413,9 @@ def build_packet(root: Path, review_id: str, *, item_ids: list[str] | None = Non
             if blocker is not None:
                 skipped.append({"itemId": item.item_id, "npc": _who(item), "code": blocker[0], "message": blocker[1]})
                 continue
-            built.append(_signoff_card(root, item, events))
+            built.append(_signoff_card(root, item, events, stale))
         else:
-            built.append(_finding_card(item, events))
+            built.append(_finding_card(item, events, stale))
     seen_members: dict[str, str] = {}
     seen_cards: set[str] = set()
     for card in built:

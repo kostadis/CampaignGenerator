@@ -12,6 +12,7 @@ It builds a packet from REVIEW's undecided items and stores it in the review (re
 | Same packet exists | `REVIEW_CARDS_EXPORTED` | as above, with `reused:true` |
 | Nothing undecided | `REVIEW_CARDS_NOTHING_TO_EXPORT` (refusal, exit 2) | `{skippedSignoffs}` |
 | Wrong review kind | `REVIEW_CARDS_KIND` | |
+| An undecided item whose action has no card verdict mapping (`DISPOSITION_FOR`) | `REVIEW_CARDS_ACTION_UNKNOWN` (refusal, exit 2; whole export refused, no packet written; the message names the item and action; GM ruling 2026-11-12: keep) | |
 | A different packet already stored under the id | `REVIEW_CARDS_PACKET_CONFLICT` (exit 5) | |
 | A member item in two cards (defensive) | `REVIEW_CARDS_DUPLICATE_MEMBER` | `{itemId, cards}` |
 | Unknown review, pending transaction, … | existing store codes | |

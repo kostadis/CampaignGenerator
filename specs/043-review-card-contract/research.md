@@ -32,6 +32,7 @@ File and line references are to those trees.
 - **Review kind.** Only `npc_verification` reviews, in this slice. Any other kind is refused with `REVIEW_CARDS_KIND`. Identity and document reviews are out of the spec's scope.
 - **Items covered.** An item belongs in the packet when it has **no current approve or reject**. "Current" means on the item's current revision and digest, and not in `stale_ids`. This is `delegated._current_decision`, restricted to approve and reject.
   - A Discuss is not a ruling, so a discussed item is re-offered. This matches the kit's `current_decisions` (:67-80).
+  - **GM ruling (2026-11-12): show it now.** A re-offered card whose item's current (fresh-revision, not withdrawn) decision is a Discuss carries the plain-text line `Previously discussed by <reviewer>: <note>` in `body` (`: <note>` omitted when empty; per affected occurrence on a noise class card). It reads `delegated._latest` / `_current_decision`, is display only, and changes neither what decide records nor the packet's no-verdict-keys rule.
   - When the GM later marks it, the change is a listed supersede (spec edge case: Discuss later approved).
 - **Noise class cards.** Members are the item's undecided noise items of exactly one code. This is `delegated._noise_members`, so the class rule has one home (V).
   - Card id: `noise-class:<class>`.
@@ -148,6 +149,8 @@ So "which decisions came from packet P" is a filter on `request_id`. `review his
 - **A sign-off whose draft bytes no longer match** gives the `npc_signoff_blocker` code, for example `REVIEW_NPC_SIGNOFF_STALE`. This applies to Approve, which is the only verdict that signs. A Reject or Discuss on a sign-off records no signature, so it needs the echo check only.
 - **A member whose item moved** gives `REVIEW_CARDS_MEMBER_STALE`.
 - **A member whose source custody is stale** gives `REVIEW_STALE_CUSTODY`, with the spec 042 detail. Planning calls `custody.stale_report` over the members to be recorded. Stale cards drop out of the batch, so `submit_decisions`' pre-check then passes.
+
+**Export refusal, GM ruling (2026-11-12): keep.** `REVIEW_CARDS_ACTION_UNKNOWN` refuses the whole export when an undecided item's action has no `DISPOSITION_FOR` row; nothing is written. Silently omitting the item, or carding it with no way to decide it, would hide it from the GM.
 
 **Rationale**: a structural error means the page or file is wrong, so trusting any of it is unsafe (US2). A stale draft means the GM's other rulings are still valid, and the GM confirmed the plan that lists the refusal (R8). This matches US2 scenario 5 ("refuses that sign-off and names the draft").
 

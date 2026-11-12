@@ -177,13 +177,13 @@ description: "Task list for 043 review card contract (#643 slice 1, #655)"
 
 **Independent Test**: apply twice, which gives no changes. Change one verdict and re-apply, which gives exactly that card's members as supersedes.
 
-- [ ] T023 [US3] In `tests/test_summary_native_review_cards.py`, write these tests:
+- [X] T023 [US3] In `tests/test_summary_native_review_cards.py`, write these tests:
   - `test_us3_s1_reapply_is_noop`: write, re-plan, `counts.noop == previous record count`; `--write` gives `saved == []`. The event count is unchanged (SC-003).
   - `test_us3_s2_changed_verdict_supersedes_and_keeps_history`: approve, then change the file to reject and re-apply. Exactly that card's members are listed as `supersede`, with `previous.verdict == "approve"`. The new events carry `supersedes_event`, and both events remain on disk.
   - `test_us3_s3_cli_decision_after_export_is_diffed`: a `review decide` with the same verdict and disposition but a different note gives `supersede`. With an identical verdict, disposition and `card_note` text it gives `noop`.
   - `test_us3_discuss_then_approve_supersedes`.
   - `test_us3_later_packet_same_verdict_is_noop`: export a second packet after some decisions, and apply the same verdicts. They are `noop`, with no spurious supersede, because the note carries no packet id (R5).
-- [ ] T024 [US3] Fix any gaps T023 exposes in `cards.expand` and `plan_decide` (the note comparison and the supersede revision).
+- [X] T024 [US3] Fix any gaps T023 exposes in `cards.expand` and `plan_decide` (the note comparison and the supersede revision).
 
 ---
 

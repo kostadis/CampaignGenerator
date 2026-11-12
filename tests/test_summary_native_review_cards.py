@@ -687,3 +687,154 @@ def test_us2_unsaved_page_refused(noise_cards):
     packet = _load_packet(root, RID, env["data"]["packetId"])
     path = _decisions(root, packet, {"mixed": ("approve", "")}, savedAt="")
     _refuses_whole_file(root, RID, path, "REVIEW_CARDS_INVALID")
+
+
+# =====================================================================================
+# User Story 3 (spec 043): re-saving keeps every mark and shows every change
+# =====================================================================================
+
+def _cli_decide(root, item_id, verdict, note, *, expected=0, request="cli-x"):
+    """A CLI-path ``save_decisions`` for one live item of the noise_cards review."""
+    from pipelines.summary_native.review.store import save_decisions
+    manifest, items, _events_, _stale = read_review_state(root, RID)
+    item = next(i for i in items if i.item_id == item_id)
+    save_decisions(root, RID, {
+        "version": 1, "request_id": request, "review_generation": manifest.generation, "reviewer": "CLI",
+        "decisions": [{"item_id": item.item_id, "item_revision": item.revision, "review_digest": item.review_digest,
+                       "expected_decision_revision": expected, "verdict": verdict,
+                       "disposition": cards.DISPOSITION_FOR[(item.proposed_action.action, verdict)], "note": note}]})
+
+
+def _fresh_packet(root):
+    rc, env = _export(root, RID)
+    assert rc == 0, env
+    return _load_packet(root, RID, env["data"]["packetId"])
+
+
+def test_us3_s1_reapply_is_noop(noise_cards):
+    root, _items = noise_cards
+    packet = _fresh_packet(root)
+    path = _decisions(root, packet, {"noise-class:label": ("approve", "ok"), "mixed": ("reject", "no")})
+    _plan, (rc, saved) = _plan_then_write(root, RID, path)
+    assert rc == 0 and sum(len(b["events"]) for b in saved["data"]["saved"]) == 4
+    n_events = len(_events(root, RID))
+    plan2, (rc, saved2) = _plan_then_write(root, RID, path)
+    assert plan2["data"]["counts"] == {"record": 0, "supersede": 0, "noop": 4, "unmarked": 1, "refused": 0}
+    assert rc == 0 and saved2["data"]["saved"] == [] and len(_events(root, RID)) == n_events
+
+
+def test_us3_s2_changed_verdict_supersedes_and_keeps_history(noise_cards):
+    root, _items = noise_cards
+    packet = _fresh_packet(root)
+    ids = [m["itemId"] for c in packet["cards"] if c["id"] == "noise-class:label" for m in c["members"]]
+    _plan, (rc, _saved) = _plan_then_write(root, RID, _decisions(root, packet, {"noise-class:label": ("approve", "ok")}))
+    assert rc == 0
+    first = {e["item_id"]: e for e in _events(root, RID) if e["item_id"] in ids}
+    path = _decisions(root, packet, {"noise-class:label": ("reject", "not noise")}, name="d2.json")
+    plan, (rc, saved) = _plan_then_write(root, RID, path)
+    assert rc == 0, saved
+    changed = [m for c in plan["data"]["cards"] for m in c["members"] if m["category"] == "supersede"]
+    assert sorted(m["itemId"] for m in changed) == sorted(ids)
+    assert all(m["previous"]["verdict"] == "approve" for m in changed)
+    assert plan["data"]["counts"]["supersede"] == len(ids) and plan["data"]["counts"]["record"] == 0
+    events = _events(root, RID)
+    for item_id in ids:
+        mine = sorted((e for e in events if e["item_id"] == item_id), key=lambda e: e["decision_revision"])
+        assert [e["verdict"] for e in mine] == ["approve", "reject"]
+        assert mine[1]["supersedes_event"] == first[item_id]["event_id"]
+        assert mine[0] == first[item_id]
+
+
+def test_us3_s3_cli_decision_after_export_is_diffed(noise_cards):
+    root, _items = noise_cards
+    packet = _fresh_packet(root)
+    _cli_decide(root, "mixed", "approve", "my own words")
+    path = _decisions(root, packet, {"mixed": ("approve", "gm")})
+    rc, plan = _decide_cmd(root, RID, path)
+    assert rc == 0, plan
+    (member,) = _by_card(plan)["mixed"]["members"]
+    assert member["category"] == "supersede" and member["previous"]["note"] == "my own words"
+    assert member["decision"]["expected_decision_revision"] == 1
+    # Same verdict, disposition and note text: noop.
+    _cli_decide(root, "mixed", "approve", cards.card_note("mixed", "gm"), expected=1, request="cli-y")
+    rc, plan = _decide_cmd(root, RID, path)
+    assert rc == 0 and _by_card(plan)["mixed"]["members"][0]["category"] == "noop"
+    assert plan["data"]["counts"]["supersede"] == 0
+
+
+def test_us3_discuss_then_approve_supersedes(noise_cards):
+    root, _items = noise_cards
+    packet = _fresh_packet(root)
+    _plan, (rc, _s) = _plan_then_write(root, RID, _decisions(root, packet, {"mixed": ("discuss", "later")}))
+    assert rc == 0
+    path = _decisions(root, packet, {"mixed": ("approve", "ok now")}, name="d2.json")
+    plan, (rc, saved) = _plan_then_write(root, RID, path)
+    assert rc == 0, saved
+    (member,) = _by_card(plan)["mixed"]["members"]
+    assert member["category"] == "supersede" and member["previous"]["verdict"] == "discuss"
+    mine = sorted((e for e in _events(root, RID) if e["item_id"] == "mixed"), key=lambda e: e["decision_revision"])
+    assert [e["verdict"] for e in mine] == ["discuss", "approve"]
+
+
+def test_us3_later_packet_same_verdict_is_noop(noise_cards):
+    root, _items = noise_cards
+    first = _fresh_packet(root)
+    _plan, (rc, _s) = _plan_then_write(root, RID, _decisions(root, first, {"mixed": ("discuss", "same")}))
+    assert rc == 0
+    # A Discuss is not a ruling, so a second packet after the decision offers the card again.
+    second = _fresh_packet(root)
+    assert second["packetId"] != first["packetId"]
+    assert "mixed" in [c["id"] for c in second["cards"]]
+    n_events = len(_events(root, RID))
+    plan, (rc, saved) = _plan_then_write(root, RID, _decisions(root, second, {"mixed": ("discuss", "same")}, name="d2.json"))
+    assert rc == 0 and saved["data"]["saved"] == []
+    (member,) = _by_card(plan)["mixed"]["members"]
+    assert member["category"] == "noop"
+    assert plan["data"]["counts"]["supersede"] == 0 and len(_events(root, RID)) == n_events
+    note = [e for e in _events(root, RID) if e["item_id"] == "mixed"][0]["note"]
+    assert first["packetId"] not in note and second["packetId"] not in note
+
+
+def test_reoffered_discuss_card_shows_previous_note(noise_cards):
+    root, _items = noise_cards
+    first = _fresh_packet(root)
+    assert "Previously discussed" not in json.dumps(first)
+    marks = {"mixed": ("discuss", "ask the GM"), "noise-class:label": ("discuss", "")}
+    _plan, (rc, _s) = _plan_then_write(root, RID, _decisions(root, first, marks))
+    assert rc == 0
+    second = _fresh_packet(root)
+    by_id = {c["id"]: c for c in second["cards"]}
+    assert "Previously discussed by GM: ask the GM" in by_id["mixed"]["body"].splitlines()
+    label = by_id["noise-class:label"]["body"]
+    assert label.count("Previously discussed by GM") == 3  # one per affected occurrence
+    assert "Previously discussed by GM:" not in label  # empty note: no colon
+    assert "Previously discussed" not in by_id["noise-class:idiom"]["body"]
+    # Display only: the packet still has no verdict-like KEYS, and decide records exactly what it did.
+    def keys(v):
+        if isinstance(v, dict):
+            for k, x in v.items():
+                yield k
+                yield from keys(x)
+        elif isinstance(v, list):
+            for x in v:
+                yield from keys(x)
+    assert not {"verdict", "guess", "decision", "recommendation"} & set(keys(second))
+    plan, (rc, saved) = _plan_then_write(root, RID, _decisions(root, second, marks, name="d2.json"))
+    assert plan["data"]["counts"]["noop"] == 4 and saved["data"]["saved"] == []
+    # An approve withdraws nothing, but a ruled card no longer shows the line.
+    _plan, (rc, _s) = _plan_then_write(root, RID, _decisions(root, second, {"mixed": ("approve", "ok")}, name="d3.json"))
+    third = _fresh_packet(root)
+    assert "mixed" not in [c["id"] for c in third["cards"]]
+
+
+def test_export_refuses_unknown_action(campaign):
+    root, cid, summary_sha, _d, sources = campaign
+    odd = _item(cid, "odd-review", "odd-1", summary_sha=summary_sha, action={"action": "made_up_action"})
+    _create(root, cid, "odd-review", [odd], sources)
+    before = _tree(root, "odd-review")
+    rc, env = _export(root, "odd-review")
+    assert rc == 2 and env["code"] == "REVIEW_CARDS_ACTION_UNKNOWN", env
+    assert "odd-1" in env["message"] and "made_up_action" in env["message"]
+    assert not (root / "docs/reviews/odd-review/packets").exists() or not list(
+        (root / "docs/reviews/odd-review/packets").glob("*"))
+    assert _tree(root, "odd-review") == before

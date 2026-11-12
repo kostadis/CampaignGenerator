@@ -94,3 +94,17 @@ Notes: `test_us2_member_item_moved_refused_per_card` presents the moved item by 
 `store.read_review_state`, because `append_review_items` bumps the generation, which refuses the whole packet
 (`REVIEW_CARDS_PACKET_STALE`) before any per-member check can run; a member can therefore only move per-card in
 the same generation through a hand-written store edit.
+
+## Phase 5 (T023-T024) and GM rulings of 2026-11-12
+
+T023: the five US3 tests were written against the Phase 3 code. All five passed once three bugs in the tests
+themselves were fixed (the first run's failures: `saved` is per batch, and event files sort by id, not by
+decision revision); no code gap was exposed, so T024 changed no `expand`/`plan_decide` logic.
+
+GM rulings: (1) `REVIEW_CARDS_ACTION_UNKNOWN` kept (contracts/cards-cli.md, research R7;
+`test_export_refuses_unknown_action`). (2) A re-offered Discuss shows `Previously discussed by <reviewer>: <note>`
+in `body` (data-model Card.body, research R2; `test_reoffered_discuss_card_shows_previous_note`). A sign-off card
+puts the line before the draft text, so its `body` is then not byte-identical to the draft (note for T026).
+
+Run (pinned PYTHONPATH, basetemp pytest-043b): cards + action_table + delegated + noise_cli + decisions + no_llm +
+item_custody = **158 passed** (cards file alone: 41 passed).
