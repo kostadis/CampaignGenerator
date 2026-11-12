@@ -135,6 +135,9 @@ def test_sc005b_seer_summary_stales_only_naming_npcs(replay):
         dep = base.dependency_sets[item.item_id]
         if dep.evidence_basis == "not_applicable":
             continue
+        if dep.summary_basis == "corpus":  # corpus-dependent findings rest on every summary (042 review fix 3)
+            expect.add(dep.npc_key)
+            continue
         if dep.summary_basis == "fallback_all_summaries":
             fallback_npcs.add(dep.npc_key)
             expect.add(dep.npc_key)

@@ -18,8 +18,10 @@ from pipelines.summary_native import noise
 from pipelines.summary_native.review import custody
 from pipelines.summary_native.review.store import (
     ReviewStoreError,
+    _refuse_stale_custody,
     _validate_action_decision,
     read_review_state,
+    read_snapshot,
     save_decisions,
 )
 
@@ -368,6 +370,14 @@ def submit_decisions(root: Path, review_id: str, *, generation: int, reviewer: s
     interrupted write replays committed batches as idempotent no-ops.
     """
     size = load_campaign_review_config(root).max_batch_decisions
+    # Spec 042: every submitted item is checked BEFORE the first batch is written, so one stale
+    # item in a late batch cannot leave earlier batches saved. ``save_decisions`` keeps its own
+    # per-batch check (defence in depth, and the race between this check and a write).
+    manifest, cust, snapshot_items = read_snapshot(root, review_id)
+    known = {item.item_id for item in snapshot_items}
+    submitted = [d["item_id"] for d in decisions
+                 if isinstance(d, dict) and isinstance(d.get("item_id"), str) and d["item_id"] in known]
+    _refuse_stale_custody(root, manifest, cust, snapshot_items, submitted, operation="decide")
     results = []
     for start in range(0, len(decisions), size):
         batch = decisions[start:start + size]

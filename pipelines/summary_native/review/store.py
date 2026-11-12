@@ -775,7 +775,15 @@ def show_review(campaign_dir: Path, review_id: str, *, item_id: str | None = Non
 
 
 def review_status(campaign_dir: Path, review_id: str) -> dict:
-    manifest,items,events,stale_ids=read_review_state(campaign_dir,review_id)
+    root = Path(campaign_dir).resolve()
+    # One shared lock covers items, manifest AND custody, so they describe the same generation.
+    with authority_lock(root, exclusive=False, create=False):
+        manifest,items,events,stale_ids=read_review_state(root,review_id,_already_locked=True)
+        _m, source_custody, _i = read_snapshot(root, review_id, _already_locked=True)
+        # Spec 042: which items rest on a file that has changed since the review was built, from the
+        # current bytes. Read-only; a path that cannot be read safely is reported ``unreadable``.
+        report = review_custody.stale_report(manifest.kind, source_custody, items, None,
+                                             review_custody.disk_probe(root, lenient=True))
     current = {}
     for event in events:
         if event.get("item_id"): current[event["item_id"]] = event
@@ -789,11 +797,6 @@ def review_status(campaign_dir: Path, review_id: str) -> dict:
             key={"approve":"approved","reject":"rejected","discuss":"discussed"}[event["verdict"]]; counts[key] += 1
             if key != "approved": counts["pending"] += 1
     status = {"review_id":review_id,"generation":manifest.generation,"item_count":len(items),"counts":counts}
-    # Spec 042: which items rest on a file that has changed since the review was built, from the
-    # current bytes. Read-only; the counts above are untouched.
-    _m, source_custody, _i = read_snapshot(Path(campaign_dir).resolve(), review_id)
-    report = review_custody.stale_report(manifest.kind, source_custody, items, None,
-                                         review_custody.disk_probe(Path(campaign_dir).resolve()))
     status.update(review_custody.stale_by_npc(report, items))
     return status
 
@@ -820,8 +823,20 @@ def refresh_review(campaign_dir: Path, review_id: str, *, expected_generation: i
         context_path = _review_dir(root, review_id) / "sources" / f"{manifest.source_manifest.generation}-contexts.json"
         old_contexts = parse_json_strict(_reject_symlinks(root, context_path).read_bytes()).get("items", {}) if context_path.exists() else {}
         new_contexts = _item_contexts(root, items)
+        # An NPC item also rests on files it does not bind (its evidence, the summaries that evidence
+        # names). The occurrence-context rule below may only rescue a change in a file the item
+        # ITSELF binds; a change in any other real dependency (draft / evidence / summary), per the one
+        # custody seam, is stale. Files the seam includes only as a conservative guess -- an ``other``
+        # -role source, a non-NPC item's "unbound sources" -- stay preserved: a refresh is exactly
+        # what brings the decide gate current for those.
+        disk_report=review_custody.stale_report(manifest.kind,custody,items,None,review_custody.disk_probe(root))
+        bound_paths={item.item_id:{b.path for b in item.input_bindings} for item in items}
+        unbound_changed={item_id for item_id,files in disk_report.stale.items()
+                         if disk_report.dependency_sets[item_id].summary_basis!="unbound_sources"
+                         and any(c.path not in bound_paths.get(item_id,set()) and c.role is not review_custody.SourceRole.other
+                                 for c in files)}
         for item in items:
-            unchanged=not rules_changed and item.item_id not in prior_stale
+            unchanged=not rules_changed and item.item_id not in prior_stale and item.item_id not in unbound_changed
             for binding in item.input_bindings:
                 source=source_by_id.get(binding.source_id)
                 if source is None: unchanged=False;break

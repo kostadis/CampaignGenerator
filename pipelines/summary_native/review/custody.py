@@ -13,8 +13,11 @@ of the NPC's evidence file, and that file is parsed only while its bytes still e
 what custody recorded (research R2).
 
 Public surface: ``role_of``, ``FileState``, ``disk_probe``, ``evidence_summary_paths``,
-``npc_evidence``, ``dependency_sets``, ``stale_report``, ``refusal_detail``,
-``refusal_message``, ``refusal_text_lines``, ``stale_by_npc``, ``remedy``, ``npc_label``.
+``dependency_sets``, ``stale_report``, ``refusal_detail``, ``refusal_message``,
+``refusal_text_lines``, ``stale_by_npc``, ``remedy``, ``npc_label``.
+
+(``DiskProbe.with_overrides`` / ``OverrideProbe`` are a test and replay helper -- they simulate a
+changed file without writing one -- and are not part of what the store or publish call.)
 """
 
 from __future__ import annotations
@@ -72,22 +75,33 @@ class DiskProbe:
 
     Callable as ``probe(source) -> FileState``; ``probe.read(source)`` returns the bytes the
     state was decided on (``None`` unless the file was readable). A symlink anywhere in the
-    path raises ``REVIEW_PATH`` (a security refusal, not a staleness state).
+    path raises ``REVIEW_PATH`` (a security refusal, not a staleness state) -- unless the probe is
+    ``lenient`` (the read-only status view), where it is reported as ``unreadable`` instead so one
+    odd path cannot hide every other file's state. The root is resolved here: a relative campaign
+    dir would otherwise be joined onto itself.
     """
 
-    def __init__(self, root: Path):
-        self.root = Path(root)
+    def __init__(self, root: Path, *, lenient: bool = False):
+        self.root = Path(root).resolve()
+        self.lenient = lenient
         self._seen: dict[str, tuple[str | None, bytes | None]] = {}  # path -> (digest | None, bytes | None)
         self._failed: dict[str, FileState] = {}
 
     def _load(self, path: str) -> tuple[str | None, bytes | None]:
         if path in self._seen:
             return self._seen[path]
-        from pipelines.summary_native.review.store import _reject_symlinks  # lazy: store imports this module
+        from pipelines.summary_native.review.store import ReviewStoreError, _reject_symlinks  # lazy: store imports this module
 
-        absolute = _reject_symlinks(self.root, self.root / path)
         entry: tuple[str | None, bytes | None]
         try:
+            try:
+                absolute = _reject_symlinks(self.root, self.root / path)
+            except ReviewStoreError:
+                if not self.lenient:
+                    raise
+                self._failed[path] = FileState.unreadable
+                self._seen[path] = entry = (None, None)
+                return entry
             if not absolute.is_file():
                 self._failed[path] = FileState.missing
                 entry = (None, None)
@@ -110,7 +124,7 @@ class DiskProbe:
         return self._load(source.path)[1]
 
     def with_overrides(self, overrides: dict[str, FileState]) -> "OverrideProbe":
-        """A probe that reports ``overrides[path]`` instead of the disk, for simulation (no writes)."""
+        """Test/replay helper: a probe that reports ``overrides[path]`` instead of the disk (no writes)."""
         return OverrideProbe(self, overrides)
 
 
@@ -133,8 +147,8 @@ class OverrideProbe:
 StateProvider = Callable[[SourceFile], FileState]
 
 
-def disk_probe(root: Path) -> DiskProbe:
-    return DiskProbe(root)
+def disk_probe(root: Path, *, lenient: bool = False) -> DiskProbe:
+    return DiskProbe(root, lenient=lenient)
 
 
 # ── value objects ──────────────────────────────────────────────────────────
@@ -154,7 +168,7 @@ class DependencySet:
     npc_key: str
     source_ids: frozenset[str]
     evidence_basis: str   # bound | sibling | layout | fallback_all_evidence | not_applicable
-    summary_basis: str    # evidence_sources | fallback_all_summaries | unbound_sources
+    summary_basis: str    # evidence_sources | fallback_all_summaries | corpus | unbound_sources
 
 
 @dataclass(frozen=True)
@@ -276,7 +290,24 @@ class _Index:
         self.unbound = frozenset(sid for sid in self.by_id if sid not in bound)
 
     def bound_ids(self, item: ReviewItem) -> set[str]:
-        return {b.source_id for b in item.input_bindings if b.source_id in self.by_id}
+        """The custody sources an item binds. A binding is never silently dropped.
+
+        Resolved by ``source_id``; failing that by ``path`` (custody and bindings can disagree on
+        an id, never on where the file lives); failing both it WIDENS to every source of the
+        binding's role (every source, for an unknown role) -- an unresolvable binding must not
+        shrink the set the item rests on.
+        """
+        out: set[str] = set()
+        for binding in item.input_bindings:
+            if binding.source_id in self.by_id:
+                out.add(binding.source_id)
+            elif binding.path in self.by_path:
+                out.add(self.by_path[binding.path].source_id)
+            else:
+                role = role_of(binding.source_id)
+                widened = set() if role is SourceRole.other else set(self.by_role[role])
+                out |= widened or set(self.by_id)
+        return out
 
     def draft_paths(self, item: ReviewItem) -> list[str]:
         paths = [b.path for b in item.input_bindings
@@ -308,15 +339,31 @@ class _Index:
         return frozenset(union), basis
 
 
-def npc_evidence(item: ReviewItem, items: Sequence[ReviewItem],
-                 custody: SourceCustodyGeneration) -> tuple[frozenset[str], str]:
-    """Which evidence sources a draft item rests on (R6): ``(source_ids, basis)``.
+# A finding whose verdict was computed against the whole in-range corpus (not just this NPC's
+# evidence) rests on every summary: ``invalid`` / ``outside-evidence`` are decided by corpus
+# membership of the cited scene, and ``not-found`` carries "(verbatim in the summaries ...)" -- a
+# summary that gains or loses the quote changes its message. Sign-off items are NOT in this set:
+# their ``mechanical_verdict`` is recorded as ``pass``, and a pass cannot be flipped by a summary
+# the evidence does not name (a cited target resolves into an evidence-named summary).
+CORPUS_DEPENDENT_CODES = frozenset({"invalid", "outside-evidence", "not-found"})
+_CORPUS_PHRASES = ("in-range corpus", "in the summaries", "the corpus")
+SIGNOFF_ACTION = "signoff_npc_draft"
 
-    The union of (a) evidence the item binds, (b) evidence bound by another item on the same
-    draft, (c) the ``<range>/evidence/<stem>.md`` twin of a bound ``<range>/draft/<stem>.md`` if
-    custody holds it. A union can only over-include. Empty union: every evidence-role source.
-    """
-    return _Index(custody, items).evidence_of(item)
+
+def corpus_dependent(item: ReviewItem) -> bool:
+    """Whether a finding item's verdict depends on the whole summaries corpus (see above)."""
+    if item.proposed_action.action == SIGNOFF_ACTION:
+        return False
+    for diagnostic in item.diagnostics:
+        if str(diagnostic.legacy_code) in CORPUS_DEPENDENT_CODES:
+            return True
+        # The verifier's own words only (message and its ``detail``), never the draft's quoted
+        # ``text``: a dossier line saying "not established in the summaries" is prose, not a verdict.
+        detail = diagnostic.details.get("detail") if isinstance(diagnostic.details, dict) else None
+        text = f"{diagnostic.message} {detail or ''}".casefold()
+        if any(phrase in text for phrase in _CORPUS_PHRASES):
+            return True
+    return False
 
 
 def _kind_value(kind) -> str:
@@ -373,7 +420,9 @@ def dependency_sets(kind, custody: SourceCustodyGeneration, items: Sequence[Revi
                         s_basis = "fallback_all_summaries"
                         break
                     summaries |= named
-            if s_basis == "fallback_all_summaries":
+            if s_basis != "fallback_all_summaries" and corpus_dependent(item):
+                s_basis = "corpus"
+            if s_basis in ("fallback_all_summaries", "corpus"):
                 summaries = set(index.by_role[SourceRole.summary])
             ids = bound | evidence | summaries | other
         else:

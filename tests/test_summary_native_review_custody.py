@@ -150,36 +150,43 @@ def _renamed(cust, path, new="docs/elsewhere/renamed.md"):
         s.model_copy(update={"path": new}) if s.path == path else s for s in cust.sources)})
 
 
+def _npc_evidence(item, items, cust):
+    """``(evidence source ids, basis)`` of one item, read off its dependency set."""
+    dep = custody.dependency_sets(KIND, cust, items, [item.item_id], lambda _source: FileState.current)[item.item_id]
+    ids = {s for s in dep.source_ids if custody.role_of(s) is SourceRole.evidence}
+    return ids, dep.evidence_basis
+
+
 def test_npc_evidence_bound(ro):
     cust, items = _ctx(ro)
     presentation = ro.findings("a")[0]
-    ids, basis = custody.npc_evidence(presentation, items, cust)
+    ids, basis = _npc_evidence(presentation, items, cust)
     assert ids == {_evid_id(cust, ro, "a")} and basis == "bound"
 
 
 def test_npc_evidence_sibling_only(ro):
     cust, items = _ctx(ro)
-    ids, basis = custody.npc_evidence(ro.signoff("a"), items, cust)  # signoff binds the draft only
+    ids, basis = _npc_evidence(ro.signoff("a"), items, cust)  # signoff binds the draft only
     assert ids == {_evid_id(cust, ro, "a")} and basis == "sibling"
 
 
 def test_npc_evidence_layout_only_when_no_sibling(ro):
     cust, items = _ctx(ro)
-    ids, basis = custody.npc_evidence(ro.signoff("c"), items, cust)  # C raised no finding
+    ids, basis = _npc_evidence(ro.signoff("c"), items, cust)  # C raised no finding
     assert ids == {_evid_id(cust, ro, "c")} and basis == "layout"
 
 
 def test_npc_evidence_layout_path_not_in_custody_plus_sibling(ro):
     cust, items = _ctx(ro)
     moved = _renamed(cust, _p(ro, ro.evidence("a")))
-    ids, basis = custody.npc_evidence(ro.signoff("a"), items, moved)
+    ids, basis = _npc_evidence(ro.signoff("a"), items, moved)
     assert ids == {_evid_id(cust, ro, "a")} and basis == "sibling"
 
 
 def test_npc_evidence_neither_means_all_evidence_role_sources(ro):
     cust, items = _ctx(ro)
     moved = _renamed(cust, _p(ro, ro.evidence("c")))
-    ids, basis = custody.npc_evidence(ro.signoff("c"), items, moved)
+    ids, basis = _npc_evidence(ro.signoff("c"), items, moved)
     every_evidence = {s.source_id for s in cust.sources if custody.role_of(s.source_id) is SourceRole.evidence}
     assert ids == every_evidence and basis == "fallback_all_evidence"
 

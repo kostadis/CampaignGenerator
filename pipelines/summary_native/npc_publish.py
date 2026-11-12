@@ -339,26 +339,27 @@ def signoff_freshness(root: Path, draft_path: Path, draft_sha256: str, *,
             and binding.custody_sha256 == draft_sha256
         ):
             continue
-        # The record is this draft's exact approval; now only custody can make it stale.
+        # The record is this draft's exact approval; now only custody can make it stale. The verdict
+        # is the one ``custody.stale_report`` gives (so an item with no dependency is stale, and
+        # store, refresh and publish cannot disagree); a graph only ever ADDS paths.
         try:
-            dep = review_custody.dependency_sets(
-                manifest.kind, custody, items, [item.item_id], probe).get(item.item_id)
-            by_id = {s.source_id: s for s in custody.sources}
-            ids = set(dep.source_ids) if dep is not None else set(by_id)
+            report = review_custody.stale_report(
+                manifest.kind, custody, items, [item.item_id], probe)
+            changed_map = {c.path: c.state.value for c in report.stale.get(item.item_id, ())}
             by_path = {s.path: s for s in custody.sources}
-            ids |= {by_path[k].source_id for k in graph_paths if k in by_path}  # graph only adds
-            changed = []
-            for sid in ids:
-                src = by_id[sid]
-                state = probe(src)
-                if state is not review_custody.FileState.current:
-                    changed.append((src.path, state.value))
-            changed.sort()
+            for k in graph_paths:  # graph only adds
+                src = by_path.get(k)
+                if src is not None:
+                    state = probe(src)
+                    if state is not review_custody.FileState.current:
+                        changed_map[src.path] = state.value
+            changed = sorted(changed_map.items())
+            custody_stale = item.item_id in report.stale
         except (OSError, ValueError):
             continue
         graph_stale = (dependency_graph is not None and graph_item is not None
                        and dependency_graph.item_stale(graph_item, current_digests or {}))
-        if not changed and record.item_id not in stale and not graph_stale:
+        if not custody_stale and not changed and record.item_id not in stale and not graph_stale:
             return SignoffFreshness(True)
         if stale_best is None or record.recorded_at >= stale_best[0]:
             stale_best = (record.recorded_at, tuple(changed), record.review_id, manifest.generation)
@@ -522,22 +523,17 @@ def plan_publish(
     Raises ``PublishRefusal`` for no selection, a bad ``source`` or an unreadable log.
     Writes nothing.
     """
-    root, npc_range_dir = Path(root), Path(npc_range_dir)
+    root, npc_range_dir = Path(root).resolve(), Path(npc_range_dir).resolve()
     probe = None
 
     def _default_checker(path: Path, digest: str) -> "bool | SignoffFreshness":
-        # The bool function stays the seam (callers patch it); only when it says "not current" is the
-        # richer answer (which custody files changed) computed, on one probe shared by the call.
+        # Freshness is computed ONCE per NPC, on one probe shared by the whole call. A supplied
+        # ``_signoff_checker`` (the seam) never reaches here: its answer is final.
         nonlocal probe
-        if dependency_graph is None:
-            if _current_draft_signoff(root, path, digest):
-                return True
-            graph_kw: dict = {}
-        else:
+        graph_kw: dict = {}
+        if dependency_graph is not None:
             graph_kw = dict(dependency_graph=dependency_graph, graph_item=Path(path).stem,
                             current_digests=current_digests)
-            if _current_draft_signoff(root, path, digest, **graph_kw):
-                return True
         if probe is None:
             from pipelines.summary_native.review import custody as review_custody
             probe = review_custody.disk_probe(root)
@@ -744,7 +740,7 @@ def publish(
     ``dependency_graph``/``current_digests`` scope sign-off freshness to each item's own
     dependencies (see ``_current_draft_signoff``; items are keyed by draft stem).
     """
-    root, npc_range_dir = Path(root), Path(npc_range_dir)
+    root, npc_range_dir = Path(root).resolve(), Path(npc_range_dir).resolve()
 
     def write() -> list[PublishResult]:
         clock = now or (lambda: datetime.now(timezone.utc))

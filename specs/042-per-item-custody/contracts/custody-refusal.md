@@ -88,9 +88,12 @@ The status is 409. The body is:
  "message": "Source files changed since this review was built. Nothing was saved.",
  "detail": {"changed_files": [{"path": "…", "state": "changed", "items": [{"item_id": "…", "npc": "…"}]}],
             "stale_items": ["npc-…"],
-            "remedy": "summary_native review refresh … --expected-generation 5"}}
+            "remedy": "summary_native review refresh … --expected-generation 5",
+            "truncated": {"changed_files": 4, "items": 12, "stale_items": 30}}}
 ```
 
-`detail` is **rebuilt from a whitelist**. Only the keys above are kept, values must be `str` or `null`, strings are capped at 512 characters, and lists at the configured `max_batch_decisions`. Any other shape drops `detail` entirely, and the rest of the body is unchanged. The other stale codes keep their current body.
+`truncated` is present only when a cap below left something out, and names how many entries were omitted: `changed_files` (files beyond the cap), `items` (items beyond the cap inside the files that are shown) and `stale_items`. Its values are non-negative integers; a key is absent when nothing was omitted of that kind.
 
-`viewer.js` renders `detail.changed_files` as a list under `#save-state` and shows `#reload`.
+`detail` is **rebuilt from a whitelist**. Only the keys above are kept, values must be `str` or `null` (except `truncated`'s integer counts, which the service computes), strings are capped at 512 characters, and lists at the configured `max_batch_decisions`. Any other shape drops `detail` entirely, and the rest of the body is unchanged. The other stale codes keep their current body.
+
+`viewer.js` renders `detail.changed_files` as a list under `#save-state` and shows `#reload`; when `detail.truncated` is present it adds an "and N more" line for each omitted kind.

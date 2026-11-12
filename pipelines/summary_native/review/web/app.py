@@ -56,8 +56,10 @@ def custody_detail(data, limit: int) -> dict | None:
     """Rebuild a ``REVIEW_STALE_CUSTODY`` detail from the contract's whitelist, or ``None``.
 
     Kept: ``changed_files[].{path,state,items[].{item_id,npc}}``, ``stale_items[]`` (item ids) and
-    ``remedy.command``. Anything of an unexpected shape -- a key the contract does not name, a
-    non-string value, a non-list -- drops the whole detail rather than passing it on.
+    ``remedy.command``. ``truncated`` ({changed_files, items, stale_items}: how many entries the list
+    caps left out) appears only when something was left out. Anything of an unexpected shape -- a key
+    the contract does not name, a non-string value, a non-list -- drops the whole detail rather than
+    passing it on.
     """
     top = {"version", "operation", "review_id", "review_generation", "changed_files",
            "stale_items", "by_npc", "remedy"}
@@ -67,6 +69,7 @@ def custody_detail(data, limit: int) -> dict | None:
     if not isinstance(files, list) or not isinstance(stale, list) or not isinstance(remedy, dict):
         return None
     shaped_files = []
+    omitted_items = 0
     for entry in files[:limit]:
         if not isinstance(entry, dict) or not set(entry) <= {"path", "source_id", "role", "state", "items"}:
             return None
@@ -81,6 +84,7 @@ def custody_detail(data, limit: int) -> dict | None:
             if _REJECT in (item_id, npc):
                 return None
             shaped_items.append({"item_id": item_id, "npc": npc})
+        omitted_items += max(0, len(items) - limit)
         shaped_files.append({"path": path, "state": state, "items": shaped_items})
     stale_ids = []
     for entry in stale[:limit]:
@@ -93,7 +97,15 @@ def custody_detail(data, limit: int) -> dict | None:
     command = _plain(remedy.get("command"))
     if command is _REJECT or not set(remedy) <= {"command", "note"}:
         return None
-    return {"changed_files": shaped_files, "stale_items": stale_ids, "remedy": command}
+    shaped = {"changed_files": shaped_files, "stale_items": stale_ids, "remedy": command}
+    truncated = {key: count for key, count in (
+        ("changed_files", len(files) - len(shaped_files)),
+        ("items", omitted_items),
+        ("stale_items", len(stale) - len(stale_ids)),
+    ) if count > 0}
+    if truncated:
+        shaped["truncated"] = truncated
+    return shaped
 
 
 def _not_found() -> JSONResponse:
