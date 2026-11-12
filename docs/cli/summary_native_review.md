@@ -173,6 +173,96 @@ Re-running either command after a write is safe: already-decided items are
 skipped, and batch request ids derive from batch content, so a retried batch is
 an idempotent replay.
 
+## Classified noise: `review noise`
+
+NPC verification resolves some number/ordinal and status occurrences on its own,
+because they are provably not story facts. Each one is recorded as **classified
+noise** with its class, the token, the one sentence it sits in, the scenes that
+sentence cites and, where relevant, the word or scene that resolved it. The same
+record is the `## Classified noise` section of `<stem>.verify.md`. The checks are
+deterministic code and make no model call. Nothing is resolved silently, and an
+occurrence that matches no class stays a normal finding. Noise is never recorded
+as a GM decision unless the GM, or the GM's standing policy, says so: an unmarked
+noise item stays undecided.
+
+Every occurrence is its own review item, with a single diagnostic whose
+`legacy_code` is `noise-<class>`. An occurrence belongs to exactly one class, the
+first that applies in this precedence order:
+
+| Class (precedence order) | Meaning | Example |
+|---|---|---|
+| `label` | a chapter or scene label, a range after a chapter word, or a leading list numeral | "In Chapter 036, Blasius warns…"; "chapters 028-064" |
+| `idiom` | an ordinal inside a curated idiom (`data/ordinal_idioms.yaml`) | "for the first time", "at first", "third person" |
+| `negated-status` | a status word in a sentence that says no status is established | "No further status (alive, dead, escaped) is established" |
+| `spelled-number` | a spelled-out number or comma-grouped number whose digit form a cited scene states | "five gold pieces" vs "5 gp"; "a thousand" vs "1,000" |
+| `synonym` | a status word supported by a reviewed synonym (`data/status_synonyms.yaml`) | "departed" vs evidence "leaves" |
+| `other-citation` | a number absent from one cited scene but present in another scene the same sentence cites | "200" is in 085.07, and the sentence cites 085.07 and 085.08 |
+
+A number in none of the scenes the sentence cites is a finding, not noise, and it
+names the token, the sentence and the cited scenes.
+
+```sh
+summary_native review noise REVIEW --campaign-dir CAMPAIGN [--json]    # read-only
+```
+
+Text mode prints one line per class, for example `label  281 (281 undecided)`.
+Classes always appear in precedence order, and an empty class shows `count: 0`.
+`--json` adds every occurrence with its `item_id`, NPC, draft line, token,
+sentence, cited scenes, `resolved_by` and current decision.
+
+`review noise decide` records one verdict on one class, as one decision per
+undecided occurrence. Like `carry` and `policy` it is a dry run by default and
+`--write` saves it, through the same validated, journaled `submit_decisions` path.
+`--class`, `--verdict {approve,reject}`, `--reviewer` and `--note` are all
+required; there is no all-classes form. `approve` records `accept_no_change` and
+`reject` records `reject_action`. The saved note is prefixed
+`GM class verdict on batch card [noise-<class>] (<n> occurrences): ` and then your
+note.
+
+```sh
+summary_native review noise decide REVIEW --class label --verdict approve \
+  --reviewer GM --note 'Chapter labels are not story facts' --campaign-dir CAMPAIGN --json          # plan
+summary_native review noise decide REVIEW --class label --verdict approve \
+  --reviewer GM --note 'Chapter labels are not story facts' --campaign-dir CAMPAIGN --json --write  # save
+```
+
+An occurrence that already has a current decision, including a Discuss, is
+skipped and listed under `already_decided`. It is never overwritten. A rejected
+class shows as GM disagreement with the classification, which is the signal to
+fix the tables or the rules.
+
+| Refusal | Cause |
+|---|---|
+| `REVIEW_NOISE_UNKNOWN_CLASS` | `--class` is not one of the six classes; the message lists them |
+| `REVIEW_NOISE_NOTHING_TO_DECIDE` | the class has no undecided occurrences |
+| `REVIEW_NOISE_NOTE_REQUIRED` | `--note` is blank |
+| `REVIEW_NOISE_NOTE_TOO_LONG` | the note, once prefixed, exceeds `max_note_chars` |
+
+**Standing auto-approve.** Because each noise item has exactly one `legacy_code`,
+`review policy` already covers a class. Name `noise-<class>` in the policy file
+and only that class is approved, each item with a note naming the policy and the
+class. A class covered by a policy gets no batch card, and its occurrences stay in
+the audit record.
+
+```yaml
+# policy.yaml
+noise-label: "chapter labels are not story facts"
+```
+
+The six `noise-*` codes (`noise-label`, `noise-idiom`, `noise-negated-status`,
+`noise-spelled-number`, `noise-synonym`, `noise-other-citation`) are a public
+contract, because policy files key on them.
+
+**On the review page.** Unless a policy covers it, the review-artifact kit shows
+one card per class listing every occurrence with its token, sentence, cited scenes
+and resolving evidence. One verdict on the card expands to one decision per
+occurrence, each carrying the provenance note above. A card left unmarked leaves
+every occurrence undecided. The app exposes the same two commands as
+`GET /{review_id}/noise` (runs `review noise REVIEW --json`) and
+`POST /{review_id}/noise/decide` with body
+`{noise_class, verdict, reviewer, note, write}` (runs `review noise decide`). The
+routes only build argv and shell out.
+
 ## Corrections and exact sign-off
 
 Source corrections reuse the reviewed-authority proposal and apply gates. An

@@ -503,6 +503,33 @@ or a moment, as long as they are verbatim in *this NPC's* evidence and cited to 
 item they come from (`— Speaker [ch 021 / moment]`). A quote anywhere in the
 summaries but outside this NPC's evidence is `not-found` — the report says so.
 
+### Reading classified noise
+
+When verification resolves a number, ordinal or status occurrence on its own, it is
+not hidden. `verify.md` gains a `## Classified noise` section: a count per class
+(`label`, `idiom`, `negated-status`, `spelled-number`, `synonym`, `other-citation`),
+one line per occurrence (`[class] line N: "token" — sentence`, plus the evidence
+that resolved it), and an accounting line per check (`number`, `status`) and in
+total:
+
+```text
+number: examined 12 = supported 5 + noise 6 + findings 1
+examined 12 = supported 5 + noise 6 + findings 1
+```
+
+Every occurrence examined lands in exactly one of the three, so the numbers sum.
+A number or status finding that remains now names the token, the one sentence it
+sits in, and the scenes that sentence cites: `draft says "40"; no scene this
+sentence cites contains it (cited: ch 085 / 085.07, ch 085 / 085.08)`. A genuinely
+unsupported number or status word still reaches you.
+
+The two tables the checks consult, `pipelines/summary_native/data/ordinal_idioms.yaml`
+and `status_synonyms.yaml`, are changed only by pull request, never by a model. The
+synonym policy is strict: a form is listed only if the evidence word entails the
+draft word on its own, so attribution-changing pairs (`died` supported by
+`killed`, but not `killed` by `died`) stay out. To audit a class or rule on it, see
+[Classified noise: `review noise`](summary_native_review.md#classified-noise-review-noise).
+
 ### "Used, not meaning"
 
 The *Manual edits* section opens with a fixed caveat:

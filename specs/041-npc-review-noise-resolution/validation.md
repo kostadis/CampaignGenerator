@@ -108,3 +108,9 @@ Result: 3 passed. Without the env var: 3 skipped.
 ### Noted for follow-up (not blocking)
 
 - A bare parenthesised chapter reference such as "(004)", with no "chapter" word before it, is not recognised as a label. It surfaced as `other-citation` in Veradaa's line. A candidate rule for a later table or label change.
+
+## T037–T038 — docs
+
+- `docs/cli/summary_native_review.md`: new section "Classified noise: `review noise`". It covers the classes, listing, `noise decide`, the refusals, standing policy, the review page and the routes. Spot-checked against the CLI and the refusal codes by the orchestrator.
+- `docs/cli/npc_dossiers_howto.md`: new subsection "Reading classified noise".
+- T038: `CLAUDE.md` is unchanged. It has no table enumerating the summary_native review verbs.
