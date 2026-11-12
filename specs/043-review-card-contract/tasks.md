@@ -214,19 +214,19 @@ description: "Task list for 043 review card contract (#643 slice 1, #655)"
 
 **Independent Test**: a Vitest component test drives export, plan and confirm, plus a refusal. Route tests assert the exact argv.
 
-- [ ] T028 [P] [US6] Extend `tests/test_summary_native_review_routes.py`. Using the existing `route_app` recorder fixture, assert:
+- [X] T028 [P] [US6] Extend `tests/test_summary_native_review_routes.py`. Using the existing `route_app` recorder fixture, assert:
   - `POST /{id}/cards/export` with `{"items":["a"],"actions":["review_presentation"]}` gives argv `review cards export ID --item a --action review_presentation --campaign-dir ROOT --json`;
   - `POST /{id}/cards/decide` with write false or true gives the argv in the contract;
   - `decisions_path` outside the campaign, or missing, is refused before any CLI run;
   - the status mapping for each new code in the contract table, using the `_refusing` helper;
   - `extra="forbid"` on both bodies.
-- [ ] T029 [US6] In `server/routers/review_routes.py`, add `CardsExportRequest` and `CardsDecideRequest` (`StrictRequest`) and the two routes, built through `_command` and `_run`. Add `REVIEW_CARDS_PACKET_UNKNOWN: 404` and `REVIEW_CARDS_PLAN_CHANGED: 409` to `_EXACT_STATUS`. Make T028 pass.
-- [ ] T030 [P] [US6] Extend `frontend/src/components/ReviewLauncher.test.ts` with the `reply()` and `fetch` stub pattern:
+- [X] T029 [US6] In `server/routers/review_routes.py`, add `CardsExportRequest` and `CardsDecideRequest` (`StrictRequest`) and the two routes, built through `_command` and `_run`. Add `REVIEW_CARDS_PACKET_UNKNOWN: 404` and `REVIEW_CARDS_PLAN_CHANGED: 409` to `_EXACT_STATUS`. Make T028 pass.
+- [X] T030 [P] [US6] Extend `frontend/src/components/ReviewLauncher.test.ts` with the `reply()` and `fetch` stub pattern:
   - `exports a card packet with filters`: enter item ids and actions, click "Export card packet", and assert the request body `{items, actions}` and that the packet id and counts are shown.
   - `plans then confirms with the plan hash`: "Confirm and record" is disabled before Plan. After Plan the grouped plan is shown, and Confirm sends `write:true, plan_sha256:<shown>`.
   - `editing the path resets confirm`.
   - `shows a refusal like the CLI`: a 409 `REVIEW_CARDS_PACKET_STALE` envelope shows its message in the note and its `data` in the result `<pre>` (US6 scenarios 1–3).
-- [ ] T031 [US6] In `frontend/src/components/ReviewLauncher.vue`, add the "Card packet" fieldset per the contract:
+- [X] T031 [US6] In `frontend/src/components/ReviewLauncher.vue`, add the "Card packet" fieldset per the contract:
   - item ids and action names inputs, split on commas or whitespace, with empty meaning no filter;
   - the Export button;
   - the decisions path and reviewer inputs;
