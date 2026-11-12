@@ -95,10 +95,10 @@ The GM publishes a batch of signed NPCs while editing a different NPC's draft, o
 
 - **A file is deleted or renamed**: it counts as changed for every item that depends on it.
 - **A change and then a change back** (the bytes are identical again): items are current again. Custody is by content, not by modification time.
-- **An item that depends on no file at all**: this cannot be produced today. If one appears, it is treated as stale and refused, never as trivially current.
+- **An item that depends on no file at all**: this cannot be produced today. If one appears, it is treated as stale and refused (reported as `no_dependency`, since there is no file to name), never as trivially current.
 - **The decision batch is a class or sentence card covering many items**: the batch is all-or-nothing, so one stale member refuses the batch and the refusal lists it.
 - **A withdrawal (retracting a decision) on a stale item**: allowed. Withdrawing never asserts anything about the sources, and blocking it would trap a wrong decision behind a refresh.
-- **Import of a decision bundle** (exported from another copy): checked per item over the bundle's items, under the same rule, instead of against the whole review's custody digest.
+- **Import of a decision bundle** (exported from another copy): per-item byte checks over the bundle's items, plus the existing whole-review digest comparison (FR-010).
 - **The review was refreshed** (generation bumped) while the GM's page was open: the existing generation check still applies and is unchanged by this feature.
 - **A summary's evidence mapping cannot be established for an item** (for example an evidence file with no recognisable chapter references): the item depends on all summaries of the review, the conservative case.
 
@@ -114,12 +114,12 @@ The GM publishes a batch of signed NPCs while editing a different NPC's draft, o
 
   **GM ruling (2026-11-12):** a summary change stales only the items of NPCs whose evidence names that summary. It does not stale every item, and summaries are not ignored.
 - **FR-004**: A draft sign-off MUST depend on that NPC's draft **and** its evidence file **and** the summaries per FR-003, even though today it records only the draft. A sign-off must never be recorded or honoured after the evidence it was verified against has changed.
-- **FR-005**: A stale-custody refusal MUST name every changed file (campaign-relative path, and whether it changed or is missing). For each file it MUST name the submitted items that depend on it and their NPC. It MUST name the command that brings them current. The refusal code stays `REVIEW_STALE_CUSTODY`, so existing callers keep working.
+- **FR-005**: A stale-custody refusal MUST name every changed file (campaign-relative path, and whether it changed or is missing). For each file it MUST name the submitted items that depend on it and their NPC. It MUST name the remedy that brings them current: `review refresh`, and, when a draft changed, a new `npc-verify` and review, because a sign-off records the exact draft bytes. The refusal code stays `REVIEW_STALE_CUSTODY`, so existing callers keep working.
 - **FR-006**: The CLI (`--json` and text) and the web review routes MUST carry the same structured refusal detail (files → items → NPC).
 - **FR-007**: `review status` MUST report, from the current files, each NPC with one or more stale items: the NPC, the count of stale items, and the changed files. It MUST report nothing stale when nothing changed. The existing counts it shows MUST be unchanged.
 - **FR-008**: Bringing stale items current MUST remain the existing explicit refresh path. This feature MUST NOT refresh, rebind or re-verify anything automatically.
 - **FR-009**: A withdrawal MUST be allowed on a stale item. It still records who withdrew and when.
-- **FR-010**: Importing a decision bundle MUST check custody per item over the bundle's items, under FR-002 and FR-003, and refuse with FR-005's detail.
+- **FR-010**: Importing a decision bundle MUST check the bytes of each bundle item's dependency set under FR-002 and FR-003, and refuse with FR-005's detail. This is **in addition to** the existing whole-review custody-digest comparison. That comparison checks two records, not files, so file edits never trip it, and it still guards against a bundle exported from a copy that has diverged. Removing it would weaken protection.
 - **FR-011**: When publishing, a sign-off MUST count as current if and only if the signed item's dependency set (FR-003/FR-004) is unchanged, whatever the state of other NPCs' sources in the same review. This applies whether or not the caller supplies a dependency graph; a supplied graph may narrow nothing below FR-003.
 - **FR-012**: A publish MUST write, for each NPC, only content bound to the exact draft bytes whose sign-off was checked. If the draft bytes differ at write time from those checked, that NPC MUST be held with a reason, and the others continue. Each NPC still gets its own outcome; a hold for one never stops another.
 - **FR-013**: A published NPC's receipt and a held NPC's reason MUST name the changed file(s) when custody is the cause.
@@ -137,11 +137,11 @@ The GM publishes a batch of signed NPCs while editing a different NPC's draft, o
 
 ### Measurable Outcomes
 
-- **SC-001**: After editing one NPC's draft in a 177-NPC review, decisions and sign-offs on every other NPC succeed with no refresh: 0 refusals for the other 176.
+- **SC-001**: After editing one NPC's draft in the 164-NPC stormgiants review, decisions and sign-offs on every other NPC succeed with no refresh: 0 refusals for the other 163.
 - **SC-002**: After editing one draft or one summary, the set of items refused equals exactly the set of items whose dependency set contains that file. There are no false refusals and **no missed refusals** (the precision rule).
-- **SC-003**: Every stale-custody refusal names at least one changed file and every stale item in the submitted batch. No refusal is left unnamed.
+- **SC-003**: Every stale-custody refusal names every stale item in the submitted batch, and for each one either the changed file(s) or `no_dependency`. No refusal is left unnamed.
 - **SC-004**: Publishing N signed NPCs after editing one of them publishes N−1 and holds 1, with the held NPC's reason naming the file.
-- **SC-005**: Replayed read-only on the stormgiants review: changing any one draft stales only that NPC's items (at most the ~5 items per NPC, against 781 today). Changing chapter 010's summary stales only the NPCs whose evidence draws on chapter 010.
+- **SC-005**: Replayed read-only on the stormgiants review: changing any one draft stales only that NPC's items: 4.8 on average and 19 at most (`bob_saget`), against all 781 today. Changing chapter 010's summary stales only the NPCs whose evidence draws on chapter 010.
 - **SC-006**: No existing review test that exercises a refusal on a changed source the decided item depends on starts passing a decision it used to refuse.
 
 ## Assumptions
@@ -150,4 +150,5 @@ The GM publishes a batch of signed NPCs while editing a different NPC's draft, o
 - Refresh (`review refresh`), the generation check, export and the decision ledger format are unchanged. This feature changes when a save is refused, and what the refusal says.
 - Single GM, single machine. The existing authority lock still serialises writers; the publish rule (FR-012) is about a draft edited by a person or another tool between the check and the write.
 - The stormgiants checkout (`~/storm-giant/stormgiants`) is read-only and is used only for a replay measurement.
+- A summary fix that *adds* a mention of an NPC whose evidence does not yet cite that summary stales nothing, because that NPC's evidence must be rebuilt first. Reporting this is #628.
 - Out of scope: #628 (reporting which dossiers a summary fix affects and offering a rebuild), sentence cards (#622), the reject-with-fix loop (#625).
