@@ -241,7 +241,7 @@ description: "Task list for 042 per-item source custody (#624, #633)"
   - the import rule (R10);
   - the remedy, and the draft re-verify note.
 - [X] T047 [P] Update `docs/cli/npc_dossiers_howto.md`'s publish section with the four held reasons from contracts/publish-held.md, the `custody_changed` receipt key, and "one NPC's edit never holds another".
-- [ ] T048 Run the full suite: `PYTHONPATH=<worktree> ~/.venv/bin/python -m pytest --basetemp=$HOME/.cache/pytest-042 tests/ -q`. Then run `STORMGIANTS=~/storm-giant/stormgiants … tests/test_summary_native_custody_baseline.py -s`, and in `frontend/` run `npm test` and `npm run build`. Walk quickstart.md sections 1–4. Record the counts, the replay output, and every pre-existing test changed (with the reason) in `specs/042-per-item-custody/validation.md`.
+- [X] T048 Run the full suite: `PYTHONPATH=<worktree> ~/.venv/bin/python -m pytest --basetemp=$HOME/.cache/pytest-042 tests/ -q`. Then run `STORMGIANTS=~/storm-giant/stormgiants … tests/test_summary_native_custody_baseline.py -s`, and in `frontend/` run `npm test` and `npm run build`. Walk quickstart.md sections 1–4. Record the counts, the replay output, and every pre-existing test changed (with the reason) in `specs/042-per-item-custody/validation.md`.
 
 ---
 
