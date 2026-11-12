@@ -92,7 +92,7 @@ description: "Task list for 043 review card contract (#643 slice 1, #655)"
 
 ### Implementation for US1
 
-- [ ] T012 [US1] In `cards.py`, implement `build_packet(root, review_id, *, item_ids=None, actions=None) -> tuple[dict, list[dict]]`, returning the packet body and `skipped_signoffs` (R2).
+- [X] T012 [US1] In `cards.py`, implement `build_packet(root, review_id, *, item_ids=None, actions=None) -> tuple[dict, list[dict]]`, returning the packet body and `skipped_signoffs` (R2).
   - It uses `store.read_review_state`.
   - It refuses any kind other than `npc_verification` with `REVIEW_CARDS_KIND`.
   - It selects items with no fresh approve or reject.
@@ -101,21 +101,21 @@ description: "Task list for 043 review card contract (#643 slice 1, #655)"
   - Ordering, card text, evidence rows and `npc` labels follow research R2 and data-model.md. Port the text rules from mytools `claude/skills/_shared/review-artifact/npc_review_items.py:121-208` (read only), writing **plain text only**.
   - Duplicate membership raises `REVIEW_CARDS_DUPLICATE_MEMBER`.
   - Nothing to offer raises `REVIEW_CARDS_NOTHING_TO_EXPORT`.
-- [ ] T013 [US1] In `cards.py`, implement `export_packet(root, review_id, *, item_ids, actions, out: Path | None) -> dict`.
+- [X] T013 [US1] In `cards.py`, implement `export_packet(root, review_id, *, item_ids, actions, out: Path | None) -> dict`.
   - Under `authority_lock(root, exclusive=True)` with `require_no_pending_transaction`, it builds the packet, validates it through `CardPacket`, and computes the id.
   - If the path exists with identical bytes, it reuses it. With different bytes it raises `REVIEW_CARDS_PACKET_CONFLICT`. Otherwise it writes via `_prepare_transaction_locked` and `recover_transaction(_already_locked=True)` with `TransactionTarget.create`, copying `store.export_review`.
   - It runs `_reject_symlinks` on the path.
   - With `out`, it writes byte-identical bytes via `campaignlib.util.atomic_write_bytes`.
   - It returns the `REVIEW_CARDS_EXPORTED` data from contracts/cards-cli.md.
-- [ ] T014 [US1] In `cards.py`, implement `load_packet(root, review_id, packet_id) -> CardPacket`. It refuses:
+- [X] T014 [US1] In `cards.py`, implement `load_packet(root, review_id, packet_id) -> CardPacket`. It refuses:
   - a missing file with `REVIEW_CARDS_PACKET_UNKNOWN`;
   - a re-hash that is not equal to the id with `REVIEW_CARDS_PACKET_ALTERED`;
   - a `reviewId` that does not equal `review_id` with `REVIEW_CARDS_REVIEW_MISMATCH`.
-- [ ] T015 [US1] In `cards.py`, implement `parse_decisions(raw: bytes, *, max_note_chars) -> CardDecisions`.
+- [X] T015 [US1] In `cards.py`, implement `parse_decisions(raw: bytes, *, max_note_chars) -> CardDecisions`.
   - It checks `schemaVersion` first: anything not in `ACCEPTED_SCHEMA_VERSIONS` raises `REVIEW_CARDS_SCHEMA`, with the accepted list in the message.
   - Then it validates the model. Any validation error raises `REVIEW_CARDS_INVALID`, naming the field.
   - A note over `max_note_chars` raises `REVIEW_CARDS_NOTE_TOO_LONG`.
-- [ ] T016 [US1] In `cards.py`, implement `plan_decide(root, review_id, decisions: CardDecisions) -> dict`, which returns a DecisionPlan.
+- [X] T016 [US1] In `cards.py`, implement `plan_decide(root, review_id, decisions: CardDecisions) -> dict`, which returns a DecisionPlan.
   - It loads the packet (T014) and checks `generation == manifest.generation`, else `REVIEW_CARDS_PACKET_STALE` with the export command as the remedy.
   - Contract checks (US2 adds their tests; implement them here): unknown cards, the member echo set compared with the packet, and the sign-off `draftSha256` echo compared with the packet.
   - For each marked card in packet order it does three things:
@@ -124,20 +124,20 @@ description: "Task list for 043 review card contract (#643 slice 1, #655)"
     3. Otherwise it calls `expand`, with `noop` for `identical`, `supersede` for `differs` and `record` for `new`.
   - It runs `custody.stale_report` over all record and supersede members. A card with any stale member is refused with `REVIEW_STALE_CUSTODY` and `custody.refusal_detail` as data (spec 042).
   - It computes `planSha256` over the canonical `cards` list.
-- [ ] T017 [US1] In `cards.py`, implement `apply_decide(root, review_id, decisions, *, reviewer, plan_sha256) -> dict`.
+- [X] T017 [US1] In `cards.py`, implement `apply_decide(root, review_id, decisions, *, reviewer, plan_sha256) -> dict`.
   - It rebuilds the plan. A hash that differs from `plan_sha256` raises `REVIEW_CARDS_PLAN_CHANGED`, with the new plan as detail.
   - It packs the record and supersede decisions into card-aligned batches (T018) and calls `delegated.submit_decisions(..., prefix=f"cards-{packet_id}", batches=…)`.
   - It returns the plan plus `saved`.
   - With nothing to record, it returns `saved: []` without calling the store.
-- [ ] T018 [US1] In `cards.py`, implement `pack_batches(cards_decisions: list[list[dict]], cap) -> list[list[dict]]`. It packs greedily, never splitting a card unless that card alone is larger than `cap`.
-- [ ] T019 [US1] In `pipelines/summary_native/review/cli.py`, add the nested subparser `cards = commands.add_parser("cards")` with `cards_command` set to `export` or `decide`, following the `npc sign` pattern at cli.py:145-147. Apply `_scope_args` to each leaf.
+- [X] T018 [US1] In `cards.py`, implement `pack_batches(cards_decisions: list[list[dict]], cap) -> list[list[dict]]`. It packs greedily, never splitting a card unless that card alone is larger than `cap`.
+- [X] T019 [US1] In `pipelines/summary_native/review/cli.py`, add the nested subparser `cards = commands.add_parser("cards")` with `cards_command` set to `export` or `decide`, following the `npc sign` pattern at cli.py:145-147. Apply `_scope_args` to each leaf.
   - `export REVIEW [--item ID]... [--action NAME]... [--out FILE]`.
   - `decide REVIEW --decisions FILE|- --reviewer NAME [--write] [--plan-sha256 HEX]`.
   - A blank reviewer raises `REVIEW_INVALID_BATCH`. `--write` without `--plan-sha256` raises `REVIEW_CARDS_PLAN_REQUIRED`.
   - Read `max_note_chars` and the batch cap from `load_campaign_review_config(root)`.
   - Add dispatch in `run()`. Emit codes and data per contracts/cards-cli.md.
   - Text rendering: one line per card, the supersede lines, the refused cards, and the `plan <sha>` line with the exact `--write --plan-sha256` command.
-- [ ] T020 [US1] Make T011 pass. Run the US1 tests and the Phase 2 tests, and record the counts in `validation.md`.
+- [X] T020 [US1] Make T011 pass. Run the US1 tests and the Phase 2 tests, and record the counts in `validation.md`.
 
 **Checkpoint**: the MVP. A page-shaped decisions file is applied with no hand-built batch (SC-001).
 

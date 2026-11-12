@@ -359,7 +359,7 @@ def test_us1_signoff_approve_records_document_signoff(tmp_path):
     path = _decisions(fx.root, packet, {by_npc["Ccc"]: ("approve", "")})
     _plan, (rc, saved) = _plan_then_write(fx.root, fx.review_id, path)
     assert rc == 0, saved
-    rc, signed = fx.sign("Ddd")
+    rc, signed = fx.sign("d")
     assert rc == 0
     events = {e["item_id"]: e for e in _events(fx.root, fx.review_id)}
     ours, theirs = events[fx.signoff("c").item_id], events[fx.signoff("d").item_id]

@@ -58,3 +58,18 @@ placeholder note to `expand` (identical/differs are both "already decided") and 
 
 T011: the US1 tests were written first and run against the Phase 2 code. `-k us1` gave **13 failed, 6 deselected**
 (no `cards export`/`decide` subcommand, no `build_packet`/`load_packet`/`parse_decisions`/`pack_batches`).
+
+T012-T019 implemented; T020: after implementation `tests/test_summary_native_review_cards.py` = **19 passed** (13 US1 +
+6 Phase 2). Phase 2 + US1 suites together, pinned PYTHONPATH:
+action_table + delegated + noise_cli + decisions + cards + no_llm + routes + item_custody = **169 passed**.
+
+Deviations and conservative choices (see the Phase 3 report):
+1. `REVIEW_CARDS_PLAN_CHANGED` exits 5 as contracts/cards-cli.md says, which needed a one-line exception in
+   `cli._exit_for` (the code contains none of STALE/BLOCK/CONFLICT).
+2. `REVIEW_CARDS_ACTION_UNKNOWN` (new): an undecided item whose action has no `DISPOSITION_FOR` row refuses the
+   export instead of being silently left out or carded with no way to decide it.
+3. `parse_decisions` measures `max_note_chars` against the STORED note (`card_note` prefix included), so a file
+   that passes parsing cannot later fail the store's limit.
+4. A non-signoff card that echoes a `draftSha256` is refused with `REVIEW_CARDS_FINGERPRINT_MISMATCH` (the file
+   rule is "required iff signoff").
+5. Refused cards carry `members: []` in the plan; `counts.refused` counts the packet card's members.
