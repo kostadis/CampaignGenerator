@@ -33,7 +33,7 @@ async function requestStream(path:string, payload:object) {
   } catch(error) { note.value=error instanceof Error?error.message:String(error) } finally { busy.value=false }
 }
 // Card packet (spec 043): the launcher keeps only the form fields, the last export/plan answer and that plan's hash.
-type CardMember={itemId:string;category?:string;disposition?:string;previous?:{verdict:string;disposition:string}}
+type CardMember={itemId:string;category?:string;disposition?:string|null;previous?:{verdict:string;disposition:string}|null}
 type CardRow={cardId:string;state:string;verdict?:string;refusal?:{code:string;message:string};members:CardMember[]}
 const cardItems=ref(''), cardActions=ref(''), decisionsPath=ref(''), cardPacket=ref<any>(null), cardPlan=ref<{planSha256:string;cards:CardRow[]}|null>(null)
 const splitList=(text:string)=>text.split(/[\s,]+/).filter(Boolean)
@@ -41,7 +41,7 @@ watch([decisionsPath,reviewer],()=>{cardPlan.value=null})
 const planGroups=computed(()=>{
   const cards=cardPlan.value?.cards??[], groups={record:[] as string[],supersede:[] as string[],noop:[] as string[],unmarked:[] as string[],refused:[] as CardRow[]}
   for(const card of cards){
-    if(card.state==='unmarked') groups.unmarked.push(`${card.cardId}: ${card.members.map(m=>m.itemId).join(', ')}`)
+    if(card.state==='unmarked') groups.unmarked.push(card.cardId) // the plan lists no members for an unmarked card
     else if(card.state==='refused') groups.refused.push(card)
     else for(const m of card.members){
       if(m.category==='record') groups.record.push(`${m.itemId}: ${card.verdict}/${m.disposition}`)
