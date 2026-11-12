@@ -65,7 +65,7 @@ function cardsMount() {
     if (String(url).endsWith('/cards/export')) return reply(200, { ok: true, code: 'REVIEW_CARDS_EXPORTED', message: 'packet p1: 3 cards (5 members) for review review-1',
       data: { packetId: 'p1', reviewId: 'review-1', cards: 3, members: 5, skippedSignoffs: [{ itemId: 'npc-s', npc: 'nug', code: 'REVIEW_STALE_CUSTODY', message: 'changed' }] } })
     if (String(url).endsWith('/cards/decide')) {
-      if (body.write) return reply(200, { ok: true, code: 'REVIEW_CARDS_SAVED', message: 'saved', data: { ...PLAN, saved: [{ batch: 1, decisions: 2 }] } })
+      if (body.write) return reply(200, { ok: true, code: 'REVIEW_CARDS_SAVED', message: 'saved', data: { ...PLAN, saved: [{ request_id: 'cards-packet-6fd2ef8a7a07f677da29-e6cf', events: [{ event_id: 'decision-2d3e-0000', item_id: 'item-rec', decision_revision: 1 }] }] } })
       return reply(200, { ok: true, code: 'REVIEW_CARDS_PLAN', message: 'plan', data: PLAN })
     }
     return reply(200, { ok: true, data: {} })
