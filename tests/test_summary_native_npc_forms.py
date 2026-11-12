@@ -180,3 +180,59 @@ def _link_args(root, *extra):
         "--summaries-dir", str(root / "docs/summaries"),
         "--since", str(SINCE), "--until", str(UNTIL), *extra,
     ]
+
+
+# ── possessives (#629): pinned, not added ───────────────────────────────────
+# A possessive of an exact registered form already links to that form, because the
+# matcher's word boundary treats ``'``/``’`` as a non-word character. These tests pin
+# that (and its limits) so nobody "fixes" it with fuzzier matching. The #629 symptom
+# (a scene saying "Hyuth's mansion" not reaching Hyuth Kolstaag) is a separate
+# dossier named "Hyuth", not a missed possessive.
+
+
+def _poss_index(rulings=None):
+    ds = [
+        CorpusDossier("npc_hyuth", "npc", "Hyuth", ("Hyuth",)),
+        CorpusDossier("npc_bess", "npc", "Bess", ("Bess",)),
+        CorpusDossier("npc_spider", "npc", "Spider", ("Spider",)),
+        CorpusDossier("npc_mantol", "npc", "Mantol", ("Mantol",)),
+        CorpusDossier("loc_mantol", "location", "Mantol", ("Mantol",)),
+    ]
+    return build_form_index(None, ds, WORDS, rulings or {})
+
+
+def _poss_hits(s, idx=None):
+    return [(s[a:b], f.text) for a, b, f in (idx or _poss_index()).match_line(s)]
+
+
+@pytest.mark.parametrize("apos", ["'", "’"])
+def test_possessive_of_an_exact_form_links_to_it(apos):
+    assert _poss_hits(f"At Hyuth{apos}s mansion") == [("Hyuth", "Hyuth")]
+    assert _poss_hits(f"Bess{apos} cart and Bess{apos}s cart") == [("Bess", "Bess"), ("Bess", "Bess")]
+
+
+def test_possessive_match_is_counted_once_and_spans_the_name():
+    # one match, covering the registered form only (not the suffix): evidence quoting
+    # works on whole lines, so the span only identifies which form matched.
+    assert len(_poss_hits("Hyuth's mansion")) == 1
+
+
+def test_no_partial_word_matches():
+    assert _poss_hits("Hyuths mansion") == []
+    assert _poss_hits("xHyuth's mansion") == []
+    assert _poss_hits("Hyuthsville") == []
+
+
+def test_plural_is_not_a_possessive():
+    assert _poss_hits("the Hyuths") == []
+
+
+def test_withheld_forms_stay_withheld_in_possessive():
+    idx = _poss_index()
+    assert idx.forms["Mantol"].status == AMBIGUOUS
+    assert idx.forms["Spider"].status == GENERIC
+    for s in ("Mantol's gate", "Mantol’s gate", "Spider's web", "Spider’ web"):
+        hits = [f for _, _, f in idx.match_line(s)]
+        assert len(hits) == 1, s
+        nf = hits[0]
+        assert nf.status not in npc_forms.LINKABLE_STATUSES
