@@ -646,6 +646,29 @@ Exit `0` when every selected NPC published; `2` when any refused.
 When an NPC has both a GM dossier and a hand-built dossier, pass
 `--source summary_native|hand-built`, or it refuses.
 
+### Why an NPC is held
+
+Each NPC gets its own outcome, and **one NPC's edit never holds another**: a
+sign-off is current when the sources *that NPC's* items rest on are current
+(see "Per-item custody" in `docs/cli/summary_native_review.md`), so editing one
+draft or one summary no longer blocks every other NPC in the review. A held NPC
+prints `<name>: refused (<reason>)`, and the exit is 2. The reasons for a
+summary-native NPC, in the order they are checked:
+
+| Reason | Meaning and remedy |
+|---|---|
+| `draft changed after composition: <draft path> (changed); run summary_native npc-compose and recheck it` | The draft no longer matches the GM dossier composed from it. Compose again, then verify. |
+| `NPC_DRAFT_SIGNOFF_STALE: sources changed since review <rid> was built: <path> (<state>), …; run summary_native review refresh <rid> --expected-generation <n>, then re-verify and re-sign` | A file the sign-off rests on (the draft, its evidence, a summary the evidence names) changed. Refresh, run `npc-verify` again, then review and sign. When several records sign the same bytes, it is held only if none is current; the message names the most recent stale record's files. |
+| `NPC_DRAFT_SIGNOFF_REQUIRED: exact draft approval is missing or stale; create a real NPC verification review and run summary_native review npc sign` | No sign-off exists for these exact bytes. |
+| `NPC_DRAFT_CHANGED_AT_WRITE: <draft path> changed after its sign-off was checked; nothing was written for this NPC` | The draft changed between the check and the write; nothing was written. Re-run. |
+
+Three of these (draft changed after composition, stale sign-off, changed at
+write) put `custody_changed: [{"path": "<campaign-relative path>", "state":
+"changed" | "missing" | "unreadable"}, …]` on the NPC's receipt, so the file that
+held it is recorded beside the reason (the at-write case reports `changed` or
+`missing`). `NPC_DRAFT_SIGNOFF_REQUIRED` carries no `custody_changed`. If a
+spec 039 dependency graph is present it can only widen what a sign-off depends on.
+
 ### `--force`
 
 `--force` publishes despite (a) a failed or missing verification, (b) a target file

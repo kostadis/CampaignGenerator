@@ -228,19 +228,19 @@ description: "Task list for 042 per-item source custody (#624, #633)"
 
 ## Phase 7: Polish & Cross-Cutting
 
-- [ ] T045 [P] Create `tests/test_summary_native_custody_baseline.py`, a read-only replay (SC-002, SC-005). Skip it unless `STORMGIANTS` points at a checkout containing `docs/reviews/npc-review-6ee694eebf5b`, using the same skip pattern as `tests/test_summary_native_noise_baseline.py`. Load the snapshot with `read_snapshot` under the shared lock. Wrap `custody.disk_probe` with an override provider, and write nothing. Assert:
+- [X] T045 [P] Create `tests/test_summary_native_custody_baseline.py`, a read-only replay (SC-002, SC-005). Skip it unless `STORMGIANTS` points at a checkout containing `docs/reviews/npc-review-6ee694eebf5b`, using the same skip pattern as `tests/test_summary_native_noise_baseline.py`. Load the snapshot with `read_snapshot` under the shared lock. Wrap `custody.disk_probe` with an override provider, and write nothing. Assert:
   - for every draft source f, the newly stale set compared with the no-override baseline equals exactly {items whose dependency set contains f}, and those items all share f's NPC key;
   - for `docs/summaries/010-session-the-seer.md`, the newly stale NPCs equal the NPCs whose evidence names it (8 at authoring time; assert the computed set, and print the count);
   - all 164 evidence files take the `evidence_sources` basis, with no fallback;
   - no write happened: the mtime and sha of the review directory are unchanged.
-- [ ] T046 [P] Update `docs/cli/summary_native_review.md` with:
+- [X] T046 [P] Update `docs/cli/summary_native_review.md` with:
   - per-item custody: the dependency set, the GM ruling on summaries, and the fallback;
   - the refusal's text and JSON forms;
   - `review status` with `changed_files` and `stale_by_npc`;
   - that withdrawals are always allowed;
   - the import rule (R10);
   - the remedy, and the draft re-verify note.
-- [ ] T047 [P] Update `docs/cli/npc_dossiers_howto.md`'s publish section with the four held reasons from contracts/publish-held.md, the `custody_changed` receipt key, and "one NPC's edit never holds another".
+- [X] T047 [P] Update `docs/cli/npc_dossiers_howto.md`'s publish section with the four held reasons from contracts/publish-held.md, the `custody_changed` receipt key, and "one NPC's edit never holds another".
 - [ ] T048 Run the full suite: `PYTHONPATH=<worktree> ~/.venv/bin/python -m pytest --basetemp=$HOME/.cache/pytest-042 tests/ -q`. Then run `STORMGIANTS=~/storm-giant/stormgiants … tests/test_summary_native_custody_baseline.py -s`, and in `frontend/` run `npm test` and `npm run build`. Walk quickstart.md sections 1–4. Record the counts, the replay output, and every pre-existing test changed (with the reason) in `specs/042-per-item-custody/validation.md`.
 
 ---
