@@ -1,0 +1,84 @@
+{
+  "$defs": {
+    "CardVerdict": {
+      "additionalProperties": false,
+      "properties": {
+        "draftSha256": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Draftsha256"
+        },
+        "members": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Members",
+          "type": "array"
+        },
+        "note": {
+          "default": "",
+          "title": "Note",
+          "type": "string"
+        },
+        "verdict": {
+          "enum": [
+            "approve",
+            "reject",
+            "discuss"
+          ],
+          "title": "Verdict",
+          "type": "string"
+        }
+      },
+      "required": [
+        "verdict",
+        "members"
+      ],
+      "title": "CardVerdict",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "cards": {
+      "additionalProperties": {
+        "$ref": "#/$defs/CardVerdict"
+      },
+      "title": "Cards",
+      "type": "object"
+    },
+    "packetId": {
+      "title": "Packetid",
+      "type": "string"
+    },
+    "reviewId": {
+      "title": "Reviewid",
+      "type": "string"
+    },
+    "savedAt": {
+      "minLength": 1,
+      "title": "Savedat",
+      "type": "string"
+    },
+    "schemaVersion": {
+      "title": "Schemaversion",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "packetId",
+    "reviewId",
+    "savedAt",
+    "cards"
+  ],
+  "title": "CardDecisions",
+  "type": "object"
+}
