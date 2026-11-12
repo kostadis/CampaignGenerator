@@ -49,12 +49,20 @@ jobs:
           cache-dependency-path: frontend/package-lock.json
       - name: Install dependencies
         run: npm ci
-      # The browser build matches the pinned @playwright/test version.
-      - name: Install Playwright Chromium
-        run: npx playwright install --with-deps chromium
+      # Use the runner image's preinstalled Google Chrome, as the GM's machine
+      # does. `npx playwright install --with-deps chromium` (Playwright 1.55)
+      # fails on the current ubuntu-latest image (#651), and it failed
+      # silently: every e2e run since 2026-11-07 stopped before any spec ran.
+      # Fail loudly here if the image ever stops shipping Chrome.
+      - name: Locate system Chrome
+        run: |
+          command -v google-chrome
+          google-chrome --version
       # Specs mock /api with page.route; the Vite dev server's proxy errors
       # for unmocked calls (no backend on :8000) are expected noise.
       - name: Playwright e2e
+        env:
+          PLAYWRIGHT_CHROME_EXECUTABLE_PATH: /usr/bin/google-chrome
         run: npm run test:e2e
       - name: Upload traces on failure
         if: failure()
