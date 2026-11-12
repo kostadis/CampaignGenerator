@@ -327,16 +327,19 @@ def plan_noise_class(root: Path, review_id: str, *, noise_class: str, verdict: s
     note = (note or "").strip()
     if not note:
         raise ReviewStoreError("REVIEW_NOISE_NOTE_REQUIRED: --note must be nonblank", "REVIEW_NOISE_NOTE_REQUIRED")
-    manifest, items, events, stale = read_review_state(root, review_id)
+    snapshot = read_review_state(root, review_id)
+    manifest, items, events, stale = snapshot
     max_note = load_campaign_review_config(root).max_note_chars
     disposition = _NOISE_VERDICTS[verdict]
-    pending, already = [], []
-    for item in _noise_members(items, noise_class):
-        if _current_decision(_latest(events, item.item_id), item, stale):
-            already.append(item.item_id)
-            continue
-        _validate_action_decision(item, verdict=verdict, disposition=disposition)
-        pending.append(item)
+    # One expansion rule (spec 043 R3).  Noise policy: a member that already has a fresh decision,
+    # identical or not, is skipped and listed, never overwritten.  The note is built below, once the
+    # undecided count is known, so the placeholder here only affects the identical/differs split.
+    from pipelines.summary_native.review import cards  # local: cards imports this module lazily too
+    members = _noise_members(items, noise_class)
+    expansion = cards.expand(snapshot, member_ids=[item.item_id for item in members], verdict=verdict,
+                             disposition_for=lambda _item: disposition, gm_note="")
+    already = [m.item_id for m in expansion.members if m.category != "new"]
+    pending = [item for item, m in zip(members, expansion.members) if m.category == "new"]
     if not pending:
         raise ReviewStoreError(
             f"REVIEW_NOISE_NOTHING_TO_DECIDE: class {noise_class} has no undecided occurrences",
@@ -363,13 +366,26 @@ def plan_noise_class(root: Path, review_id: str, *, noise_class: str, verdict: s
     }
 
 
-def submit_decisions(root: Path, review_id: str, *, generation: int, reviewer: str, decisions: list[dict], prefix: str) -> list[dict]:
+def submit_decisions(root: Path, review_id: str, *, generation: int, reviewer: str, decisions: list[dict], prefix: str,
+                     batches: list[list[dict]] | None = None) -> list[dict]:
     """Save ``decisions`` in configured-size batches through ``save_decisions``.
 
     Request ids are derived from the batch content, so re-running an
     interrupted write replays committed batches as idempotent no-ops.
+
+    ``batches`` (spec 043) replaces fixed-size slicing with caller-packed batches (card-aligned);
+    each must hold at most ``max_batch_decisions`` decisions.  When a batch after the first fails,
+    the error's ``detail`` is ``{"recorded", "not_recorded", "cause"}`` (item ids) so a caller can
+    report exactly what is on disk.
     """
     size = load_campaign_review_config(root).max_batch_decisions
+    if batches is None:
+        batches = [decisions[start:start + size] for start in range(0, len(decisions), size)]
+    else:
+        if any(len(batch) > size or not batch for batch in batches):
+            raise ReviewStoreError(
+                f"REVIEW_INVALID_BATCH: each batch must hold 1 to {size} decisions", "REVIEW_INVALID_BATCH")
+        decisions = [d for batch in batches for d in batch]
     # Spec 042: every submitted item is checked BEFORE the first batch is written, so one stale
     # item in a late batch cannot leave earlier batches saved. ``save_decisions`` keeps its own
     # per-batch check (defence in depth, and the race between this check and a write).
@@ -379,8 +395,7 @@ def submit_decisions(root: Path, review_id: str, *, generation: int, reviewer: s
                  if isinstance(d, dict) and isinstance(d.get("item_id"), str) and d["item_id"] in known]
     _refuse_stale_custody(root, manifest, cust, snapshot_items, submitted, operation="decide")
     results = []
-    for start in range(0, len(decisions), size):
-        batch = decisions[start:start + size]
+    for index, batch in enumerate(batches):
         digest = hashlib.sha256(
             json.dumps([reviewer, batch], sort_keys=True, separators=(",", ":")).encode("utf-8")
         ).hexdigest()[:20]
@@ -394,9 +409,17 @@ def submit_decisions(root: Path, review_id: str, *, generation: int, reviewer: s
         try:
             results.append(save_decisions(root, review_id, request))
         except ReviewStoreError as exc:
+            inner = getattr(exc, "detail", None)
+            detail = inner
+            if index > 0:
+                detail = {
+                    "recorded": [d["item_id"] for earlier in batches[:index] for d in earlier],
+                    "not_recorded": [d["item_id"] for later in batches[index:] for d in later],
+                    "cause": inner,
+                }
             raise ReviewStoreError(
                 f"{exc} (after {len(results)} earlier batch(es) saved; rerun the dry run to see what remains)",
                 getattr(exc, "code", None),
-                detail=getattr(exc, "detail", None),
+                detail=detail,
             ) from exc
     return results
