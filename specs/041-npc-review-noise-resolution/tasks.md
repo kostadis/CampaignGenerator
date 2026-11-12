@@ -14,7 +14,7 @@ description: "Task list for 041 NPC review noise resolution (#621)"
 - **CG** = this worktree, branch `041-npc-review-noise-resolution`.
 - **MT** = `~/src/mytools`, worked in its own worktree on branch `041-noise-class-cards`. Never on `main`, which has unrelated uncommitted edits.
 
-**Environment rule (every CG test command)**: `PYTHONPATH=<CG worktree> ~/.venvs/main/bin/python -m pytest …` (research R13). A green run without the pinned `PYTHONPATH` proves nothing about this branch.
+**Environment rule (every CG test command)**: `PYTHONPATH=<CG worktree> ~/.venv/bin/python -m pytest …` (`~/.venv` is the server venv; `~/.venvs/main` has no pytest) (research R13). A green run without the pinned `PYTHONPATH` proves nothing about this branch.
 
 **Hard invariants (check in every task)**:
 - No model call anywhere in this feature (FR-018).
@@ -31,8 +31,8 @@ description: "Task list for 041 NPC review noise resolution (#621)"
 
 ## Phase 1: Setup
 
-- [ ] T001 Verify that `PYTHONPATH=<CG worktree> ~/.venvs/main/bin/python -c "import pipelines; print(pipelines.__file__)"` prints the worktree path, and that `python -m pytest tests/test_summary_native_review_verification_adapter.py tests/test_summary_native_npc_verify.py -q` passes on the unmodified branch. Record the pass count in `specs/041-npc-review-noise-resolution/validation.md`.
-- [ ] T002 Create the MT worktree: `git -C ~/src/mytools worktree add -b 041-noise-class-cards <scratchpad>/mt041 origin/main`. Then run its existing kit tests, `python -m pytest dotfiles/claude/skills/_shared/review-artifact/tests -q`, and record the result in `specs/041-npc-review-noise-resolution/validation.md`.
+- [X] T001 Verify that `PYTHONPATH=<CG worktree> ~/.venv/bin/python -c "import pipelines; print(pipelines.__file__)"` prints the worktree path, and that `python -m pytest tests/test_summary_native_review_verification_adapter.py tests/test_summary_native_npc_verify.py -q` passes on the unmodified branch. Record the pass count in `specs/041-npc-review-noise-resolution/validation.md`.
+- [X] T002 Create the MT worktree: `git -C ~/src/mytools worktree add -b 041-noise-class-cards <scratchpad>/mt041 origin/main`. Then run its existing kit tests, `python -m pytest dotfiles/claude/skills/_shared/review-artifact/tests -q`, and record the result in `specs/041-npc-review-noise-resolution/validation.md`.
 
 ---
 
@@ -231,7 +231,7 @@ description: "Task list for 041 NPC review noise resolution (#621)"
 
 - [ ] T037 [P] Document `review noise`, `review noise decide`, the six classes with their precedence, and the policy keys `noise-<class>` in `docs/cli/summary_native_review.md`. Add a "Reading classified noise" note, pointing at the `verify.md` section and `review noise`, to `docs/cli/npc_dossiers_howto.md`.
 - [ ] T038 [P] Add `review noise` to the review command table in `CLAUDE.md` only if that table lists the other review verbs. Otherwise skip it, and say so in `validation.md`.
-- [ ] T039 Run the full suite, `PYTHONPATH=<CG worktree> ~/.venvs/main/bin/python -m pytest tests/ -q`, and the frontend checks only if any frontend file changed (none is planned). Record the results in `validation.md`.
+- [ ] T039 Run the full suite, `PYTHONPATH=<CG worktree> ~/.venv/bin/python -m pytest tests/ -q`, and the frontend checks only if any frontend file changed (none is planned). Record the results in `validation.md`.
 - [ ] T040 Walk through quickstart.md sections 1–4 and record each outcome in `validation.md`.
 
 ---
