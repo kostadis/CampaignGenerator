@@ -16,6 +16,7 @@ from campaignlib.review_config import (
     load_campaign_review_config,
     resolve_review_scope,
 )
+from pipelines.summary_native import noise as noise_classes
 from pipelines.summary_native.authority import AuthorityError
 from pipelines.summary_native.authority_apply import recover_transaction
 from pipelines.summary_native.review.migrate import apply_authority_migration, plan_authority_migration
@@ -96,6 +97,20 @@ def add_parser(subparsers: argparse._SubParsersAction) -> None:
     policy.add_argument("--reviewer", required=True, help="who delegated the policy (recorded on every decision)")
     policy.add_argument("--write", action="store_true", help="save the policy decisions (default: dry run)")
     _scope_args(policy)
+    noise_cmd = commands.add_parser(
+        "noise", help="list classified noise by class, or `noise decide REVIEW` to rule on one class (dry run by default)",
+        description="`review noise REVIEW` lists every noise class with its occurrences (read-only). "
+        "`review noise decide REVIEW --class C --verdict V --reviewer R --note N` records one GM verdict "
+        "on one class as one decision per undecided occurrence; there is no all-classes form. " + delegated_epilog,
+    )
+    noise_cmd.add_argument("words", nargs="+", metavar="[decide] REVIEW")
+    noise_cmd.add_argument("--class", dest="noise_class", choices=noise_classes.CLASSES, default=None, help="decide: the one noise class to rule on")
+    noise_cmd.add_argument("--verdict", choices=("approve", "reject"), default=None, help="decide: approve (accept_no_change) or reject (reject_action)")
+    noise_cmd.add_argument("--reviewer", default=None, help="decide: who made the ruling (recorded on every decision)")
+    noise_cmd.add_argument("--note", default=None, help="decide: the GM's reason; the class-verdict prefix is added")
+    noise_cmd.add_argument("--write", action="store_true", help="decide: save the decisions (default: dry run)")
+    noise_cmd.set_defaults(_noise_parser=noise_cmd)
+    _scope_args(noise_cmd)
     history_parser = commands.add_parser("history", help="read immutable decision history")
     history_parser.add_argument("review")
     history_parser.add_argument("--item", default=None)
@@ -715,6 +730,45 @@ def _run_delegated(args: argparse.Namespace, root: Path) -> int:
                  message=f"{saved} decision(s) {label} and saved. {summary}", data=data)
 
 
+def _run_noise(args: argparse.Namespace, root: Path) -> int:
+    """``noise REVIEW`` reads; ``noise decide REVIEW`` plans, and only --write submits."""
+    from pipelines.summary_native.review.delegated import list_noise, plan_noise_class, submit_decisions
+    parser, words = args._noise_parser, list(args.words)
+    decide = words[0] == "decide"
+    if len(words) != (2 if decide else 1):
+        parser.error("expected `noise REVIEW` or `noise decide REVIEW`")
+    review = words[-1]
+    given = [flag for flag, value in (("--class", args.noise_class), ("--verdict", args.verdict), ("--reviewer", args.reviewer),
+                                      ("--note", args.note)) if value is not None] + (["--write"] if args.write else [])
+    if not decide:
+        if given:
+            parser.error(f"{', '.join(given)} only apply to `noise decide`")
+        data = list_noise(root, review)
+        if args.json:
+            return _emit(args, ok=True, code="REVIEW_NOISE", message="Noise classes loaded.", data=data)
+        for entry in data["classes"]:
+            print(f"{entry['noise_class']}  {entry['count']} ({entry['undecided']} undecided)")
+        return 0
+    missing = [flag for flag, value in (("--class", args.noise_class), ("--verdict", args.verdict),
+                                        ("--reviewer", args.reviewer), ("--note", args.note)) if value is None]
+    if missing:
+        parser.error(f"`noise decide` requires {', '.join(missing)}")
+    if not args.reviewer.strip():
+        raise ReviewStoreError("REVIEW_INVALID_BATCH: --reviewer must be nonblank", "REVIEW_INVALID_BATCH")
+    plan = plan_noise_class(root, review, noise_class=args.noise_class, verdict=args.verdict, note=args.note)
+    data = {key: plan[key] for key in ("review_id", "review_generation", "noise_class", "verdict", "planned", "already_decided")}
+    data["written"] = bool(args.write)
+    if not args.write:
+        return _emit(args, ok=True, code="REVIEW_NOISE_PLAN",
+                     message=f"Dry run: {len(plan['planned'])} occurrence(s) of {args.noise_class} would be decided as "
+                             f"{args.verdict}; {len(plan['already_decided'])} already decided. Nothing was saved; pass --write to save.",
+                     data=data)
+    submit_decisions(root, review, generation=plan["review_generation"], reviewer=args.reviewer,
+                     decisions=plan["decisions"], prefix="noise")
+    return _emit(args, ok=True, code="REVIEW_NOISE_SAVED",
+                 message=f"decided {len(plan['planned'])} occurrence(s) of {args.noise_class} as {args.verdict}", data=data)
+
+
 def run(args: argparse.Namespace) -> int:
     try:
         root, _ = resolve_review_scope(config=args.config, campaign_dir=args.campaign_dir)
@@ -784,6 +838,8 @@ def run(args: argparse.Namespace) -> int:
             return _emit(args, ok=True, code="REVIEW_DECISIONS_SAVED", message="Review decisions saved.", data=result)
         if args.review_command in ("carry", "policy"):
             return _run_delegated(args, root)
+        if args.review_command == "noise":
+            return _run_noise(args, root)
         if args.review_command == "history":
             events = history(root, args.review, item_id=args.item)
             return _emit(args, ok=True, code="REVIEW_HISTORY", message="Review history loaded.", data={"events": events})

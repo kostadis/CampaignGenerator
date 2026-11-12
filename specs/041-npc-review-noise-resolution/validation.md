@@ -69,3 +69,14 @@ Replay method for T036:
 - **Golden changed:** `tests/fixtures/delta/golden/verify_full.md`, 28 lines added and 0 removed. It is a new `## Classified noise` section for the two fixture drafts that contain "chapter 002" (correctly classed as `label`). No existing golden line changed.
 - Result: 231 passed (npc_verify, noise, adapter, review_verification, scoped_verification, verifier_golden_full, editor_verify_routes, npc_draft, review_rerun, no_llm).
 - Main-only failures filed as **#644** (14 tests in the backend-seam and codex-CLI-family guardrails, in `delta/` and `npc_agent`).
+
+## Phase 6 (T024–T029) — US4, the CLI and route
+
+- Sonnet implementer; reviewed by the orchestrator.
+- Added `delegated.list_noise` and `delegated.plan_noise_class`, `review noise [decide] REVIEW`, and the routes `GET /{id}/noise` and `POST /{id}/noise/decide`.
+- Deviations accepted:
+  - Argparse cannot nest `noise` and `noise decide` as subparsers, so `decide` is a leading positional word. The usage line reads `[decide] REVIEW`.
+  - The route tests went to `test_summary_native_review_routes.py`, which holds the router tests (`_http.py` is the capability server).
+  - An occurrence marked Discuss counts as decided, so a class verdict never overwrites a GM mark.
+  - The route rejects an unknown class with 422 (pydantic Literal), before it reaches the CLI.
+- Result: 190 passed (noise_cli, delegated, routes, http, adapter, no_llm, npc_verify, noise).

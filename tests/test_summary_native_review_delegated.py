@@ -290,3 +290,27 @@ def test_policy_rejects_malformed_policy(policy_review, tmp_path: Path, capsys):
     bad.write_text("- just a list\n", encoding="utf-8")
     returncode, response = _run(capsys, _policy_argv(root, bad, "--reviewer", "GM"))
     assert returncode != 0 and response["code"] == "REVIEW_POLICY_INVALID"
+
+
+def test_policy_keyed_on_a_noise_code_approves_exactly_that_class(campaign, tmp_path: Path, capsys):
+    """Spec 041 FR-015/SC-006: ``{noise-label: ...}`` needs no new code -- each noise item has one legacy_code."""
+    root, cid, summary_sha, _draft_sha, sources = campaign
+    noise_action = {"action": "review_classified_noise", "details": {"legacy_code": "noise-label"}}
+    items = [
+        _item(cid, "nz-review", "label-a", code="noise-label", summary_sha=summary_sha, action=noise_action),
+        _item(cid, "nz-review", "label-b", code="noise-label", summary_sha=summary_sha, action=noise_action),
+        _item(cid, "nz-review", "idiom-a", code="noise-idiom", summary_sha=summary_sha,
+              action={"action": "review_classified_noise", "details": {"legacy_code": "noise-idiom"}}),
+        _item(cid, "nz-review", "num-a", code="number-inconsistency", summary_sha=summary_sha),
+    ]
+    _create(root, cid, "nz-review", items, sources)
+    policy = tmp_path / "noise-policy.yaml"
+    policy.write_text('noise-label: "labels"\n', encoding="utf-8")
+    returncode, response = _run(capsys, ["review", "policy", "nz-review", "--policy", str(policy), "--reviewer", "GM",
+                                         "--campaign-dir", str(root), "--json", "--write"])
+    assert returncode == 0 and response["data"]["approvable"] == ["label-a", "label-b"]
+    events = _events(root, "nz-review")
+    assert sorted(event["item_id"] for event in events) == ["label-a", "label-b"]
+    for event in events:
+        assert event["verdict"] == "approve" and event["disposition"] == "accept_no_change"
+        assert "[noise-label]: labels" in event["note"] and "review policy" in event["note"]

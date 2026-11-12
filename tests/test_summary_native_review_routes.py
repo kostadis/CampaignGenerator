@@ -672,3 +672,48 @@ def test_document_create_section_offset_and_config_defaults_reach_the_cli(route_
         ["show", "review-1", "--item", "document-1", "--section-offset", "65536"],
         ["service", "start", "review-1", "--host", "127.0.0.1", "--origin", "http://127.0.0.1:8766"],
     ]
+
+
+def test_noise_routes_build_the_fixed_cli_argv(route_app):
+    app, campaign, calls = route_app
+    client = TestClient(app)
+    assert client.get(f"{BASE}/review-1/noise").status_code == 200
+    body = {"noise_class": "label", "verdict": "approve", "reviewer": "GM", "note": "labels are not facts"}
+    assert client.post(f"{BASE}/review-1/noise/decide", json=body).status_code == 200
+    assert client.post(f"{BASE}/review-1/noise/decide", json={**body, "verdict": "reject", "write": True}).status_code == 200
+    tail = ["--campaign-dir", str(campaign), "--json"]
+    decide = ["review", "noise", "decide", "review-1", "--class", "label", "--verdict"]
+    assert [c[0][1:] for c in calls] == [
+        ["review", "noise", "review-1", *tail],
+        [*decide, "approve", "--reviewer", "GM", "--note", "labels are not facts", *tail],
+        [*decide, "reject", "--reviewer", "GM", "--note", "labels are not facts", "--write", *tail],
+    ]
+
+
+def test_noise_decide_rejects_an_unknown_class_and_blank_fields_before_the_cli(route_app):
+    app, _campaign, calls = route_app
+    client = TestClient(app)
+    ok = {"noise_class": "label", "verdict": "approve", "reviewer": "GM", "note": "n"}
+    for bad in ({"noise_class": "everything"}, {"verdict": "discuss"}, {"reviewer": ""}, {"note": ""}, {"extra": 1}):
+        assert client.post(f"{BASE}/review-1/noise/decide", json={**ok, **bad}).status_code == 422
+    missing = {k: v for k, v in ok.items() if k != "noise_class"}
+    assert client.post(f"{BASE}/review-1/noise/decide", json=missing).status_code == 422
+    assert calls == []
+
+
+@pytest.mark.parametrize(
+    "code,status",
+    [
+        ("REVIEW_NOISE_UNKNOWN_CLASS", 400),
+        ("REVIEW_NOISE_NOTHING_TO_DECIDE", 409),
+        ("REVIEW_NOISE_NOTE_REQUIRED", 400),
+        ("REVIEW_NOISE_NOTE_TOO_LONG", 400),
+    ],
+)
+def test_noise_refusals_map_to_http_statuses(route_app, monkeypatch, code, status):
+    app, _campaign, _calls = route_app
+    message = f"{code}: refused"
+    _refusing(monkeypatch, message, {"ok": False, "code": code, "message": message})
+    body = {"noise_class": "label", "verdict": "approve", "reviewer": "GM", "note": "n"}
+    response = TestClient(app).post(f"{BASE}/review-1/noise/decide", json=body)
+    assert response.status_code == status and response.json()["code"] == code

@@ -133,6 +133,14 @@ class GrantIssueRequest(StrictRequest):
 class GrantRevokeRequest(StrictRequest):
     grant: str = Field(min_length=1, max_length=128, pattern=r"^[A-Za-z0-9_.-]+$")
 
+class NoiseDecideRequest(StrictRequest):
+    noise_class: Literal["label", "idiom", "negated-status", "spelled-number", "synonym", "other-citation"]
+    verdict: Literal["approve", "reject"]
+    reviewer: str = Field(min_length=1, max_length=256)
+    note: str = Field(min_length=1)
+    write: bool = False
+
+
 class RefreshRequest(StrictRequest): expected_generation:int=Field(ge=1)
 class RerunPreviewRequest(StrictRequest): selection:str=Field(min_length=1); mode:Literal["unresolved","selected"]
 class RerunRunRequest(StrictRequest): selection_sha256:str=Field(pattern=r"^[0-9a-f]{64}$")
@@ -223,6 +231,10 @@ def _status_for(code: str) -> int:
         return 409
     if "RECOVER" in code or "PENDING_TRANSACTION" in code:
         return 423
+    if code == "REVIEW_NOISE_UNKNOWN_CLASS":
+        return 400
+    if code == "REVIEW_NOISE_NOTHING_TO_DECIDE":
+        return 409
     if "UNKNOWN" in code or code.endswith("_NOT_FOUND"):
         return 404
     if code.endswith("_MISMATCH"):
@@ -307,6 +319,20 @@ async def show(
 @router.get("/{review_id}/status")
 async def status(request: Request, review_id: str):
     return await _run(_root(request), "status", review_id)
+
+
+@router.get("/{review_id}/noise")
+async def noise(request: Request, review_id: str):
+    return await _run(_root(request), "noise", review_id)
+
+
+@router.post("/{review_id}/noise/decide")
+async def noise_decide(request: Request, review_id: str, payload: NoiseDecideRequest):
+    arguments = ["noise", "decide", review_id, "--class", payload.noise_class, "--verdict", payload.verdict,
+                 "--reviewer", payload.reviewer, "--note", payload.note]
+    if payload.write:
+        arguments.append("--write")
+    return await _run(_root(request), *arguments)
 
 
 @router.post("/{review_id}/decisions")

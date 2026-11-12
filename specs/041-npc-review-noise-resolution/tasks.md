@@ -173,7 +173,7 @@ description: "Task list for 041 NPC review noise resolution (#621)"
 
 ### Tests (write first)
 
-- [ ] T024 [P] [US4] Create `tests/test_summary_native_review_noise_cli.py`, following the review-creation fixtures in `tests/test_summary_native_review_delegated.py`. Cover every row of contracts/cli-review-noise.md:
+- [X] T024 [P] [US4] Create `tests/test_summary_native_review_noise_cli.py`, following the review-creation fixtures in `tests/test_summary_native_review_delegated.py`. Cover every row of contracts/cli-review-noise.md:
   - JSON shape, classes in precedence order, zero-count classes listed;
   - a dry run writes nothing (the event count is unchanged);
   - `--write` decides only undecided items of that class, each with the `GM class verdict on batch card [noise-<class>] (<k> occurrences): <note>` note;
@@ -181,18 +181,18 @@ description: "Task list for 041 NPC review noise resolution (#621)"
   - the refusals `REVIEW_NOISE_UNKNOWN_CLASS`, `REVIEW_NOISE_NOTHING_TO_DECIDE`, `REVIEW_NOISE_NOTE_REQUIRED` and `REVIEW_NOISE_NOTE_TOO_LONG`, and argparse failing without `--class`;
   - already-decided items are skipped and listed, never overwritten;
   - an unmarked class leaves every item undecided in `review status`.
-- [ ] T025 [P] [US4] In `tests/test_summary_native_review_delegated.py`, add a policy-compatibility test: the policy file `{noise-label: "labels"}` via `plan_policy` approves exactly the `noise-label` items, with the policy note, and no other class (FR-015, SC-006).
-- [ ] T026 [P] [US4] In `tests/test_summary_native_review_http.py`, add route tests for `GET /{review_id}/noise` and `POST /{review_id}/noise/decide`, asserting the argv they build (the CLI is shelled out) and the error-code status mapping. Follow the file's existing route-test pattern.
+- [X] T025 [P] [US4] In `tests/test_summary_native_review_delegated.py`, add a policy-compatibility test: the policy file `{noise-label: "labels"}` via `plan_policy` approves exactly the `noise-label` items, with the policy note, and no other class (FR-015, SC-006).
+- [X] T026 [P] [US4] In `tests/test_summary_native_review_http.py`, add route tests for `GET /{review_id}/noise` and `POST /{review_id}/noise/decide`, asserting the argv they build (the CLI is shelled out) and the error-code status mapping. Follow the file's existing route-test pattern.
 
 ### Implementation
 
-- [ ] T027 [US4] In `pipelines/summary_native/review/delegated.py`, add:
+- [X] T027 [US4] In `pipelines/summary_native/review/delegated.py`, add:
   - `list_noise(root, review_id) -> dict`, which reads `read_review_state` and groups items whose single legacy_code starts with `noise-`, in `noise.CLASSES` order, with the decision state per occurrence;
   - `plan_noise_class(root, review_id, *, noise_class, verdict, note) -> dict`, modelled on `plan_policy`. It raises `ReviewStoreError` with the four `REVIEW_NOISE_*` codes, builds decisions with `_decision(...)` (approve → `accept_no_change`, reject → `reject_action`), validates with `_validate_action_decision`, and enforces `max_note_chars` on the prefixed note.
 
   Writing goes through the existing `submit_decisions`. Add no new write path.
-- [ ] T028 [US4] In `pipelines/summary_native/review/cli.py`, add the `noise` subparser, with the positional `review` and a `decide` sub-subcommand taking `--class` (required, choices = `noise.CLASSES`), `--verdict {approve,reject}` (required), `--reviewer` (required), `--note` (required), `--write`, and `_scope_args`. Reuse the delegated epilog wording. Wire dispatch beside `carry`/`policy`: dry run by default, `--write` submits, text and `--json` outputs as in the contract.
-- [ ] T029 [US4] In `server/routers/review_routes.py`, add `GET /{review_id}/noise` and `POST /{review_id}/noise/decide`, with a pydantic request model `{noise_class, verdict, reviewer, note, write: bool = False}`. Build argv and call `_run(root, "noise", …)`. Put no logic in the router (Principle VI). Map the `REVIEW_NOISE_*` codes in `_status_for` to 400 or 409, consistent with the existing codes.
+- [X] T028 [US4] In `pipelines/summary_native/review/cli.py`, add the `noise` subparser, with the positional `review` and a `decide` sub-subcommand taking `--class` (required, choices = `noise.CLASSES`), `--verdict {approve,reject}` (required), `--reviewer` (required), `--note` (required), `--write`, and `_scope_args`. Reuse the delegated epilog wording. Wire dispatch beside `carry`/`policy`: dry run by default, `--write` submits, text and `--json` outputs as in the contract.
+- [X] T029 [US4] In `server/routers/review_routes.py`, add `GET /{review_id}/noise` and `POST /{review_id}/noise/decide`, with a pydantic request model `{noise_class, verdict, reviewer, note, write: bool = False}`. Build argv and call `_run(root, "noise", …)`. Put no logic in the router (Principle VI). Map the `REVIEW_NOISE_*` codes in `_status_for` to 400 or 409, consistent with the existing codes.
 
 **Checkpoint**: T024–T026 pass.
 
