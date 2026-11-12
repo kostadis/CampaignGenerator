@@ -38,6 +38,64 @@ _SECURITY_HEADERS = {
 _GENERIC_NOT_FOUND = {"ok": False, "code": "NOT_FOUND", "message": "Not found."}
 
 
+_CUSTODY_MESSAGE = "Source files changed since this review was built. Nothing was saved."
+_DETAIL_STRING_CAP = 512
+_REJECT = object()
+
+
+def _plain(value, *, nullable: bool = False):
+    """A capped string (or ``None`` when allowed), else ``_REJECT``."""
+    if value is None and nullable:
+        return None
+    if not isinstance(value, str):
+        return _REJECT
+    return value[:_DETAIL_STRING_CAP]
+
+
+def custody_detail(data, limit: int) -> dict | None:
+    """Rebuild a ``REVIEW_STALE_CUSTODY`` detail from the contract's whitelist, or ``None``.
+
+    Kept: ``changed_files[].{path,state,items[].{item_id,npc}}``, ``stale_items[]`` (item ids) and
+    ``remedy.command``. Anything of an unexpected shape -- a key the contract does not name, a
+    non-string value, a non-list -- drops the whole detail rather than passing it on.
+    """
+    top = {"version", "operation", "review_id", "review_generation", "changed_files",
+           "stale_items", "by_npc", "remedy"}
+    if not isinstance(data, dict) or not set(data) <= top:
+        return None
+    files, stale, remedy = data.get("changed_files"), data.get("stale_items"), data.get("remedy")
+    if not isinstance(files, list) or not isinstance(stale, list) or not isinstance(remedy, dict):
+        return None
+    shaped_files = []
+    for entry in files[:limit]:
+        if not isinstance(entry, dict) or not set(entry) <= {"path", "source_id", "role", "state", "items"}:
+            return None
+        path, state, items = _plain(entry.get("path")), _plain(entry.get("state")), entry.get("items")
+        if _REJECT in (path, state) or not isinstance(items, list):
+            return None
+        shaped_items = []
+        for item in items[:limit]:
+            if not isinstance(item, dict) or not set(item) <= {"item_id", "npc", "action"}:
+                return None
+            item_id, npc = _plain(item.get("item_id")), _plain(item.get("npc"), nullable=True)
+            if _REJECT in (item_id, npc):
+                return None
+            shaped_items.append({"item_id": item_id, "npc": npc})
+        shaped_files.append({"path": path, "state": state, "items": shaped_items})
+    stale_ids = []
+    for entry in stale[:limit]:
+        if not isinstance(entry, dict) or not set(entry) <= {"item_id", "npc", "paths", "reason"}:
+            return None
+        item_id = _plain(entry.get("item_id"))
+        if item_id is _REJECT:
+            return None
+        stale_ids.append(item_id)
+    command = _plain(remedy.get("command"))
+    if command is _REJECT or not set(remedy) <= {"command", "note"}:
+        return None
+    return {"changed_files": shaped_files, "stale_items": stale_ids, "remedy": command}
+
+
 def _not_found() -> JSONResponse:
     return JSONResponse(_GENERIC_NOT_FOUND, status_code=404)
 
@@ -90,6 +148,12 @@ def create_review_app(root: Path, review_id: str, config: ReviewConfig) -> FastA
             "REVIEW_RECOVERY_REQUIRED",
         }
         code = supplied_code if supplied_code in known_codes else "REVIEW_COMMAND_FAILED"
+        if code == "REVIEW_STALE_CUSTODY":
+            body: dict = {"ok": False, "code": code, "message": _CUSTODY_MESSAGE}
+            detail = custody_detail(payload.get("data"), config.max_batch_decisions)
+            if detail is not None:
+                body["detail"] = detail
+            return JSONResponse(body, status_code=409)
         if code in {"REVIEW_STALE_DECISION", "REVIEW_STALE_GENERATION", "REVIEW_STALE_CUSTODY", "REVIEW_REQUEST_ID_CONFLICT"}:
             status, message = 409, "Review state changed. Reload before trying again."
         elif code in {"REVIEW_ACCESS_DENIED", "REVIEW_UNKNOWN_ITEM"}:

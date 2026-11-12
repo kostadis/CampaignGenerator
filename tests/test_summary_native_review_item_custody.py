@@ -278,3 +278,127 @@ def test_import_custody_digest_mismatch_still_refuses(tmp_path):
     rc, out = _import(replica, bundle)
     _refused(rc, out)
     assert "import custody changed" in out["message"]
+
+
+# ── US2: the refusal says what changed (T023-T025) ─────────────────────────
+
+def _two_npc_refusal(tmp_path):
+    fx = fixture.build(tmp_path)
+    fx.touch(fx.draft("a"))
+    fx.touch(fx.summary(2))
+    batch = [*fx.findings("a"), fx.signoff("a"), *fx.findings("b"), fx.signoff("b")]
+    rc, out = fx.decide(batch)
+    return fx, rc, out
+
+
+def test_us2_s1_json_refusal_names_files_items_npcs(tmp_path):
+    fx, rc, out = _two_npc_refusal(tmp_path)
+    _refused(rc, out)
+    data = out["data"]
+    a_ids, b_ids = _ids(*fx.findings("a"), fx.signoff("a")), _ids(*fx.findings("b"), fx.signoff("b"))
+    assert data["version"] == 1 and data["operation"] == "decide"
+    assert data["review_id"] == fx.review_id and data["review_generation"] == fx.generation
+    files = data["changed_files"]
+    assert [f["path"] for f in files] == sorted([fx.rel(fx.draft("a")), fx.rel(fx.summary(2))])
+    by_path = {f["path"]: f for f in files}
+    draft, summary = by_path[fx.rel(fx.draft("a"))], by_path[fx.rel(fx.summary(2))]
+    assert (draft["role"], draft["state"]) == ("draft", "changed")
+    assert (summary["role"], summary["state"]) == ("summary", "changed")
+    assert [e["item_id"] for e in draft["items"]] == a_ids
+    assert {e["npc"] for e in draft["items"]} == {"a"}
+    assert [e["item_id"] for e in summary["items"]] == b_ids
+    assert {e["npc"] for e in summary["items"]} == {"b"}
+    assert all(e["action"] for f in files for e in f["items"])
+    assert [e["item_id"] for e in data["stale_items"]] == sorted(a_ids + b_ids)
+    assert [(g["npc"], g["item_ids"], g["paths"]) for g in data["by_npc"]] == [
+        ("a", a_ids, [fx.rel(fx.draft("a"))]), ("b", b_ids, [fx.rel(fx.summary(2))]),
+    ]
+    assert out["message"] == (
+        f"REVIEW_STALE_CUSTODY: 2 source file(s) changed; {len(a_ids + b_ids)} submitted item(s) "
+        "depend on them; nothing was saved")
+
+
+# ── T024 ───────────────────────────────────────────────────────────────────
+
+def test_us2_s2_refusal_names_refresh_command(tmp_path):
+    fx, rc, out = _two_npc_refusal(tmp_path)
+    _refused(rc, out)
+    remedy = out["data"]["remedy"]
+    assert remedy["command"] == f"summary_native review refresh {fx.review_id} --expected-generation {fx.generation}"
+    assert remedy["note"]
+    rc, refreshed = fx.cli("review", "refresh", fx.review_id, "--expected-generation", str(fx.generation))
+    assert rc == 0, refreshed
+    manifest, _custody, items = fx.snapshot()
+    fx.generation = manifest.generation
+    by_id = {i.item_id: i for i in items}
+    for npc in fx.items:
+        fx.items[npc] = [by_id[i.item_id] for i in fx.items[npc] if i.item_id in by_id]
+    # B's changed source was only a summary: repeating the decision now saves.
+    rc, out = fx.decide(fx.findings("b"))
+    _saved(rc, out)
+    # A's draft changed: the sign-off is still held (R14) -- the draft needs a fresh verification review.
+    rc, out = fx.sign("a")
+    assert rc == 3 and out["code"] == "REVIEW_NPC_SIGNOFF_STALE", out
+
+
+# ── T025 ───────────────────────────────────────────────────────────────────
+
+def test_us2_text_mode_lists_files_and_remedy(tmp_path):
+    fx = fixture.build(tmp_path)
+    fx.touch(fx.draft("a"))
+    fx.touch(fx.summary(2))
+    batch = [fx.signoff("a"), fx.signoff("b")]
+    decisions = fx.root / "txt-decisions.json"
+    fx.decide(batch)  # writes the first batch file; rebuild a text-mode request from it
+    first = sorted(fx.root.glob("fx-decisions-*.json"))[-1]
+    decisions.write_text(first.read_text(encoding="utf-8"), encoding="utf-8")
+    rc, stdout, _err = run_cli(["review", "decide", fx.review_id, "--decisions", str(decisions),
+                                "--campaign-dir", str(fx.root)])
+    assert rc == 3
+    lines = stdout.splitlines()
+    assert lines[0].startswith("REVIEW_STALE_CUSTODY: 2 source file(s) changed;")
+    assert f"  changed  {fx.rel(fx.draft('a'))}: a — {fx.signoff('a').item_id}" in lines
+    assert f"  changed  {fx.rel(fx.summary(2))}: b — {fx.signoff('b').item_id}" in lines
+    assert f"Bring them current: summary_native review refresh {fx.review_id} "\
+           f"--expected-generation {fx.generation}" in lines
+    assert not any(line.lstrip().startswith("{") for line in lines)
+
+
+# ── US3: review status lists stale items by NPC (T034) ─────────────────────
+
+def test_us3_s1_unchanged_sources_nothing_stale(tmp_path):
+    fx = fixture.build(tmp_path)
+    rc, out = fx.cli("review", "status", fx.review_id)
+    assert rc == 0, out
+    data = out["data"]
+    assert data["changed_files"] == [] and data["stale_by_npc"] == []
+    assert data["counts"] == {"pending": data["item_count"], "approved": 0, "rejected": 0,
+                              "discussed": 0, "withdrawn": 0, "stale": 0}
+    assert set(data) == {"review_id", "generation", "item_count", "counts", "changed_files", "stale_by_npc"}
+
+
+def test_us3_s2_draft_change_lists_only_that_npc(tmp_path):
+    fx = fixture.build(tmp_path)
+    fx.touch(fx.draft("a"))
+    rc, out = fx.cli("review", "status", fx.review_id)
+    assert rc == 0, out
+    data = out["data"]
+    a_ids = _ids(*fx.items["a"])
+    assert data["changed_files"] == [{"path": fx.rel(fx.draft("a")), "role": "draft", "state": "changed",
+                                      "stale_item_count": len(a_ids)}]
+    assert [(g["npc"], g["stale_item_count"], g["stale_item_ids"]) for g in data["stale_by_npc"]] == [
+        ("a", len(a_ids), a_ids)]
+    assert data["stale_by_npc"][0]["changed_files"] == [{"path": fx.rel(fx.draft("a")), "state": "changed"}]
+    assert data["counts"]["stale"] == 0  # the refresh-marked count keeps its meaning
+
+
+def test_us3_s3_summary_change_lists_naming_npcs_only(tmp_path):
+    fx = fixture.build(tmp_path)
+    fx.touch(fx.summary(1))
+    rc, out = fx.cli("review", "status", fx.review_id)
+    assert rc == 0, out
+    npcs = [g["npc"] for g in out["data"]["stale_by_npc"]]
+    # a and c name 001; d is listed too -- its evidence uses the delta form, so R5 falls back to every
+    # summary (the conservative case, asserted on purpose); b names only 002 and is never listed.
+    assert npcs == ["a", "c", "d"]
+    assert [f["path"] for f in out["data"]["changed_files"]] == [fx.rel(fx.summary(1))]

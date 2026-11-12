@@ -450,3 +450,66 @@ def test_capability_never_appears_in_service_output_or_error_bodies(live_review:
     stdout, stderr = live_review.stop()
     assert token not in stdout
     assert token not in stderr
+
+
+def _post_decision(service: LiveReviewService, **overrides) -> requests.Response:
+    csrf = requests.get(service.capability_url, timeout=2).headers["X-Review-CSRF"]
+    body = _decision_body(service)
+    body["decisions"][0].update(overrides)
+    return requests.post(
+        f"{service.capability_url}decisions", json=body,
+        headers={"Origin": service.origin, "X-Review-CSRF": csrf}, timeout=2,
+    )
+
+
+def test_capability_stale_custody_returns_whitelisted_detail(live_review: LiveReviewService):
+    source = live_review.root / "summaries" / "001" / "session-summary.md"
+    source.write_bytes(source.read_bytes() + b"\nedited.\n")
+    response = _post_decision(live_review)
+    assert response.status_code == 409
+    body = response.json()
+    assert body["code"] == "REVIEW_STALE_CUSTODY"
+    assert body["message"] == "Source files changed since this review was built. Nothing was saved."
+    detail = body["detail"]
+    assert set(detail) == {"changed_files", "stale_items", "remedy"}
+    assert [(f["path"], f["state"]) for f in detail["changed_files"]] == [
+        ("summaries/001/session-summary.md", "changed")]
+    assert all(set(f) == {"path", "state", "items"} and all(set(i) == {"item_id", "npc"} for i in f["items"])
+               for f in detail["changed_files"])
+    assert detail["changed_files"][0]["items"][0]["item_id"] == live_review.item.item_id
+    assert detail["stale_items"] == [live_review.item.item_id]
+    assert detail["remedy"].startswith("summary_native review refresh primary-review --expected-generation ")
+    assert "campaign" not in json.dumps(detail)  # no absolute paths
+
+
+def test_capability_detail_dropped_when_shape_unexpected():
+    from pipelines.summary_native.review.web.app import custody_detail
+
+    good = {
+        "changed_files": [{"path": "a.md", "source_id": "s", "role": "draft", "state": "changed",
+                           "items": [{"item_id": "i", "npc": None, "action": "x"}]}],
+        "stale_items": [{"item_id": "i", "npc": None, "paths": ["a.md"]}],
+        "remedy": {"command": "summary_native review refresh r --expected-generation 1", "note": "n"},
+    }
+    shaped = custody_detail(good, 10)
+    assert shaped == {
+        "changed_files": [{"path": "a.md", "state": "changed", "items": [{"item_id": "i", "npc": None}]}],
+        "stale_items": ["i"], "remedy": "summary_native review refresh r --expected-generation 1",
+    }
+    extra = {**good, "changed_files": [{**good["changed_files"][0], "path": "a.md", "secret": "s"}]}
+    assert custody_detail(extra, 10) is None
+    nonstring = {**good, "changed_files": [{**good["changed_files"][0], "state": 3}]}
+    assert custody_detail(nonstring, 10) is None
+    assert custody_detail({**good, "extra": 1}, 10) is None
+    assert custody_detail("nope", 10) is None
+    long = {**good, "remedy": {"command": "x" * 600}}
+    assert len(custody_detail(long, 10)["remedy"]) == 512
+    many = {**good, "stale_items": [{"item_id": f"i{n}", "npc": None, "paths": []} for n in range(30)]}
+    assert len(custody_detail(many, 10)["stale_items"]) == 10
+
+
+def test_other_stale_codes_unchanged(live_review: LiveReviewService):
+    response = _post_decision(live_review, expected_decision_revision=7)
+    assert response.status_code == 409
+    assert response.json() == {"ok": False, "code": "REVIEW_STALE_DECISION",
+                               "message": "Review state changed. Reload before trying again."}

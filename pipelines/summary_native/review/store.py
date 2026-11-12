@@ -788,7 +788,14 @@ def review_status(campaign_dir: Path, review_id: str) -> dict:
         else:
             key={"approve":"approved","reject":"rejected","discuss":"discussed"}[event["verdict"]]; counts[key] += 1
             if key != "approved": counts["pending"] += 1
-    return {"review_id":review_id,"generation":manifest.generation,"item_count":len(items),"counts":counts}
+    status = {"review_id":review_id,"generation":manifest.generation,"item_count":len(items),"counts":counts}
+    # Spec 042: which items rest on a file that has changed since the review was built, from the
+    # current bytes. Read-only; the counts above are untouched.
+    _m, source_custody, _i = read_snapshot(Path(campaign_dir).resolve(), review_id)
+    report = review_custody.stale_report(manifest.kind, source_custody, items, None,
+                                         review_custody.disk_probe(Path(campaign_dir).resolve()))
+    status.update(review_custody.stale_by_npc(report, items))
+    return status
 
 
 def refresh_review(campaign_dir: Path, review_id: str, *, expected_generation: int, current_rule_versions=None) -> dict:

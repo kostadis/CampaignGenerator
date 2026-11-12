@@ -148,28 +148,28 @@ description: "Task list for 042 per-item source custody (#624, #633)"
 
 ### Tests (write first, confirm they fail)
 
-- [ ] T023 [P] [US2] In `tests/test_summary_native_review_item_custody.py`, add `test_us2_s1_json_refusal_names_files_items_npcs`. Touch A's draft and `002-b.md`, and decide on A and B items in one batch. Check `data` exactly against contracts/custody-refusal.md: two `changed_files`, each with only its dependents, NPC labels, `by_npc`, and sort orders.
-- [ ] T024 [P] [US2] In `tests/test_summary_native_review_item_custody.py`, add `test_us2_s2_refusal_names_refresh_command`. `data.remedy.command` must equal `summary_native review refresh <id> --expected-generation <gen>`, and `remedy.note` must be present because a draft changed. Then run that exact command and repeat the decision on B: it saves. On A, the refresh refuses as today (`REVIEW_NPC_SIGNOFF_STALE` for the sign-off), which documents R14.
-- [ ] T025 [P] [US2] In `tests/test_summary_native_review_item_custody.py`, add `test_us2_text_mode_lists_files_and_remedy`. Without `--json`, stdout has the `REVIEW_STALE_CUSTODY:` line, one line per changed file in the contract's text form, and the `Bring them current:` line.
-- [ ] T026 [P] [US2] In `tests/test_summary_native_review_routes.py`, add `test_stale_custody_refusal_relays_data`. Use the existing fake runner to return a `REVIEW_STALE_CUSTODY` envelope with `data`. The route body carries `data` verbatim, and the status is unchanged.
-- [ ] T027 [P] [US2] In `tests/test_summary_native_review_http.py`, add:
+- [X] T023 [P] [US2] In `tests/test_summary_native_review_item_custody.py`, add `test_us2_s1_json_refusal_names_files_items_npcs`. Touch A's draft and `002-b.md`, and decide on A and B items in one batch. Check `data` exactly against contracts/custody-refusal.md: two `changed_files`, each with only its dependents, NPC labels, `by_npc`, and sort orders.
+- [X] T024 [P] [US2] In `tests/test_summary_native_review_item_custody.py`, add `test_us2_s2_refusal_names_refresh_command`. `data.remedy.command` must equal `summary_native review refresh <id> --expected-generation <gen>`, and `remedy.note` must be present because a draft changed. Then run that exact command and repeat the decision on B: it saves. On A, the refresh refuses as today (`REVIEW_NPC_SIGNOFF_STALE` for the sign-off), which documents R14.
+- [X] T025 [P] [US2] In `tests/test_summary_native_review_item_custody.py`, add `test_us2_text_mode_lists_files_and_remedy`. Without `--json`, stdout has the `REVIEW_STALE_CUSTODY:` line, one line per changed file in the contract's text form, and the `Bring them current:` line.
+- [X] T026 [P] [US2] In `tests/test_summary_native_review_routes.py`, add `test_stale_custody_refusal_relays_data`. Use the existing fake runner to return a `REVIEW_STALE_CUSTODY` envelope with `data`. The route body carries `data` verbatim, and the status is unchanged.
+- [X] T027 [P] [US2] In `tests/test_summary_native_review_http.py`, add:
   - `test_capability_stale_custody_returns_whitelisted_detail`: expect 409, the custody message, and `detail.changed_files[*].{path,state,items}` only;
   - `test_capability_detail_dropped_when_shape_unexpected`: extra keys and a non-string value both drop `detail`;
   - `test_other_stale_codes_unchanged`.
-- [ ] T028 [P] [US2] Create `frontend/src/components/ReviewLauncher.test.ts` (Vitest). Mock `fetch` to return a 409 envelope with `data`. After "Save decision", the result `<pre>` contains the changed path and the note shows the message.
+- [X] T028 [P] [US2] Create `frontend/src/components/ReviewLauncher.test.ts` (Vitest). Mock `fetch` to return a 409 envelope with `data`. After "Save decision", the result `<pre>` contains the changed path and the note shows the message.
 
 ### Implementation
 
-- [ ] T029 [US2] In `pipelines/summary_native/review/cli.py`, change the refusal handler (L971–973) to `_emit(args, ok=False, code=code, message=str(exc), data=getattr(exc, "detail", None))`. In `_emit`'s text branch, when `code == "REVIEW_STALE_CUSTODY"` and `data` is present, print `custody.refusal_text_lines(data)` instead of the raw JSON.
-- [ ] T030 [US2] In `server/routers/review_routes.py::_error`, include `"data": payload["data"]` when it is a dict.
-- [ ] T031 [US2] In `pipelines/summary_native/review/web/app.py::safe_command_error`, for `REVIEW_STALE_CUSTODY`:
+- [X] T029 [US2] In `pipelines/summary_native/review/cli.py`, change the refusal handler (L971–973) to `_emit(args, ok=False, code=code, message=str(exc), data=getattr(exc, "detail", None))`. In `_emit`'s text branch, when `code == "REVIEW_STALE_CUSTODY"` and `data` is present, print `custody.refusal_text_lines(data)` instead of the raw JSON.
+- [X] T030 [US2] In `server/routers/review_routes.py::_error`, include `"data": payload["data"]` when it is a dict.
+- [X] T031 [US2] In `pipelines/summary_native/review/web/app.py::safe_command_error`, for `REVIEW_STALE_CUSTODY`:
   - rebuild `detail` from the contract's whitelist, with string caps and a list cap of `max_batch_decisions`;
   - set the custody message;
   - keep 409.
 
   Every other code's body is unchanged.
-- [ ] T032 [US2] In `pipelines/summary_native/review/web/viewer.js`, have the `api()` error carry `body.detail`. In the save handler (L77), when `e.code === "REVIEW_STALE_CUSTODY"`, render `detail.changed_files` as a list (path, state, NPC: item ids) under `#save-state`, using `textContent` only, and unhide `#reload`. Add the list style to `viewer.css` if needed.
-- [ ] T033 [US2] In `frontend/src/components/ReviewLauncher.vue::request`, on refusal set `result.value = JSON.stringify(body.data, null, 2)` when `body.data` is present, before throwing. Run `npm test` and `npm run build` in `frontend/`.
+- [X] T032 [US2] In `pipelines/summary_native/review/web/viewer.js`, have the `api()` error carry `body.detail`. In the save handler (L77), when `e.code === "REVIEW_STALE_CUSTODY"`, render `detail.changed_files` as a list (path, state, NPC: item ids) under `#save-state`, using `textContent` only, and unhide `#reload`. Add the list style to `viewer.css` if needed.
+- [X] T033 [US2] In `frontend/src/components/ReviewLauncher.vue::request`, on refusal set `result.value = JSON.stringify(body.data, null, 2)` when `body.data` is present, before throwing. Run `npm test` and `npm run build` in `frontend/`.
 
 **Checkpoint**: T023–T028 pass.
 
@@ -183,15 +183,15 @@ description: "Task list for 042 per-item source custody (#624, #633)"
 
 ### Tests (write first, confirm they fail)
 
-- [ ] T034 [P] [US3] In `tests/test_summary_native_review_item_custody.py`, add:
+- [X] T034 [P] [US3] In `tests/test_summary_native_review_item_custody.py`, add:
   - `test_us3_s1_unchanged_sources_nothing_stale`: both lists are `[]`, and `counts` equals the pre-feature value captured in the test;
   - `test_us3_s2_draft_change_lists_only_that_npc`: A only, with its stale count equal to its item count and the draft path;
   - `test_us3_s3_summary_change_lists_naming_npcs_only`: touching `001-a.md` lists A and C, not B. D is listed too, because of the fallback, and the test asserts that explicitly as the conservative case.
-- [ ] T035 [P] [US3] In `tests/test_summary_native_review_routes.py`, add `test_status_route_relays_stale_by_npc`. `GET /{id}/status` returns the new keys untouched.
+- [X] T035 [P] [US3] In `tests/test_summary_native_review_routes.py`, add `test_status_route_relays_stale_by_npc`. `GET /{id}/status` returns the new keys untouched.
 
 ### Implementation
 
-- [ ] T036 [US3] In `pipelines/summary_native/review/store.py::review_status`, after the existing counts, compute `custody.stale_report(kind, custody, items, None, disk_probe(root))` from `read_snapshot`'s custody, and add `changed_files` and `stale_by_npc` per contracts/review-status.md. The `counts` code path is untouched.
+- [X] T036 [US3] In `pipelines/summary_native/review/store.py::review_status`, after the existing counts, compute `custody.stale_report(kind, custody, items, None, disk_probe(root))` from `read_snapshot`'s custody, and add `changed_files` and `stale_by_npc` per contracts/review-status.md. The `counts` code path is untouched.
 
 **Checkpoint**: T034–T035 pass. Every existing `review status` assertion passes unchanged. Find them with `grep -rn "REVIEW_STATUS\|review_status(" tests/`. Note that `tests/test_review_status.py` is `sd_review` and is unrelated.
 

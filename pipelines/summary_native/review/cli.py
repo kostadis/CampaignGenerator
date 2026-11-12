@@ -206,7 +206,12 @@ def _emit(args: argparse.Namespace, *, ok: bool, code: str, message: str, data=N
         print(json.dumps(envelope, sort_keys=True, separators=(",", ":"), default=str))
     else:
         print(message)
-        if data is not None:
+        if code == "REVIEW_STALE_CUSTODY" and isinstance(data, dict):
+            from pipelines.summary_native.review import custody
+
+            for line in custody.refusal_text_lines(data):
+                print(line)
+        elif data is not None:
             print(json.dumps(data, sort_keys=True, indent=2, default=str))
     return 0 if ok else _exit_for(code)
 

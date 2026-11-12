@@ -17,7 +17,7 @@ const given=(value:number|'')=>typeof value==='number'&&Number.isFinite(value)
 async function request(path:string, method:'GET'|'POST'='POST', payload?:object) {
   busy.value=true; note.value=''
   try { const response=await fetch(`/api/reviews${path}`,{method,headers:payload?{'Content-Type':'application/json'}:undefined,body:payload?JSON.stringify(payload):undefined}); const body=await response.json()
-    if(!response.ok||body.ok===false) throw new Error(body.message||body.detail||`Review command failed (${response.status})`)
+    if(!response.ok||body.ok===false) { if(body.data) result.value=JSON.stringify(body.data,null,2); throw new Error(body.message||body.detail||`Review command failed (${response.status})`) }
     reviewId.value=body.data?.review_id||reviewId.value; generation.value=body.data?.generation||generation.value; grant.value=body.data?.grant_id||grant.value; if(path.includes("/dependencies/migrate")) dependencyPlan.value=body.data?.plan_sha256||dependencyPlan.value; else plan.value=body.data?.plan_sha256||plan.value; result.value=JSON.stringify(body.data??body,null,2)
     capabilityUrl.value=body.data?.capability_url||body.data?.url||''; note.value=body.message||'Completed.'; return body
   } catch(error) { note.value=error instanceof Error?error.message:String(error); return null } finally { busy.value=false }
