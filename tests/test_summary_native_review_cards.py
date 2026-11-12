@@ -860,3 +860,32 @@ def test_export_refuses_unknown_action(campaign):
     assert not (root / "docs/reviews/odd-review/packets").exists() or not list(
         (root / "docs/reviews/odd-review/packets").glob("*"))
     assert _tree(root, "odd-review") == before
+
+
+def test_scale_800_items_export_and_decide_under_60s(tmp_path):
+    """SC-007: export, plan and write on a ~800-item review each finish well inside 60 s (loose, CI-safe)."""
+    import time
+
+    fx = custody_fx.build(tmp_path, extra_npcs=796)
+    started = time.perf_counter()
+    rc, env = _export(fx.root, fx.review_id)
+    export_s = time.perf_counter() - started
+    assert rc == 0 and env["code"] == "REVIEW_CARDS_EXPORTED", env
+    assert env["data"]["members"] >= 800
+    assert export_s < 60, f"export took {export_s:.1f}s"
+    packet = _load_packet(fx.root, fx.review_id, env["data"]["packetId"])
+    verdicts = ("approve", "approve", "approve", "reject", "discuss")
+    marks = {card["id"]: (verdicts[n % len(verdicts)], "scale" if n % 7 == 0 else "")
+             for n, card in enumerate(packet["cards"])}
+    path = _decisions(fx.root, packet, marks)
+    started = time.perf_counter()
+    rc, plan = _decide_cmd(fx.root, fx.review_id, path)
+    plan_s = time.perf_counter() - started
+    assert rc == 0 and plan["code"] == "REVIEW_CARDS_PLAN", plan
+    started = time.perf_counter()
+    rc, saved = _decide_cmd(fx.root, fx.review_id, path, "--write", "--plan-sha256", plan["data"]["planSha256"])
+    write_s = time.perf_counter() - started
+    assert rc == 0 and saved["code"] == "REVIEW_CARDS_SAVED", saved
+    assert plan_s < 60 and write_s < 60, (plan_s, write_s)
+    print(f"scale: {env['data']['members']} items, {len(packet['cards'])} cards: "
+          f"export {export_s:.1f}s plan {plan_s:.1f}s write {write_s:.1f}s")

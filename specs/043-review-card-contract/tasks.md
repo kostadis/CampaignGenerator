@@ -287,13 +287,13 @@ description: "Task list for 043 review card contract (#643 slice 1, #655)"
 
 ## Phase 9: Polish & cross-cutting
 
-- [ ] T043 [P] Update `docs/cli/summary_native_review.md`:
+- [X] T043 [P] Update `docs/cli/summary_native_review.md`:
   - a new "Card packets" section covering `cards export` and `cards decide`, plan then `--write --plan-sha256`, every refusal code decoded, and re-saving (noop and supersede);
   - the #655 action table;
   - the page contract pointer.
 
   Fix the two lines that say the review-artifact kit reads the store (:256, :346). Add a row to the CLAUDE.md docs table only if a new doc file is created (none planned).
-- [ ] T044 [P] Run `SC-007` scale: in `tests/test_summary_native_review_cards.py`, add `test_scale_800_items_export_and_decide_under_60s`, using `_custody_fixture.build(extra_npcs=…)` sized to about 800 items. The timing assertion is loose (< 60 s each), and wall times are recorded in `validation.md`.
+- [X] T044 [P] Run `SC-007` scale: in `tests/test_summary_native_review_cards.py`, add `test_scale_800_items_export_and_decide_under_60s`, using `_custody_fixture.build(extra_npcs=…)` sized to about 800 items. The timing assertion is loose (< 60 s each), and wall times are recorded in `validation.md`.
 - [ ] T045 Run the full Python suite and the frontend `npm test`, `npm run build` and `npm run test:e2e` (with `PLAYWRIGHT_CHROME_EXECUTABLE_PATH=/usr/bin/google-chrome`). Walk quickstart.md sections 1–7. Record everything in `validation.md`.
 - [ ] T046 One code-review pass over the CampaignGenerator diff and the mytools diff (`/code-review`). Fix the confirmed findings, then re-run the affected suites.
 - [ ] T047 File follow-up issues (GitHub MCP, `kostadis/CampaignGenerator`):

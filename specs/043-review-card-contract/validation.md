@@ -122,3 +122,27 @@ envelope (state `applied`, refused members category `refused`, `saved` a list of
 
 Counts (pinned PYTHONPATH, basetemp pytest-043): cards 42, cards_contract 6, action_table 21, delegated 13,
 noise_cli 14, decisions 9, no_llm 34, item_custody 26, routes 47 = **212 passed**. Frontend: `npm test` 67 passed, `npm run build` clean.
+
+## Polish T043-T044
+
+T043: `docs/cli/summary_native_review.md` gains "Card packets" (export, plan then `--write --plan-sha256`, every
+refusal code, noop/supersede, `previousDiscussion`, skipped sign-offs, `REVIEW_CARDS_ACTION_UNKNOWN`, the #655 action
+table, the page-contract pointer); the two lines that said the kit reads the store now say it goes through
+`review cards export|decide`. `docs/web/web_ui.md` has no review launcher section, so nothing was added there.
+Command examples in the doc are real output from the custody fixture (`deterministic=True`).
+
+T044 (SC-007): `test_scale_800_items_export_and_decide_under_60s`, custody fixture with `extra_npcs=796`: 802 items,
+802 cards (sign-offs, one member each), mixed approve/reject/discuss, notes on every 7th. No scale marker exists in
+tests/ (only `parametrize`), so the test is unmarked; it takes about 43 s including the fixture build.
+
+| Step | Wall time |
+|---|---|
+| export | 1.2 s |
+| decide (dry run, plan) | 2.6 s |
+| decide `--write` (9 batches of up to 100) | 26.7 s |
+
+Well inside the 60 s bound, but `--write` is over 20 s, so it was profiled (cProfile, 50 s under the profiler).
+Hot spot: the cost is per batch, not per decision. Each of the 9 transactions re-reads the whole review snapshot
+(about 2400 YAML documents parsed and pydantic-validated, roughly 11 s of the profile) and rewrites the authority
+ledger (`authority.py` `yaml.safe_dump`, about 0.9 s per transaction, 8 s in all). Not optimised; a larger batch size
+or caching the snapshot between batches would be the lever, if ever needed.
