@@ -88,6 +88,7 @@ The file has no reviewer, disposition, revision or digest fields (FR-005). Any o
   - `record`: no fresh decision exists;
   - `supersede`: a fresh decision differs;
   - `noop`: identical;
+  - `refused`: the card was refused, so this member was NOT recorded (the card's `refusal` says why);
 - `disposition`;
 - `previous`: `{verdict, disposition, note, decisionRevision}` or null;
 - `decision`: the exact store decision dict, or null when the member is a `noop`.

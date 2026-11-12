@@ -149,7 +149,7 @@ description: "Task list for 043 review card contract (#643 slice 1, #655)"
 
 **Independent Test**: each bad input against a fixture packet gives the refusal code, and `sha_tree` is unchanged.
 
-- [ ] T021 [US2] In `tests/test_summary_native_review_cards.py`, write these tests. Each whole-file test asserts the code, the exit code and that `sha_tree(review dir)` is unchanged:
+- [X] T021 [US2] In `tests/test_summary_native_review_cards.py`, write these tests. Each whole-file test asserts the code, the exit code and that `sha_tree(review dir)` is unchanged:
   - `test_us2_s1_unknown_packet_refused`;
   - `test_us2_s2_review_id_mismatch_refused`;
   - `test_us2_s3_unknown_card_named`, where `data.cards` lists every unknown id;
@@ -165,7 +165,7 @@ description: "Task list for 043 review card contract (#643 slice 1, #655)"
   - `test_us2_schema_version_refused` (`schemaVersion: 2`, message names `[1]`);
   - `test_us2_extra_key_refused`;
   - `test_us2_unsaved_page_refused` (`savedAt` empty).
-- [ ] T022 [US2] Fix any gaps T021 exposes in `cards.plan_decide` and `parse_decisions`. No new behaviour beyond research R7.
+- [X] T022 [US2] Fix any gaps T021 exposes in `cards.plan_decide` and `parse_decisions`. No new behaviour beyond research R7.
 
 **Checkpoint**: SC-002 holds for every bad input.
 

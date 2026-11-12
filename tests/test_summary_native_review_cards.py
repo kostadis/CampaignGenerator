@@ -425,3 +425,265 @@ def test_us1_parse_decisions_schema_and_note_limit():
     with pytest.raises(ReviewStoreError) as caught:
         cards.parse_decisions(json.dumps(long_note).encode(), max_note_chars=10)
     assert caught.value.code == "REVIEW_CARDS_NOTE_TOO_LONG"
+
+
+# =====================================================================================
+# User Story 2 (spec 043): nothing a page sends can record what CampaignGenerator cannot prove
+# =====================================================================================
+
+def _fx_packet(fx, *extra):
+    rc, env = _export(fx.root, fx.review_id, *extra)
+    assert rc == 0, env
+    return _load_packet(fx.root, fx.review_id, env["data"]["packetId"])
+
+
+def _refuses_whole_file(root, review, path, code, rc=2):
+    """The dry run and the write both refuse with ``code`` and the review tree is byte-identical."""
+    before = _tree(root, review)
+    got, env = _decide_cmd(root, review, path)
+    assert (got, env["code"]) == (rc, code), env
+    got, env = _decide_cmd(root, review, path, "--write", "--plan-sha256", "0" * 64)
+    assert (got, env["code"]) == (rc, code), env
+    assert _tree(root, review) == before
+    return env
+
+
+def _by_card(plan):
+    return {c["cardId"]: c for c in plan["data"]["cards"]}
+
+
+def test_us2_s1_unknown_packet_refused(noise_cards):
+    root, _ = noise_cards
+    rc, env = _export(root, RID)
+    packet = _load_packet(root, RID, env["data"]["packetId"])
+    path = _decisions(root, packet, {"mixed": ("approve", "")}, packetId="packet-" + "0" * 20)
+    _refuses_whole_file(root, RID, path, "REVIEW_CARDS_PACKET_UNKNOWN")
+
+
+def test_us2_s2_review_id_mismatch_refused(noise_cards):
+    root, _ = noise_cards
+    rc, env = _export(root, RID)
+    packet = _load_packet(root, RID, env["data"]["packetId"])
+    path = _decisions(root, packet, {"mixed": ("approve", "")}, reviewId="some-other-review")
+    _refuses_whole_file(root, RID, path, "REVIEW_CARDS_REVIEW_MISMATCH")
+
+
+def test_us2_s3_unknown_card_named(noise_cards):
+    root, _ = noise_cards
+    rc, env = _export(root, RID)
+    packet = _load_packet(root, RID, env["data"]["packetId"])
+    path = _decisions(root, packet, {"mixed": ("approve", "")})
+    body = json.loads(path.read_text(encoding="utf-8"))
+    body["cards"]["ghost-2"] = {"verdict": "approve", "note": "", "members": ["x"]}
+    body["cards"]["ghost-1"] = {"verdict": "reject", "note": "", "members": ["y"]}
+    path.write_text(json.dumps(body), encoding="utf-8")
+    env = _refuses_whole_file(root, RID, path, "REVIEW_CARDS_UNKNOWN_CARD")
+    assert env["data"]["cards"] == ["ghost-1", "ghost-2"]
+    assert "ghost-1" in env["message"] and "ghost-2" in env["message"]
+
+
+def test_us2_s4_stale_generation_refused_with_export_remedy(tmp_path):
+    fx = custody_fx.build(tmp_path)
+    packet = _fx_packet(fx, "--action", "review_presentation")
+    path = _decisions(fx.root, packet, {packet["cards"][0]["id"]: ("approve", "")})
+    rc, env = fx.cli("review", "refresh", fx.review_id, "--expected-generation", str(fx.generation))
+    assert rc == 0, env
+    assert fx.snapshot()[0].generation != packet["generation"]
+    env = _refuses_whole_file(fx.root, fx.review_id, path, "REVIEW_CARDS_PACKET_STALE", rc=3)
+    assert "review cards export" in env["message"]
+
+
+def test_us2_s5_signoff_draft_changed_refuses_that_card_only(tmp_path):
+    fx = custody_fx.build(tmp_path)
+    packet = _fx_packet(fx)
+    sign_c, sign_d, find_b = fx.signoff("c").item_id, fx.signoff("d").item_id, fx.findings("b")[0].item_id
+    path = _decisions(fx.root, packet, {sign_c: ("approve", ""), sign_d: ("approve", ""), find_b: ("approve", "")})
+    fx.touch(fx.draft("c"))
+    rc, plan = _decide_cmd(fx.root, fx.review_id, path)
+    assert rc == 0, plan
+    cards_ = _by_card(plan)
+    refused = cards_[sign_c]
+    assert refused["state"] == "refused" and refused["refusal"]["code"] == "REVIEW_NPC_SIGNOFF_STALE"
+    assert "npc_c.md" in refused["refusal"]["message"]
+    assert refused["members"] == [{"itemId": sign_c, "category": "refused", "disposition": None,
+                                   "previous": None, "decision": None}]
+    assert cards_[sign_d]["state"] == "applied" and cards_[find_b]["state"] == "applied"
+    assert plan["data"]["counts"]["refused"] == 1 and plan["data"]["counts"]["record"] == 2
+    n_before = len(_events(fx.root, fx.review_id))
+    rc, saved = _decide_cmd(fx.root, fx.review_id, path, "--write", "--plan-sha256", plan["data"]["planSha256"])
+    assert rc == 0, saved
+    recorded = {e["item_id"] for e in _events(fx.root, fx.review_id)[n_before:]}
+    assert recorded == {sign_d, find_b}
+
+
+def test_us2_s5_signoff_echo_missing_or_different_refused(tmp_path):
+    fx = custody_fx.build(tmp_path)
+    packet = _fx_packet(fx, "--action", "signoff_npc_draft")
+    sign = fx.signoff("c").item_id
+    for bad in (None, "0" * 64):
+        path = _decisions(fx.root, packet, {sign: ("approve", "")})
+        body = json.loads(path.read_text(encoding="utf-8"))
+        if bad is None:
+            del body["cards"][sign]["draftSha256"]
+        else:
+            body["cards"][sign]["draftSha256"] = bad
+        path.write_text(json.dumps(body), encoding="utf-8")
+        env = _refuses_whole_file(fx.root, fx.review_id, path, "REVIEW_CARDS_FINGERPRINT_MISMATCH")
+        assert env["data"]["cards"] == [sign]
+
+
+def test_us2_s6_packet_has_no_verdict_and_unmarked_records_nothing(tmp_path):
+    fx = custody_fx.build(tmp_path)
+    packet = _fx_packet(fx)
+    forbidden = {"verdict", "guess", "decision", "recommendation"}
+
+    def keys(value):
+        if isinstance(value, dict):
+            for k, v in value.items():
+                yield k
+                yield from keys(v)
+        elif isinstance(value, list):
+            for v in value:
+                yield from keys(v)
+
+    assert not forbidden & set(keys(packet))
+    path = _decisions(fx.root, packet, {})
+    before = _tree(fx.root, fx.review_id)
+    n_before = len(_events(fx.root, fx.review_id))
+    rc, plan = _decide_cmd(fx.root, fx.review_id, path)
+    assert rc == 0 and plan["data"]["counts"]["unmarked"] == len(packet["cards"])
+    assert all(c["state"] == "unmarked" and c["verdict"] is None for c in plan["data"]["cards"])
+    rc, saved = _decide_cmd(fx.root, fx.review_id, path, "--write", "--plan-sha256", plan["data"]["planSha256"])
+    assert rc == 0 and saved["data"]["saved"] == []
+    assert _tree(fx.root, fx.review_id) == before and len(_events(fx.root, fx.review_id)) == n_before
+
+
+def test_us2_s7_disallowed_pair_refused_on_every_path(tmp_path, monkeypatch):
+    fx = custody_fx.build(tmp_path)
+    finding, signoff = fx.findings("a")[0], fx.signoff("a")
+    # review decide: a finding cannot take document_signoff, and a sign-off cannot take accept_no_change.
+    before = fx.review_tree_sha()
+    rc, env = fx.decide([finding], verdict="approve", disposition="document_signoff")
+    assert rc != 0 and env["code"] == "REVIEW_ACTION_MISMATCH", env
+    rc, env = fx.decide([signoff], verdict="approve", disposition="accept_no_change")
+    assert rc != 0 and env["code"] == "REVIEW_ACTION_MISMATCH", env
+    assert fx.review_tree_sha() == before
+    # review npc sign: signing a finding item is not a sign-off.
+    digest = hashlib.sha256(fx.draft("a").read_bytes()).hexdigest()
+    rc, env = fx.cli("review", "npc", "sign", fx.review_id, "--item", finding.item_id, "--draft-sha256", digest,
+                     "--expected-decision-revision", "0", "--reviewer", "GM")
+    assert rc != 0 and not env["ok"], env
+    assert fx.review_tree_sha() == before
+    # cards decide: a wrong pair out of DISPOSITION_FOR is refused by the store's table, not trusted.
+    packet = _fx_packet(fx, "--action", finding.proposed_action.action)
+    card_id = next(c["id"] for c in packet["cards"] if finding.item_id in [m["itemId"] for m in c["members"]])
+    path = _decisions(fx.root, packet, {card_id: ("approve", "")})
+    monkeypatch.setitem(cards.DISPOSITION_FOR, (finding.proposed_action.action, "approve"), "document_signoff")
+    _refuses_whole_file(fx.root, fx.review_id, path, "REVIEW_ACTION_MISMATCH")
+
+
+def test_us2_member_echo_mismatch_refused(noise_cards):
+    root, _ = noise_cards
+    rc, env = _export(root, RID)
+    packet = _load_packet(root, RID, env["data"]["packetId"])
+    path = _decisions(root, packet, {"noise-class:label": ("approve", ""), "mixed": ("approve", "")})
+    body = json.loads(path.read_text(encoding="utf-8"))
+    body["cards"]["noise-class:label"]["members"] = ["label-1", "label-2"]
+    path.write_text(json.dumps(body), encoding="utf-8")
+    env = _refuses_whole_file(root, RID, path, "REVIEW_CARDS_MEMBER_MISMATCH")
+    assert env["data"]["cards"] == ["noise-class:label"]
+    body["cards"]["noise-class:label"]["members"] = ["label-1", "label-2", "label-3", "mixed"]
+    path.write_text(json.dumps(body), encoding="utf-8")
+    _refuses_whole_file(root, RID, path, "REVIEW_CARDS_MEMBER_MISMATCH")
+
+
+def test_us2_altered_packet_refused(noise_cards):
+    root, _ = noise_cards
+    rc, env = _export(root, RID)
+    pid = env["data"]["packetId"]
+    packet = _load_packet(root, RID, pid)
+    path = _decisions(root, packet, {"mixed": ("approve", "")})
+    stored = root / "docs/reviews" / RID / "packets" / f"{pid}.json"
+    stored.write_bytes(stored.read_bytes().replace(b"Classified noise", b"Classified n0ise"))
+    _refuses_whole_file(root, RID, path, "REVIEW_CARDS_PACKET_ALTERED")
+
+
+def test_us2_member_item_moved_refused_per_card(tmp_path, monkeypatch):
+    fx = custody_fx.build(tmp_path)
+    packet = _fx_packet(fx, "--action", "review_presentation")
+    a_item, b_item = fx.findings("a")[0], fx.findings("b")[0]
+    path = _decisions(fx.root, packet, {a_item.item_id: ("approve", ""), b_item.item_id: ("approve", "")})
+    # An item staged at a new revision without a generation move cannot be made through the store
+    # (a stage bumps the generation, which refuses the whole packet first), so present the moved item
+    # to the planner exactly as read_review_state would return it after such a revision.
+    from pipelines.summary_native.review import store
+    real = store.read_review_state
+
+    def moved(root, review_id, **kw):
+        manifest, items, events, stale = real(root, review_id, **kw)
+        return manifest, tuple(i.model_copy(update={"revision": i.revision + 1}) if i.item_id == a_item.item_id else i
+                               for i in items), events, stale
+
+    monkeypatch.setattr(store, "read_review_state", moved)
+    before = _tree(fx.root, fx.review_id)
+    rc, plan = _decide_cmd(fx.root, fx.review_id, path)
+    assert rc == 0, plan
+    cards_ = _by_card(plan)
+    assert cards_[a_item.item_id]["state"] == "refused"
+    assert cards_[a_item.item_id]["refusal"]["code"] == "REVIEW_CARDS_MEMBER_STALE"
+    assert cards_[a_item.item_id]["refusal"]["data"] == {"items": [a_item.item_id]}
+    assert [(m["itemId"], m["category"]) for m in cards_[a_item.item_id]["members"]] == [(a_item.item_id, "refused")]
+    assert cards_[b_item.item_id]["state"] == "applied"
+    assert plan["data"]["counts"]["refused"] == 1 and plan["data"]["counts"]["record"] == 1
+    assert _tree(fx.root, fx.review_id) == before
+
+
+def test_us2_custody_stale_refused_per_card(tmp_path):
+    fx = custody_fx.build(tmp_path)
+    packet = _fx_packet(fx, "--action", "review_presentation")
+    a_item, b_item = fx.findings("a")[0], fx.findings("b")[0]
+    path = _decisions(fx.root, packet, {a_item.item_id: ("approve", ""), b_item.item_id: ("approve", "")})
+    fx.touch(fx.evidence("a"))
+    rc, plan = _decide_cmd(fx.root, fx.review_id, path)
+    assert rc == 0, plan
+    cards_ = _by_card(plan)
+    assert cards_[a_item.item_id]["state"] == "refused"
+    assert cards_[a_item.item_id]["refusal"]["code"] == "REVIEW_STALE_CUSTODY"
+    assert cards_[a_item.item_id]["refusal"]["data"]["stale_items"][0]["item_id"] == a_item.item_id
+    assert [(m["itemId"], m["category"]) for m in cards_[a_item.item_id]["members"]] == [(a_item.item_id, "refused")]
+    assert cards_[b_item.item_id]["state"] == "applied"
+    assert plan["data"]["counts"]["refused"] == 1 and plan["data"]["counts"]["record"] == 1
+    n_before = len(_events(fx.root, fx.review_id))
+    rc, saved = _decide_cmd(fx.root, fx.review_id, path, "--write", "--plan-sha256", plan["data"]["planSha256"])
+    assert rc == 0, saved
+    assert [e["item_id"] for e in _events(fx.root, fx.review_id)[n_before:]] == [b_item.item_id]
+
+
+def test_us2_schema_version_refused(noise_cards):
+    root, _ = noise_cards
+    rc, env = _export(root, RID)
+    packet = _load_packet(root, RID, env["data"]["packetId"])
+    path = _decisions(root, packet, {"mixed": ("approve", "")}, schemaVersion=2)
+    env = _refuses_whole_file(root, RID, path, "REVIEW_CARDS_SCHEMA")
+    assert "[1]" in env["message"]
+
+
+def test_us2_extra_key_refused(noise_cards):
+    root, _ = noise_cards
+    rc, env = _export(root, RID)
+    packet = _load_packet(root, RID, env["data"]["packetId"])
+    path = _decisions(root, packet, {"mixed": ("approve", "")}, reviewer="GM")
+    _refuses_whole_file(root, RID, path, "REVIEW_CARDS_INVALID")
+    path = _decisions(root, packet, {"mixed": ("approve", "")})
+    body = json.loads(path.read_text(encoding="utf-8"))
+    body["cards"]["mixed"]["disposition"] = "accept_no_change"
+    path.write_text(json.dumps(body), encoding="utf-8")
+    _refuses_whole_file(root, RID, path, "REVIEW_CARDS_INVALID")
+
+
+def test_us2_unsaved_page_refused(noise_cards):
+    root, _ = noise_cards
+    rc, env = _export(root, RID)
+    packet = _load_packet(root, RID, env["data"]["packetId"])
+    path = _decisions(root, packet, {"mixed": ("approve", "")}, savedAt="")
+    _refuses_whole_file(root, RID, path, "REVIEW_CARDS_INVALID")

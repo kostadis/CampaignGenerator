@@ -73,3 +73,24 @@ Deviations and conservative choices (see the Phase 3 report):
 4. A non-signoff card that echoes a `draftSha256` is refused with `REVIEW_CARDS_FINGERPRINT_MISMATCH` (the file
    rule is "required iff signoff").
 5. Refused cards carry `members: []` in the plan; `counts.refused` counts the packet card's members.
+
+## Phase 4 (T021-T022)
+
+T021: 15 US2 tests added (`-k us2`). Written after the Phase 3 implementation, so 14 passed on first run; 1 failed:
+`test_us2_s5_signoff_draft_changed_refuses_that_card_only` (the refusal message was the blocker's bare
+"draft bytes changed" and did not name the draft, which US2 s5 requires).
+
+T022 fixes (cards.py only): (1) the stale-sign-off refusal message now appends the draft path and carries
+`draftPath` in its data; (2) orchestrator-requested: a refused card (sign-off stale, member moved, custody
+stale) lists its packet members as `{itemId, category: "refused", disposition: null, previous: null,
+decision: null}` instead of `[]`; `PlannedMember.category` gained `refused` (data-model.md updated);
+`counts.refused` is still the member count; (3) the `REVIEW_CARDS_SCHEMA` message now reads `accepted: [1]`.
+`REVIEW_CARDS_ACTION_UNKNOWN` untouched.
+
+Run (pinned PYTHONPATH): cards + action_table + delegated + noise_cli + decisions + no_llm + item_custody =
+**151 passed** (cards file alone: 34 passed).
+
+Notes: `test_us2_member_item_moved_refused_per_card` presents the moved item by monkeypatching
+`store.read_review_state`, because `append_review_items` bumps the generation, which refuses the whole packet
+(`REVIEW_CARDS_PACKET_STALE`) before any per-member check can run; a member can therefore only move per-card in
+the same generation through a hand-written store edit.

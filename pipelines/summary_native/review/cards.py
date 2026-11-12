@@ -112,8 +112,8 @@ class CardDecisions(_Strict):
 
 class PlannedMember(_Strict):
     item_id: str
-    category: Literal["record", "supersede", "noop"]
-    disposition: str
+    category: Literal["record", "supersede", "noop", "refused"]
+    disposition: str | None
     previous: dict | None = None
     decision: dict | None = None
 
@@ -501,7 +501,7 @@ def parse_decisions(raw: bytes, *, max_note_chars: int) -> CardDecisions:
     version = value.get("schemaVersion")
     if isinstance(version, bool) or version not in ACCEPTED_SCHEMA_VERSIONS:
         accepted = ", ".join(str(v) for v in sorted(ACCEPTED_SCHEMA_VERSIONS))
-        raise _refuse("REVIEW_CARDS_SCHEMA", f"schemaVersion {version!r} is not accepted; accepted: {accepted}")
+        raise _refuse("REVIEW_CARDS_SCHEMA", f"schemaVersion {version!r} is not accepted; accepted: [{accepted}]")
     try:
         parsed = CardDecisions.model_validate(value)
     except ValidationError as exc:
@@ -539,6 +539,12 @@ def pack_batches(card_decisions: list[list[dict]], cap: int) -> list[list[dict]]
     if current:
         batches.append(current)
     return batches
+
+
+def _refused_members(card: Card) -> list[dict]:
+    """A refused card still names every item that was NOT recorded (the GM must see them)."""
+    return [{"itemId": m.item_id, "category": "refused", "disposition": None, "previous": None, "decision": None}
+            for m in card.members]
 
 
 def plan_decide(root: Path, review_id: str, decisions: CardDecisions) -> dict:
@@ -584,7 +590,8 @@ def plan_decide(root: Path, review_id: str, decisions: CardDecisions) -> dict:
         entry["verdict"] = verdict
 
         def refuse(code, message, data=None):
-            entry.update(state="refused", refusal={"code": code, "message": message, "data": data}, members=[])
+            entry.update(state="refused", refusal={"code": code, "message": message, "data": data},
+                         members=_refused_members(card))
 
         moved = [m.item_id for m in card.members
                  if m.item_id not in live or live[m.item_id].revision != m.item_revision
@@ -594,9 +601,12 @@ def plan_decide(root: Path, review_id: str, decisions: CardDecisions) -> dict:
                    {"items": moved})
             continue
         if card.kind == "signoff" and verdict == "approve":
-            blocker = delegated.npc_signoff_blocker(root, live[card.members[0].item_id])
+            signoff_item = live[card.members[0].item_id]
+            blocker = delegated.npc_signoff_blocker(root, signoff_item)
             if blocker is not None:
-                refuse(blocker[0], blocker[1], {"items": [card.members[0].item_id]})
+                draft_path = signoff_item.proposed_action.details.get("draft_path")
+                refuse(blocker[0], f"{blocker[1]} ({draft_path})" if draft_path else blocker[1],
+                       {"items": [signoff_item.item_id], "draftPath": draft_path})
                 continue
         expansion = expand(
             snapshot, member_ids=[m.item_id for m in card.members], verdict=verdict,
@@ -623,7 +633,7 @@ def plan_decide(root: Path, review_id: str, decisions: CardDecisions) -> dict:
                     continue
                 own = custody.stale_report(manifest.kind, custody_gen, snap_items, ids, probe)
                 entry.update(
-                    state="refused", members=[],
+                    state="refused", members=_refused_members(by_card[entry["cardId"]]),
                     refusal={"code": "REVIEW_STALE_CUSTODY", "message": custody.refusal_message(own, "decide"),
                              "data": custody.refusal_detail(
                                  own, review_id=review_id, generation=manifest.generation, operation="decide",
