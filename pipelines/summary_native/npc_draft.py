@@ -29,7 +29,7 @@ from campaignlib import client_from_args, stream_api
 from campaignlib.api.client import resolve_cli_model
 from campaignlib.util import atomic_write_text
 from pipelines.summary_native import context, corpus, npc_authored, npc_check, npc_chunked, npc_compose, npc_forms
-from pipelines.summary_native import npc_link, npc_slug, npc_verify, schema, select, synth, validate
+from pipelines.summary_native import npc_link, npc_slug, npc_verify, runs, schema, select, synth, validate
 from pipelines.summary_native.freshness import check_fresh, check_link_fresh, manual_sha, sha_file as _sha_file
 from pipelines.summary_native.scheduler import EndpointState, Scheduler, SchedulerResult, WorkItem
 
@@ -299,10 +299,6 @@ def _attempts_json(attempts: list) -> list[dict]:
     return [asdict(attempt) for attempt in attempts]
 
 
-def _new_run_dir(runs_root: Path, stamp: str) -> Path:
-    return synth._new_run_dir(runs_root, stamp)
-
-
 def _healthy_endpoints(endpoints: list[str], model: str | None) -> tuple[list[str], list[str]]:
     """Late import keeps the NPC model boundary independent of extract internals."""
     from pipelines.summary_native.extract import healthy_endpoints
@@ -508,8 +504,7 @@ def run_draft(
         keys[s["stem"]] = draft_key(system, user, backend, args.model, args.max_tokens, mode, chunk_chars if chunked else None)
 
     started = now()
-    run_id = started.strftime("%Y%m%dT%H%M%SZ")
-    run_dir = npc_range_dir / RUNS_DIR / run_id
+    run_id = runs.run_stamp(started)  # provisional; the real id is the created directory name
 
     record = {
         "run_id": run_id,
@@ -557,7 +552,7 @@ def run_draft(
             return _refuse(str(e))
         run_dir, run_id = path.parent, record["run_id"]
     else:
-        run_dir = _new_run_dir(npc_range_dir / RUNS_DIR, run_id)
+        run_dir = runs.new_run_dir(npc_range_dir / RUNS_DIR, run_id)
         run_id = run_dir.name
         record["run_id"] = run_id
         atomic_write_text(run_dir / "selection.json", selection.to_json())
