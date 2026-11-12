@@ -501,6 +501,8 @@ test('authority correction follows the CLI parity flow in five explicit GM actio
   await expect(authority.getByLabel('Exact proposed source diff')).toContainText('Earthstone was taken')
   await authority.getByRole('button', { name: 'Apply displayed correction' }).click() // 5
 
+  // Route handlers record the request asynchronously; wait for it (#651).
+  await expect.poll(() => calls.length).toBe(5)
   expect(calls.map(c => c.path)).toEqual([
     'init', 'records/stage', 'records/stages/stage-1/apply',
     'records/earthstone-actor/propose', 'records/earthstone-actor/apply',
@@ -550,6 +552,8 @@ test('authority keeps stale, recovery, withdrawal, retirement, and proposal bind
   await authority.getByRole('button', { name: 'Select' }).nth(1).click()
   await authority.getByRole('button', { name: 'Retire record' }).click()
 
+  // Route handlers record the request asynchronously; wait for it (#651).
+  await expect.poll(() => calls.length).toBe(4)
   expect(calls.map(call => call.path)).toEqual([
     'transactions/tx-pending/recover', 'records/note-a/propose', 'records/note-a/withdraw', 'records/note-b/retire',
   ])
@@ -588,6 +592,8 @@ test('a requested withdrawal shows its reversal diff and is approved by its own 
   await expect(authority.getByLabel('Proposal digest to approve')).toHaveValue('withdrawal-digest')
   await authority.getByRole('button', { name: 'Apply displayed correction' }).click()
 
+  // Route handlers record the request asynchronously; wait for it (#651).
+  await expect.poll(() => calls.length).toBe(2)
   expect(calls.map(call => call.path)).toEqual(['records/earthstone-actor/withdraw', 'records/earthstone-actor/apply'])
   expect(calls[1].body.proposal_sha256).toBe('withdrawal-digest')
 })
@@ -616,6 +622,8 @@ test('authority conflict review invokes the CLI-backed history, dismissal, and h
   await authority.getByPlaceholder('contradictory-gate-account').fill('prose-tension')
   await authority.getByPlaceholder('record IDs, one per line').fill('gate-open\ngate-closed')
   await authority.getByRole('button', { name: 'Record conflict' }).click()
+  // Route handlers record the request asynchronously; wait for it (#651).
+  await expect.poll(() => calls.length).toBe(2)
   expect(calls).toEqual([
     { path: 'conflicts/gate-conflict/dismiss', body: { reason: 'Reviewed as compatible', expected_ledger_sha256: 'ledger-4' } },
     { path: 'conflicts/identify', body: { id: 'prose-tension', record_ids: ['gate-open', 'gate-closed'], basis: 'human_identified', reason: 'Reviewed as compatible', expected_ledger_sha256: 'ledger-4' } },
