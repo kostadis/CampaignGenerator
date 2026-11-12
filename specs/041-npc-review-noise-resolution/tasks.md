@@ -231,8 +231,8 @@ description: "Task list for 041 NPC review noise resolution (#621)"
 
 - [X] T037 [P] Document `review noise`, `review noise decide`, the six classes with their precedence, and the policy keys `noise-<class>` in `docs/cli/summary_native_review.md`. Add a "Reading classified noise" note, pointing at the `verify.md` section and `review noise`, to `docs/cli/npc_dossiers_howto.md`.
 - [X] T038 [P] Add `review noise` to the review command table in `CLAUDE.md` only if that table lists the other review verbs. Otherwise skip it, and say so in `validation.md`.
-- [ ] T039 Run the full suite, `PYTHONPATH=<CG worktree> ~/.venv/bin/python -m pytest tests/ -q`, and the frontend checks only if any frontend file changed (none is planned). Record the results in `validation.md`.
-- [ ] T040 Walk through quickstart.md sections 1–4 and record each outcome in `validation.md`.
+- [X] T039 Run the full suite, `PYTHONPATH=<CG worktree> ~/.venv/bin/python -m pytest tests/ -q`, and the frontend checks only if any frontend file changed (none is planned). Record the results in `validation.md`.
+- [X] T040 Walk through quickstart.md sections 1–4 and record each outcome in `validation.md`.
 
 ---
 

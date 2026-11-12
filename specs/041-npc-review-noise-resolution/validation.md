@@ -114,3 +114,43 @@ Result: 3 passed. Without the env var: 3 skipped.
 - `docs/cli/summary_native_review.md`: new section "Classified noise: `review noise`". It covers the classes, listing, `noise decide`, the refusals, standing policy, the review page and the routes. Spot-checked against the CLI and the refusal codes by the orchestrator.
 - `docs/cli/npc_dossiers_howto.md`: new subsection "Reading classified noise".
 - T038: `CLAUDE.md` is unchanged. It has no table enumerating the summary_native review verbs.
+
+## Code review (one pass, `/code-review high`): 10 findings, all fixed (e0423a3)
+
+Each fix is test-first; every new test failed against the unfixed source except #10's, which already passed.
+
+1. Negation is scoped to the clause holding the not-established phrase. Clauses split at `;`, a spaced dash, `but`, `, however` and `, yet`.
+2. A status synonym resolves only if it appears in a scene the sentence cites. The literal-word check is unchanged.
+3. verify.md lists the number/ordinal findings its accounting counts. This is reporting only.
+4. `review noise` `npc` falls back to the draft stem.
+5. Noise item ids no longer include an ordinal or a selection id, so they stay stable when unrelated noise appears.
+6. A draft's noise is emitted once when several selections share identical draft bytes.
+7. `NNN.SS` is a scene label only beside "scene(s)" or a cited chapter, so "120.50 gold" is a decimal.
+8. The sentence splitter keeps initials and title abbreviations (Lt., Capt., …) together.
+9. The same-citation check compares sentences that share a line.
+10. The route's class Literal is derived from `noise.CLASSES`, and the status synonyms load is cached.
+
+Re-run after the fixes: the 14 affected files gave 302 passed, and no golden files changed. The stormgiants replay is unchanged: SC-001 49, SC-004 48/48 with 0 misses, SC-002 0/16, and SC-005 holds.
+
+## T039 — full suite
+
+`PYTHONPATH=$WT ~/.venv/bin/python -m pytest tests/ -q --basetemp=$HOME/.cache/... --ignore=tests/test_backend_seam_guardrails.py --ignore=tests/test_codex_cli_family.py`
+gives **9172 passed, 2 failed, 45 skipped**.
+
+- The 2 failures are in `test_summary_native_key_npcs.py` (`KeyError: 'key_npcs'`). They also fail on main e6c13a9, and which ones fail depends on test order. They are recorded on #644.
+- The two ignored files are red on main (#644).
+- `test_setup_routes.py` (6 tests) fails on main when that file runs alone and passes in the full run, also order-dependent. Recorded on #644.
+- The first full run gave about 3,300 `OSError` setup errors, because `/tmp` ran out of inodes from accumulated pytest basetemps. Rerunning with `--basetemp` on the home disk fixed it.
+- No frontend file changed.
+
+## T040 — quickstart walkthrough
+
+- §1: the unit and fixture suites pass (inside the 302 above).
+- §2: see T039.
+- §3: run through the real CLI against the review-store fixture, using hand-built noise items; the real adapter is covered by §4.
+  - `review noise --json` lists the 6 classes in precedence order: label 3/2 undecided, idiom 1, synonym 1, the rest 0.
+  - The `noise decide --class label` dry run plans `label-1`/`label-2`, skips the discussed `label-3`, and writes nothing; history is empty.
+  - With `--write`, status shows approved 2 and discussed 1. History for `label-1` carries the note "GM class verdict on batch card [noise-label] (2 occurrences): labels".
+  - The policy `{noise-idiom: idioms}` with `--write` approves exactly `idiom-1`.
+  - Repeating `decide label --write` exits 2 with `REVIEW_NOISE_NOTHING_TO_DECIDE`.
+- §4: the stormgiants baseline gives 3 passed. Numbers as above.
