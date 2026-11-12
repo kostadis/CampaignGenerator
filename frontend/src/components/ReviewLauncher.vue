@@ -34,20 +34,24 @@ async function requestStream(path:string, payload:object) {
 }
 // Card packet (spec 043): the launcher keeps only the form fields, the last export/plan answer and that plan's hash.
 type CardMember={itemId:string;category?:string;disposition?:string|null;previous?:{verdict:string;disposition:string}|null}
-type CardRow={cardId:string;state:string;verdict?:string;refusal?:{code:string;message:string};members:CardMember[]}
+type RejectedFinding={itemId:string;line?:number|null;note?:string}
+type CardRow={cardId:string;state:string;verdict?:string;refusal?:{code:string;message:string};members:CardMember[];withRejectedFindings?:RejectedFinding[]}
 const cardItems=ref(''), cardActions=ref(''), decisionsPath=ref(''), cardPacket=ref<any>(null), cardPlan=ref<{planSha256:string;cards:CardRow[]}|null>(null)
 const splitList=(text:string)=>text.split(/[\s,]+/).filter(Boolean)
 watch([decisionsPath,reviewer],()=>{cardPlan.value=null})
 const planGroups=computed(()=>{
-  const cards=cardPlan.value?.cards??[], groups={record:[] as string[],supersede:[] as string[],noop:[] as string[],unmarked:[] as string[],refused:[] as CardRow[]}
+  const cards=cardPlan.value?.cards??[], groups={record:[] as string[],supersede:[] as string[],noop:[] as string[],unmarked:[] as string[],refused:[] as CardRow[],withRejected:[] as string[]}
   for(const card of cards){
     if(card.state==='unmarked') groups.unmarked.push(card.cardId) // the plan lists no members for an unmarked card
     else if(card.state==='refused') groups.refused.push(card)
-    else for(const m of card.members){
+    else {
+    const rejected=card.withRejectedFindings??[]
+    if(rejected.length) groups.withRejected.push(`${card.cardId}: approved with ${rejected.length} rejected finding(s): ${rejected.map(f=>f.line?`${f.itemId} L${f.line}`:f.itemId).join(', ')}`)
+    for(const m of card.members){
       if(m.category==='record') groups.record.push(`${m.itemId}: ${card.verdict}/${m.disposition}`)
       else if(m.category==='supersede') groups.supersede.push(`${m.itemId}: ${m.previous?.verdict}/${m.previous?.disposition} \u2192 ${card.verdict}/${m.disposition}`)
       else groups.noop.push(`${m.itemId}: ${card.verdict}/${m.disposition}`)
-    }
+    }}
   }
   return groups
 })
@@ -109,6 +113,7 @@ async function openWholeBundlePromotion(){await router.push('/grounding/promotio
       <div class="actions"><button :disabled="busy||!reviewId||!decisionsPath||!reviewer" @click="planCards">Plan</button><button :disabled="busy||!cardPlan" @click="confirmCards">Confirm and record</button></div>
       <div v-if="cardPlan" data-test="card-plan"><p>Plan {{ cardPlan.planSha256 }}</p>
         <h3>Record</h3><ul><li v-for="line in planGroups.record" :key="line">{{ line }}</li></ul>
+        <template v-if="planGroups.withRejected.length"><h3>Approved with rejected findings</h3><ul><li v-for="line in planGroups.withRejected" :key="line">{{ line }}</li></ul></template>
         <h3>Supersede (old &rarr; new)</h3><ul><li v-for="line in planGroups.supersede" :key="line">{{ line }}</li></ul>
         <h3>No change</h3><ul><li v-for="line in planGroups.noop" :key="line">{{ line }}</li></ul>
         <h3>Unmarked</h3><ul><li v-for="line in planGroups.unmarked" :key="line">{{ line }}</li></ul>

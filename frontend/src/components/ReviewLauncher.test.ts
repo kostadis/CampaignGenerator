@@ -47,11 +47,12 @@ const HASH = 'c'.repeat(64)
 const decision = (id: string, verdict: string, disposition: string) => ({ item_id: id, item_revision: 1, verdict, disposition, expected_decision_revision: 0, review_digest: 'd'.repeat(64), note: 'GM card verdict [' + id + ']' })
 const PLAN = {
   reviewId: 'npc-review-000000000000', packetId: 'packet-6fd2ef8a7a07f677da29', generation: 1, planSha256: HASH,
-  counts: { record: 1, supersede: 1, noop: 1, unmarked: 1, refused: 1 },
+  counts: { record: 2, supersede: 1, noop: 1, unmarked: 1, refused: 1 },
   cards: [
     { cardId: 'card-rec', state: 'applied', verdict: 'approve', refusal: null, members: [{ itemId: 'item-rec', category: 'record', disposition: 'accept_no_change', previous: null, decision: decision('item-rec', 'approve', 'accept_no_change') }] },
     { cardId: 'card-sup', state: 'applied', verdict: 'reject', refusal: null, members: [{ itemId: 'item-sup', category: 'supersede', disposition: 'reject_action', previous: { verdict: 'approve', disposition: 'accept_no_change', note: 'GM card verdict [card-sup]: fine', decisionRevision: 1 }, decision: decision('item-sup', 'reject', 'reject_action') }] },
     { cardId: 'card-noop', state: 'applied', verdict: 'approve', refusal: null, members: [{ itemId: 'item-noop', category: 'noop', disposition: 'document_signoff', previous: { verdict: 'approve', disposition: 'document_signoff', note: 'GM card verdict [card-noop]', decisionRevision: 1 }, decision: null }] },
+    { cardId: 'card-signed', state: 'applied', verdict: 'approve', refusal: null, withRejectedFindings: [{ itemId: 'item-bad', line: 16, note: 'wrong quote' }, { itemId: 'item-worse', line: null, note: '' }], members: [{ itemId: 'item-signed', category: 'record', disposition: 'document_signoff', previous: null, decision: decision('item-signed', 'approve', 'document_signoff') }] },
     { cardId: 'card-un', state: 'unmarked', verdict: null, refusal: null, members: [] },
     { cardId: 'card-ref', state: 'refused', verdict: 'approve', members: [{ itemId: 'item-ref-1', category: 'refused', disposition: null, previous: null, decision: null }, { itemId: 'item-ref-2', category: 'refused', disposition: null, previous: null, decision: null }], refusal: { code: 'REVIEW_CARDS_MEMBER_STALE', message: 'an item changed since the packet was exported; export a new packet', data: { items: ['item-ref-1'] } } },
   ],
@@ -119,6 +120,7 @@ describe('ReviewLauncher card packet', () => {
     expect(plan.text()).toContain(HASH)
     for (const heading of ['Record', 'Supersede', 'No change', 'Unmarked', 'Refused']) expect(plan.text()).toContain(heading)
     expect(plan.text()).toContain('item-rec')
+    expect(plan.text()).toContain('card-signed: approved with 2 rejected finding(s): item-bad L16, item-worse')
     expect(plan.text()).toMatch(/item-sup.*approve.*accept_no_change.*reject.*reject_action/s)
     expect(plan.text()).toContain('item-ref-1')
     expect(plan.text()).toContain('item-ref-2')
