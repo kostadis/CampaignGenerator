@@ -1206,6 +1206,12 @@ def main(argv: list[str] | None = None) -> int:
     if args.command in ("horizon", "persona", "leakcheck", "backtest", "prep", "prep-sheet", "replay", "forward") and len(args.npc) != 1:
         print(f"Error: {args.command} takes exactly one --npc", file=sys.stderr)
         return 2
+    if hasattr(args, "model") and hasattr(args, "backend"):
+        try:
+            agent_mod.resolve_model(args)
+        except ValueError as e:
+            print(f"Error: {e}", file=sys.stderr)
+            return 2
     try:
         return args.func(args)
     except Refusal as e:

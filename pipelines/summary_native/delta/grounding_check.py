@@ -22,7 +22,10 @@ from typing import Mapping
 
 from pydantic import BaseModel, ConfigDict, Field
 
-from campaignlib import make_client, stream_api
+from campaignlib import stream_api
+from types import SimpleNamespace
+
+from campaignlib.api.client import client_from_args
 
 from .errors import EXIT_REFUSAL, DeltaRefusal
 from .grounding_edits import _revisions, _write_new, edits_dir
@@ -265,7 +268,7 @@ def propose_consistency_findings(baseline: Mapping[str, bytes], candidate: Mappi
     if not view:
         return []
     if client is None:
-        client = make_client(backend=backend, model_override=model)
+        client = client_from_args(SimpleNamespace(backend=backend, model=model, endpoint=None))
     user = ("## Selected sources\n" + "\n\n".join(f"### {p}\n{t}" for p, t in sorted(source_texts.items()))
             + "\n\n## Changed lines\n" + view)
     raw = stream_api(client, _SYSTEM, user, model, max_tokens=max_tokens, silent=True)

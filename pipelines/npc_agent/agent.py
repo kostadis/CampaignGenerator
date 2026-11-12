@@ -141,9 +141,16 @@ def build_react_prompt(subject: str, sheet_md: str, reports_md: str, question: s
 
 
 def add_model_args(parser) -> None:
-    parser.add_argument("--model", default=DEFAULT_MODEL, help=f"default: {DEFAULT_MODEL}")
+    # No parser default: omission must stay distinguishable so codex-cli can use its own default;
+    # :func:`resolve_model` restores DEFAULT_MODEL for every other backend.
+    parser.add_argument("--model", default=None, help=f"default: {DEFAULT_MODEL} (codex-cli: its own default)")
     parser.add_argument("--max-tokens", type=int, default=DEFAULT_MAX_TOKENS, help=f"default: {DEFAULT_MAX_TOKENS}")
     add_backend_args(parser)
+
+
+def resolve_model(args) -> None:
+    """Fill ``args.model`` through the shared resolver (raises ``ValueError`` on a refused pairing)."""
+    args.model = resolve_cli_model(args, legacy_default=DEFAULT_MODEL).effective_model
 
 
 def backend_name(args) -> str:

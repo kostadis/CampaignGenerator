@@ -97,8 +97,8 @@ def test_propose_decide_check_end_to_end(campaign, capsys, monkeypatch):
 
     monkeypatch.setattr(grounding_edits, "stream_api", fake_stream)
     monkeypatch.setattr(grounding_check, "stream_api", fake_stream)
-    monkeypatch.setattr(grounding_edits, "make_client", lambda **k: object())
-    monkeypatch.setattr(grounding_check, "make_client", lambda **k: object())
+    monkeypatch.setattr(grounding_edits, "client_from_args", lambda *a, **k: object())
+    monkeypatch.setattr(grounding_check, "client_from_args", lambda *a, **k: object())
 
     proposed = run(capsys, root, "grounding", "propose", "--plan", pid, "--backend", "anthropic", "--model", "m")
     assert proposed["status"] == "draft" and proposed["applied"] == 0 and len(proposed["proposals"]) == 1
@@ -147,7 +147,7 @@ def test_stale_and_duplicate_proposals_are_rejected_through_the_cli_path(campaig
             "rationale": "r", "support": support}
     monkeypatch.setattr(grounding_edits, "stream_api",
                         lambda *a, **k: json.dumps({"proposals": [item, dict(item, after_text="y")]}))
-    monkeypatch.setattr(grounding_edits, "make_client", lambda **k: object())
+    monkeypatch.setattr(grounding_edits, "client_from_args", lambda *a, **k: object())
     proposed = run(capsys, root, "grounding", "propose", "--plan", plan["plan_id"], "--model", "m")
     assert len(proposed["proposals"]) == 1
     assert [r["reason"] for r in proposed["rejected"]] == [f"duplicate target {t.target_id}"]

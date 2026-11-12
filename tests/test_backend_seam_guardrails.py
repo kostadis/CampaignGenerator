@@ -116,6 +116,12 @@ EXPECTED_REGISTRAR_FILES = frozenset(
         # `summary_native claims` parses its own argv (dispatched from summary_native/cli.py), so its
         # extract subcommand is a second parser file of the summary_native command, not a 32nd command.
         "pipelines/summary_native/claims/cli.py",
+        # `summary_native delta` is likewise a subcommand parser of summary_native (dispatched from
+        # summary_native/cli.py); it registers --backend/--model through add_backend_args.
+        "pipelines/summary_native/delta/cli.py",
+        # `npc_agent` (prototype) registers its model flags in agent.py via add_backend_args; its cli.py
+        # parser calls add_model_args, so agent.py is the discovered registrar and `npc_agent` a command.
+        "pipelines/npc_agent/agent.py",
         "pipelines/ensemble/synthesise_world_state.py",
         "pipelines/ensemble/synthesise_polish.py",
         "pipelines/ensemble/extract_facts.py",
@@ -312,6 +318,8 @@ _CANDIDATE_IDS = [str(p.relative_to(REPO_ROOT)) for p in _CANDIDATE_FILES]
 # Parser files that belong to another command: a subcommand whose argv the parent CLI hands over whole.
 _SUBCOMMAND_PARSERS: dict[str, str] = {
     "pipelines/summary_native/claims/cli.py": "summary_native",
+    "pipelines/summary_native/delta/cli.py": "summary_native",
+    "pipelines/npc_agent/agent.py": "npc_agent",
 }
 
 
@@ -335,7 +343,7 @@ def _command_count(files: frozenset[str]) -> int:
 
 
 def test_production_backend_surface_inventory_is_exact():
-    """All and only the 31 production backend surfaces are parser-discovered.
+    """All and only the 32 production backend surfaces are parser-discovered.
 
     The old guardrail listed 22 registrar paths and silently let newly moved
     commands disappear from coverage.  Discovering parser calls from tracked
@@ -343,11 +351,11 @@ def test_production_backend_surface_inventory_is_exact():
     """
     registrars, hand_written = discover_backend_surfaces()
 
-    assert len(registrars) == 28, sorted(registrars)
+    assert len(registrars) == 30, sorted(registrars)
     assert registrars == EXPECTED_REGISTRAR_FILES
     assert len(hand_written) == 4, sorted(hand_written)
     assert hand_written == EXPECTED_HAND_WRITTEN_FILES
-    assert _command_count(registrars | hand_written) == 31
+    assert _command_count(registrars | hand_written) == 32
 
 
 def test_runtime_dispatcher_inventory_is_exact():
@@ -592,6 +600,12 @@ _UI_REACHABILITY: dict[str, _UIReachability] = {
 }
 
 
+# Commands that are in the backend inventory (they go through the seam and the shared registrars) but
+# have no UI face by design.  `npc_agent` is a CLI-only prototype (docs/design/NpcAgentPrototypes_proposal.md);
+# it is named here rather than given a fabricated UI row.  Adding a command here is a deliberate decision.
+_CLI_ONLY_COMMANDS = frozenset({"npc_agent"})
+
+
 def _inventory_command_names() -> frozenset[str]:
     return frozenset(
         _command_name(rel)
@@ -610,9 +624,9 @@ def _has_console_script(tree: ast.Module, command: str) -> bool:
 
 
 def test_every_canonical_inventory_row_has_ui_reachability_mapping():
-    """The 31-row capability inventory cannot silently lose a UI mapping."""
-    assert len(_inventory_command_names()) == 31
-    assert set(_UI_REACHABILITY) == set(_inventory_command_names())
+    """The 32-row capability inventory cannot silently lose a UI mapping."""
+    assert len(_inventory_command_names()) == 32
+    assert set(_UI_REACHABILITY) == set(_inventory_command_names()) - _CLI_ONLY_COMMANDS
     assert {row.kind for row in _UI_REACHABILITY.values()} == {
         "direct", "transitive", "new-face"
     }
@@ -989,10 +1003,10 @@ def test_batch_flag_only_built_by_selection_cli_args():
     )
 
 
-def test_all_31_codex_surfaces_share_reasoning_effort_registration():
+def test_all_32_codex_surfaces_share_reasoning_effort_registration():
     registrars, hand_written = discover_backend_surfaces()
     dispatchers = discover_runtime_dispatchers(registrars, hand_written)
-    assert _command_count(registrars | hand_written) == 31
+    assert _command_count(registrars | hand_written) == 32
     assert len(dispatchers) == 4
 
     for relative_path in sorted(hand_written):
@@ -1006,7 +1020,7 @@ def test_all_31_codex_surfaces_share_reasoning_effort_registration():
         )
 
 
-def test_all_31_claude_code_surfaces_share_effort_registration():
+def test_all_32_claude_code_surfaces_share_effort_registration():
     """Feature 021's half of the same inventory.
 
     The registrars get the option for free, because `add_backend_args` calls
@@ -1019,7 +1033,7 @@ def test_all_31_claude_code_surfaces_share_effort_registration():
     """
     registrars, hand_written = discover_backend_surfaces()
     dispatchers = discover_runtime_dispatchers(registrars, hand_written)
-    assert _command_count(registrars | hand_written) == 31
+    assert _command_count(registrars | hand_written) == 32
     assert len(dispatchers) == 4
 
     for relative_path in sorted(hand_written):
@@ -1030,12 +1044,12 @@ def test_all_31_claude_code_surfaces_share_effort_registration():
         )
 
 
-def test_all_31_claude_code_surfaces_share_thinking_registration():
+def test_all_32_claude_code_surfaces_share_thinking_registration():
     """Issue #365. The effort control offers two levels (`xhigh`, `max`) that
     only a thinking-enabled run can use, so a CLI that accepts effort without
     thinking hands the operator a choice that always fails there."""
     registrars, hand_written = discover_backend_surfaces()
-    assert _command_count(registrars | hand_written) == 31
+    assert _command_count(registrars | hand_written) == 32
     for relative_path in sorted(hand_written):
         tree = _parse(REPO_ROOT / relative_path)
         calls = {_call_func_name(node) for node in _all_calls(tree)}

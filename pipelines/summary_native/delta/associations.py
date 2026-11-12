@@ -21,6 +21,9 @@ from pathlib import Path
 from pydantic import BaseModel, ConfigDict, Field
 
 import campaignlib
+from types import SimpleNamespace
+
+from campaignlib.api.client import client_from_args
 from campaignlib.registry import find_registry, load_registry
 
 from .census import read_pinned_source
@@ -129,7 +132,7 @@ def propose(campaign_dir: Path | str, plan: DeltaPlan, names: list[dict], *, bac
     canon = sorted(e.name for e in load_registry(rpath).entities)
     texts = {s.path: (read_pinned_source(s), s.sha256) for s in plan.sources}  # exit 3 if a source moved
     if caller is None:
-        client = client or campaignlib.make_client(backend=backend)
+        client = client or client_from_args(SimpleNamespace(backend=backend, model=None, endpoint=None))
         caller = campaignlib.call_api
     prompt = (
         "Registry canonical names (use these exactly):\n" + "\n".join(f"- {c}" for c in canon)

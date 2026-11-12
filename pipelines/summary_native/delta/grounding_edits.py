@@ -25,7 +25,10 @@ from typing import Mapping
 
 from pydantic import BaseModel, ConfigDict, Field, model_serializer
 
-from campaignlib import make_client, stream_api
+from campaignlib import stream_api
+from types import SimpleNamespace
+
+from campaignlib.api.client import client_from_args
 
 from .errors import EXIT_REFUSAL, EXIT_STALE, EXIT_USAGE, DeltaRefusal
 from .plan import DELTA_ROOT_REL
@@ -508,7 +511,7 @@ def propose_edits(docs: Mapping[str, bytes], source_texts: Mapping[str, str], *,
     if not source_texts:
         raise DeltaRefusal("no sources selected; nothing to propose from.", EXIT_USAGE)
     if client is None:
-        client = make_client(backend=backend, model_override=model)
+        client = client_from_args(SimpleNamespace(backend=backend, model=model, endpoint=None))
     raw = stream_api(client, SYSTEM_PROMPT, build_prompt(docs, source_texts), model,
                      max_tokens=max_tokens, silent=True)
     value = parse_model_output(raw)
