@@ -8,6 +8,7 @@ tests/test_summary_native_no_llm.py).
 from __future__ import annotations
 
 import re
+from functools import lru_cache
 from dataclasses import dataclass, field
 from pathlib import Path
 
@@ -279,11 +280,16 @@ def _ordinal_value(word: str) -> int | None:
     return _ORD_UNITS.get(w, _ORD_TENS.get(w))
 
 
+@lru_cache(maxsize=4)
+def _idioms(path: Path) -> tuple[str, ...]:
+    return load_ordinal_idioms(path)
+
+
 def tokens(claim: str) -> list[Token]:
     low = claim.lower()
     idiom_spans = [
         (m.start(), m.end(), phrase)
-        for phrase in load_ordinal_idioms()
+        for phrase in _idioms(ORDINAL_IDIOMS_PATH)
         for m in re.finditer(rf"(?<![\w-]){re.escape(phrase)}(?!\w)", low)
     ]
     out: list[Token] = []
@@ -381,3 +387,153 @@ class CheckAccounting:
     def from_dict(cls, d: dict) -> "CheckAccounting":
         return cls(examined=int(d.get("examined", 0)), supported=int(d.get("supported", 0)),
                    noise=dict(d.get("noise", {})), findings=int(d.get("findings", 0)))
+
+
+# ---------------------------------------------------------------- number classification
+
+def scene_name(citation: tuple[int, str]) -> str:
+    return f"ch {citation[0]:03d} / {citation[1]}"
+
+
+def is_bare_one(token: Token) -> bool:
+    """Draft-side bare "one" is a pronoun or determiner far more often than a count (R3a)."""
+    return token.kind == "cardinal" and token.spelled and token.surface.casefold() == "one"
+
+
+def token_key(token: Token) -> tuple:
+    """Comparison key: (kind, value) when the value is known, else the case-folded surface."""
+    if token.value is not None:
+        return ("v", token.kind, token.value)
+    return ("s", token.kind, token.surface.casefold())
+
+
+@dataclass(frozen=True)
+class FindingInfo:
+    """Structured facts behind one GM-facing number/ordinal finding."""
+
+    tokens: tuple[str, ...]
+    sentence: str
+    cited_scenes: tuple[str, ...]
+    evidence_texts: tuple[str, ...]  # resolved cited occurrences, citation order
+
+
+@dataclass(frozen=True)
+class NumberAnalysis:
+    findings: tuple  # npc_verify.Finding
+    infos: dict  # Finding -> FindingInfo
+    noise: tuple[NoiseRecord, ...]
+    noise_texts: tuple[str | None, ...]  # parallel to noise: resolving evidence text, if any
+    accounting: CheckAccounting
+    uncited_sentences: int  # examined nothing: no own or inherited citation
+    unresolved_citations: tuple[str, ...]  # a citation with 0 or >1 occurrences contributed no text
+
+
+def analyse_numbers(draft_text: str, evidence) -> NumberAnalysis:
+    """Classify every number/ordinal token of every cited sentence (spec 041, R2-R5, R3a).
+
+    ``evidence`` is an ``npc_check.EvidenceIndex``. Accounting counts TOKENS throughout, so
+    ``findings`` is the number of unsupported tokens, not the number of Finding objects (one
+    Finding lists all of a sentence's unsupported tokens). That keeps
+    ``examined == supported + sum(noise) + findings`` a true partition of examined tokens.
+    """
+    from .npc_verify import Finding
+
+    findings: list = []
+    infos: dict = {}
+    records: list[NoiseRecord] = []
+    texts: list[str | None] = []
+    noise_counts = {c: 0 for c in CLASSES}
+    examined = supported = finding_tokens = uncited = 0
+    unresolved: list[str] = []
+    token_cache: dict[tuple[int, str], list[Token]] = {}
+
+    def evidence_tokens(cit):
+        if cit not in token_cache:
+            occ = evidence.items_at(*cit)
+            token_cache[cit] = (
+                [t for t in tokens(occ[0].text) if not t.label] if len(occ) == 1 else None)
+        return token_cache[cit]
+
+    for sc in sentence_claims(draft_text):
+        if not sc.citations:
+            uncited += 1
+            continue
+        scenes = tuple(scene_name(c) for c in sc.citations)
+        resolvable = []
+        for cit in sc.citations:
+            if evidence_tokens(cit) is None:
+                if scene_name(cit) not in unresolved:
+                    unresolved.append(scene_name(cit))
+            else:
+                resolvable.append(cit)
+        if not resolvable:
+            # No cited occurrence resolves (0 or >1 matches): the old checker skipped such a
+            # sentence entirely, and its line already carries its own citation finding. Examine
+            # nothing, so no noise item is invented for a line that never produced a finding.
+            continue
+        first_text = evidence.items_at(*resolvable[0])[0].text
+
+        def note(cls, tok, resolved_by, text):
+            nonlocal examined
+            examined += 1
+            noise_counts[cls] += 1
+            records.append(NoiseRecord("number", cls, sc.line, tok.surface, sc.sentence, scenes, resolved_by))
+            texts.append(text)
+
+        unsupported: list[Token] = []
+        for tok in tokens(sc.claim):
+            if is_bare_one(tok):
+                continue
+            if tok.label:
+                note("label", tok, "", first_text)
+                continue
+            if tok.idiom:
+                note("idiom", tok, tok.idiom, first_text)
+                continue
+            key = token_key(tok)
+            hits = []  # (citation, matched evidence token or None)
+            for cit in resolvable:
+                hit = next((e for e in evidence_tokens(cit) if token_key(e) == key), None)
+                hits.append((cit, hit))
+            matched = [(c, h) for c, h in hits if h is not None]
+            if len(matched) == len(hits):
+                normalised = next(
+                    (h for _c, h in matched
+                     if (tok.spelled or h.spelled) and tok.surface.casefold() != h.surface.casefold()),
+                    None)
+                if normalised is not None:
+                    note("spelled-number", tok, normalised.surface,
+                         evidence.items_at(*matched[0][0])[0].text)
+                else:
+                    examined += 1
+                    supported += 1
+            elif matched:
+                cit = matched[0][0]
+                note("other-citation", tok, scene_name(cit), evidence.items_at(*cit)[0].text)
+            else:
+                examined += 1
+                finding_tokens += 1
+                unsupported.append(tok)
+        if unsupported:
+            code = ("ordinal-inconsistency" if any(t.kind == "ordinal" for t in unsupported)
+                    else "number-inconsistency")
+            listed = ", ".join(f'"{t.surface}"' for t in unsupported)
+            finding = Finding(
+                code, sc.line, sc.sentence,
+                f"draft says {listed}; no scene this sentence cites contains it "
+                f"(cited: {', '.join(scenes)})")
+            findings.append(finding)
+            infos[finding] = FindingInfo(
+                tuple(t.surface for t in unsupported), sc.sentence, scenes,
+                tuple(evidence.items_at(*c)[0].text for c in resolvable))
+
+    accounting = CheckAccounting(examined, supported, noise_counts, finding_tokens)
+    accounting.check()
+    return NumberAnalysis(tuple(findings), infos, tuple(records), tuple(texts), accounting,
+                          uncited, tuple(unresolved))
+
+
+def classify_numbers(draft_text: str, evidence):
+    """``(findings, noise_records, accounting)`` for the number/ordinal check."""
+    a = analyse_numbers(draft_text, evidence)
+    return list(a.findings), list(a.noise), a.accounting

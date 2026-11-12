@@ -79,7 +79,7 @@ description: "Task list for 041 NPC review noise resolution (#621)"
 
 ### Tests (write first, confirm they fail)
 
-- [ ] T012 [P] [US1] In `tests/test_summary_native_review_verification_adapter.py`, add fixture tests built with the file's existing `SelectedNpcVerification` helpers, one per spec US1 acceptance scenario (1–6):
+- [X] T012 [P] [US1] In `tests/test_summary_native_review_verification_adapter.py`, add fixture tests built with the file's existing `SelectedNpcVerification` helpers, one per spec US1 acceptance scenario (1–6):
   - "In Chapter 036, Blasius warns the party [ch 036 / 036.04]" → a `noise-label` item, no number finding;
   - "five gold pieces" vs evidence "5 gp" → `noise-spelled-number`;
   - "a thousand giants" vs "1,000 giants" → matches;
@@ -91,15 +91,15 @@ description: "Task list for 041 NPC review noise resolution (#621)"
 
 ### Implementation
 
-- [ ] T013 [US1] In `pipelines/summary_native/noise.py`, add `classify_numbers(draft_text, evidence) -> (findings, noise_records, accounting)`. `evidence` is an `npc_check.EvidenceIndex`. For each `SentenceClaim` and each non-label… token: label → `label`; inside an idiom → `idiom`; otherwise compare `(kind, value)`, or the surface when `value` is None, against the tokens of every cited occurrence (`evidence.items_at(chapter, scene)`). The token outcome is one of:
+- [X] T013 [US1] In `pipelines/summary_native/noise.py`, add `classify_numbers(draft_text, evidence) -> (findings, noise_records, accounting)`. `evidence` is an `npc_check.EvidenceIndex`. For each `SentenceClaim` and each non-label… token: label → `label`; inside an idiom → `idiom`; otherwise compare `(kind, value)`, or the surface when `value` is None, against the tokens of every cited occurrence (`evidence.items_at(chapter, scene)`). The token outcome is one of:
   - `supported`;
   - `spelled-number`: it matched only via normalisation, where either side is spelled;
   - `other-citation`: see US2, implemented in T017;
   - a finding.
 
   Apply the precedence from `CLASSES`. A finding is an `npc_verify.Finding` with code `ordinal-inconsistency` when the token is an ordinal, else `number-inconsistency`. Its `text` is the sentence. Its `detail` is the FR-011 message: `draft says "<token>"; no scene this sentence cites contains it (cited: <scenes>)`. When a sentence has several unsupported tokens, produce one finding per sentence listing them all in order.
-- [ ] T014 [US1] In `pipelines/summary_native/review/verification.py`, replace the body of `_deterministic_semantic_advisories` so it calls `noise.classify_numbers`, and delete `_markers`, `_MARKER_RE` and `_ORDINAL_WORDS` if nothing else uses them (check with grep). Keep `same-citation-inconsistency`, but compute its marker sets with `noise.tokens(...)`, excluding labels and idioms, so labels and "5,000" stop creating false conflicts (research R11). Return the noise records alongside the findings.
-- [ ] T015 [US1] In `pipelines/summary_native/review/verification.py`, emit noise items in `adapt_selected_verifications`. Add an `_noise_item(...)` sibling of `_item` with group `"noise"`, that sets:
+- [X] T014 [US1] In `pipelines/summary_native/review/verification.py`, replace the body of `_deterministic_semantic_advisories` so it calls `noise.classify_numbers`, and delete `_markers`, `_MARKER_RE` and `_ORDINAL_WORDS` if nothing else uses them (check with grep). Keep `same-citation-inconsistency`, but compute its marker sets with `noise.tokens(...)`, excluding labels and idioms, so labels and "5,000" stop creating false conflicts (research R11). Return the noise records alongside the findings.
+- [X] T015 [US1] In `pipelines/summary_native/review/verification.py`, emit noise items in `adapt_selected_verifications`. Add an `_noise_item(...)` sibling of `_item` with group `"noise"`, that sets:
   - `legacy_code=noise.legacy_code(cls)`, `blocking=False`, `severity=ADVISORY`, `assignment_basis=MECHANICAL`;
   - `categories={CLASSIFIED_NOISE}`, `proposed_action.action="review_classified_noise"` with `details.legacy_code`;
   - Diagnostic `details` = `NoiseRecord.to_dict()` plus `line`;
@@ -108,7 +108,7 @@ description: "Task list for 041 NPC review noise resolution (#621)"
   - evidence = the excerpt of the resolving scene where one exists.
 
   Item ids come from the existing `_stable_payload` fingerprint. In `_categories`, `_severity`, `_basis` and `_action`, map every `noise-*` code explicitly; the generic `"number"` substring branch must not catch them.
-- [ ] T016 [US1] In `pipelines/summary_native/review/verification.py`, add the structured fields `check`, `tokens`, `sentence` and `cited_scenes` (contracts/noise-diagnostic.md) to the GM-facing number/ordinal diagnostics' `details`, by extending `_item` for those codes. `_evidence` for these codes binds the cited occurrence of the finding's **sentence**, not the line.
+- [X] T016 [US1] In `pipelines/summary_native/review/verification.py`, add the structured fields `check`, `tokens`, `sentence` and `cited_scenes` (contracts/noise-diagnostic.md) to the GM-facing number/ordinal diagnostics' `details`, by extending `_item` for those codes. `_evidence` for these codes binds the cited occurrence of the finding's **sentence**, not the line.
 
 **Checkpoint**: T012 passes, and the existing adapter tests still pass, or are updated only where they asserted the old whole-line message. List every such update in `validation.md` with the reason.
 
@@ -120,13 +120,13 @@ description: "Task list for 041 NPC review noise resolution (#621)"
 
 **Independent Test**: a sentence cites A and B and contains "200" (only in A) and "40" (in neither). Exactly one finding is raised, for "40", naming both A and B. "200" is `noise-other-citation`.
 
-- [ ] T017 [P] [US2] In `tests/test_summary_native_review_verification_adapter.py`, add the US2 acceptance scenarios 1–3:
+- [X] T017 [P] [US2] In `tests/test_summary_native_review_verification_adapter.py`, add the US2 acceptance scenarios 1–3:
   - the 085.07/085.08 "200" case → `noise-other-citation` with `resolved_by == "ch 085 / 085.07"`;
   - "40" in neither → one finding with `details.tokens == ["40"]` and both scenes in `cited_scenes`, its message matching FR-011;
   - a three-sentence paragraph → each finding's `details.sentence` is its own sentence only.
 
   Add an accounting test: `examined == supported + noise + findings` for a mixed fixture.
-- [ ] T018 [US2] In `noise.classify_numbers` (`pipelines/summary_native/noise.py`):
+- [X] T018 [US2] In `noise.classify_numbers` (`pipelines/summary_native/noise.py`):
   - present in every cited occurrence → `supported`;
   - present in at least one but not all → `other-citation`, with `resolved_by` = the first scene (in citation order) containing it;
   - in none → a finding.
