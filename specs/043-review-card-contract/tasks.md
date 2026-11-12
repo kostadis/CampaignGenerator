@@ -30,8 +30,8 @@ description: "Task list for 043 review card contract (#643 slice 1, #655)"
 
 ## Phase 1: Setup
 
-- [ ] T001 Verify that `PYTHONPATH=<worktree> ~/.venv/bin/python -c "import pipelines; print(pipelines.__file__)"` prints the worktree path. Then run `tests/test_summary_native_review_decisions.py tests/test_summary_native_review_delegated.py tests/test_summary_native_review_noise_cli.py tests/test_summary_native_review_routes.py tests/test_summary_native_review_item_custody.py tests/test_summary_native_no_llm.py -q` on the unmodified branch. Record the pass counts in a new `specs/043-review-card-contract/validation.md`.
-- [ ] T002 [P] Add `jsonschema>=4` to the `test` optional-dependency list in `pyproject.toml`. Add `pipelines/summary_native/review/schemas/*.json` to `[tool.hatch.build.targets.wheel.force-include]`, following the existing `review/web/viewer.*` entries. Create an empty `pipelines/summary_native/review/schemas/` directory with a `.gitkeep`.
+- [X] T001 Verify that `PYTHONPATH=<worktree> ~/.venv/bin/python -c "import pipelines; print(pipelines.__file__)"` prints the worktree path. Then run `tests/test_summary_native_review_decisions.py tests/test_summary_native_review_delegated.py tests/test_summary_native_review_noise_cli.py tests/test_summary_native_review_routes.py tests/test_summary_native_review_item_custody.py tests/test_summary_native_no_llm.py -q` on the unmodified branch. Record the pass counts in a new `specs/043-review-card-contract/validation.md`.
+- [X] T002 [P] Add `jsonschema>=4` to the `test` optional-dependency list in `pyproject.toml`. Add `pipelines/summary_native/review/schemas/*.json` to `[tool.hatch.build.targets.wheel.force-include]`, following the existing `review/web/viewer.*` entries. Create an empty `pipelines/summary_native/review/schemas/` directory with a `.gitkeep`.
 
 ---
 
@@ -39,13 +39,13 @@ description: "Task list for 043 review card contract (#643 slice 1, #655)"
 
 **Purpose**: the #655 action table, the `cards.py` models, the one shared expansion, and structured partial-save reporting. See R3, R4, R9 and R11.
 
-- [ ] T003 Write `tests/test_summary_native_review_action_table.py`. It must fail now. It covers:
+- [X] T003 Write `tests/test_summary_native_review_action_table.py`. It must fail now. It covers:
   - **Allowed pairs.** For **every** action in research R4's table, each allowed pair is accepted by `store._validate_action_decision`, and each other `(verdict, disposition)` pair over `{approve, reject, discuss} × {accept_no_change, source_correction, merge, distinct, reject_action, defer, document_signoff}` is refused with `REVIEW_ACTION_MISMATCH`.
   - **Unknown actions.** An unknown action `"made_up_action"` is refused (FR-017).
   - **`review_claim_against_evidence` and `review_presentation`** with `approve/reject_action` and `reject/accept_no_change` are refused through `review decide` on the `_custody_fixture` review, with the store unchanged (SC-004, US2 scenario 7).
   - **Existing rows are unchanged.** That covers the sign-off branch, `confirm_claim_mapping`, the basis rule and the digest rule.
   - **Every produced action has a row.** Grep-assert that every `"action":` string literal produced in `pipelines/summary_native/review/verification.py`, `review/cli.py`, `review/documents.py`, `claims/review.py` and `claims/cli.py` has a row, or takes the sign-off branch. That way a newly produced action without a row fails this test.
-- [ ] T004 In `pipelines/summary_native/review/store.py::_validate_action_decision`, add the R4 rows for `review_claim_against_evidence`, `review_presentation`, `review_classified_noise`, `rerun_selected_check`, `repair_or_recheck_pointer`, `review_supersession`, `review_audience_and_knowledge`, `acknowledge_claim_coverage` and `adjudicate_identity`. Replace `if allowed is None: return` with a raise of `ReviewStoreError("REVIEW_ACTION_MISMATCH: no decisions are declared for action <action>", "REVIEW_ACTION_MISMATCH")`. Make T003 pass.
+- [X] T004 In `pipelines/summary_native/review/store.py::_validate_action_decision`, add the R4 rows for `review_claim_against_evidence`, `review_presentation`, `review_classified_noise`, `rerun_selected_check`, `repair_or_recheck_pointer`, `review_supersession`, `review_audience_and_knowledge`, `acknowledge_claim_coverage` and `adjudicate_identity`. Replace `if allowed is None: return` with a raise of `ReviewStoreError("REVIEW_ACTION_MISMATCH: no decisions are declared for action <action>", "REVIEW_ACTION_MISMATCH")`. Make T003 pass.
 - [ ] T005 **GATE.** Run the **full** suite, `tests/ -q`. Any failure caused by T004 means stop and report it to the GM, with the test, the action and the pair. **Do not widen the table** (R4). Record the result in `validation.md`.
 - [ ] T006 [P] In `pipelines/summary_native/review/cards.py` (new file), add the strict pydantic models from data-model.md: `CardPacket`, `Card`, `EvidenceRow`, `Member`, `CardDecisions`, `CardVerdict`, `DecisionPlan`, `PlannedCard` and `PlannedMember`.
   - Use camelCase aliases with `populate_by_name`, `extra="forbid"` and `frozen=True`.
