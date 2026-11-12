@@ -327,6 +327,9 @@ def _grounding_group(config_file: Path, group: str) -> dict:
     return section if isinstance(section, dict) else {}
 
 
+DEFAULT_SUMMARIES_DIR = "docs/summaries"
+
+
 def _grounding_section(config_file: Path) -> dict:
     return _grounding_group(config_file, "summary_native")
 
@@ -380,10 +383,13 @@ def main(argv: list[str] | None = None) -> int:
     cfg = _grounding_section(config_path.expanduser().resolve())
 
     summaries = args.summaries_dir or cfg.get("summaries_dir")
+    if not summaries and _under(root, DEFAULT_SUMMARIES_DIR).is_dir():
+        summaries = DEFAULT_SUMMARIES_DIR
     if not summaries:
         return _err(
-            "no summaries directory: pass --summaries-dir or set "
-            "grounding.yaml summary_native.summaries_dir"
+            "no summaries directory: tried --summaries-dir (not given), "
+            "grounding.yaml summary_native.summaries_dir (not set), and "
+            f"{_under(root, DEFAULT_SUMMARIES_DIR)} (not a directory)"
         )
     out_root = _under(root, args.out_root or cfg.get("out_root") or schema.DEFAULT_OUT_ROOT)
     dup_threshold = (

@@ -67,7 +67,6 @@ def test_lossless_adapter_retains_every_legacy_code_and_all_seven_categories():
     legacy_advisories = [
         Finding(npc_verify.TYPOGRAPHY, 8, "curly typography", "quote marks differ"),
         Finding(npc_verify.STATUS_UNSUPPORTED, 9, "third", "ordinal absent from evidence"),
-        Finding(npc_verify.PLACEHOLDER, 10, "Speaker", "attribution is a placeholder"),
     ]
     extended = [
         Finding("later-source-supersedes", 11, "old title", "reviewed metadata has a later title"),
@@ -96,7 +95,6 @@ def test_lossless_adapter_retains_every_legacy_code_and_all_seven_categories():
         *npc_verify.FAIL_CODES,
         npc_verify.TYPOGRAPHY,
         npc_verify.STATUS_UNSUPPORTED,
-        npc_verify.PLACEHOLDER,
         "later-source-supersedes",
         "knowledge-leak",
         "verifier-timeout",
@@ -124,7 +122,6 @@ def test_valid_citation_is_not_semantic_support_for_false_ordinal_entailment():
             *npc_verify.FAIL_CODES,
             npc_verify.TYPOGRAPHY,
             npc_verify.STATUS_UNSUPPORTED,
-            npc_verify.PLACEHOLDER,
         )},
         totals={"citations": 1, "citations_valid": 1},
     )

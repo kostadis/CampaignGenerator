@@ -12,7 +12,7 @@ Layout (``RANGE = ch001-003``)::
 
 NPCs (every dossier entry is handed all three summaries, as the full-range build does):
 
-* ``a``  evidence names only 001; advisory finding (placeholder speaker) -> claim item(s)
+* ``a``  evidence names only 001; advisory finding (typography) -> claim item(s)
 * ``b``  evidence names only 002; advisory finding
 * ``c``  evidence names 001 and 003; NO finding -> a sign-off item only (R6 layout path)
 * ``d``  evidence uses ``- Source: selected evidence`` (the delta form) -> R5 fallback
@@ -73,7 +73,7 @@ def _evidence(subject: str, chapters: list[int], *, delta: bool = False) -> str:
         src = "selected evidence" if delta else f"docs/summaries/{SUMMARY_FILES[ch]} (line 7)"
         parts.append(
             f"\n## Chapter {ch:03d}\n\n### Scene {ch:03d}.01 — Meeting (mentioned)\n"
-            f"- Source: {src}\n- Mention lines: 9\n\n{subject} spoke to the party. “Quill whispered a warning.”\n"
+            f"- Source: {src}\n- Mention lines: 9\n\n{subject} spoke to the party. “Quill’s whisper was a warning.”\n"
         )
     return "".join(parts)
 
@@ -85,9 +85,10 @@ def _draft(subject: str, chapters: list[int], *, quote: bool) -> str:
         f"## History with the Party\n\n- Spoke to the party. [{cites}]\n"
     )
     if quote:
-        # A quote attributed to the placeholder speaker "Speaker" -> an advisory, never a failure.
+        # A straight apostrophe where the evidence has a curly one -> a typography advisory, never a failure.
+        # (A placeholder speaker used to be the advisory here; since #634 it fails verification.)
         ch = chapters[0]
-        body += f"\n## Notable Quotes\n\n> “Quill whispered a warning.”\n> — Speaker [ch {ch:03d} / {ch:03d}.01]\n"
+        body += f"\n## Notable Quotes\n\n> \"Quill's whisper was a warning.\"\n> — Quill [ch {ch:03d} / {ch:03d}.01]\n"
     return (
         f"<!-- summary_native npc draft | npc: {subject} | range: {RANGE} | run: 20261112T101500Z "
         f"| draft_key: k | manual sha256: m | model: x | backend: y -->\n" + body

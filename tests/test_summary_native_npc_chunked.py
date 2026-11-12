@@ -87,6 +87,27 @@ def test_placeholder_speakers_are_recognised():
     assert not npc_check.placeholder_speaker(npc_check.quotes_in(LINES.splitlines())[1])
 
 
+@pytest.mark.parametrize("attr", [
+    "— Speaker [ch 002 / moment]", "— Unknown [ch 002 / moment]", "— unknown speaker [ch 002 / moment]",
+    "— Someone [ch 002 / moment]", "— NPC [ch 002 / moment]", "— N/A [ch 002 / moment]",
+    "— ??? [ch 002 / moment]", "— Speaker 1 [ch 002 / moment]", "— [Unknown] [ch 002 / moment]",
+    "— *Unnamed* [ch 002 / moment]", "— — [ch 002 / moment]", "— [ch 002 / moment]", "—",
+])
+def test_every_placeholder_form_is_recognised(attr):
+    q = npc_check.quotes_in(['> "x"', f"> {attr}"])[0]
+    assert npc_check.placeholder_speaker(q), attr
+
+
+def test_a_quote_with_no_attribution_is_a_placeholder():
+    assert npc_check.placeholder_speaker(npc_check.quotes_in(['> "x"'])[0])
+
+
+@pytest.mark.parametrize("name", ["Jimjar", "Speaker Hallow", "Eldeth Feldrun", "The Unknown Soldier", "Npc-Bob", "Someone Else"[:0] or "Narrator Vale"])
+def test_real_names_are_not_placeholders(name):
+    q = npc_check.quotes_in(['> "x"', f"> — {name} [ch 002 / moment]"])[0]
+    assert not npc_check.placeholder_speaker(q), name
+
+
 # ── the map check ───────────────────────────────────────────────────────────
 
 CHUNK = """## Chapter 002

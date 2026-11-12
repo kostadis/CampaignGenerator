@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+from pathlib import Path
 
 import pytest
 
@@ -668,3 +669,12 @@ def test_narrowing_defaults_come_from_npc_dossiers_yaml_not_grounding_yaml(tmp_p
     rc, _, err = run_cli(base + ["--recent-chapters", "7"])
     assert rc == 0, err
     assert (seen["recent_chapters"], seen["default_recent"], seen["default_recurring"]) == (7, 2, 3)
+
+
+@pytest.mark.parametrize("stem", ["npc_dossier.system", "npc_dossier.map.system", "npc_dossier.reduce.system"])
+def test_every_drafting_prompt_forbids_placeholder_speakers(stem):
+    """#634: single-shot, chunked map and chunked reduce prompts all carry the rule."""
+    text = (Path(__file__).resolve().parent.parent / "pipelines/summary_native/prompts" / f"{stem}.md").read_text()
+    assert "never a placeholder or empty speaker" in text
+    for word in ("Speaker", "Unknown", "Unnamed", "Someone", "N/A", "blank attribution"):
+        assert word in text
