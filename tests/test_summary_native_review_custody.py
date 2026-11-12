@@ -458,3 +458,20 @@ def test_npc_label_registry_name_first_else_draft_stem(ro):
     verify = item.model_copy(update={"locator": item.locator.model_copy(
         update={"source_path": "docs/x/draft/npc_big_bob.verify.md"})})
     assert custody.npc_label(verify) == "big_bob"
+
+
+def test_indented_or_bulleted_source_lines_are_still_dependencies():
+    two = NUG.replace("- 4\n", "- 4\n- 5\n") + (
+        "\n## Chapter 005\n\n### Entry — Nug\n  - Source: docs/summaries/005-session-other.md (line 3)\n\nBack.\n"
+    )
+    assert _esp(two) == frozenset({
+        "docs/summaries/004-session-clan-licehair.md", "docs/summaries/005-session-other.md"})
+    star = NUG + "* Source: docs/summaries/005-session-other.md (line 3)\n"
+    assert _esp(star) == frozenset({
+        "docs/summaries/004-session-clan-licehair.md", "docs/summaries/005-session-other.md"})
+
+
+def test_indented_unparsable_source_line_falls_back():
+    assert _esp(NUG + "  - Source: selected evidence\n") is None
+    assert _esp(NUG + "\t- Source: docs/summaries/005-session-other.md line 3\n") is None
+    assert _esp(NUG + "  - Source: docs/summaries/999-unknown.md (line 3)\n") is None

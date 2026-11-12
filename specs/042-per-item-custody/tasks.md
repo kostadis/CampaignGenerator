@@ -106,35 +106,35 @@ description: "Task list for 042 per-item source custody (#624, #633)"
 
 ### Tests (write first, confirm they fail)
 
-- [ ] T012 [P] [US1] In `tests/test_summary_native_review_item_custody.py`, add `test_us1_s1_other_npc_signoff_saves_after_draft_edit`. Touch A's draft, `sign("B")`, and expect exit 0 with the event written. No refresh is run.
-- [ ] T013 [P] [US1] In `tests/test_summary_native_review_item_custody.py`, add `test_us1_s2_edited_npc_items_refused_nothing_written`. Touch A's draft, then decide on each A item kind: claim, presentation if present, and sign-off. Expect exit 3 and `REVIEW_STALE_CUSTODY`. The event files, the ledger revision and the request receipts must be byte-identical before and after.
-- [ ] T014 [P] [US1] In `tests/test_summary_native_review_item_custody.py`, add `test_us1_s3_summary_change_stales_only_naming_npcs`. Touch `002-b.md`. Then B's items are refused, while A's and C's items save. Repeat with `003-c.md`: only C is refused. This shows the sign-off depends on summaries through its evidence (FR-004).
-- [ ] T015 [P] [US1] In `tests/test_summary_native_review_item_custody.py`, add `test_us1_s4_mixed_batch_refused_whole_and_lists_every_stale`. One batch holds a B item and two A items, after touching A's draft. Expect nothing written, and `data.stale_items` = exactly the two A item ids.
-- [ ] T016 [P] [US1] In `tests/test_summary_native_review_item_custody.py`, add the edge-case tests:
+- [X] T012 [P] [US1] In `tests/test_summary_native_review_item_custody.py`, add `test_us1_s1_other_npc_signoff_saves_after_draft_edit`. Touch A's draft, `sign("B")`, and expect exit 0 with the event written. No refresh is run.
+- [X] T013 [P] [US1] In `tests/test_summary_native_review_item_custody.py`, add `test_us1_s2_edited_npc_items_refused_nothing_written`. Touch A's draft, then decide on each A item kind: claim, presentation if present, and sign-off. Expect exit 3 and `REVIEW_STALE_CUSTODY`. The event files, the ledger revision and the request receipts must be byte-identical before and after.
+- [X] T014 [P] [US1] In `tests/test_summary_native_review_item_custody.py`, add `test_us1_s3_summary_change_stales_only_naming_npcs`. Touch `002-b.md`. Then B's items are refused, while A's and C's items save. Repeat with `003-c.md`: only C is refused. This shows the sign-off depends on summaries through its evidence (FR-004).
+- [X] T015 [P] [US1] In `tests/test_summary_native_review_item_custody.py`, add `test_us1_s4_mixed_batch_refused_whole_and_lists_every_stale`. One batch holds a B item and two A items, after touching A's draft. Expect nothing written, and `data.stale_items` = exactly the two A item ids.
+- [X] T016 [P] [US1] In `tests/test_summary_native_review_item_custody.py`, add the edge-case tests:
   - `test_deleted_dependency_is_missing_and_refuses`;
   - `test_change_and_change_back_is_current`;
   - `test_signoff_depends_on_evidence`: touch C's evidence, and C's sign-off is refused (FR-004);
   - `test_unparseable_evidence_falls_back_to_all_summaries`: touch `003-c.md`, and D's items are refused while A's save;
   - `test_noise_class_card_batch_refused_whole`, using `review noise decide --write` spanning A and B;
   - `test_n_npc_review_other_npcs_unaffected`: a 12-NPC variant of the fixture, touch one draft, and decide on every other NPC's sign-off with 0 refusals. This is the fixture-scale analogue of SC-001.
-- [ ] T017 [P] [US1] In `tests/test_summary_native_review_item_custody.py`, add `test_withdrawal_allowed_on_stale_item`. Approve an A item, touch A's draft, then `review retract`. Expect success, with the withdrawal recording reviewer and time (FR-009).
-- [ ] T018 [P] [US1] In `tests/test_summary_native_review_item_custody.py`, add the import tests (FR-010, R10):
+- [X] T017 [P] [US1] In `tests/test_summary_native_review_item_custody.py`, add `test_withdrawal_allowed_on_stale_item`. Approve an A item, touch A's draft, then `review retract`. Expect success, with the withdrawal recording reviewer and time (FR-009).
+- [X] T018 [P] [US1] In `tests/test_summary_native_review_item_custody.py`, add the import tests (FR-010, R10):
   - `test_import_checks_bundle_items_only`: export a decision on B, touch A's draft, and the import succeeds;
   - `test_import_refuses_stale_bundle_item_with_detail`: export a decision on A, touch A's draft, and the import is refused with `data.operation == "import"`;
   - `test_import_withdrawal_only_bundle_on_stale_item`: it imports;
   - `test_import_custody_digest_mismatch_still_refuses`: hand-edit the bundle's `custody_digest` and re-sign `bundle_sha256`, and it is refused.
-- [ ] T019 [P] [US1] In `tests/test_summary_native_review_decisions.py`, extend `test_decision_refuses_when_bound_source_custody_has_changed`. Keep its assertions, and also assert that `response["data"]["changed_files"][0]["path"] == "summaries/001/session-summary.md"` and that every submitted item id is listed. This guards SC-006: no existing refusal turns into a pass. Grep `tests/` for every other `REVIEW_STALE_CUSTODY` or `source bytes changed` assertion and confirm each still refuses. List them in `validation.md`.
+- [X] T019 [P] [US1] In `tests/test_summary_native_review_decisions.py`, extend `test_decision_refuses_when_bound_source_custody_has_changed`. Keep its assertions, and also assert that `response["data"]["changed_files"][0]["path"] == "summaries/001/session-summary.md"` and that every submitted item id is listed. This guards SC-006: no existing refusal turns into a pass. Grep `tests/` for every other `REVIEW_STALE_CUSTODY` or `source bytes changed` assertion and confirm each still refuses. List them in `validation.md`.
 
 ### Implementation
 
-- [ ] T020 [US1] In `pipelines/summary_native/review/store.py::save_decisions`, replace the whole-custody loop (L579–582), still inside the exclusive lock and at the same point. Do this:
+- [X] T020 [US1] In `pipelines/summary_native/review/store.py::save_decisions`, replace the whole-custody loop (L579–582), still inside the exclusive lock and at the same point. Do this:
   1. collect the submitted ids that name known items;
   2. call `custody.stale_report(kind=manifest.kind, custody, items, ids, custody.disk_probe(root))`;
   3. if anything is stale, raise `ReviewStoreError(custody.refusal_message(r), "REVIEW_STALE_CUSTODY", detail=custody.refusal_detail(..., operation="decide"))`.
 
   Unknown ids still fall through to `REVIEW_STALE_DECISION`. The request-receipt replay keeps its current position before the check.
-- [ ] T021 [US1] In `pipelines/summary_native/review/store.py::import_review_bundle`, keep the digest comparison. Under the lock, after `missing` is computed, run the per-item check over the item ids of non-withdrawal events in `missing`, and refuse with `operation="import"` (R10).
-- [ ] T022 [US1] In `pipelines/summary_native/review/delegated.py::submit_decisions`, pass `detail=getattr(exc, "detail", None)` when re-wrapping, so `carry`, `policy` and `noise decide` keep the detail. Add `test_submit_decisions_keeps_custody_detail` to `tests/test_summary_native_review_delegated.py`.
+- [X] T021 [US1] In `pipelines/summary_native/review/store.py::import_review_bundle`, keep the digest comparison. Under the lock, after `missing` is computed, run the per-item check over the item ids of non-withdrawal events in `missing`, and refuse with `operation="import"` (R10).
+- [X] T022 [US1] In `pipelines/summary_native/review/delegated.py::submit_decisions`, pass `detail=getattr(exc, "detail", None)` when re-wrapping, so `carry`, `policy` and `noise decide` keep the detail. Add `test_submit_decisions_keeps_custody_detail` to `tests/test_summary_native_review_delegated.py`.
 
 **Checkpoint**: T012–T019 pass, and `tests/test_summary_native_review_*.py` passes with no assertion weakened.
 

@@ -186,7 +186,10 @@ def npc_label(item: ReviewItem) -> str | None:
 
 # ── evidence -> summaries (R5) ─────────────────────────────────────────────
 
-_SOURCE_LINE = re.compile(r"^- Source: (\S.*?) \(line \d+\)$")
+_SOURCE_LINE = re.compile(r"^\s*[-*+]\s+Source: (\S.*?) \(line \d+\)$")
+# Any list-item line carrying a ``Source:`` marker is a Source line, however it is indented or
+# bulleted: an unrecognised shape must fall back, never be silently skipped.
+_SOURCE_MARKER = re.compile(r"^\s*[-*+]\s+Source:")
 _CHAPTER_HEAD = re.compile(r"^## Chapter (\d+)\b")
 
 
@@ -237,7 +240,7 @@ def evidence_summary_paths(evidence_bytes: bytes, custody_paths: Iterable[str]) 
         if line.startswith("## "):
             current = None
             continue
-        if line.startswith("- Source:"):
+        if _SOURCE_MARKER.match(line):
             any_source = True
             match = _SOURCE_LINE.match(line)
             if match is None or match.group(1) not in known:

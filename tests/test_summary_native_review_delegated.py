@@ -314,3 +314,23 @@ def test_policy_keyed_on_a_noise_code_approves_exactly_that_class(campaign, tmp_
     for event in events:
         assert event["verdict"] == "approve" and event["disposition"] == "accept_no_change"
         assert "[noise-label]: labels" in event["note"] and "review policy" in event["note"]
+
+
+def test_submit_decisions_keeps_custody_detail(campaign):
+    """spec 042 T022: the re-wrap in ``submit_decisions`` must not drop the refusal's detail."""
+    from pipelines.summary_native.review import delegated
+    from pipelines.summary_native.review.store import ReviewStoreError
+
+    root, cid, summary_sha, _draft_sha, sources = campaign
+    item = _item(cid, "detail-review", "detail-1", summary_sha=summary_sha)
+    _create(root, cid, "detail-review", [item], sources)
+    (root / SUMMARY).write_bytes((root / SUMMARY).read_bytes() + b"\nchanged.\n")
+    decision = {"item_id": item.item_id, "item_revision": item.revision, "review_digest": item.review_digest,
+                "expected_decision_revision": 0, "verdict": "approve", "disposition": "accept_no_change",
+                "note": "GM reviewed."}
+    with pytest.raises(ReviewStoreError) as caught:
+        delegated.submit_decisions(root, "detail-review", generation=1, reviewer="GM",
+                                   decisions=[decision], prefix="t")
+    assert caught.value.code == "REVIEW_STALE_CUSTODY"
+    assert caught.value.detail["operation"] == "decide"
+    assert [e["item_id"] for e in caught.value.detail["stale_items"]] == ["detail-1"]

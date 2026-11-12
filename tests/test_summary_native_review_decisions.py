@@ -347,6 +347,11 @@ def test_decision_refuses_when_bound_source_custody_has_changed(
     assert response["code"] == "REVIEW_STALE_CUSTODY"
     assert _event_files(root) == []
     assert load_ledger(root).revision == before_revision
+    # spec 042 SC-006: the refusal now names the file and every submitted item it stops
+    data = response["data"]
+    assert data["changed_files"][0]["path"] == "summaries/001/session-summary.md"
+    listed = {entry["item_id"] for entry in data["changed_files"][0]["items"]}
+    assert listed == {items[0].item_id}
 
 
 def test_history_and_retraction_preserve_audit_and_withdraw_authority(

@@ -970,4 +970,4 @@ def run(args: argparse.Namespace) -> int:
         raise ReviewStoreError("REVIEW_COMMAND: unsupported command")
     except (ReviewConfigError, ReviewStoreError, AuthorityError, OSError, ValueError) as exc:
         code = getattr(exc, "code", None) or str(exc).split(":", 1)[0]
-        return _emit(args, ok=False, code=code, message=str(exc))
+        return _emit(args, ok=False, code=code, message=str(exc), data=getattr(exc, "detail", None))

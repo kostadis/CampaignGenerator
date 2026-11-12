@@ -25,6 +25,7 @@ from pipelines.summary_native.authority_apply import (
     authority_dir,
 )
 from pipelines.summary_native.authority import AuthorityLedger, ReviewArtifactRef, ReviewDecisionRecord, ledger_bytes, ledger_path
+from pipelines.summary_native.review import custody as review_custody
 from pipelines.summary_native.review.models import (
     ReviewItem,
     ReviewKind,
@@ -544,6 +545,19 @@ def _validate_action_decision(item: ReviewItem, *, verdict: str, disposition: st
         )
 
 
+def _refuse_stale_custody(root: Path, manifest, custody, items, item_ids, *, operation: str) -> None:
+    """Raise ``REVIEW_STALE_CUSTODY`` (with its structured detail) when any named item is stale."""
+    report = review_custody.stale_report(
+        manifest.kind, custody, items, item_ids, review_custody.disk_probe(root))
+    if report.stale:
+        raise ReviewStoreError(
+            review_custody.refusal_message(report, operation), "REVIEW_STALE_CUSTODY",
+            detail=review_custody.refusal_detail(
+                report, review_id=manifest.review_id, generation=manifest.generation,
+                operation=operation, items=items),
+        )
+
+
 def save_decisions(
     campaign_dir: Path,
     review_id: str,
@@ -580,10 +594,14 @@ def save_decisions(
             if receipt.get("request_sha256") != request_digest:
                 raise ReviewStoreError("REVIEW_REQUEST_ID_CONFLICT: request id was reused", "REVIEW_REQUEST_ID_CONFLICT")
             return receipt["result"]
-        for source in custody.sources:
-            current_path = _reject_symlinks(root, root / source.path)
-            if not current_path.is_file() or sha256_bytes(current_path.read_bytes()) != source.sha256:
-                raise ReviewStoreError("REVIEW_STALE_CUSTODY: source bytes changed", "REVIEW_STALE_CUSTODY")
+        # Per-item custody (spec 042): an item is stale iff a file IT rests on changed. The check
+        # stays inside the exclusive lock, before anything is written, and one stale item refuses
+        # the whole batch. Unknown ids fall through to REVIEW_STALE_DECISION below.
+        submitted = [
+            d["item_id"] for d in request["decisions"]
+            if isinstance(d, dict) and isinstance(d.get("item_id"), str) and d["item_id"] in item_by_id
+        ]
+        _refuse_stale_custody(root, manifest, custody, items, submitted, operation="decide")
         existing = _events(root, review_id)
         active = {}
         for event in existing:
@@ -969,6 +987,8 @@ def import_review_bundle(campaign_dir: Path, bundle_path: Path, *, expected_gene
             if len(local_ordered)>len(ordered) or any(canonical_bytes(a)!=canonical_bytes(b) for a,b in zip(local_ordered,ordered)):
                 raise ReviewStoreError("REVIEW_STALE_DECISION: imported history is not the current history prefix","REVIEW_STALE_DECISION")
             missing.extend(ordered[len(local_ordered):])
+        _refuse_stale_custody(root,manifest_now,custody,local_items,
+            sorted({event["item_id"] for event in missing if event.get("kind")!="withdrawal"}),operation="import")
         ledger=load_ledger(root);validate_ledger_tip(root);by_record={record.id:record for record in ledger.records};additions=[]
         for record in imported_records:
             prior=by_record.get(record.id)

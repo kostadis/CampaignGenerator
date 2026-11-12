@@ -387,5 +387,6 @@ def submit_decisions(root: Path, review_id: str, *, generation: int, reviewer: s
             raise ReviewStoreError(
                 f"{exc} (after {len(results)} earlier batch(es) saved; rerun the dry run to see what remains)",
                 getattr(exc, "code", None),
+                detail=getattr(exc, "detail", None),
             ) from exc
     return results
