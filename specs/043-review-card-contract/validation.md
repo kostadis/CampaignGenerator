@@ -175,3 +175,9 @@ Goldens in `tests/fixtures/review_cards/` were regenerated because the finding c
 - Frontend: `npm test` 67 passed (Vitest asserts the "approved with N rejected finding(s)" line), `npm run build` clean. e2e not re-run (no change to a page the specs drive).
 - Scale (802 items), before -> after: export 1.2 s -> 1.2 s, plan 2.6 s -> 1.6 s, write 26.7 s -> 25.6 s (write is dominated by per-batch store transactions, not touched).
 - Full Python suite (pinned `PYTHONPATH`): **9998 passed, 389 skipped, 0 failed**, in 18m20s.
+
+## T047 / T048
+
+- Issues: #656 (the third latest-decision rule) and #657 (lock across the batches of one confirmed plan). In mytools, #115 and #116 were filed for problems already on main and found during the kit merge.
+- #643 has a comment describing what slice 1 ships. The #655 comment waits until #658 lands, because #658 closes it.
+- PRs: CampaignGenerator #658 and mytools #117, cross-linked. Not merged.
