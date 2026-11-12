@@ -765,3 +765,86 @@ def test_status_route_relays_stale_by_npc(route_app, monkeypatch):
     monkeypatch.setattr(review_routes, "run_bounded_json", ok)
     body = TestClient(app).get(f"{BASE}/review-1/status").json()
     assert body["data"] == status
+
+
+# ---- spec 043 US6: card packet routes -------------------------------------------------------
+
+def test_cards_export_builds_the_contract_argv(route_app):
+    app, campaign, calls = route_app
+    client = TestClient(app)
+    response = client.post(f"{BASE}/review-1/cards/export", json={"items": ["a"], "actions": ["review_presentation"]})
+    assert response.status_code == 200
+    assert calls[-1][0][2:] == [
+        "cards", "export", "review-1", "--item", "a", "--action", "review_presentation",
+        "--campaign-dir", str(campaign), "--json",
+    ]
+    assert calls[-1][1]["save_run_log"] is False
+    assert client.post(f"{BASE}/review-1/cards/export", json={}).status_code == 200
+    assert calls[-1][0][2:] == ["cards", "export", "review-1", "--campaign-dir", str(campaign), "--json"]
+
+
+def test_cards_decide_builds_the_contract_argv(route_app):
+    app, campaign, calls = route_app
+    decisions = campaign / "decisions.json"
+    decisions.write_text("{}", encoding="utf-8")
+    client = TestClient(app)
+    body = {"decisions_path": "decisions.json", "reviewer": "GM", "write": False, "plan_sha256": None}
+    assert client.post(f"{BASE}/review-1/cards/decide", json=body).status_code == 200
+    assert calls[-1][0][2:] == [
+        "cards", "decide", "review-1", "--decisions", str(decisions), "--reviewer", "GM",
+        "--campaign-dir", str(campaign), "--json",
+    ]
+    body = {**body, "write": True, "plan_sha256": "b" * 64}
+    assert client.post(f"{BASE}/review-1/cards/decide", json=body).status_code == 200
+    assert calls[-1][0][2:] == [
+        "cards", "decide", "review-1", "--decisions", str(decisions), "--reviewer", "GM",
+        "--write", "--plan-sha256", "b" * 64, "--campaign-dir", str(campaign), "--json",
+    ]
+    # The route does not police write-without-plan; the CLI refuses it (one home for the rule).
+    assert client.post(f"{BASE}/review-1/cards/decide", json={**body, "plan_sha256": None}).status_code == 200
+    assert "--write" in calls[-1][0] and "--plan-sha256" not in calls[-1][0]
+
+
+def test_cards_decide_refuses_a_path_outside_or_missing_before_any_run(route_app, tmp_path: Path):
+    app, _campaign, calls = route_app
+    outside = tmp_path.parent / "outside-decisions.json"
+    outside.write_text("{}", encoding="utf-8")
+    client = TestClient(app)
+    for path in (str(outside), "missing.json"):
+        response = client.post(f"{BASE}/review-1/cards/decide", json={"decisions_path": path, "reviewer": "GM", "write": False})
+        assert response.status_code == 400
+    assert calls == []
+
+
+def test_cards_bodies_forbid_extra_fields(route_app):
+    app, campaign, calls = route_app
+    (campaign / "d.json").write_text("{}", encoding="utf-8")
+    client = TestClient(app)
+    assert client.post(f"{BASE}/review-1/cards/export", json={"items": [], "bogus": 1}).status_code == 422
+    assert client.post(f"{BASE}/review-1/cards/decide",
+                       json={"decisions_path": "d.json", "reviewer": "GM", "write": False, "bogus": 1}).status_code == 422
+    assert calls == []
+
+
+@pytest.mark.parametrize(
+    "code,status",
+    [
+        ("REVIEW_CARDS_PACKET_UNKNOWN", 404),
+        ("REVIEW_CARDS_PACKET_STALE", 409),
+        ("REVIEW_CARDS_MEMBER_STALE", 409),
+        ("REVIEW_CARDS_PACKET_CONFLICT", 409),
+        ("REVIEW_CARDS_REVIEW_MISMATCH", 422),
+        ("REVIEW_CARDS_MEMBER_MISMATCH", 422),
+        ("REVIEW_CARDS_FINGERPRINT_MISMATCH", 422),
+        ("REVIEW_CARDS_PLAN_CHANGED", 409),
+        ("REVIEW_CARDS_PLAN_REQUIRED", 400),
+        ("REVIEW_CARDS_NOTHING_TO_EXPORT", 400),
+    ],
+)
+def test_cards_codes_map_to_the_contract_statuses(route_app, monkeypatch, code, status):
+    app, _campaign, _calls = route_app
+    message = f"{code}: refused"
+    _refusing(monkeypatch, message, {"ok": False, "code": code, "message": message, "data": {"x": 1}})
+    response = TestClient(app).post(f"{BASE}/review-1/cards/export", json={})
+    assert response.status_code == status
+    assert response.json() == {"ok": False, "code": code, "message": message, "data": {"x": 1}}
