@@ -640,9 +640,9 @@ def test_us2_member_item_moved_refused_per_card(tmp_path, monkeypatch):
     real = store.read_review_state
 
     def moved(root, review_id, **kw):
-        manifest, items, events, stale = real(root, review_id, **kw)
-        return manifest, tuple(i.model_copy(update={"revision": i.revision + 1}) if i.item_id == a_item.item_id else i
-                               for i in items), events, stale
+        manifest, items, *rest = real(root, review_id, **kw)
+        return (manifest, tuple(i.model_copy(update={"revision": i.revision + 1}) if i.item_id == a_item.item_id else i
+                                for i in items), *rest)
 
     monkeypatch.setattr(store, "read_review_state", moved)
     before = _tree(fx.root, fx.review_id)

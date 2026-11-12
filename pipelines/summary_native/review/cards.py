@@ -11,40 +11,32 @@ from __future__ import annotations
 import hashlib
 import json
 import re
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 from typing import Any, Callable, Literal
 
 from pydantic import BaseModel, ConfigDict, Field
 from pydantic.alias_generators import to_camel
 
+from pipelines.summary_native.review import custody, store
 from pipelines.summary_native.review.models import canonical_bytes
 
 SCHEMA_VERSION = 1
 ACCEPTED_SCHEMA_VERSIONS = frozenset({1})
 
 CARD_ID_PATTERN = r"^[A-Za-z0-9_.:-]{1,128}$"
-SIGNOFF_ACTION = "signoff_npc_draft"
+SIGNOFF_ACTION = custody.SIGNOFF_ACTION
 
-# Actions whose approve verdict is "accept_no_change" (research R4).
-_FINDING_ACTIONS = (
-    "review_claim_against_evidence",
-    "review_presentation",
-    "review_classified_noise",
-    "rerun_selected_check",
-    "repair_or_recheck_pointer",
-    "review_supersession",
-    "review_audience_and_knowledge",
-    "acknowledge_claim_coverage",
-)
+# Actions whose approve verdict is "accept_no_change" (research R4).  Derived from the store's one
+# action table (``store.ACTION_DECISIONS``), never restated here.
+_FINDING_ACTIONS = store.FINDING_ACTIONS
 _VERDICTS = ("approve", "reject", "discuss")
 
 
 def _build_disposition_for() -> dict[tuple[str, str], str]:
     table: dict[tuple[str, str], str] = {}
     for action in (*_FINDING_ACTIONS, SIGNOFF_ACTION):
-        table[(action, "approve")] = "document_signoff" if action == SIGNOFF_ACTION else "accept_no_change"
-        table[(action, "reject")] = "reject_action"
-        table[(action, "discuss")] = "defer"
+        for verdict, disposition in store.ACTION_DECISIONS[action]:
+            table[(action, verdict)] = disposition
     return table
 
 
@@ -127,12 +119,23 @@ class Refusal(_Strict):
     data: dict | None = None
 
 
+class RejectedFinding(_Strict):
+    """A finding rejected on the same draft as an approved sign-off (GM ruling 2026-11-12, R16)."""
+
+    item_id: str
+    line: int | None = None
+    note: str = ""
+
+
 class PlannedCard(_Strict):
     card_id: str
     verdict: Literal["approve", "reject", "discuss"] | None = None
     state: Literal["unmarked", "refused", "applied"]
     refusal: Refusal | None = None
     members: tuple[PlannedMember, ...] = ()
+    with_rejected_findings: tuple[RejectedFinding, ...] | None = Field(
+        default=None, description="Sign-off cards only, present only when non-empty: the findings rejected on this draft; "
+        "the recorded sign-off note names them.")
 
 
 class PlanCounts(_Strict):
@@ -147,6 +150,7 @@ class DecisionPlan(_Strict):
     review_id: str
     packet_id: str
     generation: int
+    reviewer: str
     plan_sha256: str
     cards: tuple[PlannedCard, ...]
     counts: PlanCounts
@@ -210,10 +214,11 @@ class Expansion(_Strict):
 
 
 def expand(snapshot: tuple, *, member_ids: list[str], verdict: str,
-           disposition_for: Callable[[Any], str], gm_note: str) -> Expansion:
+           disposition_for: Callable[[Any], str], gm_note: str, index: Any = None) -> Expansion:
     """Expand one verdict over ``member_ids`` against a ``read_review_state`` snapshot.
 
-    ``snapshot`` is ``(manifest, items, events, stale_ids)``.  For every member the (verdict,
+    ``snapshot`` is ``(manifest, items, events, stale_ids, ...)`` (a trailing custody element is ignored);
+    ``index`` is an optional ``delegated.index_events`` of its events.  For every member the (verdict,
     disposition) pair is validated with the store's own rule, the member is classified against its
     current fresh decision (``new`` / ``identical`` / ``differs``), and the exact store decision is
     built with the live ``expected_decision_revision``.  Policy for ``identical`` and ``differs``
@@ -224,7 +229,8 @@ def expand(snapshot: tuple, *, member_ids: list[str], verdict: str,
     from pipelines.summary_native.review import delegated
     from pipelines.summary_native.review.store import ReviewStoreError, _validate_action_decision
 
-    _manifest, items, events, stale = snapshot
+    _manifest, items, events, stale = snapshot[:4]
+    index = index or delegated.index_events(events)
     by_id = {item.item_id: item for item in items}
     out = []
     for item_id in member_ids:
@@ -233,7 +239,7 @@ def expand(snapshot: tuple, *, member_ids: list[str], verdict: str,
             raise ReviewStoreError(f"REVIEW_CARDS_MEMBER_MISSING: {item_id}", "REVIEW_CARDS_MEMBER_MISSING")
         disposition = disposition_for(item)
         _validate_action_decision(item, verdict=verdict, disposition=disposition)
-        latest = delegated._latest(events, item_id)
+        latest = delegated._latest(events, item_id, index)
         previous = None
         category = "new"
         if delegated._current_decision(latest, item, stale):
@@ -245,7 +251,7 @@ def expand(snapshot: tuple, *, member_ids: list[str], verdict: str,
                 verdict, disposition, gm_note)
             category = "identical" if same else "differs"
         decision = delegated._decision(
-            item, expected=delegated._active_revision(events, item_id), disposition=disposition,
+            item, expected=delegated._active_revision(events, item_id, index), disposition=disposition,
             note=gm_note, verdict=verdict)
         out.append(ExpandedMember(item_id=item_id, category=category, decision=decision, previous=previous))
     return Expansion(members=tuple(out))
@@ -277,29 +283,29 @@ def _who(item) -> str:
 _CARD_NOTE_PREFIX = re.compile(r"^GM card verdict \[[^\]]*\](?:: )?")
 
 
-def _previous_discuss(events, item, stale) -> str | None:
+def _previous_discuss(events, item, stale, index=None) -> str | None:
     """``Previously discussed by <reviewer>: <note>`` for an item whose current decision is a Discuss.
 
     Display only (spec 043 R2, GM ruling 2026-11-12): it reads the same latest-decision helpers decide
     uses and changes nothing decide records.
     """
     from pipelines.summary_native.review import delegated
-    latest = delegated._latest(events, item.item_id)
+    latest = delegated._latest(events, item.item_id, index)
     if not (delegated._current_decision(latest, item, stale) and latest.get("verdict") == "discuss"):
         return None
     note = _CARD_NOTE_PREFIX.sub("", str(latest.get("note") or "")).strip()
     return f"Previously discussed by {latest.get('reviewer')}" + (f": {note}" if note else "")
 
 
-def _member(item, events) -> Member:
+def _member(item, events, index=None) -> Member:
     from pipelines.summary_native.review import delegated
     return Member(
         item_id=item.item_id, action=item.proposed_action.action, item_revision=item.revision,
-        review_digest=item.review_digest, expected_decision_revision=delegated._active_revision(events, item.item_id),
+        review_digest=item.review_digest, expected_decision_revision=delegated._active_revision(events, item.item_id, index),
         line=item.locator.display_line)
 
 
-def _noise_card(noise_class: str, members: list, events, stale=frozenset()) -> Card:
+def _noise_card(noise_class: str, members: list, events, stale=frozenset(), index=None) -> Card:
     from pipelines.summary_native.review import delegated
     rows = []
     for item in members:
@@ -310,7 +316,7 @@ def _noise_card(noise_class: str, members: list, events, stale=frozenset()) -> C
         rows.append(
             f"{_who(item)}{' L' + str(line) if line else ''} ({item.locator.source_path}): "
             f"token {details.get('token', '')}\n  {sentence}\n  cited: {scenes}; resolved by: {details.get('resolved_by', '')}"
-            + (f"\n  {previous}" if (previous := _previous_discuss(events, item, stale)) else ""))
+            + (f"\n  {previous}" if (previous := _previous_discuss(events, item, stale, index)) else ""))
     n = len(members)
     plural = "s" if n != 1 else ""
     return Card(
@@ -321,10 +327,10 @@ def _noise_card(noise_class: str, members: list, events, stale=frozenset()) -> C
                       "No edit to any draft.",
         reject_means="These occurrences are not noise: each listed line needs a fix in its own draft "
                      "(the draft is the origin). Say what to fix in a note.",
-        evidence=(), members=tuple(_member(item, events) for item in members), draft_sha256=None)
+        evidence=(), members=tuple(_member(item, events, index) for item in members), draft_sha256=None)
 
 
-def _finding_card(item, events, stale=frozenset()) -> Card:
+def _finding_card(item, events, stale=frozenset(), index=None) -> Card:
     where = item.locator.source_path or ""
     line = item.locator.display_line
     action = item.proposed_action.action
@@ -340,17 +346,40 @@ def _finding_card(item, events, stale=frozenset()) -> Card:
               f"{item.rationale or ''}",
         body=body,
         approve_means=f"Keep as-is: the draft line stands as written (records accept_no_change). No edit to {where}.",
-        reject_means=f"The line is wrong: no sign-off for this draft until it is corrected in {where} "
-                     f"(the draft is the origin). Say the fix in a note.",
-        evidence=evidence, members=(_member(item, events),), draft_sha256=None,
-        previous_discussion=_previous_discuss(events, item, stale))
+        reject_means=f"The line is wrong: the rejection is recorded, and it travels with this draft's sign-off "
+                     f"if the draft is signed off; the fix belongs in {where} (the draft is the origin). "
+                     f"Say the fix in a note.",
+        evidence=evidence, members=(_member(item, events, index),), draft_sha256=None,
+        previous_discussion=_previous_discuss(events, item, stale, index))
 
 
-def _signoff_card(root: Path, item, events, stale=frozenset()) -> Card:
-    from pipelines.summary_native.review.store import _reject_symlinks
+class _SignoffSkipped(Exception):
+    """A sign-off that cannot be offered; carries the ``skippedSignoffs`` code and message."""
+
+    def __init__(self, code: str, message: str):
+        super().__init__(message)
+        self.code = code
+        self.message = message
+
+
+def _signoff_card(root: Path, item, events, stale=frozenset(), index=None) -> Card:
+    """The sign-off card.  The draft is read as bytes ONCE: the shown body is those bytes decoded with no
+    newline translation, and ``draftSha256`` is the hash of those same bytes (spec 043 T046)."""
+    from pipelines.summary_native.review.store import ReviewStoreError, _reject_symlinks
     details = item.proposed_action.details
-    draft_sha = str(details.get("draft_sha256"))
-    text = _reject_symlinks(Path(root), Path(root) / str(details.get("draft_path"))).read_text(encoding="utf-8")
+    try:
+        data = _reject_symlinks(Path(root), Path(root) / str(details.get("draft_path"))).read_bytes()
+    except ReviewStoreError as exc:
+        raise _SignoffSkipped(exc.code or "REVIEW_PATH", str(exc)) from exc
+    except OSError as exc:
+        raise _SignoffSkipped("REVIEW_PATH", f"REVIEW_PATH: draft cannot be read: {exc}") from exc
+    try:
+        text = data.decode("utf-8")
+    except UnicodeDecodeError as exc:
+        raise _SignoffSkipped("REVIEW_CARDS_DRAFT_NOT_UTF8", f"the draft is not valid UTF-8 and cannot be shown: {exc}") from exc
+    draft_sha = hashlib.sha256(data).hexdigest()
+    if draft_sha != details.get("draft_sha256"):
+        raise _SignoffSkipped("REVIEW_NPC_SIGNOFF_STALE", "draft bytes changed")
     who = _who(item)
     return Card(
         id=item.item_id, kind="signoff", npc=who, title=f"Sign off {who}'s draft for publication", body=text,
@@ -358,8 +387,8 @@ def _signoff_card(root: Path, item, events, stale=frozenset()) -> Card:
                       f"proceed. Mechanical verdict: {details.get('mechanical_verdict', '?')}.",
         reject_means="Keep the draft as it is, unsigned and unpublished. Say what to change in a note; "
                      "the fix goes in the draft and comes back for a new sign-off.",
-        evidence=(), members=(_member(item, events),), draft_sha256=draft_sha,
-        previous_discussion=_previous_discuss(events, item, stale))
+        evidence=(), members=(_member(item, events, index),), draft_sha256=draft_sha,
+        previous_discussion=_previous_discuss(events, item, stale, index))
 
 
 def build_packet(root: Path, review_id: str, *, item_ids: list[str] | None = None,
@@ -373,7 +402,8 @@ def build_packet(root: Path, review_id: str, *, item_ids: list[str] | None = Non
     from pipelines.summary_native.review.store import read_review_state
 
     root = Path(root).resolve()
-    manifest, items, events, stale = snapshot if snapshot is not None else read_review_state(root, review_id)
+    manifest, items, events, stale = (snapshot if snapshot is not None else read_review_state(root, review_id))[:4]
+    index = delegated.index_events(events)
     if manifest.kind.value != "npc_verification":
         raise _refuse("REVIEW_CARDS_KIND", f"cards are exported for npc_verification reviews only, not {manifest.kind.value}")
     known = {item.item_id for item in items}
@@ -388,7 +418,7 @@ def build_packet(root: Path, review_id: str, *, item_ids: list[str] | None = Non
             continue
         if actions and item.proposed_action.action not in actions:
             continue
-        latest = delegated._latest(events, item.item_id)
+        latest = delegated._latest(events, item.item_id, index)
         if delegated._current_decision(latest, item, stale) and latest.get("verdict") in ("approve", "reject"):
             continue
         if (item.proposed_action.action, "approve") not in DISPOSITION_FOR:
@@ -404,7 +434,7 @@ def build_packet(root: Path, review_id: str, *, item_ids: list[str] | None = Non
     for noise_class in noise.CLASSES:
         members = sorted(delegated._noise_members(candidates, noise_class), key=order)
         if members:
-            built.append(_noise_card(noise_class, members, events, stale))
+            built.append(_noise_card(noise_class, members, events, stale, index))
             used.update(item.item_id for item in members)
     skipped: list[dict] = []
     for item in sorted((i for i in candidates if i.item_id not in used), key=order):
@@ -413,9 +443,12 @@ def build_packet(root: Path, review_id: str, *, item_ids: list[str] | None = Non
             if blocker is not None:
                 skipped.append({"itemId": item.item_id, "npc": _who(item), "code": blocker[0], "message": blocker[1]})
                 continue
-            built.append(_signoff_card(root, item, events, stale))
+            try:
+                built.append(_signoff_card(root, item, events, stale, index))
+            except _SignoffSkipped as skip:
+                skipped.append({"itemId": item.item_id, "npc": _who(item), "code": skip.code, "message": skip.message})
         else:
-            built.append(_finding_card(item, events, stale))
+            built.append(_finding_card(item, events, stale, index))
     seen_members: dict[str, str] = {}
     seen_cards: set[str] = set()
     for card in built:
@@ -570,14 +603,79 @@ def _refused_members(card: Card) -> list[dict]:
             for m in card.members]
 
 
-def plan_decide(root: Path, review_id: str, decisions: CardDecisions) -> dict:
-    """Expand a decisions file from the STORED packet into a DecisionPlan (a dict, camelCase).  Writes nothing."""
-    from pipelines.summary_native.review import custody, delegated
-    from pipelines.summary_native.review.store import read_review_state, read_snapshot
+def _draft_of(item) -> PurePosixPath | None:
+    """The draft an item is about: its proposed action's ``draft_path``, else its locator's source path.
+
+    ``None`` when neither names one (the item is then linked to no sign-off).  Compared by exact path
+    equality, never by name similarity.
+    """
+    path = item.proposed_action.details.get("draft_path")
+    if not isinstance(path, str) or not path:
+        path = item.locator.source_path
+    return PurePosixPath(path) if isinstance(path, str) and path else None
+
+
+def _rejected_by_draft(live_items, events_index, stale, entries: dict[str, dict], by_card: dict[str, Card],
+                       decisions: CardDecisions) -> dict[PurePosixPath, dict[str, dict]]:
+    """Findings that stand rejected after this file is applied, grouped by their draft.
+
+    GM ruling 2026-11-12 ("approval is yes with the no", R16): a sign-off is approved WITH its rejected
+    findings, so the rejections are carried, not blocking.  A finding stands rejected when the store holds a
+    fresh ``reject`` for it, or when an applied card in this file rejects it; an applied card in this file
+    that approves or discusses it overrides the store.  A refused card changes nothing.
+    """
+    from pipelines.summary_native.review import delegated
+    by_id = {item.item_id: item for item in live_items}
+    standing: dict[str, dict] = {}
+    for item in live_items:
+        if item.proposed_action.action == SIGNOFF_ACTION:
+            continue
+        latest = events_index.latest.get(item.item_id)
+        if delegated._current_decision(latest, item, stale) and latest.get("verdict") == "reject":
+            note = _CARD_NOTE_PREFIX.sub("", str(latest.get("note") or "")).strip()
+            standing[item.item_id] = {"itemId": item.item_id, "line": item.locator.display_line, "note": note}
+    for entry in entries.values():
+        card = by_card[entry["cardId"]]
+        if card.kind == "signoff" or entry["state"] != "applied":
+            continue
+        gm_note = decisions.cards[entry["cardId"]].note.strip()
+        for member in entry["members"]:
+            if member["category"] == "refused":
+                continue
+            if entry["verdict"] == "reject":
+                standing[member["itemId"]] = {
+                    "itemId": member["itemId"], "line": by_id[member["itemId"]].locator.display_line, "note": gm_note}
+            else:
+                standing.pop(member["itemId"], None)
+    grouped: dict[PurePosixPath, dict[str, dict]] = {}
+    for item_id, finding in standing.items():
+        draft = _draft_of(by_id[item_id])
+        if draft is not None:
+            grouped.setdefault(draft, {})[item_id] = finding
+    return grouped
+
+
+def _with_rejected_note(base: str, findings: list[dict]) -> str:
+    if not findings:
+        return base
+    named = ", ".join(f"{f['itemId']} L{f['line']}" if f["line"] else f["itemId"] for f in findings)
+    return f"{base}; with rejected finding(s): {named}"
+
+
+def plan_decide(root: Path, review_id: str, decisions: CardDecisions, *, reviewer: str) -> dict:
+    """Expand a decisions file from the STORED packet into a DecisionPlan (a dict, camelCase).  Writes nothing.
+
+    One snapshot read supplies items, events and custody.  ``reviewer`` is part of the plan hash, so a write
+    under a different reviewer than the one planned is ``REVIEW_CARDS_PLAN_CHANGED``.
+    """
+    from campaignlib.review_config import load_campaign_review_config
+    from pipelines.summary_native.review import delegated
+    from pipelines.summary_native.review.store import read_review_state
 
     root = Path(root).resolve()
-    snapshot = read_review_state(root, review_id)
-    manifest, live_items, _events, _stale = snapshot
+    snapshot = read_review_state(root, review_id, with_custody=True)
+    manifest, live_items, events, _stale_ids, custody_gen = snapshot
+    index = delegated.index_events(events)
     packet = load_packet(root, review_id, decisions.packet_id)
     if decisions.review_id != packet.review_id:
         raise _refuse("REVIEW_CARDS_REVIEW_MISMATCH",
@@ -602,65 +700,94 @@ def plan_decide(root: Path, review_id: str, decisions: CardDecisions) -> dict:
                          "the echoed draft fingerprint differs from the packet's", bad_prints)
 
     live = {item.item_id: item for item in live_items}
+    max_note = load_campaign_review_config(root).max_note_chars
     planned: dict[str, dict] = {}
+    marked: list[Card] = []
     for card in packet.cards:
         entry = {"cardId": card.id, "verdict": None, "state": "unmarked", "refusal": None, "members": []}
         planned[card.id] = entry
         verdict_entry = decisions.cards.get(card.id)
         if verdict_entry is None:
             continue
-        verdict = verdict_entry.verdict
-        entry["verdict"] = verdict
-
-        def refuse(code, message, data=None):
-            entry.update(state="refused", refusal={"code": code, "message": message, "data": data},
-                         members=_refused_members(card))
-
+        entry["verdict"] = verdict_entry.verdict
         moved = [m.item_id for m in card.members
                  if m.item_id not in live or live[m.item_id].revision != m.item_revision
                  or live[m.item_id].review_digest != m.review_digest]
         if moved:
-            refuse("REVIEW_CARDS_MEMBER_STALE", "an item changed since the packet was exported; export a new packet",
-                   {"items": moved})
+            entry.update(state="refused", members=_refused_members(card), refusal={
+                "code": "REVIEW_CARDS_MEMBER_STALE",
+                "message": "an item changed since the packet was exported; export a new packet",
+                "data": {"items": moved}})
             continue
-        if card.kind == "signoff" and verdict == "approve":
-            signoff_item = live[card.members[0].item_id]
-            blocker = delegated.npc_signoff_blocker(root, signoff_item)
-            if blocker is not None:
-                draft_path = signoff_item.proposed_action.details.get("draft_path")
-                refuse(blocker[0], f"{blocker[1]} ({draft_path})" if draft_path else blocker[1],
-                       {"items": [signoff_item.item_id], "draftPath": draft_path})
-                continue
+        marked.append(card)
+
+    # Spec 042: one custody report for everything the file may write; a card whose members are stale never
+    # reaches the store, and its own report is a slice of this one.
+    report = probe = None
+    if marked:
+        probe = custody.disk_probe(root)
+        report = custody.stale_report(
+            manifest.kind, custody_gen, live_items, [m.item_id for c in marked for m in c.members], probe)
+
+    def apply(card: Card, verdict_entry, note: str) -> None:
+        entry = planned[card.id]
         expansion = expand(
-            snapshot, member_ids=[m.item_id for m in card.members], verdict=verdict,
-            disposition_for=lambda item, v=verdict: DISPOSITION_FOR[(item.proposed_action.action, v)],
-            gm_note=card_note(card.id, verdict_entry.note))
+            snapshot, member_ids=[m.item_id for m in card.members], verdict=verdict_entry.verdict,
+            disposition_for=lambda item, v=verdict_entry.verdict: DISPOSITION_FOR[(item.proposed_action.action, v)],
+            gm_note=note, index=index)
         entry["state"] = "applied"
+        entry["members"] = []
         for member in expansion.members:
             category = {"new": "record", "identical": "noop", "differs": "supersede"}[member.category]
             entry["members"].append({
                 "itemId": member.item_id, "category": category, "disposition": member.decision["disposition"],
                 "previous": member.previous, "decision": None if category == "noop" else member.decision})
+        writing = [m["itemId"] for m in entry["members"] if m["category"] != "noop"]
+        if report is not None and any(i in report.stale for i in writing):
+            own = custody.slice_report(report, writing)
+            entry.update(
+                state="refused", members=_refused_members(card),
+                refusal={"code": "REVIEW_STALE_CUSTODY", "message": custody.refusal_message(own, "decide"),
+                         "data": custody.refusal_detail(
+                             own, review_id=review_id, generation=manifest.generation, operation="decide",
+                             items=live_items)})
 
-    # Spec 042: a card with a stale source never reaches the store; the rest of the file proceeds.
-    writing = [m["itemId"] for e in planned.values() if e["state"] == "applied"
-               for m in e["members"] if m["category"] != "noop"]
-    if writing:
-        _manifest, custody_gen, snap_items = read_snapshot(root, review_id)
-        probe = custody.disk_probe(root)
-        report = custody.stale_report(manifest.kind, custody_gen, snap_items, writing, probe)
-        if report.stale:
-            for entry in planned.values():
-                ids = [m["itemId"] for m in entry["members"] if m["category"] != "noop"]
-                if entry["state"] != "applied" or not any(i in report.stale for i in ids):
-                    continue
-                own = custody.stale_report(manifest.kind, custody_gen, snap_items, ids, probe)
-                entry.update(
-                    state="refused", members=_refused_members(by_card[entry["cardId"]]),
-                    refusal={"code": "REVIEW_STALE_CUSTODY", "message": custody.refusal_message(own, "decide"),
-                             "data": custody.refusal_detail(
-                                 own, review_id=review_id, generation=manifest.generation, operation="decide",
-                                 items=snap_items)})
+    signoffs = []
+    for card in marked:
+        verdict_entry = decisions.cards[card.id]
+        if card.kind == "signoff" and verdict_entry.verdict == "approve":
+            signoffs.append(card)
+            continue
+        apply(card, verdict_entry, card_note(card.id, verdict_entry.note))
+
+    # Sign-offs last: "approval is yes with the no" needs to know which findings this file rejected.
+    if signoffs:
+        rejected = _rejected_by_draft(live_items, index, snapshot[3], planned, by_card, decisions)
+    for card in signoffs:
+        verdict_entry = decisions.cards[card.id]
+        entry = planned[card.id]
+        signoff_item = live[card.members[0].item_id]
+        blocker = delegated.npc_signoff_blocker(root, signoff_item)
+        if blocker is not None:
+            draft_path = signoff_item.proposed_action.details.get("draft_path")
+            entry.update(state="refused", members=_refused_members(card), refusal={
+                "code": blocker[0], "message": f"{blocker[1]} ({draft_path})" if draft_path else blocker[1],
+                "data": {"items": [signoff_item.item_id], "draftPath": draft_path}})
+            continue
+        draft = _draft_of(signoff_item)
+        findings = sorted(rejected.get(draft, {}).values(), key=lambda f: (f["line"] or 0, f["itemId"])) if draft else []
+        note = _with_rejected_note(card_note(card.id, verdict_entry.note), findings)
+        if len(note) > max_note:
+            entry.update(state="refused", members=_refused_members(card), refusal={
+                "code": "REVIEW_CARDS_NOTE_TOO_LONG",
+                "message": f"the sign-off note for card {card.id} is {len(note)} characters once the rejected "
+                           f"findings are named; the limit is {max_note}. Shorten the note.",
+                "data": {"items": [signoff_item.item_id], "rejectedFindings": [f["itemId"] for f in findings]}})
+            continue
+        apply(card, verdict_entry, note)
+        if findings and entry["state"] == "applied":
+            entry["withRejectedFindings"] = [
+                {"itemId": f["itemId"], "line": f["line"], "note": f["note"]} for f in findings]
     counts = {"record": 0, "supersede": 0, "noop": 0, "unmarked": 0, "refused": 0}
     cards_out = []
     for card in packet.cards:
@@ -673,9 +800,9 @@ def plan_decide(root: Path, review_id: str, decisions: CardDecisions) -> dict:
             for member in entry["members"]:
                 counts[member["category"]] += 1
         cards_out.append(entry)
-    plan_sha = hashlib.sha256(canonical_bytes(cards_out)).hexdigest()
+    plan_sha = hashlib.sha256(canonical_bytes({"cards": cards_out, "reviewer": reviewer})).hexdigest()
     return {"reviewId": review_id, "packetId": packet.packet_id, "generation": packet.generation,
-            "planSha256": plan_sha, "cards": cards_out, "counts": counts}
+            "reviewer": reviewer, "planSha256": plan_sha, "cards": cards_out, "counts": counts}
 
 
 def apply_decide(root: Path, review_id: str, decisions: CardDecisions, *, reviewer: str, plan_sha256: str) -> dict:
@@ -684,11 +811,11 @@ def apply_decide(root: Path, review_id: str, decisions: CardDecisions, *, review
     from pipelines.summary_native.review import delegated
 
     root = Path(root).resolve()
-    plan = plan_decide(root, review_id, decisions)
+    plan = plan_decide(root, review_id, decisions, reviewer=reviewer)
     if plan["planSha256"] != plan_sha256:
         raise _refuse("REVIEW_CARDS_PLAN_CHANGED",
-                      "the plan differs from the one confirmed (the review changed after the dry run); "
-                      "run the dry run again and confirm the new plan", detail=plan)
+                      "the plan differs from the one confirmed (the review changed after the dry run, or a "
+                      "different --reviewer was given); run the dry run again and confirm the new plan", detail=plan)
     groups = [[m["decision"] for m in card["members"] if m["category"] != "noop"]
               for card in plan["cards"] if card["state"] == "applied"]
     groups = [g for g in groups if g]

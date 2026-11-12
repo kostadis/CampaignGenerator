@@ -247,6 +247,10 @@ def _cards_text_lines(code: str, data: dict, args: argparse.Namespace) -> list[s
             continue
         tally = {key: sum(1 for m in card["members"] if m["category"] == key) for key in ("record", "supersede", "noop")}
         lines.append(f"{card['verdict']} {card['cardId']} \u2192 {tally['record']} record, {tally['supersede']} supersede, {tally['noop']} noop")
+        rejected = card.get("withRejectedFindings") or []
+        if rejected:
+            named = ", ".join(f"{f['itemId']} L{f['line']}" if f.get("line") else f["itemId"] for f in rejected)
+            lines.append(f"  approved with {len(rejected)} rejected finding(s): {named}")
         for m in card["members"]:
             if m["category"] == "supersede":
                 before = m["previous"]
@@ -770,7 +774,7 @@ def _run_cards(args: argparse.Namespace, root: Path) -> int:
         counts = result["counts"]
         return _emit(args, ok=True, code="REVIEW_CARDS_SAVED", data=result,
                      message=f"Recorded {counts['record']} and superseded {counts['supersede']} decision(s) from packet {result['packetId']}.")
-    result = review_cards.plan_decide(root, args.review, decisions)
+    result = review_cards.plan_decide(root, args.review, decisions, reviewer=args.reviewer.strip())
     c = result["counts"]
     return _emit(args, ok=True, code="REVIEW_CARDS_PLAN", data=result,
                  message=f"Plan for packet {result['packetId']}: {c['record']} record, {c['supersede']} supersede, "
