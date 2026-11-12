@@ -263,13 +263,23 @@ def _noise_details(item) -> dict:
     return next((dict(d.details) for d in item.diagnostics if str(d.legacy_code).startswith("noise-")), {})
 
 
+def _draft_stem_name(source_path: str | None) -> str | None:
+    """Fallback NPC name: the draft file's stem without its ``npc_`` prefix."""
+    stem = Path(str(source_path or "")).name
+    stem = stem[:-len(".md")] if stem.endswith(".md") else stem
+    if stem.endswith(".verify"):
+        stem = stem[:-len(".verify")]
+    stem = stem[len("npc_"):] if stem.startswith("npc_") else stem
+    return stem or None
+
+
 def _occurrence(item, event: dict | None, current: bool) -> dict:
     details = _noise_details(item)
     ref = item.subject_ref
     return {
         "item_id": item.item_id,
         # The store keeps no separate NPC name; the entity subject's registry name is the only one.
-        "npc": getattr(ref, "registry_name", None),
+        "npc": getattr(ref, "registry_name", None) or _draft_stem_name(item.locator.source_path),
         "draft_path": item.locator.source_path,
         "line": details.get("line", item.locator.display_line),
         "token": details.get("token"),

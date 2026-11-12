@@ -52,12 +52,23 @@ def load_ordinal_idioms(path: Path | None = None) -> tuple[str, ...]:
     return _check_strings(p, _load_yaml(p), "ordinal idioms")
 
 
+@lru_cache(maxsize=1)
+def _default_status_synonyms() -> dict[str, tuple[str, ...]]:
+    return _read_status_synonyms(STATUS_SYNONYMS_PATH)
+
+
 def load_status_synonyms(path: Path | None = None) -> dict[str, tuple[str, ...]]:
+    if path is None:
+        return dict(_default_status_synonyms())
+    return _read_status_synonyms(Path(path))
+
+
+def _read_status_synonyms(path: Path) -> dict[str, tuple[str, ...]]:
     # Local import: npc_verify will import this module for classification, so a module-level
     # import here would become a cycle.
     from .npc_verify import STATUS_WORDS
 
-    p = Path(path) if path is not None else STATUS_SYNONYMS_PATH
+    p = Path(path)
     data = _load_yaml(p)
     if not isinstance(data, dict):
         raise ValueError(f"{p}: status synonyms must be a mapping")
@@ -79,7 +90,9 @@ class SentenceClaim:
     inherited: bool
 
 
-_ABBREVIATIONS = frozenset({"st.", "mr.", "mrs.", "dr.", "vs.", "e.g.", "i.e.", "ch."})
+_ABBREVIATIONS = frozenset({"st.", "mr.", "mrs.", "dr.", "vs.", "e.g.", "i.e.", "ch.", "lt.", "capt.",
+                            "gen.", "sgt.", "col.", "prof.", "sr.", "jr.", "mt.", "ft.", "no."})
+_INITIAL_RE = re.compile(r"[A-Z]\.")
 _TRAILING_BRACKET_RE = re.compile(r"\s*\[[^\[\]]*\]")
 _LIST_NUMERAL_ONLY_RE = re.compile(r"^\s*(?:[-*]\s+)?\d+$")
 _OPENERS = "\"'“‘("
@@ -118,8 +131,9 @@ def split_sentences(line: str) -> list[str]:
                 k += 1
             if k > end and k < n and (line[k].isupper() or line[k] in _OPENERS):
                 word_m = re.search(r"(\S+)$", line[start:j])
-                word = word_m.group(1).lower().lstrip("([\"'“‘") if word_m else ""
-                abbrev = word in _ABBREVIATIONS
+                raw_word = word_m.group(1).lstrip("([\"'“‘") if word_m else ""
+                word = raw_word.lower()
+                abbrev = word in _ABBREVIATIONS or _INITIAL_RE.fullmatch(raw_word) is not None
                 numeral = line[i] == "." and j == i + 1 and bool(_LIST_NUMERAL_ONLY_RE.match(line[start:i]))
                 if not abbrev and not numeral:
                     out.append(line[start:end].strip())
@@ -285,7 +299,13 @@ def _idioms(path: Path) -> tuple[str, ...]:
     return load_ordinal_idioms(path)
 
 
-def tokens(claim: str) -> list[Token]:
+_SCENE_WORD_BEFORE_RE = re.compile(r"\bscenes?\b(?:\W+\w+){0,2}\W*$", re.IGNORECASE)
+
+
+def tokens(claim: str, cited_chapters=()) -> list[Token]:
+    """Tokens of one claim. ``NNN.SS`` is a scene label only beside the word "scene" or when NNN is a
+    chapter the sentence cites; otherwise it is a decimal compared by surface (e.g. 120.50 gold)."""
+    cited_chapters = frozenset(cited_chapters)
     low = claim.lower()
     idiom_spans = [
         (m.start(), m.end(), phrase)
@@ -313,7 +333,10 @@ def tokens(claim: str) -> list[Token]:
         before = claim[:span[0]]
         after = claim[span[1]:span[1] + 2]
         numeric = kind == "cardinal" and not spelled
-        label = group == "sceneid" or (numeric and (
+        scene_label = group == "sceneid" and (
+            _SCENE_WORD_BEFORE_RE.search(before) is not None
+            or int(surface[:3]) in cited_chapters)
+        label = scene_label or (numeric and (
             _LABEL_BEFORE_RE.search(before) is not None
             or (group == "digits" and _LEADING_LIST_BEFORE_RE.match(before) is not None
                 and len(after) == 2 and after[0] in ".)" and after[1].isspace())
@@ -481,7 +504,7 @@ def analyse_numbers(draft_text: str, evidence) -> NumberAnalysis:
             texts.append(text)
 
         unsupported: list[Token] = []
-        for tok in tokens(sc.claim):
+        for tok in tokens(sc.claim, tuple(c[0] for c in sc.citations)):
             if is_bare_one(tok):
                 continue
             if tok.label:
@@ -559,16 +582,33 @@ def is_not_established(sentence: str) -> str | None:
     return None
 
 
-def classify_status(draft_text: str, sections: dict, evidence_text: str):
+_CLAUSE_BREAK_RE = re.compile(r";|\s[—–]\s|,?\s+but\s|,\s*however\b|,\s*yet\s", re.IGNORECASE)
+
+
+def clause_spans(sentence: str) -> list[tuple[int, int]]:
+    """Spans of the clauses of a sentence, split at ';', a spaced dash, 'but', ', however' and ', yet'."""
+    spans, start = [], 0
+    for m in _CLAUSE_BREAK_RE.finditer(sentence):
+        spans.append((start, m.start()))
+        start = m.end()
+    spans.append((start, len(sentence)))
+    return spans
+
+
+def classify_status(draft_text: str, sections: dict, evidence):
     """``(findings, noise_records, accounting)`` for the status-word check (spec 041, R7).
 
-    Scope is unchanged: the Last Observed State section plus the first MAP section, compared against
-    the whole evidence text. Work is per sentence; accounting counts status-word occurrences.
+    Scope is unchanged: the Last Observed State section plus the first MAP section. A literal status
+    word is supported by the whole evidence text. A synonym resolves a word only when it appears in a
+    scene the sentence cites; a "not established" phrase negates only the clause containing it.
     """
     from . import schema
-    from .npc_verify import LAST_STATE, STATUS_UNSUPPORTED, _STATUS_RE, Finding
+    from .npc_verify import LAST_STATE, STATUS_UNSUPPORTED, _STATUS_RE, Finding, _strip_frontmatter
 
     synonyms = load_status_synonyms()
+    if isinstance(evidence, str):  # raw dossier text: parse it the way npc_verify.build_context does
+        evidence = npc_check.EvidenceIndex.of(npc_check.split_chapters(_strip_frontmatter(evidence)))
+    evidence_text = evidence.text
     scopes = [sections.get(LAST_STATE, (0, [])), sections.get(schema.MAP_SECTIONS[0], (0, []))]
     findings: list = []
     records: list[NoiseRecord] = []
@@ -579,6 +619,13 @@ def classify_status(draft_text: str, sections: dict, evidence_text: str):
     def present(word: str) -> bool:
         return re.search(rf"\b{re.escape(word)}\b", evidence_text, re.IGNORECASE) is not None
 
+    def in_cited(word: str, cits) -> bool:
+        for cit in cits:
+            occ = evidence.items_at(*cit)
+            if len(occ) == 1 and re.search(rf"\b{re.escape(word)}\b", occ[0].text, re.IGNORECASE):
+                return True
+        return False
+
     for start, lines in scopes:
         for off, ln in enumerate(lines):
             lineno = start + off + 1
@@ -586,20 +633,22 @@ def classify_status(draft_text: str, sections: dict, evidence_text: str):
             for sentence in split_sentences(ln):
                 cits = _valid_citations(sentence) or line_cits
                 scenes = tuple(scene_name(c) for c in cits)
-                phrase = is_not_established(sentence)
+                clauses = clause_spans(sentence)
                 for m in _STATUS_RE.finditer(sentence):
                     w = m.group(1).casefold()
                     if (lineno, sentence, w) in seen:
                         continue
                     seen.add((lineno, sentence, w))
                     examined += 1
+                    a, b = next(((x, y) for x, y in clauses if x <= m.start() < max(y, x + 1)), (0, len(sentence)))
+                    phrase = is_not_established(sentence[a:b])
                     if phrase is not None:
                         noise_counts["negated-status"] += 1
                         records.append(NoiseRecord("status", "negated-status", lineno, w, sentence, scenes, phrase))
                     elif present(w):
                         supported += 1
                     else:
-                        syn = next((s for s in synonyms[w] if present(s)), None)
+                        syn = next((s for s in synonyms[w] if in_cited(s, cits)), None)
                         if syn is not None:
                             noise_counts["synonym"] += 1
                             records.append(NoiseRecord("status", "synonym", lineno, w, sentence, scenes, syn))

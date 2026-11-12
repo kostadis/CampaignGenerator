@@ -717,3 +717,13 @@ def test_noise_refusals_map_to_http_statuses(route_app, monkeypatch, code, statu
     body = {"noise_class": "label", "verdict": "approve", "reviewer": "GM", "note": "n"}
     response = TestClient(app).post(f"{BASE}/review-1/noise/decide", json=body)
     assert response.status_code == status and response.json()["code"] == code
+
+
+def test_noise_request_accepts_every_class_and_status_maps_by_exact_code():
+    from pipelines.summary_native import noise
+    from server.routers import review_routes
+    for cls in noise.CLASSES:
+        review_routes.NoiseDecideRequest(noise_class=cls, verdict="approve", reviewer="r", note="n")
+    for code, status in (("REVIEW_NOISE_UNKNOWN_CLASS", 400), ("REVIEW_NOISE_NOTHING_TO_DECIDE", 409),
+                         ("REVIEW_NOISE_NOTE_REQUIRED", 400), ("REVIEW_NOISE_NOTE_TOO_LONG", 400)):
+        assert review_routes._status_for(code) == status

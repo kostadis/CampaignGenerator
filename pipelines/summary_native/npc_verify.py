@@ -155,13 +155,17 @@ class VerificationResult:
     manual: list[ManualUse] = field(default_factory=list)
     noise: tuple = ()  # noise.NoiseRecord, spec 041
     accounting: dict = field(default_factory=dict)  # check id -> CheckAccounting.to_dict()
+    number_findings: tuple = ()  # Finding: reporting only, raised in review (spec 041 FR-013)
 
     @property
     def passed(self) -> bool:
         return self.verdict == PASS
 
     def to_dict(self) -> dict:
+        extra = ({"number_findings": [f.__dict__ for f in self.number_findings]}
+                 if self.number_findings else {})
         return {
+            **extra,
             "verdict": self.verdict,
             "counts": dict(sorted(self.counts.items())),
             "totals": self.totals,
@@ -204,6 +208,7 @@ class VerificationResult:
             [manual(raw) for raw in value.get("manual", []) if isinstance(raw, dict)],
             tuple(NoiseRecord.from_dict(raw) for raw in value.get("noise", []) if isinstance(raw, dict)),
             {str(k): dict(v) for k, v in value.get("accounting", {}).items() if isinstance(v, dict)},
+            tuple(finding(raw) for raw in value.get("number_findings", []) if isinstance(raw, dict)),
         )
 
     def summary_line(self) -> str:
@@ -413,7 +418,7 @@ def check_status_words(context: VerificationContext) -> ScopedCheckResult:
     from pipelines.summary_native import noise
 
     findings, records, accounting = noise.classify_status(
-        context.draft_text, context.sections, context.evidence.text)
+        context.draft_text, context.sections, context.evidence)
     return ScopedCheckResult(
         advisories=findings,
         noise=tuple(records),
@@ -463,6 +468,7 @@ def verify_scoped(
     manual_uses: list[ManualUse] = []
     noise_records: list[NoiseRecord] = []
     accounting: dict = {}
+    number_findings: list[Finding] = []
     for check_id in selected:
         result = checkers[check_id](context)
         failures.extend(result.failures)
@@ -478,7 +484,7 @@ def verify_scoped(
         # they are deliberately not added to failures/advisories; only noise and accounting are.
         from pipelines.summary_native import noise
 
-        _findings, records, number_accounting = noise.classify_numbers(draft_text, context.evidence)
+        number_findings, records, number_accounting = noise.classify_numbers(draft_text, context.evidence)
         noise_records.extend(records)
         accounting["number"] = number_accounting.to_dict()
 
@@ -496,6 +502,7 @@ def verify_scoped(
         manual=manual_uses,
         noise=tuple(noise_records),
         accounting=accounting,
+        number_findings=tuple(number_findings),
     )
 
 
@@ -578,6 +585,11 @@ def _noise_section(result: VerificationResult) -> list[str]:
         by = f" (resolved by: {r.resolved_by})" if r.resolved_by else ""
         out.append(f'- [{r.noise_class}] line {r.line}: "{r.token}" — {r.sentence}{by}')
     if result.noise:
+        out.append("")
+    if result.number_findings:
+        out += ["### Number/ordinal findings (raised in review; do not change the verdict)", ""]
+        for f in result.number_findings:
+            out.append(f"- {f.code} (line {f.line}): {f.text}" + (f" -- {f.detail}" if f.detail else ""))
         out.append("")
     for key, label in (("number", "number"), (STATUS_CHECK, "status")):
         a = accts.get(key)

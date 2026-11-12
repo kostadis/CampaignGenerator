@@ -143,7 +143,7 @@ def test_status_replay_sc002():
         draft = f"{LAST_STATE}\n{line}\n"
         sections = npc_check.parse_sections(draft)
         assert LAST_STATE in sections
-        findings, _r, acct = noise.classify_status(draft, sections, ev.text)
+        findings, _r, acct = noise.classify_status(draft, sections, ev)
         acct.check()
         checked += 1
         # SC-002 is about the word the GM ruled a synonym (named in the item's own diagnostic), not

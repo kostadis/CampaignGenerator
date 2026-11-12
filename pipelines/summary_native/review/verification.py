@@ -225,9 +225,9 @@ def _evidence_index(selection: SelectedNpcVerification) -> npc_check.EvidenceInd
     return index
 
 
-def _marker_set(claim: str) -> tuple[frozenset, str]:
+def _marker_set(claim: str, citations=()) -> tuple[frozenset, str]:
     """Number/ordinal marker set and the claim's marker-free skeleton, for same-citation checks."""
-    toks = noise.tokens(claim)
+    toks = noise.tokens(claim, tuple(c[0] for c in citations))
     counted = [t for t in toks if not t.label and not t.idiom and not noise.is_bare_one(t)]
     skeleton = claim.casefold()
     for t in sorted(toks, key=lambda t: t.span[0], reverse=True):
@@ -251,22 +251,27 @@ def _deterministic_semantic_advisories(selection: SelectedNpcVerification) -> _S
     infos = dict(analysis.infos)
 
     by_occurrence: dict[tuple[tuple[int, str], str], list[tuple[int, str, frozenset]]] = {}
+    sentence_index: dict[int, int] = {}
     for sc in noise.sentence_claims(selection.draft_text):
-        markers, skeleton = _marker_set(sc.claim)
+        idx = sentence_index.get(sc.line, 0)
+        sentence_index[sc.line] = idx + 1
+        markers, skeleton = _marker_set(sc.claim, sc.citations)
         if not markers:
             continue
         for cit in sc.citations:
             if len(evidence.items_at(*cit)) == 1:
-                by_occurrence.setdefault((cit, skeleton), []).append((sc.line, sc.sentence, markers))
+                by_occurrence.setdefault((cit, skeleton), []).append(((sc.line, idx), sc.sentence, markers))
 
     for (target, _skeleton), claims in by_occurrence.items():
         marker_sets = {markers for _, _, markers in claims}
         if len(claims) < 2 or len(marker_sets) < 2:
             continue
-        first_line = min(line for line, _, _ in claims)
-        for line, sentence, _markers_for_claim in claims:
-            if line == first_line:
+        first_key = min(key for key, _, _ in claims)
+        first_line = first_key[0]
+        for key, sentence, _markers_for_claim in claims:
+            if key == first_key:
                 continue
+            line = key[0]
             finding = Finding(
                 "same-citation-inconsistency",
                 line,
@@ -324,7 +329,17 @@ def _explicit_metadata_findings(
     return tuple(failures), tuple(advisories)
 
 
-def _stable_payload(selection: SelectedNpcVerification, finding: Finding, *, group: str, ordinal: int) -> str:
+def _stable_payload(selection: SelectedNpcVerification, finding: Finding, *, group: str, ordinal: int,
+                    noise_key: tuple | None = None) -> str:
+    if noise_key is not None:
+        # Noise ids must survive an unrelated noise occurrence appearing or vanishing, and must not
+        # depend on which selection carried the draft: no ordinal, no selection id.
+        check, noise_class, line, token, sentence, occurrence = noise_key
+        return json.dumps(
+            {"draft_path": selection.draft_path, "group": group, "check": check,
+             "noise_class": noise_class, "line": line, "token": token, "sentence": sentence,
+             "occurrence": occurrence},
+            ensure_ascii=False, sort_keys=True, separators=(",", ":"))
     return json.dumps(
         {
             "selection_id": selection.selection_id,
@@ -386,6 +401,7 @@ def _item(
     ordinal: int,
     bound_text: str | None = None,
     extra_details: dict | None = None,
+    noise_key: tuple | None = None,
 ) -> ReviewItem:
     lines = selection.draft_text.splitlines()
     if finding.line < 0 or finding.line > len(lines):
@@ -405,7 +421,7 @@ def _item(
         and any(rule.rule_id == "claimed-verbatim" for rule in selection.rule_versions)
     )
     categories = _categories(finding.code, blocking=blocking)
-    stable = _stable_payload(selection, finding, group=group, ordinal=ordinal)
+    stable = _stable_payload(selection, finding, group=group, ordinal=ordinal, noise_key=noise_key)
     fingerprint = hashlib.sha256(stable.encode("utf-8")).hexdigest()
     evidence = _evidence(selection, finding, bound_text)
     draft_semantic = claim_text or failure_context or ""
@@ -546,6 +562,7 @@ def adapt_selected_verifications(
             raise VerificationAdapterError("selection revision must be positive")
 
     items: list[ReviewItem] = []
+    noise_emitted_for: set[tuple[str, str]] = set()
     for selection in materialized:
         metadata_failures, metadata_advisories = _explicit_metadata_findings(selection)
         failures = tuple(selection.result.failures) + metadata_failures
@@ -580,6 +597,19 @@ def adapt_selected_verifications(
                     else _semantic_kwargs(semantic, finding)
                 ),
             ))
+        draft_key = (selection.draft_path, hashlib.sha256(selection.draft_text.encode("utf-8")).hexdigest())
+        if draft_key in noise_emitted_for:
+            continue  # the same draft bytes were already reported by an earlier selection
+        noise_emitted_for.add(draft_key)
+        status_noise = [r for r in selection.result.noise if r.check == "status"]
+        seen_occurrences: dict[tuple, int] = {}
+
+        def _noise_key(record: noise.NoiseRecord) -> tuple:
+            base = (record.check, record.noise_class, record.line, record.token, record.sentence)
+            n = seen_occurrences.get(base, 0)
+            seen_occurrences[base] = n + 1
+            return base + (n,)
+
         for ordinal, (record, bound) in enumerate(zip(semantic.noise, semantic.noise_texts)):
             items.append(_item(
                 campaign_id=campaign_id,
@@ -590,8 +620,8 @@ def adapt_selected_verifications(
                 ordinal=ordinal,
                 bound_text=bound,
                 extra_details=record.to_dict(),
+                noise_key=_noise_key(record),
             ))
-        status_noise = [r for r in selection.result.noise if r.check == "status"]
         for ordinal, record in enumerate(status_noise, start=len(semantic.noise)):
             items.append(_item(
                 campaign_id=campaign_id,
@@ -601,6 +631,7 @@ def adapt_selected_verifications(
                 group="noise",
                 ordinal=ordinal,
                 extra_details=record.to_dict(),
+                noise_key=_noise_key(record),
             ))
     return tuple(items)
 

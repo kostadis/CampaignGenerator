@@ -22,6 +22,7 @@ from campaignlib.review_config import (
     ReviewConfig,
     load_campaign_review_config,
 )
+from pipelines.summary_native import noise
 from server.platform_config_service import require_platform
 from server.subprocess_runner import BoundedJSONError, console_script, run_bounded_json, stream_subprocess
 
@@ -134,7 +135,7 @@ class GrantRevokeRequest(StrictRequest):
     grant: str = Field(min_length=1, max_length=128, pattern=r"^[A-Za-z0-9_.-]+$")
 
 class NoiseDecideRequest(StrictRequest):
-    noise_class: Literal["label", "idiom", "negated-status", "spelled-number", "synonym", "other-citation"]
+    noise_class: Literal[noise.CLASSES]  # derived: a new class is accepted without a second list
     verdict: Literal["approve", "reject"]
     reviewer: str = Field(min_length=1, max_length=256)
     note: str = Field(min_length=1)
@@ -226,15 +227,21 @@ def _error(exc: BoundedJSONError) -> JSONResponse:
     )
 
 
+_EXACT_STATUS = {
+    "REVIEW_NOISE_UNKNOWN_CLASS": 400,
+    "REVIEW_NOISE_NOTHING_TO_DECIDE": 409,
+    "REVIEW_NOISE_NOTE_REQUIRED": 400,
+    "REVIEW_NOISE_NOTE_TOO_LONG": 400,
+}
+
+
 def _status_for(code: str) -> int:
+    if code in _EXACT_STATUS:
+        return _EXACT_STATUS[code]
     if "STALE" in code or code.endswith("_CONFLICT"):
         return 409
     if "RECOVER" in code or "PENDING_TRANSACTION" in code:
         return 423
-    if code == "REVIEW_NOISE_UNKNOWN_CLASS":
-        return 400
-    if code == "REVIEW_NOISE_NOTHING_TO_DECIDE":
-        return 409
     if "UNKNOWN" in code or code.endswith("_NOT_FOUND"):
         return 404
     if code.endswith("_MISMATCH"):

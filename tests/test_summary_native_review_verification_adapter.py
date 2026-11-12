@@ -363,3 +363,51 @@ def test_number_noise_in_the_result_is_not_duplicated_by_the_adapter():
     with_rec = _adapt_sel(_status_selection(draft, (rec,)))
     assert [i.diagnostics[0].legacy_code for i in with_rec] == [i.diagnostics[0].legacy_code for i in without]
     assert len(with_rec) == len(without) == 1
+
+
+# ---- code-review fixes: stable and non-duplicated noise ids, same-line conflicts --------------
+
+def _noise_ids(items):
+    return {(i.diagnostics[0].details.get("check"), i.diagnostics[0].details.get("token"),
+             i.diagnostics[0].details.get("line"), i.diagnostics[0].legacy_code): i.item_id
+            for i in items if i.diagnostics[0].legacy_code.startswith("noise-")}
+
+
+def test_noise_ids_do_not_shift_when_unrelated_noise_appears_earlier():
+    tail = ("In Chapter 036 the witness waited. [ch 085 / 085.07]\n"
+            "A thousand giants wait. [ch 085 / 085.07]\n")
+    base = "The witness waited quietly. [ch 085 / 085.07]\n" + tail
+    extra = "In Chapter 5 an earlier note. [ch 085 / 085.07]\n" + tail  # same line numbers, one more noise
+    a = _noise_ids(_adapt_one(base))
+    b = _noise_ids(_adapt_one(extra))
+    assert a and len(b) > len(a)
+    for key, item_id in a.items():
+        assert b[key] == item_id, key
+
+
+def test_status_noise_ids_ignore_the_number_noise_count():
+    rec = noise_mod.NoiseRecord("status", "negated-status", 2, "alive",
+                                "No further status (alive) is established. [ch 085 / 085.07]",
+                                ("ch 085 / 085.07",), "x")
+    d1 = "In Chapter 036 hi. [ch 085 / 085.07]\nNo further status (alive) is established. [ch 085 / 085.07]\n"
+    d2 = "In Chapter 036 hi. [ch 085 / 085.07]\nNo further status (alive) is established. [ch 085 / 085.07]\n"
+    one = _adapt_sel(_status_selection(d1, (rec,)))
+    d2 = d2.replace("hi.", "hi. In Chapter 7 and Chapter 8 too.")
+    two = _adapt_sel(_status_selection(d2, (rec,)))
+    pick = lambda items: [i.item_id for i in items if i.diagnostics[0].legacy_code == "noise-negated-status"]
+    assert pick(one) == pick(two) and len(pick(one)) == 1
+
+
+def test_identical_draft_in_two_selections_reports_noise_once():
+    draft = "In Chapter 036 the witness waited. [ch 085 / 085.07]\n"
+    s1 = _noise_selection(draft, EV)
+    s2 = SelectedNpcVerification(**{**s1.__dict__, "selection_id": "second"})
+    items = adapt_selected_verifications(campaign_id=CAMPAIGN_ID, review_id="npc-review", selected=[s1, s2])
+    noise_items = [i for i in items if i.diagnostics[0].legacy_code.startswith("noise-")]
+    assert len(noise_items) == 1 and len({i.item_id for i in items}) == len(items)
+
+
+def test_same_line_conflicting_sentences_are_a_same_citation_inconsistency():
+    ev = _scenes(s07="He killed two goblins and later killed three goblins.")
+    draft = "He killed two goblins [ch 085 / 085.07]. He killed three goblins [ch 085 / 085.07].\n"
+    assert "same-citation-inconsistency" in _by_code(_adapt_one(draft, ev))

@@ -59,7 +59,7 @@ def test_split_basic_and_abbreviations():
 def test_split_keeps_brackets_whole_and_trailing_citation_attached():
     line = "He died. [ch 085 / 085.07] She wept [ch 085 / 085.08]. Done."
     assert split_sentences(line) == ["He died. [ch 085 / 085.07]", "She wept [ch 085 / 085.08].", "Done."]
-    assert split_sentences("A [note. Not a split] B. C") == ["A [note. Not a split] B.", "C"]
+    assert split_sentences("A [note. Not a split] Bo. C") == ["A [note. Not a split] Bo.", "C"]
 
 
 def test_split_list_numeral_and_empty():
@@ -181,3 +181,72 @@ def test_check_accounting_invariant():
     with pytest.raises(ValueError):
         CheckAccounting(noise={"nope": 1})
     CheckAccounting().check()
+
+
+# ---- code-review fixes (spec 041) ------------------------------------------------------------
+def test_initials_and_new_abbreviations_do_not_split():
+    assert len(split_sentences("He met J. R. Smith. Then he died [ch 001 / 001.01].")) == 2
+    assert len(split_sentences("Capt. Hale met Lt. Orn and Sgt. Vee at Mt. Dun. Then it ended.")) == 2
+
+
+def test_scene_id_is_a_label_only_beside_scene_or_a_cited_chapter():
+    t, = tokens("He paid 120.50 gold", (4,))
+    assert not t.label and t.value is None and t.surface == "120.50"
+    t, = tokens("Scene 036.07 shows the gate", (36,))
+    assert t.label
+    t, = tokens("He paid 036.07 gold", (36,))  # 036 is the cited chapter: still a label
+    assert t.label
+    t, = tokens("See the scene noted at 036.07", ())
+    assert t.label
+    t, = tokens("He paid 036.07 gold", ())
+    assert not t.label
+
+
+def _scenes_ev(**by_scene):
+    out = ["## Chapter 001", ""]
+    for sid, body in by_scene.items():
+        out += [f"### Scene 001.{sid} - t", "- Source: s.md (line 1)", "", body, ""]
+    return "\n".join(out)
+
+
+def test_decimal_amount_is_a_number_finding():
+    from pipelines.summary_native import npc_check
+    ev = npc_check.EvidenceIndex.of(npc_check.split_chapters(
+        "## Chapter 004\n\n### Scene 004.02 - t\n- Source: s.md (line 1)\n\nHe paid 95.25 gold.\n"))
+    a = noise.analyse_numbers("He paid 120.50 gold [ch 004 / 004.02]\n", ev)
+    assert len(a.findings) == 1 and "120.50" in a.findings[0].detail
+    ev2 = npc_check.EvidenceIndex.of(npc_check.split_chapters(
+        "## Chapter 036\n\n### Scene 036.07 - t\n- Source: s.md (line 1)\n\nThe gate held.\n"))
+    a = noise.analyse_numbers("Scene 036.07 shows the gate. [ch 036 / 036.07]\n", ev2)
+    assert a.findings == () and a.noise[0].noise_class == "label"
+
+
+def _status_eval(state_line, evidence):
+    from pipelines.summary_native import npc_check
+    from pipelines.summary_native.npc_verify import LAST_STATE
+    draft = f"{LAST_STATE}\n{state_line}\n"
+    return noise.classify_status(draft, npc_check.parse_sections(draft), evidence)
+
+
+_EV_STATUS = ("## Chapter 001\n\n### Scene 001.01 - t\n- Source: s.md (line 1)\n\nShe leaves the city.\n\n"
+              "### Scene 001.02 - t\n- Source: s.md (line 2)\n\nNothing else happened.\n\n"
+              "### Scene 001.03 - t\n- Source: s.md (line 3)\n\nThey turned left at the fork.\n")
+
+
+def test_synonym_must_appear_in_a_cited_scene():
+    f, r, _ = _status_eval("She departed the city [ch 001 / 001.01]", _EV_STATUS)
+    assert f == [] and [x.noise_class for x in r] == ["synonym"]
+    f, r, _ = _status_eval("She departed the city [ch 001 / 001.02]", _EV_STATUS)
+    assert len(f) == 1 and r == []   # 'left' only in another scene
+    f, r, _ = _status_eval("She departed the city", _EV_STATUS)
+    assert len(f) == 1               # no citation: synonyms do not apply
+
+
+def test_negation_is_scoped_to_its_clause():
+    ev = "## Chapter 001\n\n### Scene 001.01 - t\n- Source: s.md (line 1)\n\nNothing.\n"
+    f, r, _ = _status_eval("It is unclear whether the cult knows; Vizeran was killed by the party [ch 001 / 001.01]", ev)
+    assert len(f) == 1 and '"killed"' in f[0].detail and r == []
+    f, r, _ = _status_eval("Her status is unknown to the party, but Drizzt killed her [ch 001 / 001.01]", ev)
+    assert len(f) == 1 and '"killed"' in f[0].detail
+    f, r, _ = _status_eval("No further status (alive, dead, escaped) is established [ch 001 / 001.01]", ev)
+    assert f == [] and sum(1 for x in r if x.noise_class == "negated-status") >= 2

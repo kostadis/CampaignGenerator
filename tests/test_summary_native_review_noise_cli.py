@@ -226,3 +226,12 @@ def test_list_noise_is_read_only(noise_review):
     before = _events(root, RID)
     assert [c["noise_class"] for c in list_noise(root, RID)["classes"]] == list(noise.CLASSES)
     assert _events(root, RID) == before
+
+
+def test_occurrence_npc_falls_back_to_the_draft_stem(noise_review):
+    """Finding 4: a subject with no registry_name still names its NPC (draft stem, no npc_ prefix)."""
+    root, _ = noise_review
+    by = {c["noise_class"]: c for c in list_noise(root, RID)["classes"]}
+    occ = {o["item_id"]: o for o in by["label"]["occurrences"]}
+    assert occ["label-2"]["npc"] == "jimjar"
+    assert all(o["npc"] for c in by.values() for o in c["occurrences"])

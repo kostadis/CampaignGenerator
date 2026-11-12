@@ -520,3 +520,13 @@ def test_edits_refuse_unknown_stems_malformed_entries_and_resume(drafted, tmp_pa
     assert rc == 2 and "nonempty" in err
     rc, _, err = run_cli(_args(root, "npc-verify", "--resume", "--edits", _write_edits(tmp_path, [{"stem": "npc_jimjar", "old": "ok", "new": "y"}])))
     assert rc == 2 and "--resume" in err
+
+
+def test_verify_md_lists_the_number_findings_the_accounting_counts():
+    d = CLEAN.replace("Guides the party out of the pens. [ch 002 / 002.01]",
+                      "Guides the party out of the pens, 9999 times. [ch 002 / 002.01]")
+    r = check(d)
+    assert r.passed and r.advisories == [] and r.number_findings
+    md = npc_verify.render_verify_md(r, "Jimjar")
+    assert "Number/ordinal findings" in md and "number-inconsistency" in md and "9999" in md
+    assert npc_verify.VerificationResult.from_dict(r.to_dict()).number_findings == r.number_findings
