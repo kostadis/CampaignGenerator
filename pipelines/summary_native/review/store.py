@@ -521,10 +521,25 @@ def _validate_action_decision(item: ReviewItem, *, verdict: str, disposition: st
             "prepare_claim_source_correction": {
                 ("approve", "source_correction"), ("reject", "reject_action"), ("discuss", "defer"),
             },
+            "adjudicate_identity": {
+                ("approve", "merge"), ("approve", "distinct"), ("reject", "reject_action"), ("discuss", "defer"),
+            },
         }
+        finding_pairs = {("approve", "accept_no_change"), ("reject", "reject_action"), ("discuss", "defer")}
+        for finding_action in (
+            "review_claim_against_evidence", "review_presentation", "review_classified_noise",
+            "rerun_selected_check", "repair_or_recheck_pointer", "review_supersession",
+            "review_audience_and_knowledge", "acknowledge_claim_coverage",
+        ):
+            allowed_by_action[finding_action] = finding_pairs
+        # Every action the code produces declares its decisions (#655). An action
+        # with no row is refused: a new action must be added here, not waived.
         allowed = allowed_by_action.get(action)
         if allowed is None:
-            return
+            raise ReviewStoreError(
+                f"REVIEW_ACTION_MISMATCH: no decisions are declared for action {action}",
+                "REVIEW_ACTION_MISMATCH",
+            )
     if (verdict, disposition) not in allowed:
         raise ReviewStoreError(
             "REVIEW_ACTION_MISMATCH: review action and disposition are incompatible",
