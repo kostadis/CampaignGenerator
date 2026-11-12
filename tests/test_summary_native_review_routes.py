@@ -727,3 +727,41 @@ def test_noise_request_accepts_every_class_and_status_maps_by_exact_code():
     for code, status in (("REVIEW_NOISE_UNKNOWN_CLASS", 400), ("REVIEW_NOISE_NOTHING_TO_DECIDE", 409),
                          ("REVIEW_NOISE_NOTE_REQUIRED", 400), ("REVIEW_NOISE_NOTE_TOO_LONG", 400)):
         assert review_routes._status_for(code) == status
+
+
+CUSTODY_DATA = {
+    "version": 1, "operation": "decide", "review_id": "review-1", "review_generation": 5,
+    "changed_files": [{"path": "docs/x.md", "source_id": "draft-1", "role": "draft", "state": "changed",
+                       "items": [{"item_id": "i1", "npc": "nug", "action": "signoff_npc_draft"}]}],
+    "stale_items": [{"item_id": "i1", "npc": "nug", "paths": ["docs/x.md"]}],
+    "by_npc": [{"npc": "nug", "item_ids": ["i1"], "paths": ["docs/x.md"]}],
+    "remedy": {"command": "summary_native review refresh review-1 --expected-generation 5"},
+}
+
+
+def test_stale_custody_refusal_relays_data(route_app, monkeypatch):
+    app, _campaign, _calls = route_app
+    message = "REVIEW_STALE_CUSTODY: 1 source file(s) changed; 1 submitted item(s) depend on them; nothing was saved"
+    _refusing(monkeypatch, message, {"ok": False, "code": "REVIEW_STALE_CUSTODY", "message": message,
+                                     "data": CUSTODY_DATA})
+    response = TestClient(app).get(f"{BASE}/review-1/status")
+    assert response.status_code == 409
+    assert response.json() == {"ok": False, "code": "REVIEW_STALE_CUSTODY", "message": message, "data": CUSTODY_DATA}
+    _refusing(monkeypatch, message, {"ok": False, "code": "REVIEW_STALE_CUSTODY", "message": message, "data": "x"})
+    assert "data" not in TestClient(app).get(f"{BASE}/review-1/status").json()
+
+
+def test_status_route_relays_stale_by_npc(route_app, monkeypatch):
+    app, _campaign, _calls = route_app
+    status = {"review_id": "review-1", "generation": 5, "item_count": 3,
+              "counts": {"pending": 3, "approved": 0, "rejected": 0, "discussed": 0, "withdrawn": 0, "stale": 0},
+              "changed_files": [{"path": "docs/x.md", "role": "draft", "state": "changed", "stale_item_count": 1}],
+              "stale_by_npc": [{"npc": "nug", "npc_key": "docs/x.md", "stale_item_count": 1,
+                                "stale_item_ids": ["i1"], "changed_files": [{"path": "docs/x.md", "state": "changed"}]}]}
+
+    async def ok(_cmd, **_kwargs):
+        return {"ok": True, "code": "REVIEW_STATUS", "message": "ok", "artifacts": [], "data": status}
+
+    monkeypatch.setattr(review_routes, "run_bounded_json", ok)
+    body = TestClient(app).get(f"{BASE}/review-1/status").json()
+    assert body["data"] == status

@@ -62,8 +62,9 @@ def test_changing_bs_evidence_stales_b_and_not_a(world):
     pack.write_text(pack.read_text(encoding="utf-8") + "\nAn added line.\n", encoding="utf-8")
     assert not world.current(world.B)
     assert world.current(world.A)  # the unrelated review-group member is not staled
-    # The graph-less check shares one custody generation, so it stales both: the defect being fixed.
-    assert not world.legacy(world.A)
+    # Spec 042: the graph-less check is per-item too (it used to share one custody generation and
+    # stale both -- the #633 defect), so B's evidence no longer stales A here either.
+    assert world.legacy(world.A) and not world.legacy(world.B)
 
 
 def test_changing_the_shared_source_stales_both(world):
@@ -96,3 +97,49 @@ def test_recorded_dependencies_are_per_item(world):
     assert rel(world.B) in deps_b and rel(world.A) not in deps_b
     shared = DepNode("shared_source", "docs/summaries/003-the-new-fire.md")
     assert world.graph.consumers(shared) == {world.A, world.B}
+
+
+def test_graph_cannot_narrow_below_item_dependencies(world):
+    """FR-011 (spec 042): a graph may add dependencies, never remove an item's own."""
+    from pipelines.summary_native import review as _r  # noqa: F401
+    from pipelines.summary_native.review import custody
+    from pipelines.summary_native.review.store import read_snapshot
+    from pipelines.summary_native.authority import ReviewDecisionRecord, load_ledger
+
+    root = world.root
+    ledger = load_ledger(root, required=False)
+    rec = next(r for r in ledger.records if isinstance(r, ReviewDecisionRecord)
+               and r.disposition == "document_signoff")
+    _m, cust, items = read_snapshot(root, rec.review_id)
+    draft_rel = (world.rd / "draft" / f"{world.A}.md").relative_to(root).as_posix()
+    item = next(i for i in items if any(b.path == draft_rel for b in i.input_bindings)
+                and i.proposed_action.action == "signoff_npc_draft")
+    dep = custody.dependency_sets("npc_verification", cust, items, [item.item_id], custody.disk_probe(root))[item.item_id]
+    by_id = {s.source_id: s.path for s in cust.sources}
+    summaries = [by_id[s] for s in dep.source_ids if by_id[s].startswith("docs/summaries/")]
+    assert summaries, "fixture must have a summary dependency"
+    target = root / summaries[0]
+    # a graph that omits every summary: only the evidence/draft nodes
+    narrow = DependencyGraph()
+    narrow.add(world.A, DepNode("evidence", "unrelated-key"), "x")
+    digests = {DepNode("evidence", "unrelated-key"): "x"}
+    draft = world.rd / "draft" / f"{world.A}.md"
+    sha = npc_publish.sha256_text(draft.read_bytes())
+
+    def cur(graph, d):
+        return npc_publish._current_draft_signoff(root, draft, sha, dependency_graph=graph,
+                                                  graph_item=world.A, current_digests=d)
+    assert cur(narrow, digests)
+    target.write_text(target.read_text(encoding="utf-8") + "\nchanged.\n", encoding="utf-8")
+    assert not cur(narrow, digests)
+    target.write_text(target.read_text(encoding="utf-8").replace("\nchanged.\n", ""), encoding="utf-8")
+    assert cur(narrow, digests)
+    # a graph naming an extra custody file: a change to it also holds
+    other = (world.rd / "evidence" / f"{world.B}.md").relative_to(root).as_posix()
+    assert other in by_id.values() and other not in {by_id[s] for s in dep.source_ids}
+    wide = DependencyGraph()
+    wide.add(world.A, DepNode("shared_source", other), "x")
+    assert cur(wide, {DepNode("shared_source", other): "x"})
+    o = root / other
+    o.write_text(o.read_text(encoding="utf-8") + "\nchanged.\n", encoding="utf-8")
+    assert not cur(wide, {DepNode("shared_source", other): "x"})

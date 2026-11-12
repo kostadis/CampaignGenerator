@@ -1,7 +1,7 @@
 "use strict";
 const $=id=>document.getElementById(id),state={review:null,items:[],current:null,verdict:null,proposal:null,identityDisposition:null,selected:new Set(),csrf:null,pending:null,pendingAdvance:false,pendingNextId:null},base=new URL("./",location.href).pathname;
 const text=(node,value)=>{node.textContent=value==null?"":String(value)};
-async function api(path,options={}){const response=await fetch(base+path,options),body=await response.json();if(!response.ok||!body.ok){const e=new Error(body.message||"Request failed");e.code=body.code;throw e}return body.data}
+async function api(path,options={}){const response=await fetch(base+path,options),body=await response.json();if(!response.ok||!body.ok){const e=new Error(body.message||"Request failed");e.code=body.code;e.detail=body.detail;throw e}return body.data}
 function counts(){const c=state.review.counts;text($("progress"),`${c.settled} of ${c.total} settled${c.stale?`; ${c.stale} stale`:""}`)}
 function visible(){const category=$("category").value,hide=$("hide-approved").checked;return state.items.filter(i=>(category==="all"||i.categories.includes(category))&&(!hide||i.disposition!=="approve"))}
 function selection(){text($("selected"),`${state.selected.size} selected`);$("save-selected").disabled=!state.selected.size}
@@ -75,6 +75,7 @@ async function save(retry=false,advance=false){
     render();
   }catch(e){
     text($("save-state"),e.code==="REVIEW_STALE_DECISION"?"A newer decision changed in another tab.":`Decision was not saved: ${e.message}`);
+    if(e.code==="REVIEW_STALE_CUSTODY"){renderChangedFiles(e.detail);$("reload").hidden=false;return}
     $(e.code==="REVIEW_STALE_DECISION"?"reload":"retry").hidden=false;
     return;
   }
@@ -83,6 +84,7 @@ async function save(retry=false,advance=false){
   if(shouldAdvance&&nextId){state.pendingNextId=nextId;await advanceNext()}
   else if(shouldAdvance)text($("save-state"),"Saved. End of the visible review queue.");
 }
+function renderChangedFiles(detail){const list=document.createElement("ul");list.className="changed-files";for(const f of (detail&&detail.changed_files)||[]){const row=document.createElement("li"),by={};for(const i of f.items||[])(by[i.npc||"(unnamed)"]=by[i.npc||"(unnamed)"]||[]).push(i.item_id);row.textContent=`${f.state} ${f.path}: ${Object.entries(by).map(([n,ids])=>`${n}: ${ids.join(", ")}`).join("; ")}`;list.append(row)}const cut=(detail&&detail.truncated)||{},names={changed_files:"changed file(s)",items:"item(s)",stale_items:"stale item(s)"};for(const k of Object.keys(names)){if(Number.isInteger(cut[k])&&cut[k]>0){const row=document.createElement("li");row.textContent=`and ${cut[k]} more ${names[k]}`;list.append(row)}}if(detail&&detail.remedy){const row=document.createElement("li");row.textContent=`Bring them current: ${detail.remedy}`;list.append(row)}$("save-state").append(list)}
 async function loadQueue(){state.review=await api("review");state.items=[...state.review.items];let cursor=state.review.next_cursor;while(cursor){const page=await api(`review?cursor=${encodeURIComponent(cursor)}`);state.items.push(...page.items);cursor=page.next_cursor}}
 async function boot(){try{const shell=await fetch(base);state.csrf=shell.headers.get("X-Review-CSRF");await loadQueue();for(const c of [...new Set(state.items.flatMap(i=>i.categories))].sort()){const o=document.createElement("option");o.value=c;o.textContent=c.replaceAll("_"," ");$("category").append(o)}text($("title"),state.review.title);text($("transport"),state.review.transport);counts();render()}catch(e){text($("progress"),`Review unavailable: ${e.message}`)}}
 $("category").onchange=render;$("hide-approved").onchange=render;$("select-all").onchange=e=>{for(const i of visible())e.target.checked?state.selected.add(i.item_id):state.selected.delete(i.item_id);render()};$("save-selected").onclick=async()=>{const first=[...state.selected][0],size=state.selected.size;if(first){await openItem(first);text($("save-state"),`Batch includes ${size} selected items. Choose one verdict and note, then save.`)}};$("back").onclick=()=>{$("detail").hidden=true;$("queue").hidden=false};$("identity-distinct").setAttribute("aria-pressed","false");$("identity-distinct").onclick=()=>selectIdentity("distinct",null,false);document.querySelectorAll("[data-verdict]").forEach(b=>b.onclick=()=>choose(b.dataset.verdict));$("save").onclick=()=>save(false,false);$("save-next").onclick=()=>save(false,true);$("retry").onclick=()=>state.pendingNextId?advanceNext():save(true,state.pendingAdvance);$("reload").onclick=async()=>{const id=state.current.item_id;await loadQueue();counts();render();await openItem(id)};boot();

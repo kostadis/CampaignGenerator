@@ -263,6 +263,95 @@ every occurrence undecided. The app exposes the same two commands as
 `{noise_class, verdict, reviewer, note, write}` (runs `review noise decide`). The
 routes only build argv and shell out.
 
+## Per-item custody: what a decision depends on
+
+A review records the exact bytes of every file it was built from (its source
+custody). A decision is refused only when a file **that item rests on** has
+changed, not when any file in the review has. An item's dependency set is
+computed at check time from the custody record, the item's bindings and the
+bytes of the NPC's evidence file; nothing extra is stored.
+
+For an NPC verification item the set is:
+
+- the sources the item binds, plus the evidence of the other items on the same
+  draft, plus the draft's `<range>/evidence/<stem>.md` twin when custody holds
+  it (a union only ever over-includes);
+- the summaries that evidence file names in its `- Source: <path> (line N)`
+  lines. The GM ruled that summaries belong to the set: a corrected summary
+  makes the claims drawn from it stale, so it refuses. It reads the file only
+  while its bytes still equal what custody recorded;
+- any custody source of an unrecognised kind.
+
+Any other item rests on what it binds, the sources no item binds, and
+unrecognised kinds.
+
+**The fallback widens, never narrows.** If the item has no evidence at all, every
+evidence file joins; if the evidence file cannot be read, is not current, or has
+any irregular `Source:` line or `## Chapter` section, every summary joins. A
+refusal can therefore be broader than necessary, never narrower. On the real
+stormgiants review (`npc-review-6ee694eebf5b`, 781 items, 164 drafts) no item
+falls back; changing one draft stales only that NPC's items, and changing
+`010-session-the-seer.md` stales the 8 NPCs whose evidence names it
+(`tests/test_summary_native_custody_baseline.py`, read-only replay).
+
+### The refusal
+
+`review decide` (and `review npc sign`, `carry --write`, `policy --write`,
+`noise decide --write`, which submit through it) and `review import` check every
+submitted item under the writer lock. One stale item refuses the whole batch
+and nothing is written. The exit code is 3. Text mode:
+
+```text
+REVIEW_STALE_CUSTODY: 2 source file(s) changed; 3 submitted item(s) depend on them; nothing was saved
+  changed  docs/npcs/summary_native/ch001-086/draft/npc_nug.md: nug — npc-…, npc-signoff-…
+  missing  docs/summaries/010-session-the-seer.md: blasius — npc-…
+Bring them current: summary_native review refresh npc-review-6ee694eebf5b --expected-generation 5
+A changed draft also needs a new verification review before its sign-off can be approved.
+```
+
+An import says `nothing was imported`. With `--json` the same code arrives with
+`data` (`version`, `operation` = `decide` or `import`, `review_id`,
+`review_generation`, `changed_files`, `stale_items`, `by_npc`, `remedy`):
+`changed_files` lists only files a submitted item depends on, each with its
+`state` (`changed`, `missing`, `unreadable`) and the submitted items resting on
+it; `stale_items` lists every stale item (an item with no dependency at all
+carries `"reason": "no_dependency"`); `by_npc` groups them. The local routes relay
+`data` verbatim; the phone reviewer shows a whitelisted `detail` and HTTP 409.
+
+**Remedy.** Run the named `review refresh REVIEW --expected-generation N`, which
+the tool never runs for you. A changed **draft** also needs a new
+`npc-verify` and a new verification review before its sign-off can be approved:
+refresh rebinds custody, it does not re-verify a draft.
+
+### `review status`: `changed_files` and `stale_by_npc`
+
+`review status` keeps `review_id`, `generation`, `item_count` and `counts`
+unchanged and adds two keys, both computed from the **current files** at call
+time: `changed_files` (`path`, `role`, `state`, `stale_item_count`, only for
+custody sources that are not current) and `stale_by_npc` (per NPC: `npc`,
+`npc_key`, `stale_item_count`, `stale_item_ids`, `changed_files`). Both are `[]`
+when nothing changed.
+
+`counts.stale` is not the same number. It counts items marked stale by a past
+`review refresh`; `stale_by_npc` is live. After you edit a file and before you
+refresh, `stale_by_npc` is populated while `counts.stale` is still 0, and after a
+refresh the two can differ again. Use `stale_by_npc` to see what an edit
+touched.
+
+### Withdrawals are always allowed
+
+`review retract` never reads source bytes. Withdrawing a decision on a stale item
+works, so you can take back an approval whose evidence has changed. A bundle
+whose only new events are withdrawals also imports when its items are stale.
+
+### Import
+
+`review import` keeps its record-level check (the bundle's custody digest must
+match the local one, which catches a bundle from a copy refreshed independently)
+and adds the per-item byte check above for every decision event the import would
+append. An imported decision on an item whose files have changed refuses with
+`operation: "import"`.
+
 ## Corrections and exact sign-off
 
 Source corrections reuse the reviewed-authority proposal and apply gates. An

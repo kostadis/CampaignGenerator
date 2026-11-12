@@ -15,10 +15,13 @@ from pathlib import Path
 
 from campaignlib.review_config import load_campaign_review_config
 from pipelines.summary_native import noise
+from pipelines.summary_native.review import custody
 from pipelines.summary_native.review.store import (
     ReviewStoreError,
+    _refuse_stale_custody,
     _validate_action_decision,
     read_review_state,
+    read_snapshot,
     save_decisions,
 )
 
@@ -263,23 +266,12 @@ def _noise_details(item) -> dict:
     return next((dict(d.details) for d in item.diagnostics if str(d.legacy_code).startswith("noise-")), {})
 
 
-def _draft_stem_name(source_path: str | None) -> str | None:
-    """Fallback NPC name: the draft file's stem without its ``npc_`` prefix."""
-    stem = Path(str(source_path or "")).name
-    stem = stem[:-len(".md")] if stem.endswith(".md") else stem
-    if stem.endswith(".verify"):
-        stem = stem[:-len(".verify")]
-    stem = stem[len("npc_"):] if stem.startswith("npc_") else stem
-    return stem or None
-
-
 def _occurrence(item, event: dict | None, current: bool) -> dict:
     details = _noise_details(item)
-    ref = item.subject_ref
     return {
         "item_id": item.item_id,
-        # The store keeps no separate NPC name; the entity subject's registry name is the only one.
-        "npc": getattr(ref, "registry_name", None) or _draft_stem_name(item.locator.source_path),
+        # One NPC-label rule, shared with per-item custody (spec 042 R12).
+        "npc": custody.npc_label(item),
         "draft_path": item.locator.source_path,
         "line": details.get("line", item.locator.display_line),
         "token": details.get("token"),
@@ -378,6 +370,14 @@ def submit_decisions(root: Path, review_id: str, *, generation: int, reviewer: s
     interrupted write replays committed batches as idempotent no-ops.
     """
     size = load_campaign_review_config(root).max_batch_decisions
+    # Spec 042: every submitted item is checked BEFORE the first batch is written, so one stale
+    # item in a late batch cannot leave earlier batches saved. ``save_decisions`` keeps its own
+    # per-batch check (defence in depth, and the race between this check and a write).
+    manifest, cust, snapshot_items = read_snapshot(root, review_id)
+    known = {item.item_id for item in snapshot_items}
+    submitted = [d["item_id"] for d in decisions
+                 if isinstance(d, dict) and isinstance(d.get("item_id"), str) and d["item_id"] in known]
+    _refuse_stale_custody(root, manifest, cust, snapshot_items, submitted, operation="decide")
     results = []
     for start in range(0, len(decisions), size):
         batch = decisions[start:start + size]
@@ -397,5 +397,6 @@ def submit_decisions(root: Path, review_id: str, *, generation: int, reviewer: s
             raise ReviewStoreError(
                 f"{exc} (after {len(results)} earlier batch(es) saved; rerun the dry run to see what remains)",
                 getattr(exc, "code", None),
+                detail=getattr(exc, "detail", None),
             ) from exc
     return results

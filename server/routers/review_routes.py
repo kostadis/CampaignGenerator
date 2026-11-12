@@ -221,10 +221,10 @@ def _error(exc: BoundedJSONError) -> JSONResponse:
             {"ok": False, "code": "REVIEW_COMMAND_FAILED", "message": "Review command failed safely."},
             status_code=503,
         )
-    return JSONResponse(
-        {"ok": False, "code": supplied, "message": str(exc)},
-        status_code=_status_for(supplied),
-    )
+    body: dict = {"ok": False, "code": supplied, "message": str(exc)}
+    if isinstance(payload.get("data"), dict):
+        body["data"] = payload["data"]
+    return JSONResponse(body, status_code=_status_for(supplied))
 
 
 _EXACT_STATUS = {

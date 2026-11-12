@@ -29,7 +29,7 @@ def drafted(tmp_path, monkeypatch):
     state = {"cite": "002 / 002.01"}
     monkeypatch.setattr(npc_draft, "render_part", lambda *a, **k: _body(state["cite"]))
     monkeypatch.setattr(npc_draft, "client_from_args", lambda a, **k: object())
-    monkeypatch.setattr(npc_publish, "_current_draft_signoff", lambda *args: True)
+    monkeypatch.setattr(npc_publish, "signoff_freshness", lambda *a, **k: npc_publish.SignoffFreshness(True))
     assert run_cli(_args(root, "npc-draft", "--mode", "one-shot", "--name", "Jimjar", "Eldeth Feldrun"))[0] == 0
     return root, state
 
@@ -79,7 +79,7 @@ def test_publish_log_follows_a_non_default_npc_root_and_hand_edit_detection_stil
     root = npc_campaign(tmp_path)
     monkeypatch.setattr(npc_draft, "render_part", lambda *a, **k: _body("002 / 002.01"))
     monkeypatch.setattr(npc_draft, "client_from_args", lambda a, **k: object())
-    monkeypatch.setattr(npc_publish, "_current_draft_signoff", lambda *args: True)
+    monkeypatch.setattr(npc_publish, "signoff_freshness", lambda *a, **k: npc_publish.SignoffFreshness(True))
     nr = ["--npc-root", "docs/npcs/elsewhere"]
     assert run_cli(_args(root, "npc-link", *nr))[0] == 0
     assert run_cli(_args(root, "npc-draft", *nr, "--mode", "one-shot", "--name", "Jimjar"))[0] == 0
