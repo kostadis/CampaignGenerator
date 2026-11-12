@@ -107,7 +107,8 @@ const PATHS = [
     label: 'Summary-native',
     description: 'Parses reviewed session summaries directly — no extraction pass.',
     // The follow-on pages moved off the build flow (#555, #562) sit under it.
-    items: ['Summary-native', 'Claims & promotion', 'Shared review', 'Rulings'],
+    // Feature 039 added the incremental-update page (/grounding/delta) to this path.
+    items: ['Summary-native', 'Claims & promotion', 'Shared review', 'Rulings', 'Incremental update'],
   },
 ]
 
