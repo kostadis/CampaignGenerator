@@ -332,11 +332,37 @@ custody sources that are not current) and `stale_by_npc` (per NPC: `npc`,
 `npc_key`, `stale_item_count`, `stale_item_ids`, `changed_files`). Both are `[]`
 when nothing changed.
 
-`counts.stale` is not the same number. It counts items marked stale by a past
-`review refresh`; `stale_by_npc` is live. After you edit a file and before you
-refresh, `stale_by_npc` is populated while `counts.stale` is still 0, and after a
-refresh the two can differ again. Use `stale_by_npc` to see what an edit
-touched.
+`counts.stale` is the **live** count: the number of items that depend on a file
+that is not current, which is exactly the total of `stale_item_count` across
+`stale_by_npc`. It moves the moment you edit a file, before any refresh.
+
+**Migration note (#647).** Before, `counts.stale` meant "items a past
+`review refresh` marked stale", so it read 0 right after an edit while
+`stale_by_npc` was populated. That figure is still there, renamed
+`counts.stale_at_last_refresh` (a new key; same value the old key had). A reader
+that wanted the old meaning must read the new key; a reader that only wanted "how
+many items are stale" now gets the right number from `counts.stale`. In the
+repo, only `review status` output carries this key; the Shared review page's own
+`show` counts and the review-artifact kit do not read it.
+
+`counts.pending` still includes an item stale at the last refresh and is not
+changed by this.
+
+### Refusals and `--limit`
+
+`review show --limit N` accepts `1` to the configured `max_page_items` (default
+50). Outside that range it exits 2 with code `REVIEW_PAGE_INVALID` and
+`data: {"parameter": "limit", "requested": N, "minimum": 1, "maximum": M}`. In
+`--json` mode a refusal that has no structured detail carries
+`data: {"refused": "<message>"}` rather than `null`; `ok` is the verdict.
+
+### Non-ASCII dossier ids (#630)
+
+A dossier selection `id` that is already a plain opaque id (`[A-Za-z0-9][A-Za-z0-9_.-]*`) is
+used unchanged, so existing reviews keep their item ids. Any other id (for example
+`aerasumé`) is folded to ASCII through `npc_slug.slug_for` and suffixed with `-` and
+8 hex digits of the SHA-256 of the original id (`aerasume-3f2a9c1d`), so two ids that
+fold alike never collide. The NPC label shown to the GM is the original `npc` name.
 
 ### Withdrawals are always allowed
 

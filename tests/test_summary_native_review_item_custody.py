@@ -15,6 +15,7 @@ from pipelines.summary_native.authority import load_ledger, sha256_bytes
 from pipelines.summary_native.review import delegated
 from pipelines.summary_native.review.store import CampaignReviewIdentity, load_campaign_identity
 from pipelines.summary_native.review.models import canonical_bytes
+from pipelines.summary_native.review.store import read_snapshot
 from tests import _custody_fixture as fixture
 from tests.conftest_npc import run_cli, sha_tree
 
@@ -373,7 +374,7 @@ def test_us3_s1_unchanged_sources_nothing_stale(tmp_path):
     data = out["data"]
     assert data["changed_files"] == [] and data["stale_by_npc"] == []
     assert data["counts"] == {"pending": data["item_count"], "approved": 0, "rejected": 0,
-                              "discussed": 0, "withdrawn": 0, "stale": 0}
+                              "discussed": 0, "withdrawn": 0, "stale": 0, "stale_at_last_refresh": 0}
     assert set(data) == {"review_id", "generation", "item_count", "counts", "changed_files", "stale_by_npc"}
 
 
@@ -389,7 +390,8 @@ def test_us3_s2_draft_change_lists_only_that_npc(tmp_path):
     assert [(g["npc"], g["stale_item_count"], g["stale_item_ids"]) for g in data["stale_by_npc"]] == [
         ("a", len(a_ids), a_ids)]
     assert data["stale_by_npc"][0]["changed_files"] == [{"path": fx.rel(fx.draft("a")), "state": "changed"}]
-    assert data["counts"]["stale"] == 0  # the refresh-marked count keeps its meaning
+    assert data["counts"]["stale"] == len(a_ids)  # live (#647); the refresh-marked count is stale_at_last_refresh
+    assert data["counts"]["stale_at_last_refresh"] == 0
 
 
 def test_us3_s3_summary_change_lists_naming_npcs_only(tmp_path):
@@ -402,3 +404,78 @@ def test_us3_s3_summary_change_lists_naming_npcs_only(tmp_path):
     # summary (the conservative case, asserted on purpose); b names only 002 and is never listed.
     assert npcs == ["a", "c", "d"]
     assert [f["path"] for f in out["data"]["changed_files"]] == [fx.rel(fx.summary(1))]
+
+
+# ── #647: counts.stale is the live figure ──────────────────────────────────
+
+def _live_total(data):
+    return sum(g["stale_item_count"] for g in data["stale_by_npc"])
+
+
+def test_647_counts_stale_equals_stale_by_npc_before_and_after_refresh(tmp_path):
+    fx = fixture.build(tmp_path)
+    fx.touch(fx.draft("a"))
+    rc, out = fx.cli("review", "status", fx.review_id)
+    data = out["data"]
+    assert _live_total(data) > 0
+    assert data["counts"]["stale"] == _live_total(data)
+    assert data["counts"]["stale_at_last_refresh"] == 0  # no refresh yet: the old key's value
+
+    rc, refreshed = fx.cli("review", "refresh", fx.review_id, "--expected-generation", str(fx.generation))
+    assert rc == 0, refreshed
+    rc, out = fx.cli("review", "status", fx.review_id)
+    data = out["data"]
+    assert data["counts"]["stale"] == _live_total(data)
+    marked = len(refreshed["data"]["stale_item_ids"])
+    assert data["counts"]["stale_at_last_refresh"] == marked
+
+
+# ── #631: a bad --limit is a clear refusal, never a bare data: null ────────
+
+def test_631_limit_out_of_range_is_a_structured_refusal(tmp_path):
+    fx = fixture.build(tmp_path)
+    for bad in ("100", "0"):
+        rc, out = fx.cli("review", "show", fx.review_id, "--limit", bad)
+        assert rc == 2 and out["ok"] is False and out["code"] == "REVIEW_PAGE_INVALID"
+        assert out["data"] == {"parameter": "limit", "requested": int(bad), "minimum": 1, "maximum": 50}
+        assert "between 1 and 50" in out["message"]
+    rc, out = fx.cli("review", "show", fx.review_id, "--limit", "50")
+    assert rc == 0 and out["data"]["items"]
+
+
+def test_631_no_refusal_carries_null_data(tmp_path):
+    fx = fixture.build(tmp_path)
+    rc, out = fx.cli("review", "show", "no-such-review")
+    assert rc != 0 and out["ok"] is False and out["data"] is not None
+
+
+# ── #630: non-ASCII dossier ids ────────────────────────────────────────────
+
+def _create(fx, ids_names):
+    sel = json.loads((fx.root / "npc-selection.json").read_text(encoding="utf-8"))
+    base = sel["dossiers"][0]
+    sel["dossiers"] = [{**base, "id": i, "npc": n} for i, n in ids_names]
+    path = fx.root / "sel-630.json"
+    path.write_text(json.dumps(sel, ensure_ascii=False), encoding="utf-8")
+    return fx.cli("review", "create", "--kind", "npc_verification", "--selection", str(path))
+
+
+def test_630_non_ascii_id_creates_with_ascii_item_ids_and_original_label(tmp_path):
+    fx = fixture.build(tmp_path)
+    rc, out = _create(fx, [("aerasumé", "Aerasumé")])
+    assert rc == 0, out
+    _m, _c, items = read_snapshot(fx.root, out["data"]["review_id"])
+    assert items and all(i.item_id.isascii() for i in items)
+    assert any("Aerasumé" in i.claim_text for i in items)
+
+
+def test_630_slug_is_deterministic_ascii_ids_unchanged_and_collisions_distinct(tmp_path):
+    from pipelines.summary_native.review.verification import ascii_selection_id as f
+    assert f("a") == "a" and f("npc-b.1_x") == "npc-b.1_x"  # existing ids byte-identical
+    assert f("aerasumé") == f("aerasumé") and f("aerasumé").isascii()
+    assert f("aerasumé") != f("aerasume") == "aerasume"
+    assert f("aerasumé") != f("aerasumè")  # two different ids that fold alike stay distinct
+    assert f("é") != f("è") and f("日本").isascii()
+    fx = fixture.build(tmp_path)
+    rc, out = _create(fx, [("aerasumé", "A"), ("aerasumè", "B")])
+    assert rc == 0, out

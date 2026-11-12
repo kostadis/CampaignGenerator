@@ -203,6 +203,9 @@ def _scope_args(parser: argparse.ArgumentParser) -> None:
 def _emit(args: argparse.Namespace, *, ok: bool, code: str, message: str, data=None, artifacts=()) -> int:
     envelope = {"ok": ok, "code": code, "message": message, "artifacts": list(artifacts), "data": data}
     if getattr(args, "json", False):
+        if not ok and data is None:
+            # A refusal is never a bare ``data: null`` (#631): name what was refused even with no detail.
+            envelope["data"] = {"refused": message}
         print(json.dumps(envelope, sort_keys=True, separators=(",", ":"), default=str))
     else:
         print(message)
@@ -214,6 +217,9 @@ def _emit(args: argparse.Namespace, *, ok: bool, code: str, message: str, data=N
         elif data is not None:
             print(json.dumps(data, sort_keys=True, indent=2, default=str))
     return 0 if ok else _exit_for(code)
+
+
+_CODE_SHAPE = re.compile(r"[A-Z][A-Z0-9_]+")
 
 
 def _exit_for(code: str) -> int:
@@ -324,6 +330,7 @@ def _show_review(root: Path, review_id: str, *, item_id: str | None, cursor: str
         raise ReviewStoreError(
             f"REVIEW_PAGE_INVALID: limit must be between 1 and {config.max_page_items}",
             "REVIEW_PAGE_INVALID",
+            detail={"parameter": "limit", "requested": page_limit, "minimum": 1, "maximum": config.max_page_items},
         )
     start = 0
     if cursor is not None:
@@ -414,7 +421,7 @@ def _create_selected_review(root: Path, kind: str, selection_path: Path) -> dict
         raise ReviewStoreError("REVIEW_INVALID_SELECTION: npc findings must be explicit and nonempty")
     from pipelines.summary_native.npc_verify import Finding,VerificationResult
     from pipelines.summary_native.review.models import SubjectReference
-    from pipelines.summary_native.review.verification import SelectedNpcVerification,adapt_selected_verifications
+    from pipelines.summary_native.review.verification import SelectedNpcVerification,adapt_selected_verifications,ascii_selection_id
     identity=load_campaign_identity(root);review_id=f"npc-review-{uuid.uuid4().hex[:12]}";now=datetime.now(timezone.utc);selected=[];source_map={}
     for finding in findings:
         required={"id","npc","draft_path","draft_line","evidence_path","diagnostic","severity"}
@@ -434,7 +441,7 @@ def _create_selected_review(root: Path, kind: str, selection_path: Path) -> dict
             source_id=f"{role}-{hashlib.sha256(relative.encode()).hexdigest()[:16]}";source_ids[role]=source_id;data=resolved.read_bytes();source_map[source_id]={"source_id":source_id,"path":relative,"sha256":hashlib.sha256(data).hexdigest(),"size":len(data)}
         diagnostic=finding["diagnostic"];observation=Finding(str(diagnostic.get("code")),int(finding["draft_line"]),str(finding.get("evidence") or ""),str(diagnostic.get("detail") or ""));blocking=bool(diagnostic.get("blocking"))
         result=VerificationResult(verdict="fail" if blocking else "pass",failures=[observation] if blocking else [],advisories=[] if blocking else [observation],counts={observation.code:1})
-        selected.append(SelectedNpcVerification(selection_id=str(finding["id"]),subject_ref=SubjectReference(subject_id=uuid.uuid5(identity.campaign_id,str(finding["npc"])),kind="entity"),draft_source_id=source_ids["draft"],draft_path=str(finding["draft_path"]),draft_text=texts["draft"],evidence_source_id=source_ids["evidence"],evidence_path=str(finding["evidence_path"]),evidence_text=texts["evidence"],result=result))
+        selected.append(SelectedNpcVerification(selection_id=ascii_selection_id(str(finding["id"])),subject_ref=SubjectReference(subject_id=uuid.uuid5(identity.campaign_id,str(finding["npc"])),kind="entity"),draft_source_id=source_ids["draft"],draft_path=str(finding["draft_path"]),draft_text=texts["draft"],evidence_source_id=source_ids["evidence"],evidence_path=str(finding["evidence_path"]),evidence_text=texts["evidence"],result=result))
     items=list(adapt_selected_verifications(campaign_id=identity.campaign_id,review_id=review_id,selected=selected))
     items.extend(_npc_signoff_items(identity.campaign_id,review_id,selected,{
         value.draft_path: str(finding["npc"])
@@ -442,7 +449,7 @@ def _create_selected_review(root: Path, kind: str, selection_path: Path) -> dict
     },verification_complete=False))
     sources=list(source_map.values())
     custody=SourceCustodyGeneration(campaign_id=identity.campaign_id,review_id=review_id,generation=1,recorded_at=now,sources=tuple(sources))
-    manifest=ReviewManifest(campaign_id=identity.campaign_id,review_id=review_id,kind=kind,generation=1,created_at=now,created_by="local-cli",selection=tuple({"kind":"subject","id":str(f["id"])} for f in findings),items=tuple({"campaign_id":identity.campaign_id,"review_id":review_id,"item_id":item.item_id,"revision":item.revision,"review_digest":item.review_digest} for item in items),source_manifest={"campaign_id":identity.campaign_id,"review_id":review_id,"generation":1,"digest":custody.custody_digest},rule_versions=({"rule_id":"npc-verify","version":"1"},))
+    manifest=ReviewManifest(campaign_id=identity.campaign_id,review_id=review_id,kind=kind,generation=1,created_at=now,created_by="local-cli",selection=tuple({"kind":"subject","id":ascii_selection_id(str(f["id"]))} for f in findings),items=tuple({"campaign_id":identity.campaign_id,"review_id":review_id,"item_id":item.item_id,"revision":item.revision,"review_digest":item.review_digest} for item in items),source_manifest={"campaign_id":identity.campaign_id,"review_id":review_id,"generation":1,"digest":custody.custody_digest},rule_versions=({"rule_id":"npc-verify","version":"1"},))
     return create_review(root,manifest,custody,items)
 
 
@@ -565,7 +572,7 @@ def _create_verified_dossier_review(root:Path,dossiers:list[dict])->dict:
     """Run the real aggregate verifier for a literal dossier selection."""
     from pipelines.summary_native import npc_verify,parse
     from pipelines.summary_native.review.models import SubjectReference
-    from pipelines.summary_native.review.verification import SelectedNpcVerification,adapt_selected_verifications
+    from pipelines.summary_native.review.verification import SelectedNpcVerification,adapt_selected_verifications,ascii_selection_id
     identity=load_campaign_identity(root); review_id=f"npc-review-{uuid.uuid4().hex[:12]}"; now=datetime.now(timezone.utc)
     selected=[]; source_map={}; selection_refs=[]
     for entry in dossiers:
@@ -600,8 +607,8 @@ def _create_verified_dossier_review(root:Path,dossiers:list[dict])->dict:
         if not isinstance(manual,list) or any(not isinstance(value,str) for value in manual): raise ReviewStoreError("REVIEW_INVALID_SELECTION: manual edits must be strings")
         result=npc_verify.verify(texts["draft"],texts["evidence"],index,summaries,manual)
         draft_relative=str(entry["draft_path"]); evidence_relative=str(entry["evidence_path"])
-        selected.append(SelectedNpcVerification(selection_id=str(entry["id"]),subject_ref=SubjectReference(subject_id=uuid.uuid5(identity.campaign_id,str(entry["npc"])),kind="entity"),draft_source_id=f"draft-{hashlib.sha256(draft_relative.encode()).hexdigest()[:16]}",draft_path=draft_relative,draft_text=texts["draft"],evidence_source_id=f"evidence-{hashlib.sha256(evidence_relative.encode()).hexdigest()[:16]}",evidence_path=evidence_relative,evidence_text=texts["evidence"],result=result))
-        selection_refs.append({"kind":"subject","id":str(entry["id"])})
+        selected.append(SelectedNpcVerification(selection_id=ascii_selection_id(str(entry["id"])),subject_ref=SubjectReference(subject_id=uuid.uuid5(identity.campaign_id,str(entry["npc"])),kind="entity"),draft_source_id=f"draft-{hashlib.sha256(draft_relative.encode()).hexdigest()[:16]}",draft_path=draft_relative,draft_text=texts["draft"],evidence_source_id=f"evidence-{hashlib.sha256(evidence_relative.encode()).hexdigest()[:16]}",evidence_path=evidence_relative,evidence_text=texts["evidence"],result=result))
+        selection_refs.append({"kind":"subject","id":ascii_selection_id(str(entry["id"]))})
     items=list(adapt_selected_verifications(campaign_id=identity.campaign_id,review_id=review_id,selected=selected))
     items.extend(_npc_signoff_items(identity.campaign_id,review_id,selected,{
         value.draft_path: str(entry["npc"])
@@ -975,4 +982,8 @@ def run(args: argparse.Namespace) -> int:
         raise ReviewStoreError("REVIEW_COMMAND: unsupported command")
     except (ReviewConfigError, ReviewStoreError, AuthorityError, OSError, ValueError) as exc:
         code = getattr(exc, "code", None) or str(exc).split(":", 1)[0]
+        if not _CODE_SHAPE.fullmatch(code):
+            # An error that carries no code ("invalid opaque selection id ...") must not put its sentence
+            # in the machine-readable field (#630).
+            code = "REVIEW_INVALID"
         return _emit(args, ok=False, code=code, message=str(exc), data=getattr(exc, "detail", None))
