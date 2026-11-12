@@ -241,7 +241,7 @@ So what is recorded is exactly what the GM saw (US1: "shows a plan … then reco
 
 - The mytools work is done in a separate worktree, so the GM's checkout is never touched.
 - But once the PR merges, a pull into the dirty checkout will refuse to overwrite that file until the GM commits their hunk.
-- This is raised with the GM **before** the mytools PR is opened. It is not resolved on their behalf.
+- **Resolved (GM ruling, 2026-11-12).** The GM's edits were committed and merged as mytools #114 (`5c5e5d5`). The 043 kit branch starts from that main.
 
 ## R13: The web face (FR-022, XI)
 

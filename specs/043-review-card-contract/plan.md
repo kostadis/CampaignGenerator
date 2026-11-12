@@ -83,11 +83,11 @@ CampaignGenerator takes ownership of both ends of the review-page interface.
 | VIII. State discoverable | ✅ | Packets are listed in the review directory. Decisions name their packet via `request_id` (R6). A partial save reports exactly what was recorded (R9). |
 | IX. UI mechanizes | ✅ | The launcher invokes export, plan and confirm. Deciding verdicts happens on the page or with the GM in chat. The decisions file stays on disk and is passed by path. |
 | X. No silent "all" | ✅ | Decide records only explicitly marked cards. Export decides nothing: it is an offer, and an empty filter means "all undecided items offered", which records nothing. |
-| XI. Every CLI capability has a face | ✅ | `cards export` and `cards decide` (plan and write) are in `ReviewLauncher.vue` (R13). The GM chose a minimal face (2026-11-12). The `--item` and `--action` filters are exposed as optional route fields. The launcher fieldset ships without inputs for them, because the GM ruled the face minimal; adding them is a one-line follow-up. **GM ruling to confirm at `/speckit-tasks`.** |
+| XI. Every CLI capability has a face | ✅ | `cards export` (with its `--item` / `--action` filters, as two optional inputs) and `cards decide` (plan and write) are in `ReviewLauncher.vue` (R13). The GM chose a minimal face, and ruled on 2026-11-12 that the filter inputs ship in this feature. |
 | XII. One spelling per option | ✅ | `--write` (dry run by default), `--reviewer`, `--plan-sha256` (as in `review migrate`), `--item` and `--decisions FILE\|-` are reused spellings. `--action` is new to `review` but matches the kit flag it replaces. |
 | XIII. Breaking state changes migrate | ✅ no trigger | No existing file changes shape. `packets/` is a new optional directory. The stricter action table validates new writes only. Existing events are never re-validated. |
 
-**Post-design re-check (after Phase 1)**: no violations. One open item for the GM is the XI launcher-filter question above. It is a scope confirmation, not a violation, because the route already exposes the flags.
+**Post-design re-check (after Phase 1)**: no violations.
 
 ## Project Structure
 
@@ -170,13 +170,13 @@ dotfiles/codex/skills/**                         # review-page → review-artifa
 5. **US4 (P2)**: goldens, the schema-regeneration test, version refusal and plain-text carriage.
 6. **US6 (P3)**: routes and the launcher fieldset.
 7. **US5 (P3), mytools**: the kit merge, the shims, the Codex retirement and the layout manifests.
-   - Before the mytools PR is opened, ask the GM how to handle their dirty `codex/skills/vtt-spell-pass/SKILL.md` (R12).
+   - Branch from mytools `main` at `5c5e5d5` or later. The GM's formerly uncommitted edits landed there via mytools #114 (GM ruling, 2026-11-12), so the mytools checkout is clean and the vtt-spell-pass SKILL.md conflict (R12) is gone.
    - The US4 kit-side assertions (no store reads, escaping) land here.
 8. **Polish**:
    - docs;
    - the full suite and the quickstart;
    - one code-review pass;
-   - follow-up issues for the third latest-decision copy (R3), launcher filters if the GM defers them, and slice 2.
+   - follow-up issues for the third latest-decision copy (R3) and slice 2.
 
 ## Complexity Tracking
 

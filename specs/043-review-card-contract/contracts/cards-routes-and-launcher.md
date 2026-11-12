@@ -40,7 +40,8 @@ summary_native review cards decide {review_id} --decisions PATH --reviewer R [--
 
 | Control | Action | Shows |
 |---|---|---|
-| **Export card packet** | POST export | The packet id, card and member counts, and skipped sign-offs with their codes |
+| Item ids, Action names (optional text inputs, comma- or space-separated) | | Sent as `items` / `actions`; empty means no filter |
+| **Export card packet** | POST export with the filters | The packet id, card and member counts, and skipped sign-offs with their codes |
 | Decisions file (path input) and Reviewer (input) | | |
 | **Plan** | POST decide with `write:false` | The plan grouped as Record, Supersede (old → new), No change, Unmarked and Refused, with `planSha256` |
 | **Confirm and record** | POST decide with `write:true, plan_sha256:<the shown plan's>` | Disabled until a plan is shown, and reset whenever the path or reviewer changes. Shows the saved result |
