@@ -217,16 +217,13 @@ def _require_doc(doc: str) -> str:
 
 
 def _require_dir(run: SummaryNativeRun, explicit: str) -> str:
-    value = _pick((explicit or "").strip(), run.summaries_dir)
-    if not value or not str(value).strip():
+    value, why = resolve.resolve_summaries_dir(Path.cwd(), (explicit or "").strip(), run.summaries_dir)
+    if value is None:
         raise HTTPException(
             status_code=400,
-            detail=(
-                "no summaries directory: pass ?summaries_dir= or set "
-                "grounding.yaml summary_native.summaries_dir"
-            ),
+            detail=why.replace("the explicit summaries directory", "?summaries_dir="),
         )
-    return str(value).strip()
+    return value
 
 
 def _require_range(run: SummaryNativeRun, since: int | None, until: int | None) -> tuple[int, int]:

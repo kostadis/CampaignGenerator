@@ -205,6 +205,17 @@ def test_every_drop_is_logged_with_text_and_reason():
     assert "kept, typography-normalised" in md
 
 
+def test_map_check_drops_a_placeholder_speaker_quote_and_logs_it():
+    """#634: npc-verify fails a placeholder speaker, so the map stage drops it (no advisory)."""
+    raw = RAW.replace('> "Follow me and stay low." — Jimjar [ch 002 / 002.01]',
+                      '> "Follow me and stay low." — Unknown [ch 002 / 002.01]', 1)
+    res = npc_chunked.check_map(raw, _index(), n_manual=2)
+    placeholder = [d for d in res.drops if d.reason == "placeholder-speaker"]
+    assert len(placeholder) == 1 and placeholder[0].section == "quotes" and "Unknown" in placeholder[0].text
+    assert not any("Unknown" in q for q in res.quotes) and not res.advisories
+    assert "placeholder-speaker" in npc_chunked.render_drops_md("Jimjar", [("002-002", res)])
+
+
 def test_a_quote_without_a_citation_is_a_citation_mismatch():
     chk = npc_check.check_quote('"I don\'t know a way out."', "— Jimjar", _index())
     assert chk.status == "citation-mismatch"

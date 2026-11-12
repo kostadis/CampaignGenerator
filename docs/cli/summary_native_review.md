@@ -345,6 +345,8 @@ many items are stale" now gets the right number from `counts.stale`. In the
 repo, only `review status` output carries this key; the Shared review page's own
 `show` counts and the review-artifact kit do not read it.
 
+`counts` is not a partition: an approved item whose files changed is counted in both `approved` and the live `stale`, and `pending` counts only items marked at the last refresh. Publish still refuses such an item.
+
 `counts.pending` still includes an item stale at the last refresh and is not
 changed by this.
 

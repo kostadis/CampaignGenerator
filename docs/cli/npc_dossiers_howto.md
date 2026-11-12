@@ -566,8 +566,9 @@ kept {'history': 15, 'quotes': 2, 'arc': 4}, dropped {'history': 0, 'quotes': 1,
 Drop reasons you will see: `uncited`, `invalid-citation`, `outside-chunk` (a
 citation to a chapter that is not in this chunk), `quoted-span-not-found` (a
 `"…"` span in a History or Arc bullet is not verbatim), `not-found` and
-`citation-mismatch (…)` (Notable Quotes). Lines marked `kept, typography-normalised`
-and `kept, advisory placeholder-speaker` were kept by the map check and are listed for your attention; the assembled draft then fails `npc-verify` with `placeholder-speaker`, so re-draft that NPC.
+`citation-mismatch (…)` and `placeholder-speaker` (Notable Quotes; a quote whose speaker is empty or a
+placeholder is dropped here because `npc-verify` would fail it). Lines marked
+`kept, typography-normalised` were kept by the map check and are listed for your attention.
 Many drops of one kind point at one prompt or model weakness; one or two per NPC
 is routine.
 

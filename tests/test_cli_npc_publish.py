@@ -126,3 +126,15 @@ def test_publish_names_what_was_tried_when_nothing_resolves(tmp_path):
     rc, so, err = run_cli(["npc-publish", "--config", str(root / "config/config.yaml"), "--all"])
     assert rc == 2
     assert "--summaries-dir" in err and "summaries_dir" in err and "docs/summaries" in err
+
+
+def test_cli_and_server_share_one_summaries_dir_resolver(tmp_path):
+    """#632: one rule: explicit, then configured, then <root>/docs/summaries if a directory."""
+    from pipelines.summary_native.resolve import resolve_summaries_dir
+
+    assert resolve_summaries_dir(tmp_path, "x", "y") == ("x", "")
+    assert resolve_summaries_dir(tmp_path, "", "y") == ("y", "")
+    value, why = resolve_summaries_dir(tmp_path, None, None)
+    assert value is None and "docs/summaries" in why
+    (tmp_path / "docs/summaries").mkdir(parents=True)
+    assert resolve_summaries_dir(tmp_path, None, None) == ("docs/summaries", "")

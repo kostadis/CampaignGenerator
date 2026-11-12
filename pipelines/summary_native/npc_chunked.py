@@ -127,6 +127,9 @@ def reduce_prompt(
 # ── The map check ───────────────────────────────────────────────────────────
 
 
+PLACEHOLDER_SPEAKER = "placeholder-speaker"
+
+
 @dataclass(frozen=True)
 class Drop:
     section: str  # "history" | "quotes" | "arc"
@@ -229,12 +232,13 @@ def check_map(raw: str, index: npc_check.EvidenceIndex, n_manual: int = 0) -> Ma
             res.drops.append(Drop("quotes", why, block))
         elif chk.status == CITATION_MISMATCH:
             res.drops.append(Drop("quotes", f"{CITATION_MISMATCH} ({chk.detail})", block))
+        elif npc_check.placeholder_speaker(q):
+            # npc-verify fails this (#634); dropping it here keeps the assembled draft verifiable.
+            res.drops.append(Drop("quotes", PLACEHOLDER_SPEAKER, block))
         else:
             res.quotes.append(block)
             if chk.status == npc_check.TYPOGRAPHY:
                 res.typography.append(block)
-            if npc_check.placeholder_speaker(q):
-                res.advisories.append(f"placeholder-speaker: {block}")
     return res
 
 

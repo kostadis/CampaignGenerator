@@ -537,3 +537,12 @@ def test_verify_md_lists_the_number_findings_the_accounting_counts():
     md = npc_verify.render_verify_md(r, "Jimjar")
     assert "Number/ordinal findings" in md and "number-inconsistency" in md and "9999" in md
     assert npc_verify.VerificationResult.from_dict(r.to_dict()).number_findings == r.number_findings
+
+
+def test_placeholder_speaker_is_a_missing_attribution_not_a_cosmetic_finding():
+    """#634: a blocking finding must not be filed under the presentation category."""
+    from pipelines.summary_native.review.models import FindingCategory
+    from pipelines.summary_native.review.verification import _DIRECT_CATEGORIES
+
+    assert npc_verify.verifier_category(npc_verify.PLACEHOLDER) == "missing_source"
+    assert _DIRECT_CATEGORIES["placeholder-speaker"] == frozenset({FindingCategory.MISSING_SOURCE_OR_POINTER})

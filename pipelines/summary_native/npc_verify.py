@@ -76,7 +76,7 @@ _VERIFIER_TAXONOMY = {
     MANUAL_DROPPED: "unsupported_or_contradicted",
     STATUS_UNSUPPORTED: "citation_non_entailment",
     TYPOGRAPHY: "presentation_only",
-    PLACEHOLDER: "presentation_only",
+    PLACEHOLDER: "missing_source",  # a quote with no real speaker: a missing attribution (#634)
     "superseded-claim": "superseded_claim",
     "knowledge-leak": "knowledge_leak",
     "missing-source": "missing_source",

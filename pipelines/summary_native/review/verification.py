@@ -88,7 +88,7 @@ _DIRECT_CATEGORIES: dict[str, frozenset[FindingCategory]] = {
     "not-found": frozenset({FindingCategory.UNSUPPORTED_OR_CONTRADICTED}),
     "manual-dropped": frozenset({FindingCategory.UNSUPPORTED_OR_CONTRADICTED}),
     "typography-normalised": frozenset({FindingCategory.TYPOGRAPHY_PRESENTATION}),
-    "placeholder-speaker": frozenset({FindingCategory.TYPOGRAPHY_PRESENTATION}),
+    "placeholder-speaker": frozenset({FindingCategory.MISSING_SOURCE_OR_POINTER}),
     "status-claim-unsupported": frozenset({FindingCategory.CITATION_NON_ENTAILMENT}),
     "later-source-supersedes": frozenset({FindingCategory.LATER_SOURCE_SUPERSEDES}),
     "knowledge-leak": frozenset({FindingCategory.KNOWLEDGE_LEAK}),
