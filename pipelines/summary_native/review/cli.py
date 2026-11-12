@@ -145,6 +145,15 @@ def add_parser(subparsers: argparse._SubParsersAction) -> None:
     npc=commands.add_parser("npc",help="sign an exact mechanically verified NPC draft")
     npc_commands=npc.add_subparsers(dest="npc_command",required=True)
     npc_sign=npc_commands.add_parser("sign"); npc_sign.add_argument("review"); npc_sign.add_argument("--item",required=True); npc_sign.add_argument("--draft-sha256",required=True); npc_sign.add_argument("--expected-decision-revision",type=int,required=True); npc_sign.add_argument("--reviewer",required=True); _scope_args(npc_sign)
+    cards_cmd=commands.add_parser("cards",help="export a card packet for a review page, or apply the decisions file the page saves (dry run by default)")
+    cards_commands=cards_cmd.add_subparsers(dest="cards_command",required=True)
+    cards_export=cards_commands.add_parser("export",help="store a packet of the undecided items as cards")
+    cards_export.add_argument("review"); cards_export.add_argument("--item",action="append",dest="items",default=None,metavar="ID",help="only this item (repeatable)")
+    cards_export.add_argument("--action",action="append",dest="actions",default=None,metavar="NAME",help="only items with this proposed action (repeatable)")
+    cards_export.add_argument("--out",default=None,metavar="FILE",help="also write a byte-identical copy of the stored packet"); _scope_args(cards_export)
+    cards_decide=cards_commands.add_parser("decide",help="plan, or with --write record, the verdicts in a saved decisions file")
+    cards_decide.add_argument("review"); cards_decide.add_argument("--decisions",required=True,metavar="FILE|-"); cards_decide.add_argument("--reviewer",required=True,help="who made the rulings (recorded on every decision)")
+    cards_decide.add_argument("--write",action="store_true",help="record the planned decisions (default: dry run)"); cards_decide.add_argument("--plan-sha256",default=None,metavar="HEX",help="--write: the planSha256 of the dry run you confirmed"); _scope_args(cards_decide)
     document=commands.add_parser("document",help="create, sign, prepare, or promote grounding documents")
     document_commands=document.add_subparsers(dest="document_command",required=True)
     document_create=document_commands.add_parser("create"); document_create.add_argument("review"); document_create.add_argument("--selection",required=True); _scope_args(document_create)
@@ -214,9 +223,39 @@ def _emit(args: argparse.Namespace, *, ok: bool, code: str, message: str, data=N
 
             for line in custody.refusal_text_lines(data):
                 print(line)
+        elif code in _CARDS_TEXT_CODES and isinstance(data, dict):
+            for line in _cards_text_lines(code, data, args):
+                print(line)
         elif data is not None:
             print(json.dumps(data, sort_keys=True, indent=2, default=str))
     return 0 if ok else _exit_for(code)
+
+
+_CARDS_TEXT_CODES = frozenset({"REVIEW_CARDS_EXPORTED", "REVIEW_CARDS_PLAN", "REVIEW_CARDS_SAVED", "REVIEW_CARDS_PLAN_CHANGED"})
+
+
+def _cards_text_lines(code: str, data: dict, args: argparse.Namespace) -> list[str]:
+    """Human text for the cards commands (contracts/cards-cli.md); the JSON envelope is unaffected."""
+    if code == "REVIEW_CARDS_EXPORTED":
+        return [f"skipped sign-off {s['itemId']} ({s['npc']}): {s['code']}: {s['message']}" for s in data.get("skippedSignoffs", [])]
+    lines = []
+    for card in data["cards"]:
+        if card["state"] == "unmarked":
+            continue
+        if card["state"] == "refused":
+            lines.append(f"refused {card['cardId']}: {card['refusal']['code']}: {card['refusal']['message']}")
+            continue
+        tally = {key: sum(1 for m in card["members"] if m["category"] == key) for key in ("record", "supersede", "noop")}
+        lines.append(f"{card['verdict']} {card['cardId']} \u2192 {tally['record']} record, {tally['supersede']} supersede, {tally['noop']} noop")
+        for m in card["members"]:
+            if m["category"] == "supersede":
+                before = m["previous"]
+                lines.append(f"  item {m['itemId']}: {before['verdict']}/{before['disposition']} \u2192 {card['verdict']}/{m['disposition']}")
+    lines.append(f"plan {data['planSha256']}")
+    if code != "REVIEW_CARDS_SAVED":
+        lines.append(f"to record it: summary_native review cards decide {args.review} --decisions {args.decisions} "
+                     f"--reviewer {args.reviewer} --write --plan-sha256 {data['planSha256']}")
+    return lines
 
 
 _CODE_SHAPE = re.compile(r"[A-Z][A-Z0-9_]+")
@@ -227,7 +266,7 @@ def _exit_for(code: str) -> int:
         return 3
     if "RECOVER" in code or "PENDING" in code:
         return 4
-    if "UNRESOLVED" in code or "BLOCK" in code or "CONFLICT" in code:
+    if "UNRESOLVED" in code or "BLOCK" in code or "CONFLICT" in code or code == "REVIEW_CARDS_PLAN_CHANGED":
         return 5
     return 2
 
@@ -701,6 +740,43 @@ def _sign_npc_draft(root:Path,review_id:str,*,item_id:str,draft_sha256:str,expec
     return save_decisions(root,review_id,{"version":1,"request_id":f"npc-signoff-{item_id}-{expected_decision_revision}","review_generation":manifest.generation,"reviewer":reviewer,"decisions":[{"item_id":item.item_id,"item_revision":item.revision,"review_digest":item.review_digest,"expected_decision_revision":expected_decision_revision,"verdict":"approve","disposition":"document_signoff","note":"Approved exact mechanically verified NPC draft bytes."}]})
 
 
+def _run_cards(args: argparse.Namespace, root: Path) -> int:
+    """cards export / decide (spec 043).  Decide is a dry run unless --write, which needs the plan's hash."""
+    from pipelines.summary_native.review import cards as review_cards
+    if args.cards_command == "export":
+        result = review_cards.export_packet(
+            root, args.review, item_ids=args.items, actions=args.actions, out=Path(args.out) if args.out else None)
+        artifacts = [str(root / result["path"])] + ([args.out] if args.out else [])
+        message = f"packet {result['packetId']}: {result['cards']} cards ({result['members']} members) for review {result['reviewId']}"
+        return _emit(args, ok=True, code="REVIEW_CARDS_EXPORTED", message=message, data=result, artifacts=artifacts)
+    if not args.reviewer.strip():
+        raise ReviewStoreError("REVIEW_INVALID_BATCH: --reviewer must be nonblank", "REVIEW_INVALID_BATCH")
+    if args.write and not args.plan_sha256:
+        raise ReviewStoreError(
+            "REVIEW_CARDS_PLAN_REQUIRED: --write needs --plan-sha256 from the dry run you confirmed", "REVIEW_CARDS_PLAN_REQUIRED")
+    review_config = load_campaign_review_config(root)
+    if args.decisions == "-":
+        raw = sys.stdin.buffer.read(review_config.max_request_bytes + 1)
+    else:
+        path = Path(args.decisions)
+        if path.stat().st_size > review_config.max_request_bytes:
+            raise ReviewStoreError("REVIEW_INVALID_BATCH: decisions file is too large", "REVIEW_INVALID_BATCH")
+        raw = path.read_bytes()
+    if len(raw) > review_config.max_request_bytes:
+        raise ReviewStoreError("REVIEW_INVALID_BATCH: decisions file is too large", "REVIEW_INVALID_BATCH")
+    decisions = review_cards.parse_decisions(raw, max_note_chars=review_config.max_note_chars)
+    if args.write:
+        result = review_cards.apply_decide(root, args.review, decisions, reviewer=args.reviewer.strip(), plan_sha256=args.plan_sha256)
+        counts = result["counts"]
+        return _emit(args, ok=True, code="REVIEW_CARDS_SAVED", data=result,
+                     message=f"Recorded {counts['record']} and superseded {counts['supersede']} decision(s) from packet {result['packetId']}.")
+    result = review_cards.plan_decide(root, args.review, decisions)
+    c = result["counts"]
+    return _emit(args, ok=True, code="REVIEW_CARDS_PLAN", data=result,
+                 message=f"Plan for packet {result['packetId']}: {c['record']} record, {c['supersede']} supersede, "
+                         f"{c['noop']} noop, {c['unmarked']} unmarked card(s), {c['refused']} refused. Nothing was written.")
+
+
 def _run_delegated(args: argparse.Namespace, root: Path) -> int:
     """carry/policy: plan by default; only --write saves (through save_decisions)."""
     from pipelines.summary_native.review.delegated import load_policy, plan_carry, plan_policy, submit_decisions
@@ -899,6 +975,8 @@ def run(args: argparse.Namespace) -> int:
                 return _emit(args,ok=True,code="REVIEW_CORRECTION_PREPARED",message="Exact correction preview prepared.",data=canonicalize(result))
             result=apply_correction(root,args.review,proposal_id=args.proposal,proposal_sha256=args.proposal_sha256,summaries_dir=summaries)
             return _emit(args,ok=True,code="REVIEW_CORRECTION_APPLIED",message="Reviewed source correction applied.",data=canonicalize(result))
+        if args.review_command == "cards":
+            return _run_cards(args, root)
         if args.review_command == "npc":
             result=_sign_npc_draft(root,args.review,item_id=args.item,draft_sha256=args.draft_sha256,expected_decision_revision=args.expected_decision_revision,reviewer=args.reviewer)
             return _emit(args,ok=True,code="REVIEW_NPC_SIGNED",message="Exact mechanically verified NPC draft signed.",data=result)
