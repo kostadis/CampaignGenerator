@@ -309,9 +309,22 @@ def test_missing_range_is_400_and_never_spawns(campaign, path, extra):
 
 @pytest.mark.parametrize("path", ["/run/link", "/run/draft", "/run/verify", "/run/compose", "/run/publish"])
 def test_missing_summaries_dir_is_400(campaign, path):
-    _, captured = campaign
+    root, captured = campaign
+    (root / "docs/summaries").rename(root / "docs/elsewhere")  # nothing to fall back to
     r = client.get(f"{BASE}{path}", params={"since": 2, "until": 6, "select": "all"})
     assert r.status_code == 400 and "cmd" not in captured
+    detail = r.json()["detail"]
+    assert "?summaries_dir=" in detail and "summaries_dir (not set)" in detail and "docs/summaries" in detail
+
+
+@pytest.mark.parametrize("path", ["/run/link", "/run/verify"])
+def test_summaries_dir_falls_back_to_docs_summaries(campaign, path):
+    """#632: no ?summaries_dir= and none configured -> the campaign's docs/summaries (the CLI's rule)."""
+    _, captured = campaign
+    r = client.get(f"{BASE}{path}", params={"since": SINCE, "until": UNTIL, "select": "all"})
+    _ = r.text
+    assert r.status_code == 200
+    assert _flag(captured["cmd"], "--summaries-dir") == "docs/summaries"
 
 
 @pytest.mark.parametrize("select", [None, "", "everyone"])
@@ -354,10 +367,15 @@ def _out(root):
 
 
 def test_chapters_shares_the_summary_native_listing(campaign):
+    root, _ = campaign
     r = client.get(f"{BASE}/chapters", params={"summaries_dir": "docs/summaries"})
     same = client.get("/api/grounding/summary-native/chapters", params={"summaries_dir": "docs/summaries"})
     assert r.status_code == 200 and r.json() == same.json() and r.json()["present"]
+    # no ?summaries_dir= and none configured: falls back to docs/summaries (#632), and 400 only if absent
+    assert client.get(f"{BASE}/chapters").status_code == 200
+    (root / "docs/summaries").rename(root / "docs/elsewhere")
     assert client.get(f"{BASE}/chapters").status_code == 400
+    (root / "docs/elsewhere").rename(root / "docs/summaries")
     assert client.get(f"{BASE}/chapters", params={"summaries_dir": "nope"}).status_code == 404
 
 

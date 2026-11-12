@@ -787,10 +787,10 @@ def review_status(campaign_dir: Path, review_id: str) -> dict:
     current = {}
     for event in events:
         if event.get("item_id"): current[event["item_id"]] = event
-    counts = {"pending":0,"approved":0,"rejected":0,"discussed":0,"withdrawn":0,"stale":0}
+    counts = {"pending":0,"approved":0,"rejected":0,"discussed":0,"withdrawn":0,"stale":0,"stale_at_last_refresh":0}
     for item in items:
         event = current.get(item.item_id)
-        if item.item_id in stale_ids: counts["stale"] += 1; counts["pending"] += 1
+        if item.item_id in stale_ids: counts["stale_at_last_refresh"] += 1; counts["pending"] += 1
         elif event is None: counts["pending"] += 1
         elif event.get("kind") == "withdrawal": counts["withdrawn"] += 1; counts["pending"] += 1
         else:
@@ -798,6 +798,9 @@ def review_status(campaign_dir: Path, review_id: str) -> dict:
             if key != "approved": counts["pending"] += 1
     status = {"review_id":review_id,"generation":manifest.generation,"item_count":len(items),"counts":counts}
     status.update(review_custody.stale_by_npc(report, items))
+    # One trustworthy figure (#647): ``stale`` is the live count, exactly the items ``stale_by_npc`` lists.
+    # The rebind-event figure a past ``review refresh`` recorded is kept as ``stale_at_last_refresh``.
+    counts["stale"] = sum(g["stale_item_count"] for g in status["stale_by_npc"])
     return status
 
 

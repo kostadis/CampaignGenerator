@@ -90,7 +90,9 @@ the dossier go in the authored file.
    Precedence is flag > this file > default. There is no `endpoint` key (see
    [Which endpoint](#which-endpoint-the-dgx-backend-uses)). `summaries_dir`,
    `registry`, `canon_file` and the chapter range stay in `grounding.yaml
-   summary_native` — they are spelled in one place.
+   summary_native` — they are spelled in one place. If `summaries_dir` is not set (and no
+   `--summaries-dir` is given) every `summary_native` subcommand, `npc-publish` included, falls
+   back to the campaign's `docs/summaries`; the refusal names all three places it looked.
 
 Run every command **from the campaign root**, with the same `--since`/`--until`
 at every step. The range names the folder everything lives in:
@@ -489,6 +491,7 @@ there is any failure and `pass` otherwise; advisories never change it.
 | `uncited` | a History bullet with no citation (`[ch NNN / …]` or `[manual N]`). A bullet with cited bullets nested under it is a *label* and needs none | Re-draft. |
 | `manual-dropped` | a `[manual N]` for N in the authored list that is cited **nowhere** in the draft | Re-draft; if the model keeps dropping it, shorten the edit. |
 | `manual-invalid` | a `[manual N]` with N outside the list | Re-draft; it usually means you removed an item and the draft is stale. |
+| `placeholder-speaker` | a Notable Quote's attribution names nobody: missing, empty, dash-only or `?`-only (`— —`, `???`), or exactly a placeholder word, ignoring case and surrounding brackets/asterisks (`Speaker`, `Unknown`, `Unnamed`, `Unidentified`, `Anonymous`, `Narrator`, `Someone`, `NPC`, `N/A`, `None`, `TBD`, `Unknown Speaker`, `Unknown Voice`, or one of those words plus a number such as `Speaker 1`). A real name is never flagged, even one containing such a word (`Speaker Hallow`, `The Unknown Soldier`) | **Failing since #634** (it was an advisory). Re-draft: the drafting prompts now forbid placeholder speakers. If you only want to fix the one line, name the real speaker in the quote's attribution as the evidence gives it (an `authored/` edit, or a re-draft of that NPC alone with `--name`); there is no automatic repair. An existing draft that carried a placeholder will now fail `npc-verify` and `npc-publish` refuses it, which is intended. Changing the prompts also changes `draft_key`, so every old draft reads as stale until re-drafted. |
 
 **Advisories** (listed, never failing):
 
@@ -496,7 +499,6 @@ there is any failure and `pass` otherwise; advisories never change it.
 |---|---|
 | `typography-normalised` | the quote matches the evidence only after treating curly and straight quote marks and apostrophes as equal. The summaries mix both styles, the transcripts have none. Safe to publish; the fix is in the summaries (kostadis/campaigns#371) |
 | `status-claim-unsupported` | a Last Observed State or History line uses a status word (`alive, dead, died, killed, slain, missing, departed, captured, freed`) that appears **nowhere** in this NPC's evidence. It is a prompt to check, not a finding — the word may be a fair paraphrase |
-| `placeholder-speaker` | a Notable Quote's attribution is missing or a placeholder (`Speaker`, `Unknown`, `Narrator`, `Someone`, `N/A`) |
 
 Quotes about an NPC may be spoken by anyone, and may come from an entry, a scene
 or a moment, as long as they are verbatim in *this NPC's* evidence and cited to the
@@ -564,8 +566,9 @@ kept {'history': 15, 'quotes': 2, 'arc': 4}, dropped {'history': 0, 'quotes': 1,
 Drop reasons you will see: `uncited`, `invalid-citation`, `outside-chunk` (a
 citation to a chapter that is not in this chunk), `quoted-span-not-found` (a
 `"…"` span in a History or Arc bullet is not verbatim), `not-found` and
-`citation-mismatch (…)` (Notable Quotes). Lines marked `kept, typography-normalised`
-and `kept, advisory placeholder-speaker` were kept and are listed for your attention.
+`citation-mismatch (…)` and `placeholder-speaker` (Notable Quotes; a quote whose speaker is empty or a
+placeholder is dropped here because `npc-verify` would fail it). Lines marked
+`kept, typography-normalised` were kept by the map check and are listed for your attention.
 Many drops of one kind point at one prompt or model weakness; one or two per NPC
 is routine.
 

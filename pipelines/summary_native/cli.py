@@ -379,12 +379,9 @@ def main(argv: list[str] | None = None) -> int:
         return 0
     cfg = _grounding_section(config_path.expanduser().resolve())
 
-    summaries = args.summaries_dir or cfg.get("summaries_dir")
-    if not summaries:
-        return _err(
-            "no summaries directory: pass --summaries-dir or set "
-            "grounding.yaml summary_native.summaries_dir"
-        )
+    summaries, why = resolve.resolve_summaries_dir(root, args.summaries_dir, cfg.get("summaries_dir"))
+    if summaries is None:
+        return _err(why.replace("the explicit summaries directory", "--summaries-dir"))
     out_root = _under(root, args.out_root or cfg.get("out_root") or schema.DEFAULT_OUT_ROOT)
     dup_threshold = (
         args.dup_threshold

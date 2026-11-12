@@ -92,3 +92,49 @@ def test_publish_log_follows_a_non_default_npc_root_and_hand_edit_detection_stil
     rc, so, _ = run_cli(_args(root, "npc-publish", *nr, "--name", "Jimjar"))
     assert rc == 2 and "refused" in so
     assert run_cli(_args(root, "npc-publish", *nr, "--name", "Jimjar", "--force"))[0] == 0
+
+
+def _args_no_dir(root, cmd, *extra):
+    return [cmd, "--config", str(root / "config/config.yaml"),
+            "--since", str(SINCE), "--until", str(UNTIL), *extra]
+
+
+def test_publish_defaults_summaries_dir_to_docs_summaries(drafted):
+    """#632: no --summaries-dir and no configured one -> the campaign's docs/summaries."""
+    root, _ = drafted
+    cfg = root / "config" / "grounding.yaml"
+    assert not cfg.exists() or "summaries_dir" not in cfg.read_text()
+    rc, so, err = run_cli(_args_no_dir(root, "npc-publish", "--name", "Jimjar"))
+    assert rc == 0, err
+    assert so.strip() == "Jimjar: published (summary_native)"
+
+
+def test_publish_uses_configured_summaries_dir_over_fallback(drafted):
+    """#632: a configured summaries_dir wins over the docs/summaries fallback."""
+    root, _ = drafted
+    (root / "config").mkdir(exist_ok=True)
+    (root / "config" / "grounding.yaml").write_text("summary_native:\n  summaries_dir: docs/nowhere\n")
+    rc, so, err = run_cli(_args_no_dir(root, "npc-publish", "--name", "Jimjar"))
+    assert rc == 2 and "docs/nowhere" in err
+
+
+def test_publish_names_what_was_tried_when_nothing_resolves(tmp_path):
+    """#632: the refusal lists the flag, the config key and the fallback it looked at."""
+    root = tmp_path / "bare"
+    (root / "config").mkdir(parents=True)
+    (root / "config" / "config.yaml").write_text("documents: {}\n")
+    rc, so, err = run_cli(["npc-publish", "--config", str(root / "config/config.yaml"), "--all"])
+    assert rc == 2
+    assert "--summaries-dir" in err and "summaries_dir" in err and "docs/summaries" in err
+
+
+def test_cli_and_server_share_one_summaries_dir_resolver(tmp_path):
+    """#632: one rule: explicit, then configured, then <root>/docs/summaries if a directory."""
+    from pipelines.summary_native.resolve import resolve_summaries_dir
+
+    assert resolve_summaries_dir(tmp_path, "x", "y") == ("x", "")
+    assert resolve_summaries_dir(tmp_path, "", "y") == ("y", "")
+    value, why = resolve_summaries_dir(tmp_path, None, None)
+    assert value is None and "docs/summaries" in why
+    (tmp_path / "docs/summaries").mkdir(parents=True)
+    assert resolve_summaries_dir(tmp_path, None, None) == ("docs/summaries", "")

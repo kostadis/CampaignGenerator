@@ -217,7 +217,7 @@ def test_refresh_marks_approval_stale_when_relevant_evidence_changes(refresh_cam
     assert result["stale_item_ids"] == [item.item_id]
     status = review_status(root, "npc-review")["counts"]
     assert status["approved"] == 0
-    assert status["stale"] == 1
+    assert status["stale_at_last_refresh"] == 1
     manifest, _, refreshed = read_snapshot(root, "npc-review")
     assert manifest.generation == 2 and refreshed[0].revision == 2
     queue = _show_review(root, "npc-review", item_id=None, cursor=None, limit=None)
@@ -236,7 +236,7 @@ def test_refresh_never_resurrects_an_already_stale_approval(refresh_campaign):
     second = _refresh(root, expected_generation=2)
 
     assert second["stale_item_ids"] == [item.item_id]
-    assert review_status(root, "npc-review")["counts"]["stale"] == 1
+    assert review_status(root, "npc-review")["counts"]["stale_at_last_refresh"] == 1
 
 
 def test_refresh_stales_when_structural_heading_changes_around_same_excerpt(refresh_campaign):
@@ -277,4 +277,4 @@ def test_refresh_marks_approval_stale_when_checking_rule_changes(refresh_campaig
     assert result["stale_item_ids"] == [item.item_id]
     status = review_status(root, "npc-review")["counts"]
     assert status["approved"] == 0
-    assert status["stale"] == 1
+    assert status["stale_at_last_refresh"] == 1

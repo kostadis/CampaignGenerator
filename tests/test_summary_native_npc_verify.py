@@ -170,9 +170,16 @@ def test_a_quote_found_only_in_the_summaries_says_so():
     assert codes(r) == ["not-found"] and "summaries" in r.failures[0].detail
 
 
-def test_placeholder_speaker_is_an_advisory():
+def test_placeholder_speaker_fails_verification():
+    """#634: a placeholder attribution is a failing finding, not an advisory."""
     r = check(CLEAN.replace("— Jimjar [ch 002 / moment]", "— Speaker [ch 002 / moment]"))
-    assert r.passed and r.counts["placeholder-speaker"] == 1
+    assert not r.passed and codes(r) == ["placeholder-speaker"]
+    assert r.counts["placeholder-speaker"] == 1 and not r.advisories
+
+
+def test_a_real_speaker_does_not_fail():
+    r = check(CLEAN.replace("— Jimjar [ch 002 / moment]", "— Speaker Hallow [ch 002 / moment]"))
+    assert "placeholder-speaker" not in codes(r)
 
 
 def test_uncited_history_bullet():
@@ -530,3 +537,12 @@ def test_verify_md_lists_the_number_findings_the_accounting_counts():
     md = npc_verify.render_verify_md(r, "Jimjar")
     assert "Number/ordinal findings" in md and "number-inconsistency" in md and "9999" in md
     assert npc_verify.VerificationResult.from_dict(r.to_dict()).number_findings == r.number_findings
+
+
+def test_placeholder_speaker_is_a_missing_attribution_not_a_cosmetic_finding():
+    """#634: a blocking finding must not be filed under the presentation category."""
+    from pipelines.summary_native.review.models import FindingCategory
+    from pipelines.summary_native.review.verification import _DIRECT_CATEGORIES
+
+    assert npc_verify.verifier_category(npc_verify.PLACEHOLDER) == "missing_source"
+    assert _DIRECT_CATEGORIES["placeholder-speaker"] == frozenset({FindingCategory.MISSING_SOURCE_OR_POINTER})

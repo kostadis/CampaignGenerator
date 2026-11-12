@@ -166,8 +166,18 @@ DRAFT_CONFIG_KEYS = ("backend", "model", "mode", "chunk_chars")
 #: Outline sections a chunked map call writes (code-verified, stitched); the reduce call
 #: writes the remaining outline sections.
 MAP_SECTIONS = ("## History with the Party", "## Notable Quotes", "## Arc-Score Candidates")
-#: Attributions that are placeholders, not a speaker (advisory ``placeholder-speaker``).
-PLACEHOLDER_SPEAKERS = ("speaker", "unknown", "unnamed", "narrator", "someone", "n/a")
+#: Attributions that are placeholders, not a speaker (failing finding ``placeholder-speaker``, #634).
+#: Compared after folding (see ``npc_check.placeholder_speaker``): case, surrounding brackets/parens/
+#: asterisks/underscores and runs of whitespace are ignored, so ``[Unknown]`` and ``*unnamed*`` match.
+#: A missing attribution, or one with no letter or digit in it (``—``, ``???``, ``...``), is also one.
+PLACEHOLDER_SPEAKERS = (
+    "speaker", "unknown", "unnamed", "narrator", "someone", "n/a", "npc",
+    "anonymous", "unidentified", "unknown speaker", "unknown voice", "unknown npc",
+    "unnamed speaker", "unnamed npc", "unidentified speaker", "unidentified voice",
+    "none", "tbd", "tba",
+)
+#: ``Speaker 1``, ``NPC 2``, ``Unknown #3``: a placeholder word followed only by a number.
+PLACEHOLDER_NUMBERED = ("speaker", "npc", "someone", "unknown", "unnamed", "unidentified", "voice")
 #: Written by code in place of a map section whose every item failed the map check.
 NONE_VERIFIED = "_(none verified)_"
 

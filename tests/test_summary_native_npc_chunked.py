@@ -87,6 +87,27 @@ def test_placeholder_speakers_are_recognised():
     assert not npc_check.placeholder_speaker(npc_check.quotes_in(LINES.splitlines())[1])
 
 
+@pytest.mark.parametrize("attr", [
+    "— Speaker [ch 002 / moment]", "— Unknown [ch 002 / moment]", "— unknown speaker [ch 002 / moment]",
+    "— Someone [ch 002 / moment]", "— NPC [ch 002 / moment]", "— N/A [ch 002 / moment]",
+    "— ??? [ch 002 / moment]", "— Speaker 1 [ch 002 / moment]", "— [Unknown] [ch 002 / moment]",
+    "— *Unnamed* [ch 002 / moment]", "— — [ch 002 / moment]", "— [ch 002 / moment]", "—",
+])
+def test_every_placeholder_form_is_recognised(attr):
+    q = npc_check.quotes_in(['> "x"', f"> {attr}"])[0]
+    assert npc_check.placeholder_speaker(q), attr
+
+
+def test_a_quote_with_no_attribution_is_a_placeholder():
+    assert npc_check.placeholder_speaker(npc_check.quotes_in(['> "x"'])[0])
+
+
+@pytest.mark.parametrize("name", ["Jimjar", "Speaker Hallow", "Eldeth Feldrun", "The Unknown Soldier", "Npc-Bob", "Someone Else"[:0] or "Narrator Vale"])
+def test_real_names_are_not_placeholders(name):
+    q = npc_check.quotes_in(['> "x"', f"> — {name} [ch 002 / moment]"])[0]
+    assert not npc_check.placeholder_speaker(q), name
+
+
 # ── the map check ───────────────────────────────────────────────────────────
 
 CHUNK = """## Chapter 002
@@ -182,6 +203,17 @@ def test_every_drop_is_logged_with_text_and_reason():
         assert d.reason in md and d.text.splitlines()[0] in md
     assert "Has no citation at all." in md and "Nobody said this at all." in md
     assert "kept, typography-normalised" in md
+
+
+def test_map_check_drops_a_placeholder_speaker_quote_and_logs_it():
+    """#634: npc-verify fails a placeholder speaker, so the map stage drops it (no advisory)."""
+    raw = RAW.replace('> "Follow me and stay low." — Jimjar [ch 002 / 002.01]',
+                      '> "Follow me and stay low." — Unknown [ch 002 / 002.01]', 1)
+    res = npc_chunked.check_map(raw, _index(), n_manual=2)
+    placeholder = [d for d in res.drops if d.reason == "placeholder-speaker"]
+    assert len(placeholder) == 1 and placeholder[0].section == "quotes" and "Unknown" in placeholder[0].text
+    assert not any("Unknown" in q for q in res.quotes) and not res.advisories
+    assert "placeholder-speaker" in npc_chunked.render_drops_md("Jimjar", [("002-002", res)])
 
 
 def test_a_quote_without_a_citation_is_a_citation_mismatch():

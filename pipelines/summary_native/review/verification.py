@@ -88,7 +88,7 @@ _DIRECT_CATEGORIES: dict[str, frozenset[FindingCategory]] = {
     "not-found": frozenset({FindingCategory.UNSUPPORTED_OR_CONTRADICTED}),
     "manual-dropped": frozenset({FindingCategory.UNSUPPORTED_OR_CONTRADICTED}),
     "typography-normalised": frozenset({FindingCategory.TYPOGRAPHY_PRESENTATION}),
-    "placeholder-speaker": frozenset({FindingCategory.TYPOGRAPHY_PRESENTATION}),
+    "placeholder-speaker": frozenset({FindingCategory.MISSING_SOURCE_OR_POINTER}),
     "status-claim-unsupported": frozenset({FindingCategory.CITATION_NON_ENTAILMENT}),
     "later-source-supersedes": frozenset({FindingCategory.LATER_SOURCE_SUPERSEDES}),
     "knowledge-leak": frozenset({FindingCategory.KNOWLEDGE_LEAK}),
@@ -98,6 +98,28 @@ _OPAQUE_ID = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_.-]{0,127}$")
 
 def _valid_opaque_id(value: str) -> bool:
     return bool(_OPAQUE_ID.fullmatch(value)) and ".." not in value
+
+
+def ascii_selection_id(raw: str) -> str:
+    """The opaque, ASCII review selection id for a caller's dossier id (#630).
+
+    An id that is already a valid opaque id is returned **unchanged**, so every existing review keeps
+    its item ids. Anything else (``aerasumé``) is folded to ASCII through the one slug seam
+    (``npc_slug.slug_for``) and gets an 8-hex digest of the *original* text appended. The suffix is
+    what keeps two different ids that fold alike (``aerasumé`` / ``aerasume-``) from colliding, and
+    it is deterministic. It is added only for ids that needed rewriting, so a plain ASCII id never
+    changes and a rewritten id can never equal a plain one by accident.
+    """
+    import unicodedata
+
+    from pipelines.summary_native import npc_slug
+
+    if _valid_opaque_id(raw):
+        return raw
+    folded = "".join(c for c in unicodedata.normalize("NFKD", raw) if not unicodedata.combining(c))
+    folded = folded.encode("ascii", "ignore").decode("ascii")
+    base = npc_slug.slug_for(folded)[:100]
+    return f"{base}-{hashlib.sha256(raw.encode('utf-8')).hexdigest()[:8]}"
 
 
 def _valid_relative_path(value: str) -> bool:

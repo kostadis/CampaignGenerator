@@ -345,9 +345,21 @@ def check_quote(quote: str, attribution: str, index: EvidenceIndex) -> QuoteChec
     return QuoteCheck(verdict, kind)
 
 
+_NUMBERED_PLACEHOLDER_RE = re.compile(
+    r"^(?:" + "|".join(re.escape(w) for w in schema.PLACEHOLDER_NUMBERED) + r")\s*#?\s*\d+$"
+)
+
+
 def placeholder_speaker(ref: QuoteRef) -> bool:
-    s = ref.speaker.casefold()
-    return not s or s in schema.PLACEHOLDER_SPEAKERS
+    """True when the attribution names nobody: empty, no letter or digit, a listed placeholder
+    word (``schema.PLACEHOLDER_SPEAKERS``) or such a word with a number (``Speaker 1``).
+
+    Exact match after folding, never a substring: ``Speaker Hallow`` and ``The Unknown Soldier``
+    are real names and are not placeholders."""
+    s = re.sub(r"\s+", " ", ref.speaker.strip(" \t[]()*_<>\"'“”‘’")).casefold()
+    if not any(c.isalnum() for c in s):
+        return True
+    return s in schema.PLACEHOLDER_SPEAKERS or bool(_NUMBERED_PLACEHOLDER_RE.match(s))
 
 
 @dataclass

@@ -24,6 +24,29 @@ class PathRefusal(ConfigRefusal):
     """A configured/flagged path that cannot be used; the message is user-facing."""
 
 
+DEFAULT_SUMMARIES_DIR = "docs/summaries"
+
+
+def resolve_summaries_dir(root, explicit, configured) -> tuple[str | None, str]:
+    """The one summaries-directory rule, shared by the CLI and the web routes (#632).
+
+    Precedence: ``explicit`` (``--summaries-dir`` / ``?summaries_dir=``), then ``configured``
+    (``grounding.yaml summary_native.summaries_dir``), then ``<root>/docs/summaries`` if that is a
+    directory. Returns ``(value, "")`` or ``(None, refusal message naming every place tried)``.
+    """
+    for value in (explicit, configured):
+        if value and str(value).strip():
+            return str(value).strip(), ""
+    fallback = schema.resolve_under(root, DEFAULT_SUMMARIES_DIR)
+    if fallback.is_dir():
+        return DEFAULT_SUMMARIES_DIR, ""
+    return None, (
+        "no summaries directory: tried the explicit summaries directory (not given), "
+        "grounding.yaml summary_native.summaries_dir (not set), and "
+        f"{fallback} (not a directory)"
+    )
+
+
 def _configured(flag, cfg, key: str) -> str | None:
     """The flag, else the grounding.yaml value; a hand-edited non-string is refused."""
     if flag:

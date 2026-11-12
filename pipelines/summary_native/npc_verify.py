@@ -6,10 +6,12 @@ Deterministic. No model, never edits a draft. Reports, with the draft line of ea
 * ``not-found`` quotes (not verbatim in this NPC's evidence) and ``citation-mismatch`` quotes
   (verbatim, but not in the item the citation names);
 * ``uncited`` History bullets (a bullet with cited bullets nested under it is a label);
-* manual edits ``dropped`` (never cited) or cited ``invalid``.
+* manual edits ``dropped`` (never cited) or cited ``invalid``;
+* ``placeholder-speaker``: a Notable Quote whose attribution names nobody (empty, ``Speaker``,
+  ``Unknown``, ``???`` ... see ``schema.PLACEHOLDER_SPEAKERS``). Failing since #634.
 
-``typography-normalised`` quotes, ``placeholder-speaker`` attributions and
-``status-claim-unsupported`` wording are advisories: they never change the verdict.
+``typography-normalised`` quotes and ``status-claim-unsupported`` wording are advisories: they
+never change the verdict.
 
 The quote and citation primitives are ``npc_check``'s, shared with the chunked map check.
 """
@@ -35,10 +37,11 @@ CITATION_MISMATCH = npc_check.CITATION_MISMATCH
 UNCITED = "uncited"
 MANUAL_DROPPED = "manual-dropped"
 MANUAL_INVALID = "manual-invalid"
-FAIL_CODES = (INVALID, OUTSIDE_EVIDENCE, NOT_FOUND, CITATION_MISMATCH, UNCITED, MANUAL_DROPPED, MANUAL_INVALID)
 TYPOGRAPHY = npc_check.TYPOGRAPHY
 STATUS_UNSUPPORTED = "status-claim-unsupported"
 PLACEHOLDER = "placeholder-speaker"
+# PLACEHOLDER is a failing code since #634 (a Notable Quote must name its speaker).
+FAIL_CODES = (INVALID, OUTSIDE_EVIDENCE, NOT_FOUND, CITATION_MISMATCH, UNCITED, MANUAL_DROPPED, MANUAL_INVALID, PLACEHOLDER)
 
 STATUS_WORDS = ("alive", "dead", "died", "killed", "slain", "missing", "departed", "captured", "freed")
 USED_NOT_MEANING = (
@@ -73,7 +76,7 @@ _VERIFIER_TAXONOMY = {
     MANUAL_DROPPED: "unsupported_or_contradicted",
     STATUS_UNSUPPORTED: "citation_non_entailment",
     TYPOGRAPHY: "presentation_only",
-    PLACEHOLDER: "presentation_only",
+    PLACEHOLDER: "missing_source",  # a quote with no real speaker: a missing attribution (#634)
     "superseded-claim": "superseded_claim",
     "knowledge-leak": "knowledge_leak",
     "missing-source": "missing_source",
@@ -150,7 +153,7 @@ class VerificationResult:
     verdict: str
     failures: list[Finding]
     advisories: list[Finding]
-    counts: dict[str, int]  # every FAIL_CODE, plus typography-normalised, status-claim-unsupported, placeholder-speaker
+    counts: dict[str, int]  # every FAIL_CODE, plus typography-normalised, status-claim-unsupported
     totals: dict = field(default_factory=dict)
     manual: list[ManualUse] = field(default_factory=list)
     noise: tuple = ()  # noise.NoiseRecord, spec 041
@@ -217,7 +220,7 @@ class VerificationResult:
             bits = []
         else:
             bits = [f"{k} {c[k]}" for k in FAIL_CODES if c.get(k)]
-        adv = [f"{k} {c[k]}" for k in (TYPOGRAPHY, STATUS_UNSUPPORTED, PLACEHOLDER) if c.get(k)]
+        adv = [f"{k} {c[k]}" for k in (TYPOGRAPHY, STATUS_UNSUPPORTED) if c.get(k)]
         head = f"{self.verdict} ({', '.join(bits)})" if bits else self.verdict
         return head + (f"; advisories: {', '.join(adv)}" if adv else "")
 
@@ -337,7 +340,7 @@ def check_quotes(context: VerificationContext) -> ScopedCheckResult:
             if chk.status == TYPOGRAPHY:
                 advisories.append(Finding(TYPOGRAPHY, loc, q.text, "differs only in quote marks or apostrophes"))
         if npc_check.placeholder_speaker(q):
-            advisories.append(Finding(PLACEHOLDER, loc, q.text, "attribution is missing or a placeholder"))
+            failures.append(Finding(PLACEHOLDER, loc, q.text, "attribution is missing or a placeholder"))
     for off, ln in enumerate(qlines):
         if ln.lstrip().startswith(">"):
             quote_lines.add(first + off)
@@ -491,7 +494,7 @@ def verify_scoped(
     counts = {k: 0 for k in FAIL_CODES}
     for f in failures:
         counts[f.code] += 1
-    for k in (TYPOGRAPHY, STATUS_UNSUPPORTED, PLACEHOLDER):
+    for k in (TYPOGRAPHY, STATUS_UNSUPPORTED):
         counts[k] = sum(1 for a in advisories if a.code == k)
     return VerificationResult(
         verdict=FAIL if failures else PASS,
