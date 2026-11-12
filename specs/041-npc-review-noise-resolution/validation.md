@@ -33,3 +33,18 @@
 - Orchestrator change on review: each member's note carries the provenance prefix `GM class verdict on batch card [<card id>] (<k> occurrences)[: note]`, so CG's decision history shows a class verdict, not an apparently individual ruling. CONTRACT.md and the tests were updated to match.
 - `build_review.py` is unchanged. Non-noise cards are regression-tested as identical.
 - Kit tests: 32 passed (baseline 22).
+
+## T035 — baseline oracle inspection (read-only, `~/storm-giant/stormgiants`)
+
+Review `docs/reviews/npc-review-6ee694eebf5b`:
+- `items/<item_id>/<rev>.json`: take the highest revision. Each item carries `locator.source_path` (the draft), `display_line`, `claim_text` (**the exact draft line**), `diagnostics[0].legacy_code`, and `input_bindings[]` (draft and evidence path + `custody_sha256`).
+- Codes in the review: `number-inconsistency` 323, `ordinal-inconsistency` 88, `status-claim-unsupported` 41, `typography-normalised` 158, `placeholder-speaker` 7, `npc-draft-signoff-required` 164.
+- **GM noise oracle**: `requests/gm-number-noise-*-{0,100,200,300}.json` → `result.events[].item_id`, **335** number/ordinal items ruled noise. So 411 − 335 = **76** number/ordinal items are GM-confirmed true positives. `requests/gm-status-synonym-*.json` → **16** status items ruled synonym noise, out of 41.
+- `sources/<gen>.json` stores **hashes only** (path, sha256, size), not bytes.
+
+Byte availability: of the 309 bound draft/evidence files, **290 match** their custody sha256 today. **19 differ** (16 drafts, 3 evidence: `npc_bob_saget`, `npc_delsephine`, `npc_methrammar_aerasumé`). No commit in the stormgiants history has their custody bytes; they were edited between review creation and commit. They are unrecoverable.
+
+Replay method for T036:
+1. **Item replay (exact)**: for each of the 411 number/ordinal items, classify `claim_text` (the exact line) against the bound evidence file. The evidence is exact unless it is one of the 3 changed files, which are reported separately and excluded from pass/fail. Line-level SC-004: every one of the 76 true-positive items still yields ≥ 1 GM-facing finding. Report how many of the 335 noise items still yield one.
+2. **Full current-draft replay (approximate)**: run the number and status checks over every current draft in `docs/npcs/summary_native/ch001-086/draft/` against its current evidence, and count GM-facing number/ordinal findings (SC-001 ≤ 100). This catches findings on lines the old checker never flagged, such as newly examined spelled numbers. The 16 changed drafts are noted as approximate.
+3. Status (SC-002): for each of the 16 synonym-noise items, classify the item's line with the status classifier against its evidence. It must yield 0 status findings.
