@@ -107,11 +107,21 @@ The GM's actual review page is built by the shared review-artifact kit in **myto
 - `verify.md` (`render_verify_md`) gains a "Classified noise" section with per-class counts and occurrences for the status check, which runs inside `npc-verify`. The number check's noise appears in the review store, because that is where the check runs (R1).
 - Item fingerprints include code and detail, so re-verified drafts get new item ids. Carrying approvals across that change is #625's problem, not this feature's.
 
-## R12 — Baseline availability (risk)
+## R12 — Baseline location and the labelled oracle
 
-The stormgiants ch 1–86 build and its reviews (`npc-review-6ee694eebf5b`, `npc-review-8e7e7ca1760a`) are **not present** in `~/src/campaigns/stormgiants` on this machine: `docs/npcs/` holds only `merged_sidecars`. So SC-001, SC-002, SC-004 and SC-007 cannot be measured here.
+The stormgiants ch 1–86 build lives in a **separate checkout**, `~/storm-giant/stormgiants`, not the campaigns monorepo's `~/src/campaigns/stormgiants` (which has no NPC build). It contains:
+- `docs/npcs/summary_native/ch001-086/` (the build) and `publish_log.json`;
+- `docs/reviews/npc-review-6ee694eebf5b` and `npc-review-8e7e7ca1760a` (the baseline reviews), plus five later reviews;
+- under `npc-review-6ee694eebf5b/requests/`: the GM's bulk noise rulings from that session, `gm-number-noise-*-{0,100,200,300}.json` and `gm-status-synonym-*.json`.
 
-**Decision**: the automated suite uses fixtures reproducing every example in #617 and #618. The stormgiants measurement is a quickstart step, run where that build lives.
+**Decision**: those request files are a **GM-labelled oracle**. Every token the GM ruled as noise, and by elimination every remaining true positive, is there.
+- Phase 2 includes a read-only harness test, skipped when the checkout is absent. It replays the baseline review's drafts and evidence through the new classifier and compares against the oracle.
+- SC-001: no more than 100 GM-facing number/ordinal findings.
+- SC-004: every non-noise token is still a finding.
+- SC-002: status findings on GM-ruled synonyms = 0.
+- The harness only reads the stormgiants checkout. It never writes to it.
+
+The unit fixtures still reproduce every #617 and #618 example, so the suite stays meaningful on machines without the checkout.
 
 ## R13 — Worktree import shadowing
 

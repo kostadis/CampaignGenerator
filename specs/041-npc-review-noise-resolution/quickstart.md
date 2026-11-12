@@ -35,11 +35,17 @@ python -m pytest tests/ -q
 5. Pass a policy file `{noise-idiom: "idioms"}` to `review policy --write`. Only `noise-idiom` items are approved.
 6. Run `noise decide` on `label` again. It exits 2 with `REVIEW_NOISE_NOTHING_TO_DECIDE`.
 
-## 4. Baseline measurement (where the stormgiants ch 1–86 build lives)
+## 4. Baseline measurement (stormgiants ch 1–86)
 
-The build is not on this machine (research R12). Where it is:
+The build is in `~/storm-giant/stormgiants` (research R12), not the campaigns monorepo. The GM's noise rulings in `docs/reviews/npc-review-6ee694eebf5b/requests/gm-number-noise-*.json` and `gm-status-synonym-*.json` are the oracle.
 
-1. Re-run `npc-verify` and `review create` for the same 177 drafts.
+```bash
+STORMGIANTS=~/storm-giant/stormgiants python -m pytest tests/test_summary_native_noise_baseline.py -v
+```
+
+This runs read-only and is skipped when the checkout is absent. To reproduce by hand:
+
+1. Re-run `npc-verify` and `review create` for the same 177 drafts, in a **copy** of the checkout, never the live one.
 2. Count GM-facing `number-inconsistency` and `ordinal-inconsistency` items: **≤ 100** (SC-001).
 3. Count `status-claim-unsupported` items on synonym or not-established sentences: **0** (SC-002).
 4. Check that every one of the 80 true-positive tokens from #617 is still a GM-facing finding (SC-004). Use the token list from the #617 classifier.

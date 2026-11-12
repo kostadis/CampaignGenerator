@@ -163,7 +163,7 @@ After verification, the GM can see every occurrence the checks resolved as noise
 - **SC-001**: On a rerun of the stormgiants chapters 1–86 NPC build, no more than 100 number/ordinal findings reach the GM (down from 480).
 - **SC-002**: On the same rerun, 0 status findings are raised on sentences whose status word has a listed synonym in the evidence, or on not-established sentences.
 - **SC-003**: Every number/ordinal or status finding that reaches the GM names its flagged token, shows a single sentence and lists the cited scenes: 100% of findings, checked by inspection of the rerun's review.
-- **SC-004**: Every one of the 80 genuinely unsupported number/ordinal findings identified in the #617 analysis (42 lines, 26 drafts) still reaches the GM on the rerun. No true positive is lost.
+- **SC-004**: Every one of the 80 genuinely unsupported number/ordinal findings identified in the #617 analysis (42 lines, 26 drafts) still reaches the GM on the rerun, checked against the GM noise rulings recorded in `~/storm-giant/stormgiants/docs/reviews/npc-review-6ee694eebf5b/requests/`. No true positive is lost.
 - **SC-005**: Every occurrence the checks examine ends up in exactly one of: supported by its cited scenes, classified noise (one class), or a GM-facing finding. The three counts are reported and sum to the total examined, so nothing goes unaccounted for.
 - **SC-006**: Applying a single-class review policy approves only items of that class, each with a note naming the policy and the class.
 - **SC-007**: On the stormgiants rerun with no standing policy, the GM sees at most one batch card per noise class (at most 6 cards) in place of about 400 individual noise cards.
