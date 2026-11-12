@@ -26,7 +26,7 @@ A new `review noise` / `review noise decide` CLI gives the GM one batch verdict 
 
 **Storage**: the existing review store under the campaign (`review` events and items). Two new YAML data files in `pipelines/summary_native/data/`.
 
-**Testing**: pytest (`tests/`). New `tests/test_summary_native_noise.py` and `tests/test_summary_native_review_noise_cli.py`; extensions to the adapter, npc_verify and no-LLM guard tests.
+**Testing**: pytest (`tests/`). New `tests/test_summary_native_noise.py`, `tests/test_summary_native_noise_baseline.py` and `tests/test_summary_native_review_noise_cli.py`; extensions to the adapter, npc_verify and no-LLM guard tests.
 
 **Target Platform**: Linux CLI plus the FastAPI review routes
 
@@ -101,6 +101,7 @@ tests/
 ├── test_summary_native_review_noise_cli.py      # NEW: CLI contract + refusals
 ├── test_summary_native_review_verification_adapter.py  # extended
 ├── test_summary_native_npc_verify.py            # extended
+├── test_summary_native_noise_baseline.py        # NEW: read-only replay of ~/storm-giant/stormgiants vs GM noise rulings (skips w/o checkout)
 └── test_summary_native_no_llm.py                # + "noise" in the guarded set
 
 # cross-repo (pending the GM's XI ruling)
