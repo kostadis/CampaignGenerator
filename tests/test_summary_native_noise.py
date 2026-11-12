@@ -138,6 +138,25 @@ def test_labels(text, surface):
     assert surface in labelled
 
 
+@pytest.mark.parametrize("text,labelled", [
+    ("Gruumsh stirs (004) again", ["004"]),
+    ("seen (004, 005) twice", ["004", "005"]),
+    ("seen (004–006) twice", ["004", "006"]),
+    ("seen (004-006)", ["004", "006"]),
+    ("seen ( 004 )", ["004"]),
+])
+def test_bare_parenthesised_chapter_is_a_label(text, labelled):
+    assert [t.surface for t in tokens(text) if t.label] == labelled
+
+
+@pytest.mark.parametrize("text", [
+    "(3 giants)", "(12)", "(100 gold)", "(1,000)", "(100)", "(004 gold)", "(0.5)", "(1004)", "004 giants",
+])
+def test_parenthesised_story_numbers_still_checked(text):
+    ts = tokens(text)
+    assert ts and not any(t.label for t in ts)
+
+
 def test_label_only_the_attached_token():
     ts = tokens("lost 36 hit points in Chapter 36")
     assert [t.label for t in ts] == [False, True]

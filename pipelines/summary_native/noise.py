@@ -223,6 +223,13 @@ _TOKEN_RE = re.compile(
 _LABEL_BEFORE_RE = re.compile(
     r"\b(?:chapters?|ch|scenes?|sessions?)\b\.?\s*(?:\d[\d.]*\s*[–—-]\s*)?$", re.IGNORECASE)
 _LEADING_LIST_BEFORE_RE = re.compile(r"^\s*(?:[-*]\s+)?$")
+# A bare parenthesised chapter reference, "(004)", "(004, 005)", "(004–006)" (#645). Summaries number
+# chapters as zero-padded NNN, so the rule is a REQUIRED LEADING ZERO: "(100 gold)", "(12)", "(3 giants)",
+# "(1,000)" stay story numbers, and so does a bare "(100)", which is as likely a quantity as chapter 100.
+# Cost: a campaign past chapter 099 loses this shortcut for (100)+ and those get checked as numbers
+# (a false positive for the GM to see, never a silent pass). The closing paren is required, so "(004 gold)"
+# is not a label.
+_PAREN_CHAPTER_RE = re.compile(r"\(\s*0\d{2}(?:\s*[,–—-]\s*0\d{2})*\s*\)")
 
 
 def parse_spelled_cardinal(text: str) -> int | None:
@@ -312,6 +319,7 @@ def tokens(claim: str, cited_chapters=()) -> list[Token]:
         for phrase in _idioms(ORDINAL_IDIOMS_PATH)
         for m in re.finditer(rf"(?<![\w-]){re.escape(phrase)}(?!\w)", low)
     ]
+    paren_spans = [(m.start(), m.end()) for m in _PAREN_CHAPTER_RE.finditer(claim)]
     out: list[Token] = []
     for m in _TOKEN_RE.finditer(claim):
         group = m.lastgroup
@@ -338,6 +346,8 @@ def tokens(claim: str, cited_chapters=()) -> list[Token]:
             or int(surface[:3]) in cited_chapters)
         label = scene_label or (numeric and (
             _LABEL_BEFORE_RE.search(before) is not None
+            or (group == "digits" and len(surface) == 3
+                and any(s <= span[0] and span[1] <= e for s, e in paren_spans))
             or (group == "digits" and _LEADING_LIST_BEFORE_RE.match(before) is not None
                 and len(after) == 2 and after[0] in ".)" and after[1].isspace())
         ))
