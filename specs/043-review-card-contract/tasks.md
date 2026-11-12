@@ -244,16 +244,16 @@ description: "Task list for 043 review card contract (#643 slice 1, #655)"
 
 **Independent Test**: each Codex skill that used the fork builds and reads its page through the shared kit. `check-skill-sync.sh` and `test-codex-links.sh` pass. No kit file reads the store.
 
-- [ ] T032 Create a mytools worktree, `git -C ~/src/mytools worktree add <scratch>/wt043-mytools -b 043-review-card-contract origin/main`, after confirming `origin/main` includes `5c5e5d5`. Never edit `~/src/mytools` itself. Never use `git stash`.
-- [ ] T033 [US5] Move `dotfiles/claude/skills/_shared/review-artifact/` to the canonical `dotfiles/shared/skills/_shared/review-artifact/` with `git mv`. Create symlinks `dotfiles/claude/skills/_shared/review-artifact` and `dotfiles/codex/skills/_shared/review-artifact` pointing to it, using the relative-path style of existing `shared/skills` links.
+- [X] T032 Create a mytools worktree, `git -C ~/src/mytools worktree add <scratch>/wt043-mytools -b 043-review-card-contract origin/main`, after confirming `origin/main` includes `5c5e5d5`. Never edit `~/src/mytools` itself. Never use `git stash`.
+- [X] T033 [US5] Move `dotfiles/claude/skills/_shared/review-artifact/` to the canonical `dotfiles/shared/skills/_shared/review-artifact/` with `git mv`. Create symlinks `dotfiles/claude/skills/_shared/review-artifact` and `dotfiles/codex/skills/_shared/review-artifact` pointing to it, using the relative-path style of existing `shared/skills` links.
   - Update `dotfiles/skill-layout.json`: drop `_shared/review-artifact` from `claude_only`, and drop `_shared/review-page` from `codex_only`.
   - Run `bash dotfiles/check-skill-sync.sh` and `bash dotfiles/tests/test-codex-links.sh`.
   - If the layout checker cannot express a shared `_shared/` directory, make the **smallest** change to `check-skill-layout.py` that does, with a test. If that is not small, fall back to a real directory in `claude/skills/_shared/` plus a Codex-side link (R12), and record which in the PR body.
-- [ ] T034 [US5] Merge the Codex save surface into `shared/.../review-artifact/build_review.py` as `--save artifact|local`, defaulting to `artifact`.
+- [X] T034 [US5] Merge the Codex save surface into `shared/.../review-artifact/build_review.py` as `--save artifact|local`, defaulting to `artifact`.
   - `local` reproduces `codex/skills/_shared/review-page/build_review.py`'s save controls exactly: Copy output, a Save output download using `outputName`, Save to VM via `PUT ./decisions` when `<meta name="codex-review-save" content="enabled">` is present, and an export that includes `unmarked`.
   - `artifact` output must be **byte-identical** to before. Add a test comparing it with a page built by the pre-change script from a fixed items file.
-- [ ] T035 [US5] Merge Codex's `read_decisions.py --in decisions.json` mode and its `normalize()` into the shared `read_decisions.py`, keeping `--html`. Move `codex/.../review-page/serve_review.py` to the shared kit, importing `normalize` from the shared `read_decisions`. Its behaviour, including the bind default, is unchanged. Move `tests/test_review_server.py` over, and it must pass unchanged apart from import paths.
-- [ ] T036 [US5] Repoint every Codex consumer from `_shared/review-page` to `_shared/review-artifact`, adding `--save local` to their `build_review.py` calls. That is each `codex/skills/*/SKILL.md` listed in research R12, plus:
+- [X] T035 [US5] Merge Codex's `read_decisions.py --in decisions.json` mode and its `normalize()` into the shared `read_decisions.py`, keeping `--html`. Move `codex/.../review-page/serve_review.py` to the shared kit, importing `normalize` from the shared `read_decisions`. Its behaviour, including the bind default, is unchanged. Move `tests/test_review_server.py` over, and it must pass unchanged apart from import paths.
+- [X] T036 [US5] Repoint every Codex consumer from `_shared/review-page` to `_shared/review-artifact`, adding `--save local` to their `build_review.py` calls. That is each `codex/skills/*/SKILL.md` listed in research R12, plus:
   - `codex/skills/dialogue-edit/references/review-and-apply.md`;
   - `codex/skills/dialogue-edit/tests/test_review_edits.py:206`;
   - `codex/skills/vtt-spell-pass/render_review.py:18`;
@@ -261,27 +261,27 @@ description: "Task list for 043 review card contract (#643 slice 1, #655)"
   - the `paired` entries in `skill-layout.json`.
 
   Then `git rm -r dotfiles/codex/skills/_shared/review-page`. Check that `grep -rn "review-page" dotfiles/` returns nothing, apart from `CLAUDE_CODEX_CONVERGENCE.md`, which is updated in T041.
-- [ ] T037 [US4] [US5] Rewrite `npc_review_items.py` as the shim in contracts/kit.md.
+- [X] T037 [US4] [US5] Rewrite `npc_review_items.py` as the shim in contracts/kit.md.
   - It runs `summary_native review cards export REVIEW --campaign-dir DIR [--item]… [--action]… --out TMP --json` through `subprocess`, resolving `summary_native` with `shutil.which` and failing clearly if it is absent.
   - It maps each card to a kit item: `id`, `t` = title, `y` = approveMeans, `n` = rejectMeans, `ev` = body plus evidence. Every string goes through `html.escape`. `members` and `draftSha256` pass through, `group` is set for noise class cards, and `reviewId = packetId`.
   - It keeps the existing CLI flags, mapping `--ids` and `--ids-file` to `--item`. It drops `--allow-stale` and `--undecided` (now always), with a clear error if they are passed.
   - It deletes `load_review`, `current_decisions` and all store-file reads.
-- [ ] T038 [US4] [US5] In the shared `read_decisions.py`, add `--npc --html SAVED --review REVIEW --out FILE`. It writes a CampaignGenerator decisions file (contracts/card-files.md):
+- [X] T038 [US4] [US5] In the shared `read_decisions.py`, add `--npc --html SAVED --review REVIEW --out FILE`. It writes a CampaignGenerator decisions file (contracts/card-files.md):
   - `packetId` comes from the page `reviewId`, and `savedAt` from the state.
   - The per-card `members` and `draftSha256` come **from the saved page's `ITEMS`**.
   - Notes are copied, and unmarked cards are omitted.
   - `pick` and extra verdicts are refused (NPC pages have none).
 
   Delete the class-card expansion (`:164-218`) and the `classes` output. Update `test_read_decisions.py` accordingly.
-- [ ] T039 [US4] [US5] Add kit tests in `shared/.../review-artifact/tests/test_npc_shim.py`. Run them against a real CampaignGenerator fixture review, built by importing `tests._custody_fixture` from `PYTHONPATH=<wt043>`, and skip with a reason if CampaignGenerator is not importable. Cover:
+- [X] T039 [US4] [US5] Add kit tests in `shared/.../review-artifact/tests/test_npc_shim.py`. Run them against a real CampaignGenerator fixture review, built by importing `tests._custody_fixture` from `PYTHONPATH=<wt043>`, and skip with a reason if CampaignGenerator is not importable. Cover:
   - the shim's cards equal the packet's;
   - `<script>` in campaign text arrives escaped in the built page;
   - `members` and `draftSha256` reach the page `ITEMS`;
   - a page saved with two verdicts gives, through `read_decisions --npc` and then `summary_native review cards decide`, a plan with the expected records;
   - **static**: no `.py` in the kit contains `manifest.json`, `"items"` path joins, `events/` or `docs/reviews` (SC-006).
-- [ ] T040 [US5] Merge the two `CONTRACT.md` files into one shared `CONTRACT.md`. It has a "Save transports" section (artifact and local) and an NPC section that points to CampaignGenerator `specs/043-review-card-contract/contracts/card-files.md` and the two commands. It deletes the hand-translation instructions (`review decide` / `review npc sign` keyed by card id).
-- [ ] T041 [US5] Update `dotfiles/CLAUDE_CODEX_CONVERGENCE.md:39-40` to say both agents use `_shared/review-artifact`, with Codex using `--save local`. Update `claude/skills/summary-native-npc-delta/SKILL.md`, its Codex twin and `references/review-and-apply.md`: the NPC review loop is `npc_review_items.py`, then page, then `read_decisions.py --npc`, then `review cards decide` (plan), then GM confirmation, then `--write --plan-sha256`. Update `claude/skills/_shared/batch-chapters/BATCH.md:600-604`'s test command path.
-- [ ] T042 [US5] Run every kit test (`~/.venv/bin/python -m pytest dotfiles/shared/skills/_shared/review-artifact/tests`), both dialogue-edit test suites, the batch-chapters tests, `check-skill-sync.sh` and `test-codex-links.sh`. Record the results in CampaignGenerator `validation.md`. Commit on the mytools branch. Do not open the PR yet (T048).
+- [X] T040 [US5] Merge the two `CONTRACT.md` files into one shared `CONTRACT.md`. It has a "Save transports" section (artifact and local) and an NPC section that points to CampaignGenerator `specs/043-review-card-contract/contracts/card-files.md` and the two commands. It deletes the hand-translation instructions (`review decide` / `review npc sign` keyed by card id).
+- [X] T041 [US5] Update `dotfiles/CLAUDE_CODEX_CONVERGENCE.md:39-40` to say both agents use `_shared/review-artifact`, with Codex using `--save local`. Update `claude/skills/summary-native-npc-delta/SKILL.md`, its Codex twin and `references/review-and-apply.md`: the NPC review loop is `npc_review_items.py`, then page, then `read_decisions.py --npc`, then `review cards decide` (plan), then GM confirmation, then `--write --plan-sha256`. Update `claude/skills/_shared/batch-chapters/BATCH.md:600-604`'s test command path.
+- [X] T042 [US5] Run every kit test (`~/.venv/bin/python -m pytest dotfiles/shared/skills/_shared/review-artifact/tests`), both dialogue-edit test suites, the batch-chapters tests, `check-skill-sync.sh` and `test-codex-links.sh`. Record the results in CampaignGenerator `validation.md`. Commit on the mytools branch. Do not open the PR yet (T048).
 
 ---
 
@@ -294,7 +294,7 @@ description: "Task list for 043 review card contract (#643 slice 1, #655)"
 
   Fix the two lines that say the review-artifact kit reads the store (:256, :346). Add a row to the CLAUDE.md docs table only if a new doc file is created (none planned).
 - [X] T044 [P] Run `SC-007` scale: in `tests/test_summary_native_review_cards.py`, add `test_scale_800_items_export_and_decide_under_60s`, using `_custody_fixture.build(extra_npcs=…)` sized to about 800 items. The timing assertion is loose (< 60 s each), and wall times are recorded in `validation.md`.
-- [ ] T045 Run the full Python suite and the frontend `npm test`, `npm run build` and `npm run test:e2e` (with `PLAYWRIGHT_CHROME_EXECUTABLE_PATH=/usr/bin/google-chrome`). Walk quickstart.md sections 1–7. Record everything in `validation.md`.
+- [X] T045 Run the full Python suite and the frontend `npm test`, `npm run build` and `npm run test:e2e` (with `PLAYWRIGHT_CHROME_EXECUTABLE_PATH=/usr/bin/google-chrome`). Walk quickstart.md sections 1–7. Record everything in `validation.md`.
 - [ ] T046 One code-review pass over the CampaignGenerator diff and the mytools diff (`/code-review`). Fix the confirmed findings, then re-run the affected suites.
 - [ ] T047 File follow-up issues (GitHub MCP, `kostadis/CampaignGenerator`):
   - the third latest-decision copy in `cli._fresh_decision` and `store.review_status`, which does not check item revision or digest (research R3);

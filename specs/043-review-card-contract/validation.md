@@ -146,3 +146,19 @@ Hot spot: the cost is per batch, not per decision. Each of the 9 transactions re
 (about 2400 YAML documents parsed and pydantic-validated, roughly 11 s of the profile) and rewrites the authority
 ledger (`authority.py` `yaml.safe_dump`, about 0.9 s per transaction, 8 s in all). Not optimised; a larger batch size
 or caching the snapshot between batches would be the lever, if ever needed.
+
+## T042 — mytools kit (branch 043-review-card-contract in the mytools worktree)
+
+- Kit tests, with `PYTHONPATH=<wt043>` and the branch `summary_native` on PATH: 55 passed. Without CampaignGenerator: 51 passed and 4 skipped (the CG-dependent tests).
+- dialogue-edit: claude 19 passed and codex 19 passed (15 subtests each). batch-chapters: claude 7 passed, codex 3 passed. `dotfiles/tests`: 3 passed.
+- `test-codex-links.sh`: passed.
+- `check-skill-sync.sh`: fails with exactly the 3 problems already on mytools main (mytools #113): `pdf-table-markdown` unclassified, `table-book-cli` unclassified, `campaign-prep` not classified ported. Nothing else.
+- `grep -rn "review-page" dotfiles/`: the only hits are in the history reports under `dotfiles/convergence/*.md`.
+- Layout: a shared `_shared/review-artifact` directory, linked into both trees, plus a small `check-skill-layout.py` change (`link_level`) with a test. The R12 fallback was not needed.
+- Orchestrator fix: `--save local` escapes eyebrow, lede and footer as text, as the retired Codex builder did. `--save artifact` output is byte-identical to the pre-change golden.
+
+## T045 — full validation (2026-11-12)
+
+- Full Python suite (pinned `PYTHONPATH`): **9981 passed, 389 skipped, 0 failed**, in 19m17s.
+- Frontend: `npm test` passed, `npm run build` was clean, and `npm run test:e2e` (system Chrome) gave **100 passed**.
+- Quickstart: §1 contract suites are inside the full run. §2's manual round trip is covered end to end by `test_us1_*` and `test_us3_*`, and by the mytools kit's e2e test (shim, page, `read_decisions --npc`, then `cards decide`, plan with 2 records). §3 is `test_us2_*` (sha_tree). §4 scale: export 1.2 s, plan 2.6 s, write 26.7 s for 802 items. §5 is the frontend results above. §6 is T042. §7 is the full suite above.
