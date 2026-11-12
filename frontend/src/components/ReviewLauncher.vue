@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, nextTick } from 'vue'
+import { ref, computed, watch, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
 const props = defineProps<{ context: 'npc' | 'grounding'; selected?: string[] }>()
 const reviewId=ref(''), selection=ref(''), bundle=ref(''), grant=ref(''), transaction=ref(''), plan=ref('')
@@ -31,6 +31,38 @@ async function requestStream(path:string, payload:object) {
     while(true){const {done,value}=await reader.read();if(done)break;output+=decoder.decode(value,{stream:true});result.value=output}
     note.value='Regeneration run finished. Generated prose still requires review and exact sign-off.'
   } catch(error) { note.value=error instanceof Error?error.message:String(error) } finally { busy.value=false }
+}
+// Card packet (spec 043): the launcher keeps only the form fields, the last export/plan answer and that plan's hash.
+type CardMember={itemId:string;category?:string;disposition?:string;previous?:{verdict:string;disposition:string}}
+type CardRow={cardId:string;state:string;verdict?:string;refusal?:{code:string;message:string};members:CardMember[]}
+const cardItems=ref(''), cardActions=ref(''), decisionsPath=ref(''), cardPacket=ref<any>(null), cardPlan=ref<{planSha256:string;cards:CardRow[]}|null>(null)
+const splitList=(text:string)=>text.split(/[\s,]+/).filter(Boolean)
+watch([decisionsPath,reviewer],()=>{cardPlan.value=null})
+const planGroups=computed(()=>{
+  const cards=cardPlan.value?.cards??[], groups={record:[] as string[],supersede:[] as string[],noop:[] as string[],unmarked:[] as string[],refused:[] as CardRow[]}
+  for(const card of cards){
+    if(card.state==='unmarked') groups.unmarked.push(`${card.cardId}: ${card.members.map(m=>m.itemId).join(', ')}`)
+    else if(card.state==='refused') groups.refused.push(card)
+    else for(const m of card.members){
+      if(m.category==='record') groups.record.push(`${m.itemId}: ${card.verdict}/${m.disposition}`)
+      else if(m.category==='supersede') groups.supersede.push(`${m.itemId}: ${m.previous?.verdict}/${m.previous?.disposition} \u2192 ${card.verdict}/${m.disposition}`)
+      else groups.noop.push(`${m.itemId}: ${card.verdict}/${m.disposition}`)
+    }
+  }
+  return groups
+})
+async function exportCards(){
+  const body=await request(`/${rid()}/cards/export`,'POST',{items:splitList(cardItems.value),actions:splitList(cardActions.value)})
+  if(body) cardPacket.value=body.data
+}
+async function planCards(){
+  cardPlan.value=null
+  const body=await request(`/${rid()}/cards/decide`,'POST',{decisions_path:decisionsPath.value,reviewer:reviewer.value,write:false,plan_sha256:null})
+  if(body?.data?.planSha256) cardPlan.value={planSha256:body.data.planSha256,cards:body.data.cards??[]}
+}
+async function confirmCards(){
+  if(!cardPlan.value) return
+  await request(`/${rid()}/cards/decide`,'POST',{decisions_path:decisionsPath.value,reviewer:reviewer.value,write:true,plan_sha256:cardPlan.value.planSha256})
 }
 const rid=()=>encodeURIComponent(reviewId.value.trim())
 async function recordDecision(){
@@ -69,6 +101,20 @@ async function openWholeBundlePromotion(){await router.push('/grounding/promotio
     <fieldset><legend>Record a decision</legend><p>Reads the item named under Item ID below, then saves one decision bound to its current revision. The reviewer is the Reviewer field below.</p><label>Verdict <select v-model="decisionVerdict"><option value="approve">Approve</option><option value="reject">Reject</option><option value="discuss">Discuss</option></select></label><label v-if="decisionVerdict==='approve'">Approval disposition <select v-model="decisionDisposition"><option value="accept_no_change">Accept without change</option><option value="source_correction">Source correction</option><option value="merge">Merge (uses the proposal ID and digest below)</option><option value="distinct">Distinct</option><option value="document_signoff">Document sign-off</option></select></label><label>Decision note <input v-model="decisionNote"></label><button :disabled="busy||!reviewId||!itemId||!reviewer" @click="recordDecision">Record decision</button></fieldset>
     <fieldset><legend>Refresh and selected checks</legend><button :disabled="busy||!reviewId" @click="request(`/${rid()}/refresh`,'POST',{expected_generation:generation})">Refresh custody</button><label>Finding or operation file <input v-model="operationFile"></label><button :disabled="busy||!reviewId||!operationFile" @click="request(`/${rid()}/findings?expected_generation=${generation}`,'POST',{selection:operationFile})">Add attributed findings</button><label>Rerun selection file <input v-model="checkSelection"></label><label>Rerun mode <select v-model="rerunMode"><option value="unresolved">Current unresolved only</option><option value="selected">Exact selected items</option></select></label><button :disabled="busy||!reviewId||!checkSelection" @click="request(`/${rid()}/rerun/preview`,'POST',{selection:checkSelection,mode:rerunMode})">Preview rerun</button><label>Selection digest <input v-model="selectionSha"></label><button :disabled="busy||!reviewId||!selectionSha" @click="request(`/${rid()}/rerun/run`,'POST',{selection_sha256:selectionSha})">Run exact checks</button></fieldset>
     <fieldset><legend>Correction, identity, and publication</legend><label>Item ID <input v-model="itemId"></label><label>Current expected decision revision <input v-model.number="decisionRevision" type="number" min="0"></label><label>Correction target <select v-model="targetKind"><option value="draft">Authored draft</option><option value="source">Maintained summary source</option></select></label><label>Exact replacement <input v-model="replacement"></label><button :disabled="busy||!reviewId||!itemId||!replacement" @click="request(`/${rid()}/correction/prepare`,'POST',{item:itemId,target_kind:targetKind,replacement,expected_decision_revision:decisionRevision,...(summariesDir?{summaries_dir:summariesDir}:{})})">Preview correction</button><label>Summaries directory <input v-model="summariesDir" placeholder="docs/summaries"></label><label>Proposal ID <input v-model="proposalId"></label><label>Proposal digest <input v-model="proposalSha"></label><button :disabled="busy||!reviewId||!proposalId||!proposalSha" @click="request(`/${rid()}/correction/apply`,'POST',{proposal:proposalId,proposal_sha256:proposalSha,...(summariesDir?{summaries_dir:summariesDir}:{})})">Apply reviewed correction</button><label>Identity scope <select v-model="scopeKind"><option value="global">Global</option><option value="chapter">Chapter</option><option value="scene">Scene</option><option value="location">Location</option><option value="document">Document</option><option value="evidence">Evidence</option></select></label><label v-if="scopeKind!=='global'">Scope value <input v-model="scopeValue"></label><button :disabled="busy||!reviewId||!itemId" @click="request(`/${rid()}/identity/prepare`,'POST',{item:itemId,expected_decision_revision:decisionRevision,scope_kind:scopeKind,...(scopeKind!=='global'?{scope_value:scopeValue}:{})})">Prepare both identity alternatives</button><button :disabled="busy||!reviewId||!proposalId" @click="request(`/${rid()}/identity/${encodeURIComponent(proposalId)}`,'GET')">Show identity proposal</button><button :disabled="busy||!reviewId||!proposalId||!proposalSha" @click="request(`/${rid()}/identity/apply`,'POST',{proposal:proposalId,proposal_sha256:proposalSha})">Apply reviewed identity</button><button :disabled="busy||!reviewId||!proposalId" @click="request(`/${rid()}/identity/${encodeURIComponent(proposalId)}/resolution`,'GET')">Show separate conflict resolution</button><label>Guard resolution note <input v-model="guardNote"></label><button :disabled="busy||!reviewId||!proposalId||!guardNote" @click="request(`/${rid()}/identity/guard/prepare`,'POST',{proposal:proposalId,reviewer,note:guardNote})">Prepare exact guard resolution</button><label>Guard resolution ID <input v-model="guardResolution"></label><label>Guard resolution digest <input v-model="guardResolutionSha"></label><button :disabled="busy||!reviewId||!guardResolution||!guardResolutionSha" @click="request(`/${rid()}/identity/guard/apply`,'POST',{resolution:guardResolution,resolution_sha256:guardResolutionSha})">Apply reviewed guard resolution</button><label>Identity application receipt <input v-model="identityReceipt"></label><label><input v-model="executeRegeneration" type="checkbox"> Execute through the long-running local stream</label><button :disabled="busy||!reviewId||!identityReceipt||!operationFile" @click="executeRegeneration?requestStream(`/${rid()}/identity/regenerate`,{receipt:identityReceipt,selection:operationFile,execute:true}):request(`/${rid()}/identity/regenerate`,'POST',{receipt:identityReceipt,selection:operationFile})">Prepare or execute selected affected regeneration</button><label>Exact NPC draft digest <input v-model="npcDraftSha"></label><button :disabled="busy||!reviewId||!itemId||!npcDraftSha" @click="request(`/${rid()}/npc/sign`,'POST',{item:itemId,draft_sha256:npcDraftSha,expected_decision_revision:decisionRevision,reviewer})">Sign verified NPC draft</button><label>Exact document digest <input v-model="documentSha"></label><label>Reviewer <input v-model="reviewer"></label><button :disabled="busy||!reviewId||!itemId||!documentSha" @click="request(`/${rid()}/document/sign`,'POST',{item:itemId,document_sha256:documentSha,expected_decision_revision:decisionRevision,reviewer})">Sign exact document</button><p>The per-document prepare and promote actions are retired. Keep using decision history and exact document sign-offs here, then preview and publish the complete four-document bundle with its timeline, references, retained records, and dependencies.</p><button type="button" @click="openWholeBundlePromotion">Go to whole-bundle promotion</button></fieldset>
+    <fieldset><legend>Card packet</legend><p>Export the undecided items as cards for the review page, then plan and record the decisions file the page saved. Plan is a dry run; Confirm and record writes exactly the plan shown.</p>
+      <label>Item ids (optional, comma or space separated) <input v-model="cardItems"></label><label>Action names (optional, comma or space separated) <input v-model="cardActions"></label>
+      <button :disabled="busy||!reviewId" @click="exportCards">Export card packet</button>
+      <div v-if="cardPacket" data-test="card-packet"><p>Packet {{ cardPacket.packetId }}: {{ cardPacket.cards }} cards ({{ cardPacket.members }} members)</p><ul v-if="cardPacket.skippedSignoffs?.length"><li v-for="skip in cardPacket.skippedSignoffs" :key="skip.itemId">Skipped sign-off {{ skip.itemId }} ({{ skip.npc }}): {{ skip.code }}</li></ul></div>
+      <label>Decisions file <input v-model="decisionsPath" placeholder="campaign/decisions.json"></label><label>Reviewer (card decisions) <input v-model="reviewer"></label>
+      <div class="actions"><button :disabled="busy||!reviewId||!decisionsPath||!reviewer" @click="planCards">Plan</button><button :disabled="busy||!cardPlan" @click="confirmCards">Confirm and record</button></div>
+      <div v-if="cardPlan" data-test="card-plan"><p>Plan {{ cardPlan.planSha256 }}</p>
+        <h3>Record</h3><ul><li v-for="line in planGroups.record" :key="line">{{ line }}</li></ul>
+        <h3>Supersede (old &rarr; new)</h3><ul><li v-for="line in planGroups.supersede" :key="line">{{ line }}</li></ul>
+        <h3>No change</h3><ul><li v-for="line in planGroups.noop" :key="line">{{ line }}</li></ul>
+        <h3>Unmarked</h3><ul><li v-for="line in planGroups.unmarked" :key="line">{{ line }}</li></ul>
+        <h3>Refused</h3><ul><li v-for="card in planGroups.refused" :key="card.cardId">{{ card.cardId }}: {{ card.refusal?.code }}: {{ card.refusal?.message }} (items: {{ card.members.map(m=>m.itemId).join(', ') }})</li></ul>
+      </div>
+    </fieldset>
     <label>Recovery transaction <input v-model="transaction"></label><button :disabled="busy||!transaction" @click="request('/recover','POST',{transaction})">Recover</button><p aria-live="polite">{{ note }}</p><pre v-if="result" aria-label="Review command result">{{ result }}</pre>
   </section>
 </template>
@@ -81,6 +127,8 @@ p { margin: 4px 0 8px; color: var(--text-muted); }
 .actions { display: flex; flex-wrap: wrap; gap: 6px; margin-block: 10px; }
 .actions button { margin: 0; }
 fieldset { display: grid; gap: 6px; margin-block: 12px; padding: 10px; min-width: 0; border: 1px solid var(--bg-surface0); border-radius: 4px; }
+h3 { font-size: 11px; font-weight: 700; color: var(--text); margin: 8px 0 2px; }
+ul { margin: 0; padding-left: 18px; }
 legend { padding: 0 4px; font-size: 11px; font-weight: 700; color: var(--text); }
 label { display: block; min-width: 0; margin-bottom: 8px; font-weight: 600; color: var(--text-sub); overflow-wrap: anywhere; }
 label:has(> input[type=checkbox]) { display: flex; align-items: center; gap: 6px; font-weight: 400; }

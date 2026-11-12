@@ -39,3 +39,117 @@ describe('ReviewLauncher custody refusal', () => {
     expect(wrapper.text()).toContain(MESSAGE)
   })
 })
+
+const HASH = 'c'.repeat(64)
+const PLAN = {
+  planSha256: HASH, counts: { record: 1, supersede: 1, noop: 1, unmarked: 1, refused: 1 },
+  cards: [
+    { cardId: 'card-rec', state: 'planned', verdict: 'approve', members: [{ itemId: 'item-rec', category: 'record', disposition: 'accept_no_change' }] },
+    { cardId: 'card-sup', state: 'planned', verdict: 'reject', members: [{ itemId: 'item-sup', category: 'supersede', disposition: 'reject_action', previous: { verdict: 'approve', disposition: 'accept_no_change' } }] },
+    { cardId: 'card-noop', state: 'planned', verdict: 'approve', members: [{ itemId: 'item-noop', category: 'noop', disposition: 'accept_no_change' }] },
+    { cardId: 'card-un', state: 'unmarked', members: [{ itemId: 'item-un' }] },
+    { cardId: 'card-ref', state: 'refused', refusal: { code: 'REVIEW_CARDS_MEMBER_STALE', message: 'member changed' }, members: [{ itemId: 'item-ref-1' }, { itemId: 'item-ref-2' }] },
+  ],
+}
+
+function cardsMount() {
+  const calls: { url: string; body: any }[] = []
+  vi.stubGlobal('fetch', vi.fn((url: string, init?: { method?: string; body?: string }) => {
+    const body = init?.body ? JSON.parse(init.body) : undefined
+    calls.push({ url: String(url), body })
+    if (String(url).endsWith('/cards/export')) return reply(200, { ok: true, code: 'REVIEW_CARDS_EXPORTED', message: 'packet p1: 3 cards (5 members) for review review-1',
+      data: { packetId: 'p1', reviewId: 'review-1', cards: 3, members: 5, skippedSignoffs: [{ itemId: 'npc-s', npc: 'nug', code: 'REVIEW_STALE_CUSTODY', message: 'changed' }] } })
+    if (String(url).endsWith('/cards/decide')) {
+      if (body.write) return reply(200, { ok: true, code: 'REVIEW_CARDS_SAVED', message: 'saved', data: { ...PLAN, saved: 2 } })
+      return reply(200, { ok: true, code: 'REVIEW_CARDS_PLAN', message: 'plan', data: PLAN })
+    }
+    return reply(200, { ok: true, data: {} })
+  }))
+  const wrapper = mount(ReviewLauncher, { props: { context: 'npc' } })
+  const field = async (label: string, value: string) => {
+    const l = wrapper.findAll('label').find(x => x.text().startsWith(label))!
+    await l.find('input').setValue(value)
+  }
+  const button = (name: string) => wrapper.findAll('button').find(b => b.text() === name)!
+  return { wrapper, calls, field, button }
+}
+
+describe('ReviewLauncher card packet', () => {
+  afterEach(() => vi.unstubAllGlobals())
+
+  it('exports a card packet with filters', async () => {
+    const { wrapper, calls, field, button } = cardsMount()
+    await field('Review ID', 'review-1')
+    await field('Item ids', 'a, b  c')
+    await field('Action names', 'review_presentation')
+    await button('Export card packet').trigger('click')
+    await flushPromises()
+    expect(calls[0].url).toBe('/api/reviews/review-1/cards/export')
+    expect(calls[0].body).toEqual({ items: ['a', 'b', 'c'], actions: ['review_presentation'] })
+    const text = wrapper.text()
+    expect(text).toContain('p1')
+    expect(text).toContain('3 cards')
+    expect(text).toContain('5 members')
+    expect(text).toContain('npc-s')
+    expect(text).toContain('REVIEW_STALE_CUSTODY')
+  })
+
+  it('sends empty filters when the inputs are blank', async () => {
+    const { calls, field, button } = cardsMount()
+    await field('Review ID', 'review-1')
+    await button('Export card packet').trigger('click')
+    await flushPromises()
+    expect(calls[0].body).toEqual({ items: [], actions: [] })
+  })
+
+  it('plans then confirms with the plan hash', async () => {
+    const { wrapper, calls, field, button } = cardsMount()
+    await field('Review ID', 'review-1')
+    await field('Decisions file', 'decisions.json')
+    expect(button('Confirm and record').attributes('disabled')).toBeDefined()
+    await button('Plan').trigger('click')
+    await flushPromises()
+    expect(calls[0].body).toEqual({ decisions_path: 'decisions.json', reviewer: 'GM', write: false, plan_sha256: null })
+    const plan = wrapper.find('[data-test="card-plan"]')
+    expect(plan.text()).toContain(HASH)
+    for (const heading of ['Record', 'Supersede', 'No change', 'Unmarked', 'Refused']) expect(plan.text()).toContain(heading)
+    expect(plan.text()).toContain('item-rec')
+    expect(plan.text()).toMatch(/item-sup.*approve.*accept_no_change.*reject.*reject_action/s)
+    expect(plan.text()).toContain('item-ref-1')
+    expect(plan.text()).toContain('item-ref-2')
+    expect(plan.text()).toContain('REVIEW_CARDS_MEMBER_STALE')
+    expect(button('Confirm and record').attributes('disabled')).toBeUndefined()
+    await button('Confirm and record').trigger('click')
+    await flushPromises()
+    expect(calls[1].body).toEqual({ decisions_path: 'decisions.json', reviewer: 'GM', write: true, plan_sha256: HASH })
+    expect(wrapper.text()).toContain('saved')
+  })
+
+  it('editing the path or reviewer resets confirm', async () => {
+    const { wrapper, field, button } = cardsMount()
+    await field('Review ID', 'review-1')
+    await field('Decisions file', 'decisions.json')
+    await button('Plan').trigger('click')
+    await flushPromises()
+    expect(button('Confirm and record').attributes('disabled')).toBeUndefined()
+    await field('Decisions file', 'other.json')
+    expect(button('Confirm and record').attributes('disabled')).toBeDefined()
+    expect(wrapper.find('[data-test="card-plan"]').exists()).toBe(false)
+    await field('Decisions file', 'decisions.json')
+    await button('Plan').trigger('click')
+    await flushPromises()
+    await field('Reviewer (card decisions)', 'Someone')
+    expect(button('Confirm and record').attributes('disabled')).toBeDefined()
+  })
+
+  it('shows a refusal like the CLI', async () => {
+    const message = 'REVIEW_CARDS_PACKET_STALE: the review moved'
+    vi.stubGlobal('fetch', vi.fn(() => reply(409, { ok: false, code: 'REVIEW_CARDS_PACKET_STALE', message, data: { packetId: 'p1', generation: 7 } })))
+    const wrapper = mount(ReviewLauncher, { props: { context: 'npc' } })
+    await wrapper.findAll('label').find(l => l.text().startsWith('Review ID'))!.find('input').setValue('review-1')
+    await wrapper.findAll('button').find(b => b.text() === 'Export card packet')!.trigger('click')
+    await flushPromises()
+    expect(wrapper.text()).toContain(message)
+    expect(wrapper.find('pre[aria-label="Review command result"]').text()).toContain('"generation": 7')
+  })
+})
