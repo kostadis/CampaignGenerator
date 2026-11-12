@@ -42,3 +42,14 @@ frontend/e2e/summary-native-review.spec.ts:105); `correct_reviewed_layer` -> `pr
 - e2e spec: not run (frontend/node_modules absent in the worktree).
 
 T005 is complete.
+
+## Phase 2 (T006-T010)
+
+Run with the pinned PYTHONPATH: action_table, delegated (13), noise_cli (14), decisions, cards (6), no_llm (34),
+installable_wheel, review_installation, promotion_wheel: **115 passed** together. `uv build --wheel` ships both
+schema files via `packages` (no force-include needed).
+
+Notes: (1) T008/T009 were written implementation-first in one pass, so the test was not observed failing first.
+(2) cards.py imports `delegated` lazily inside `expand`; delegated imports `cards` lazily inside `plan_noise_class`
+(avoids a cycle). (3) `expand`'s `snapshot` is the `read_review_state` tuple. (4) plan_noise_class passes an empty
+placeholder note to `expand` (identical/differs are both "already decided") and builds its own note, so output is unchanged.
