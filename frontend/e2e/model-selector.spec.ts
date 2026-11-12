@@ -31,7 +31,8 @@ test.beforeEach(async ({ page }) => {
 test('accepts an unlisted Claude id on the metered Anthropic backend', async ({ page }) => {
   await enterModel(page, UNLISTED_MODEL)
 
-  expect(harness.puts).toHaveLength(1)
+  // The PUT is sent after blur; poll rather than read it synchronously (#651).
+  await expect.poll(() => harness.puts.length).toBe(1)
   expect(harness.puts[0].default_model).toBe(UNLISTED_MODEL)
   expect(harness.puts[0].default_models.anthropic).toBe(UNLISTED_MODEL)
 })
@@ -42,6 +43,7 @@ test('stores one trimmed value in both fields when an id is pasted with whitespa
   // two different strings for one choice. This assertion fails without that fix.
   await enterModel(page, `  ${UNLISTED_MODEL}  `)
 
+  await expect.poll(() => harness.puts.length).toBeGreaterThan(0)
   expect(harness.puts[0].default_model).toBe(UNLISTED_MODEL)
   expect(harness.puts[0].default_models.anthropic).toBe(UNLISTED_MODEL)
 })
@@ -90,6 +92,8 @@ test('accepts an unlisted Claude id on the subscription backend too', async ({ p
   await selectBackend(page, 'Sub')
   await enterModel(page, UNLISTED_MODEL)
 
+  // selectBackend may already have PUT; wait for the one carrying the typed id.
+  await expect.poll(() => harness.puts.at(-1)?.default_model).toBe(UNLISTED_MODEL)
   const last = harness.puts[harness.puts.length - 1]
   expect(last.default_model).toBe(UNLISTED_MODEL)
   expect(last.default_models['claude-code']).toBe(UNLISTED_MODEL)
