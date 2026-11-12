@@ -197,7 +197,22 @@ class CustodyFixture:
         return sha_tree(self.root / "docs" / "reviews" / self.review_id)
 
 
-def build(tmp_path: Path, *, extra_npcs: int = 0) -> CustodyFixture:
+def build(tmp_path: Path, *, extra_npcs: int = 0, deterministic: bool = False) -> CustodyFixture:
+    """Build the fixture.  ``deterministic=True`` makes every uuid4 the build draws (the campaign id, the
+    review id) a counter, so two builds in different temp dirs yield byte-identical item digests and
+    packet ids -- what a golden packet needs (spec 043 T025)."""
+    if not deterministic:
+        return _build(tmp_path, extra_npcs=extra_npcs)
+    import itertools
+    import uuid
+    from unittest import mock
+
+    counter = itertools.count(1)
+    with mock.patch("uuid.uuid4", lambda: uuid.UUID(int=next(counter))):
+        return _build(tmp_path, extra_npcs=extra_npcs)
+
+
+def _build(tmp_path: Path, *, extra_npcs: int = 0) -> CustodyFixture:
     root = tmp_path / "camp"
     rd = root / "docs/npcs/summary_native" / RANGE
     for sub in ("draft", "evidence", "gm"):

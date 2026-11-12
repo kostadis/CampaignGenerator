@@ -25,7 +25,8 @@ There is no timestamp, no verdict, no `guess` and no recommendation field (FR-00
 | `kind` | `"finding"` \| `"noise_class"` \| `"signoff"` | |
 | `npc` | str \| null | The NPC display label (custody `npc_label`). Null for a noise class card |
 | `title` | str | Plain text |
-| `body` | str | Plain text: the claim or sentence, or for a sign-off the full draft text. When the card is re-offered and an item's current decision is a Discuss, the body carries a plain-text line `Previously discussed by <reviewer>: <note>` (`: <note>` omitted when the note is empty); on a noise class card it sits under each affected occurrence, on a sign-off card it precedes the draft text. Display only: it is text inside `body`, never a key, and decide ignores it (GM ruling 2026-11-12, R2) |
+| `body` | str | Plain text: the claim or sentence, or for a sign-off the full draft text, byte-identical to the draft file. On a noise class card, when an item's current decision is a Discuss, a plain-text line `Previously discussed by <reviewer>: <note>` (`: <note>` omitted when the note is empty) sits under each affected occurrence inside `body` |
+| `previousDiscussion` | str or null | Optional plain text, exactly the line `Previously discussed by <reviewer>: <note>` when this finding or sign-off card is re-offered and its item's current decision is a Discuss; null otherwise (always null on a noise class card). Display only, never a verdict key, ignored by decide (GM ruling 2026-11-12, R2) |
 | `approveMeans` / `rejectMeans` | str | Plain text: what each verdict does, written by CampaignGenerator |
 | `evidence` | list[EvidenceRow] | May be empty |
 | `members` | list[Member] | At least one entry (FR-003) |

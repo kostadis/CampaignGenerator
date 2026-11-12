@@ -85,6 +85,7 @@ class Card(_Strict):
     evidence: tuple[EvidenceRow, ...] = ()
     members: tuple[Member, ...] = Field(min_length=1)
     draft_sha256: str | None = None
+    previous_discussion: str | None = None
 
 
 class CardPacket(_Strict):
@@ -328,8 +329,6 @@ def _finding_card(item, events, stale=frozenset()) -> Card:
     action = item.proposed_action.action
     checker = sorted({d.message for d in item.diagnostics if d.message})
     body = f"Claim: {item.claim_text or ''}" + "".join(f"\nChecker: {m}" for m in checker)
-    if (previous := _previous_discuss(events, item, stale)):
-        body += f"\n{previous}"
     evidence = tuple(
         EvidenceRow(source=ev.source_path or "", anchor=ev.anchor, excerpt=ev.exact_excerpt,
                     missing_reason=ev.missing_reason)
@@ -342,7 +341,8 @@ def _finding_card(item, events, stale=frozenset()) -> Card:
         approve_means=f"Keep as-is: the draft line stands as written (records accept_no_change). No edit to {where}.",
         reject_means=f"The line is wrong: no sign-off for this draft until it is corrected in {where} "
                      f"(the draft is the origin). Say the fix in a note.",
-        evidence=evidence, members=(_member(item, events),), draft_sha256=None)
+        evidence=evidence, members=(_member(item, events),), draft_sha256=None,
+        previous_discussion=_previous_discuss(events, item, stale))
 
 
 def _signoff_card(root: Path, item, events, stale=frozenset()) -> Card:
@@ -351,15 +351,14 @@ def _signoff_card(root: Path, item, events, stale=frozenset()) -> Card:
     draft_sha = str(details.get("draft_sha256"))
     text = _reject_symlinks(Path(root), Path(root) / str(details.get("draft_path"))).read_text(encoding="utf-8")
     who = _who(item)
-    if (previous := _previous_discuss(events, item, stale)):
-        text = f"{previous}\n\n{text}"
     return Card(
         id=item.item_id, kind="signoff", npc=who, title=f"Sign off {who}'s draft for publication", body=text,
         approve_means=f"Record a GM sign-off for these exact bytes (sha256 {draft_sha[:16]}...); publish can then "
                       f"proceed. Mechanical verdict: {details.get('mechanical_verdict', '?')}.",
         reject_means="Keep the draft as it is, unsigned and unpublished. Say what to change in a note; "
                      "the fix goes in the draft and comes back for a new sign-off.",
-        evidence=(), members=(_member(item, events),), draft_sha256=draft_sha)
+        evidence=(), members=(_member(item, events),), draft_sha256=draft_sha,
+        previous_discussion=_previous_discuss(events, item, stale))
 
 
 def build_packet(root: Path, review_id: str, *, item_ids: list[str] | None = None,

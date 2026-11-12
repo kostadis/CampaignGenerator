@@ -65,6 +65,18 @@
           "default": null,
           "title": "Npc"
         },
+        "previousDiscussion": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Previousdiscussion"
+        },
         "rejectMeans": {
           "title": "Rejectmeans",
           "type": "string"

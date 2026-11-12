@@ -103,8 +103,7 @@ decision revision); no code gap was exposed, so T024 changed no `expand`/`plan_d
 
 GM rulings: (1) `REVIEW_CARDS_ACTION_UNKNOWN` kept (contracts/cards-cli.md, research R7;
 `test_export_refuses_unknown_action`). (2) A re-offered Discuss shows `Previously discussed by <reviewer>: <note>`
-in `body` (data-model Card.body, research R2; `test_reoffered_discuss_card_shows_previous_note`). A sign-off card
-puts the line before the draft text, so its `body` is then not byte-identical to the draft (note for T026).
+in `previousDiscussion` for finding and sign-off cards (in `body` per occurrence for noise class cards) so a sign-off `body` stays byte-identical to the draft (data-model Card, research R2; `test_reoffered_discuss_card_shows_previous_note`, `test_signoff_body_is_exact_draft_even_when_previously_discussed`).
 
 Run (pinned PYTHONPATH, basetemp pytest-043b): cards + action_table + delegated + noise_cli + decisions + no_llm +
 item_custody = **158 passed** (cards file alone: 41 passed).

@@ -368,6 +368,26 @@ def test_us1_signoff_approve_records_document_signoff(tmp_path):
     assert ours["disposition"] == "document_signoff" and ours["request_id"].startswith("cards-")
 
 
+def test_signoff_body_is_exact_draft_even_when_previously_discussed(tmp_path):
+    fx = custody_fx.build(tmp_path)
+    rc, env = _export(fx.root, fx.review_id, "--action", "signoff_npc_draft")
+    packet = _load_packet(fx.root, fx.review_id, env["data"]["packetId"])
+    by_npc = {c["npc"]: c for c in packet["cards"]}
+    for npc in ("a", "c"):
+        card = by_npc[npc.capitalize() + npc * 2]
+        assert card["body"] == fx.draft(npc).read_text(encoding="utf-8")
+        assert card["previousDiscussion"] is None
+    card_c = by_npc["Ccc"]
+    path = _decisions(fx.root, packet, {card_c["id"]: ("discuss", "check the quote")})
+    _plan, (rc, _saved) = _plan_then_write(fx.root, fx.review_id, path)
+    assert rc == 0
+    rc, env = _export(fx.root, fx.review_id, "--action", "signoff_npc_draft")
+    second = _load_packet(fx.root, fx.review_id, env["data"]["packetId"])
+    again = {c["npc"]: c for c in second["cards"]}["Ccc"]
+    assert again["body"].encode("utf-8") == fx.draft("c").read_bytes()  # verbatim: the draft, nothing prepended
+    assert again["previousDiscussion"] == "Previously discussed by GM: check the quote"
+
+
 def test_us1_cards_aligned_batches(noise_cards, monkeypatch):
     # Pure packing: a card is never split unless it alone exceeds the cap.
     two = [[{"i": 1}, {"i": 2}], [{"i": 3}, {"i": 4}]]
@@ -804,7 +824,9 @@ def test_reoffered_discuss_card_shows_previous_note(noise_cards):
     assert rc == 0
     second = _fresh_packet(root)
     by_id = {c["id"]: c for c in second["cards"]}
-    assert "Previously discussed by GM: ask the GM" in by_id["mixed"]["body"].splitlines()
+    assert by_id["mixed"]["previousDiscussion"] == "Previously discussed by GM: ask the GM"
+    assert "Previously discussed" not in by_id["mixed"]["body"]
+    assert by_id["noise-class:label"]["previousDiscussion"] is None
     label = by_id["noise-class:label"]["body"]
     assert label.count("Previously discussed by GM") == 3  # one per affected occurrence
     assert "Previously discussed by GM:" not in label  # empty note: no colon

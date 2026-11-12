@@ -30,7 +30,8 @@ The golden examples are in `tests/fixtures/review_cards/`. Field rules are in [d
         {"itemId": "finding-a1", "action": "review_classified_noise", "itemRevision": 1,
          "reviewDigest": "…", "expectedDecisionRevision": 0, "line": 12}
       ],
-      "draftSha256": null
+      "draftSha256": null,
+      "previousDiscussion": null
     },
     {
       "id": "npc-signoff-jimjar",
@@ -43,7 +44,8 @@ The golden examples are in `tests/fixtures/review_cards/`. Field rules are in [d
       "evidence": [],
       "members": [{"itemId": "npc-signoff-jimjar", "action": "signoff_npc_draft", "itemRevision": 1,
                    "reviewDigest": "…", "expectedDecisionRevision": 0, "line": null}],
-      "draftSha256": "9b1d…64 hex"
+      "draftSha256": "9b1d…64 hex",
+      "previousDiscussion": "Previously discussed by GM: check the quote"
     }
   ]
 }
@@ -71,5 +73,6 @@ The golden examples are in `tests/fixtures/review_cards/`. Field rules are in [d
 2. **Start unmarked.** Never pre-select a verdict. A card the GM did not mark is **absent** from `cards`, not present with a null verdict.
 3. **Echo back what you were given.** For every marked card, send `members` exactly as the packet listed them. For a sign-off card, also send `draftSha256`. CampaignGenerator compares both echoes with its stored packet, and refuses the whole file on any difference.
 4. **Send nothing else.** No dispositions, revisions, reviewer or recommendation. Unknown keys are refused.
-5. **Use one verdict vocabulary.** `approve`, `reject` and `discuss`. What a verdict records is CampaignGenerator's decision (the `approveMeans`/`rejectMeans` text says what it will be), never the page's.
-6. **Version.** `schemaVersion` is the major version. A file with a version CampaignGenerator does not accept is refused, and the message names the accepted ones.
+5. **Show `previousDiscussion` when present.** It is optional plain text (`null` or absent when the item was not previously discussed): render it as text beside the card, never inside the draft. A sign-off card's `body` is always byte-identical to the draft the GM is signing; the discussed-before line is deliberately not part of it. On a noise class card the line sits per occurrence inside `body` and `previousDiscussion` is null. It is display only and decide ignores it.
+6. **Use one verdict vocabulary.** `approve`, `reject` and `discuss`. What a verdict records is CampaignGenerator's decision (the `approveMeans`/`rejectMeans` text says what it will be), never the page's.
+7. **Version.** `schemaVersion` is the major version. A file with a version CampaignGenerator does not accept is refused, and the message names the accepted ones.
