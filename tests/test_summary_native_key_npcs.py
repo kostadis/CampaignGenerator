@@ -86,6 +86,15 @@ def corpus_dossier(subject, last, n=3, category="npc"):
     return select.Dossier(f"npc_{subject.lower()}", subject, category, n, 1, last, Path("x"))
 
 
+def synth_record(root) -> dict:
+    """The synth run's record. ``runs/`` also holds the extract run's record, and
+    ``glob()`` order is filesystem order, so ``next(glob)`` picked either one."""
+    runs = cs.range_dir(root) / schema.STATE_DIR / "runs"
+    recs = [r for r in (json.loads(p.read_text()) for p in sorted(runs.glob("*/record.json"))) if r.get("step") == "synth"]
+    assert len(recs) == 1, recs
+    return recs[0]
+
+
 class TestSelection:
     SCOPES = {"Kalan": "persistent", "Ilvara Mizzrym": "persistent", "Thorin": "persistent", "Dela": "local"}
 
@@ -293,8 +302,7 @@ class TestMissing:
         (call,) = [c for c in fm.prose_calls if c["heading"] == "## Key NPCs"]
         assert "### Ilvara Mizzrym" in call["user"] and "Kalan" not in call["user"] and "Sarith" not in call["user"]
         assert "Kalan: fallback line from checked notes (not drafted)" in out
-        runs = cs.range_dir(extracted) / schema.STATE_DIR / "runs"
-        record = json.loads(next(runs.glob("*/record.json")).read_text())
+        record = synth_record(extracted)
         assert record["key_npcs"]["fallback_requested"] is True and record["key_npcs"]["fallbacks"] == 2
 
     def test_fallback_citations_are_only_checked_note_citations(self, extracted):
@@ -353,7 +361,7 @@ class TestBuild:
 
     def test_the_run_record_lists_the_dossiers_used_with_their_digest(self, all_published):
         assert cs.run_cli(synth_args(all_published))[0] == 0
-        rec = json.loads(next((cs.range_dir(all_published) / schema.STATE_DIR / "runs").glob("*/record.json")).read_text())
+        rec = synth_record(all_published)
         sel = {s["name"]: s for s in rec["key_npcs"]["selected"]}
         assert sel["Kalan"]["dossier"] == "docs/npcs/kalan.md" and len(sel["Kalan"]["sha256"]) == 64
         assert rec["budgets"]["Key NPCs"]["budget"] == 900

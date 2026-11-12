@@ -24,6 +24,21 @@ client = TestClient(app)
 SETUP_ROUTER = Path(__file__).resolve().parent.parent / "server" / "routers" / "setup.py"
 
 
+@pytest.fixture(autouse=True)
+def _platform(tmp_path, monkeypatch):
+    """The router reads ``app.state.platform`` (boot normally sets it). Wire a real one
+    onto a scratch campaign so the file passes alone and in any order, instead of
+    leaning on whichever earlier test happened to leave one on the global app."""
+    from server.platform_config_service import PlatformConfigService
+
+    cfg = tmp_path / "config"
+    cfg.mkdir()
+    (cfg / "config.yaml").write_text(
+        "documents:\n  - label: world_state\n    path: docs/world_state.md\n", encoding="utf-8"
+    )
+    monkeypatch.setattr(app.state, "platform", PlatformConfigService(tmp_path), raising=False)
+
+
 @pytest.fixture
 def captured_cmd(monkeypatch):
     """The argv the router built, without running anything."""

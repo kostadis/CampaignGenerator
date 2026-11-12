@@ -260,6 +260,15 @@ def built(tmp_path, monkeypatch):
     return root, out
 
 
+def synth_run_dir(root):
+    """The synth run's directory. ``runs/`` also holds the extract run (and a same-second
+    run gets a ``-k`` suffix), so ``next(iterdir())`` is arbitrary — pick by content."""
+    runs = cs.range_dir(root) / schema.STATE_DIR / "runs"
+    found = [d for d in sorted(runs.iterdir()) if (d / "world_state.locations.out.md").exists()]
+    assert len(found) == 1, found
+    return found[0]
+
+
 def draft_path(root, doc="world_state"):
     return cs.range_dir(root) / schema.STATE_DIR / "drafts" / f"{doc}.draft.md"
 
@@ -276,7 +285,7 @@ def test_synth_annotates_the_draft_and_reports_the_counts(built):
 
 def test_the_annotated_line_is_the_models_line_unchanged(built):
     root, _ = built
-    run_dir = next((cs.range_dir(root) / schema.STATE_DIR / "runs").iterdir())
+    run_dir = synth_run_dir(root)
     raw = (run_dir / "world_state.locations.out.md").read_text(encoding="utf-8")
     line = "- **Velkynvelve** — A drow outpost. [ch 002 / locations]"
     assert line in raw and line in draft_path(root).read_text(encoding="utf-8")
@@ -287,7 +296,7 @@ def test_the_annotations_report_lists_every_hit(built):
     md = (cs.range_dir(root) / schema.STATE_DIR / "drafts" / "annotations.md").read_text(encoding="utf-8")
     assert "## world_state" in md and "A drow outpost." in md and "Dead; the doorway" in md
     assert "Removed" in md and "Thorin Giantfriend" in md
-    record = next((cs.range_dir(root) / schema.STATE_DIR / "runs").iterdir()) / "record.json"
+    record = synth_run_dir(root) / "record.json"
     assert '"annotations"' in record.read_text(encoding="utf-8")
 
 
