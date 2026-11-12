@@ -150,6 +150,8 @@ test('out root reaches preview and commit, and any input change withdraws the pr
   await panel.locator('[data-test="promotion-request-id"]').fill('request-1')
   await panel.locator('[data-test="promotion-commit"]').click()
   await expect(panel.locator('[data-test="promotion-commit"]')).toBeDisabled()
+  // Route handlers record the request asynchronously; wait for it (#651).
+  await expect.poll(() => bodies.length).toBe(3)
   expect(bodies[0]).toEqual({ since: 1, until: 3, review: 'review-1', check_report: 'report-1', out_root: 'docs/other_root' })
   expect(bodies[2]).toEqual({ since: 1, until: 3, review: 'review-1', check_report: 'report-2', out_root: 'docs/other_root',
     preview_sha256: 'a'.repeat(64), request_id: 'request-1' })

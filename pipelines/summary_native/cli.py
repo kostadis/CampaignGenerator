@@ -11,7 +11,6 @@ import argparse
 import hashlib
 import json
 import sys
-import time
 from pathlib import Path
 
 import yaml
@@ -26,7 +25,7 @@ from campaignlib.api.client import resolve_cli_model
 from pipelines.summary_native import annotate, audit, freshness
 from pipelines.summary_native import compare as compare_mod
 from pipelines.summary_native import corpus, duplicates, extract, npc_authored, npc_compose, npc_config, npc_draft, npc_forms, npc_link
-from pipelines.summary_native import npc_publish, npc_verify, parse, resolve, schema, synth, thread_propose
+from pipelines.summary_native import npc_publish, npc_verify, parse, resolve, runs, schema, synth, thread_propose
 from pipelines.summary_native.concurrency import resolve_concurrency
 from pipelines.summary_native.freshness import check_fresh
 from pipelines.summary_native.scheduler import EndpointState, Scheduler, WorkItem
@@ -771,13 +770,9 @@ def _npc_verify(args, root: Path, report, npc_range_dir: Path, aliases: dict[str
         if journal.get("items") != [{"id": stem, "key": item_keys[stem]} for stem in sorted(stems)]:
             return _err("resume run selection or verification inputs are stale")
     else:
-        run_id = f"verify-{time.strftime('%Y%m%dT%H%M%SZ', time.gmtime())}"
-        run_path = verify_root / run_id / "record.json"
-        suffix = 1
-        while run_path.exists():
-            run_id = f"verify-{time.strftime('%Y%m%dT%H%M%SZ', time.gmtime())}-{suffix}"
-            run_path = verify_root / run_id / "record.json"
-            suffix += 1
+        run_dir = runs.new_run_dir(verify_root, "verify-" + runs.run_stamp(synth._utcnow()))
+        run_id = run_dir.name
+        run_path = run_dir / "record.json"
         journal = {
             "schema": 2, "run_id": run_id, "operation": "npc-verify", "status": "running",
             "items": [{"id": stem, "key": item_keys[stem]} for stem in sorted(stems)], "results": {},

@@ -31,7 +31,7 @@ from pathlib import Path
 from campaignlib import client_from_args, stream_api
 from campaignlib.api.client import resolve_cli_model
 from campaignlib.util import atomic_write_text
-from pipelines.summary_native import audit_select, context, corpus, extract, freshness, notes, npc_forms, schema, state_sections, synth, validate
+from pipelines.summary_native import audit_select, context, corpus, extract, freshness, notes, npc_forms, runs, schema, state_sections, synth, validate
 from pipelines.summary_native.freshness import check_fresh
 from pipelines.summary_native.resolve import ExtractSettings
 from pipelines.summary_native.scheduler import EndpointState, Scheduler, WorkItem, atomic_write_record
@@ -213,7 +213,7 @@ def run_audit(
         plans.append(_Plan(it, cands, user, key))
 
     started = now()
-    run_dir = synth._new_run_dir(Path(range_dir) / schema.STATE_DIR / "runs", started.strftime("%Y%m%dT%H%M%SZ"))
+    run_dir = runs.new_run_dir(Path(range_dir) / schema.STATE_DIR / "runs", runs.run_stamp(started))
     created_run_dir = run_dir
 
     if endpoints:

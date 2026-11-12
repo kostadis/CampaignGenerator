@@ -40,7 +40,7 @@ from pathlib import Path
 from campaignlib import client_from_args, stream_api
 from campaignlib.api.client import resolve_cli_model
 from campaignlib.util import atomic_write_text
-from pipelines.summary_native import context, corpus, freshness, notes, npc_chunked, schema, synth, validate
+from pipelines.summary_native import context, corpus, freshness, notes, npc_chunked, runs, schema, synth, validate
 from pipelines.summary_native.freshness import check_fresh
 from pipelines.summary_native.resolve import ExtractSettings
 from pipelines.summary_native.scheduler import EndpointState, Scheduler, WorkItem, atomic_write_record, read_record, select_resume
@@ -431,7 +431,7 @@ def run_extract(
         plans.append(_Plan(k, chunk, rng, system, user, key, notes.chunk_stem(k, rng)))
 
     started = now()
-    run_dir = synth._new_run_dir(freshness.audience_state_dir(range_dir, audience) / "runs", started.strftime("%Y%m%dT%H%M%SZ"))
+    run_dir = runs.new_run_dir(freshness.audience_state_dir(range_dir, audience) / "runs", runs.run_stamp(started))
     created_run_dir = run_dir
     # Non-GM work is staged under its run until the authority manifest is
     # checked again after the final model response.  A source/ledger change

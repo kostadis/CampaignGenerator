@@ -301,6 +301,29 @@ def test_dump_only_writes_prompts_selection_record_and_calls_nothing(linked, fak
     assert not (out(linked) / "draft").exists() and not (out(linked) / "gm").exists()
 
 
+def test_two_runs_in_the_same_second_get_distinct_run_dirs_and_the_first_record_survives(linked, fake, monkeypatch):
+    from datetime import datetime, timezone
+
+    monkeypatch.setattr(npc_draft, "_utcnow", lambda: datetime(2026, 1, 2, 3, 4, 5, tzinfo=timezone.utc))
+    assert draft(linked, "--all", "--dump-only")[0] == 0
+    first = out(linked) / "runs" / "20260102T030405Z"
+    first_record = (first / "record.json").read_text()
+    first_prompts = {p.name: p.read_text() for p in first.glob("*.user.md")}
+    assert json.loads(first_record)["run_id"] == "20260102T030405Z"
+
+    assert draft(linked, "--all", "--dump-only")[0] == 0
+    second = out(linked) / "runs" / "20260102T030405Z-1"
+    assert second.is_dir()
+    assert json.loads((second / "record.json").read_text())["run_id"] == "20260102T030405Z-1"
+    assert (first / "record.json").read_text() == first_record
+    assert {p.name: p.read_text() for p in first.glob("*.user.md")} == first_prompts
+
+    # a suffixed run is still found by the resume/idempotency lookups, newest first
+    assert draft(linked, "--all", "--dump-only")[0] == 0
+    assert sorted(p.name for p in (out(linked) / "runs").iterdir()) == [
+        "20260102T030405Z", "20260102T030405Z-1", "20260102T030405Z-2"]
+
+
 def test_second_run_skips_unchanged_and_composes_anyway(linked, fake):
     calls, _ = fake
     assert draft(linked, "--name", "Jimjar")[0] == 0 and len(calls) == 1

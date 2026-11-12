@@ -40,7 +40,7 @@ from campaignlib import client_from_args, stream_api
 from campaignlib.api.client import resolve_cli_model
 from campaignlib.thread_registry import check_registry, load_registry
 from campaignlib.util import atomic_write_text
-from pipelines.summary_native import context, corpus, freshness, notes, schema, synth, thread_attach, thread_check
+from pipelines.summary_native import context, corpus, freshness, notes, runs, schema, synth, thread_attach, thread_check
 from pipelines.summary_native.freshness import check_fresh
 
 EXIT_REFUSED = synth.EXIT_REFUSED
@@ -261,7 +261,7 @@ def run_thread_propose(
 
     system = load_system()
     started = now()
-    run_dir = synth._new_run_dir(Path(range_dir) / schema.STATE_DIR / "runs", started.strftime("%Y%m%dT%H%M%SZ"))
+    run_dir = runs.new_run_dir(Path(range_dir) / schema.STATE_DIR / "runs", runs.run_stamp(started))
     atomic_write_text(run_dir / "propose.system.md", system)
     tdir = thread_attach.threads_dir(range_dir)
     for old in [*tdir.glob("propose.*.user.md"), *tdir.glob("propose.*.out.md")]:

@@ -23,7 +23,7 @@ from campaignlib import client_from_args, stream_api
 from campaignlib.api.client import resolve_cli_model
 from campaignlib.thread_registry import check_registry, load_registry
 from campaignlib.util import atomic_write_text
-from pipelines.summary_native import annotate, arc_check, context, corpus, freshness, key_npcs, notes, npc_check, party_notes, schema, select, state_sections, thread_attach, thread_check, validate
+from pipelines.summary_native import annotate, arc_check, context, corpus, freshness, key_npcs, notes, npc_check, party_notes, runs, schema, select, state_sections, thread_attach, thread_check, validate
 from pipelines.summary_native.authority import AuthorityError
 from pipelines.summary_native.freshness import check_fresh
 from pipelines.summary_native.outline import check_outline, load_outline
@@ -42,19 +42,6 @@ def render_part(client, system: str, user: str, model: str, max_tokens: int) -> 
 
 def _utcnow() -> datetime:
     return datetime.now(timezone.utc)
-
-
-def _new_run_dir(runs_root: Path, stamp: str) -> Path:
-    """Create ``runs_root/<stamp>[-k]`` — a directory no earlier run owns."""
-    runs_root.mkdir(parents=True, exist_ok=True)
-    k = 0
-    while True:
-        d = runs_root / (stamp if k == 0 else f"{stamp}-{k}")
-        try:
-            d.mkdir()
-            return d
-        except FileExistsError:
-            k += 1
 
 
 def _refuse(msg: str) -> int:
@@ -1046,7 +1033,7 @@ def run_state_synth(
     jobs.sort(key=lambda j: outline_at.get(j["heading"], len(outline_at)))
 
     started = now()
-    run_dir = _new_run_dir(state_dir / "runs", started.strftime("%Y%m%dT%H%M%SZ"))
+    run_dir = runs.new_run_dir(state_dir / "runs", runs.run_stamp(started))
     run_id = run_dir.name
     atomic_write_text(run_dir / f"{doc}.system.md", system)
     for j in jobs:

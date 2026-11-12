@@ -351,8 +351,10 @@ def test_items_json_records_candidates_keys_and_the_digests_freshness_reads(camp
 
 def test_the_run_record_names_inputs_endpoint_and_per_item_results(camp, fm):
     assert _audit(camp, "--candidates", "2")[0] == 0
-    (rec_path,) = (range_dir(camp) / schema.STATE_DIR / "runs").glob("*/record.json")
-    rec = json.loads(rec_path.read_text())
+    runs = (range_dir(camp) / schema.STATE_DIR / "runs")
+    recs = [r for r in (json.loads(p.read_text()) for p in sorted(runs.glob("*/record.json"))) if r.get("step") == "audit"]
+    assert len(recs) == 1, recs
+    rec = recs[0]
     assert rec["step"] == "audit" and rec["backend"] == "dgx" and rec["model"] == "fake-model"
     assert rec["candidates"] == 2 and rec["endpoints"] == ["spark:8001"] and rec["exit_code"] == 0
     assert rec["concurrency"] == {"value": schema.DEFAULT_EXTRACT_PARALLEL, "source": "fallback", "model": "fake-model", "declared_max": None}
