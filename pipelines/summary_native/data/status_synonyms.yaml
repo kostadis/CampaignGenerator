@@ -1,0 +1,16 @@
+# Reviewed table: a draft status word -> evidence forms that also support it.
+# Keys must equal npc_verify.STATUS_WORDS exactly. Changed only by PR. No model edits.
+#
+# Err strict. A form belongs here only if the evidence word entails the draft word on its own.
+#   - "killed"/"slain" assert an agent (attribution), so "died"/"dead" do not support them.
+#     The reverse holds: "killed" entails "dead".
+#   - Generic words are excluded: "lost" (lost hit points), "gone", "live"/"lives" (lives in a town).
+alive: [living, survived, survives, survive]
+dead: [died, dies, death, killed, slain, slew]
+died: [die, dies, dead, death, killed, slain, slew]
+killed: [kill, kills, killing, slew]
+slain: [slay, slays, slew]
+missing: [vanished, disappeared]
+departed: [depart, departs, departing, leave, leaves, left, leaving]
+captured: [capture, captures, capturing, seized]
+freed: [free, frees, freeing, released, liberated]

@@ -40,11 +40,11 @@ description: "Task list for 041 NPC review noise resolution (#621)"
 
 **Purpose**: the pure `noise` module, the reviewed tables and the store enum. See research R2–R8 and data-model.md.
 
-- [ ] T003 [P] Create `pipelines/summary_native/data/ordinal_idioms.yaml`. It is a top-level YAML list of exact lowercase phrases: "first time", "at first", "third person", "first of all", "at first light", "second-hand", "second nature", "third party". Add a header comment saying it is a reviewed table, changed only by PR, with no model edits.
-- [ ] T004 [P] Create `pipelines/summary_native/data/status_synonyms.yaml`. It maps **every** word in `npc_verify.STATUS_WORDS` (alive, dead, died, killed, slain, missing, departed, captured, freed) to the list of evidence forms that support it. Include at least: departed → depart/departs/departing/leave/leaves/left/leaving; died → die/dies/dead/death/killed/slain; dead → died/dies/death/killed/slain. Use the same reviewed-table header comment.
-- [ ] T005 Create `pipelines/summary_native/noise.py` with the table loaders `load_ordinal_idioms()` and `load_status_synonyms()`. Resolve paths with `Path(__file__).resolve().parent / "data" / …`, as `npc_forms.WORDLIST_PATH` does. Validate the shape: a non-empty list of non-blank lowercase strings, or a mapping whose keys equal `STATUS_WORDS` exactly. Raise `ValueError` naming the file on any violation. There is no default fallback. Add the module docstring stating it is deterministic and makes no model call.
-- [ ] T006 In `pipelines/summary_native/noise.py`, add `split_sentences(line) -> list[str]` and `sentence_claims(draft_text) -> list[SentenceClaim]`, per research R2 and the data-model `SentenceClaim`. Never split inside `[...]` brackets, and never after the abbreviations St., Mr., Mrs., Dr., vs., e.g., i.e., ch. Citations come from `npc_check.citation_parts(sentence)`; when a sentence has none, it inherits `citation_parts(line)` and sets `inherited=True`. `claim` is the sentence with `npc_check.BRACKET_RE` removed.
-- [ ] T007 In `pipelines/summary_native/noise.py`, add `tokens(claim) -> list[Token]` per research R3 and R4:
+- [X] T003 [P] Create `pipelines/summary_native/data/ordinal_idioms.yaml`. It is a top-level YAML list of exact lowercase phrases: "first time", "at first", "third person", "first of all", "at first light", "second-hand", "second nature", "third party". Add a header comment saying it is a reviewed table, changed only by PR, with no model edits.
+- [X] T004 [P] Create `pipelines/summary_native/data/status_synonyms.yaml`. It maps **every** word in `npc_verify.STATUS_WORDS` (alive, dead, died, killed, slain, missing, departed, captured, freed) to the list of evidence forms that support it. Include at least: departed → depart/departs/departing/leave/leaves/left/leaving; died → die/dies/dead/death/killed/slain; dead → died/dies/death/killed/slain. Use the same reviewed-table header comment.
+- [X] T005 Create `pipelines/summary_native/noise.py` with the table loaders `load_ordinal_idioms()` and `load_status_synonyms()`. Resolve paths with `Path(__file__).resolve().parent / "data" / …`, as `npc_forms.WORDLIST_PATH` does. Validate the shape: a non-empty list of non-blank lowercase strings, or a mapping whose keys equal `STATUS_WORDS` exactly. Raise `ValueError` naming the file on any violation. There is no default fallback. Add the module docstring stating it is deterministic and makes no model call.
+- [X] T006 In `pipelines/summary_native/noise.py`, add `split_sentences(line) -> list[str]` and `sentence_claims(draft_text) -> list[SentenceClaim]`, per research R2 and the data-model `SentenceClaim`. Never split inside `[...]` brackets, and never after the abbreviations St., Mr., Mrs., Dr., vs., e.g., i.e., ch. Citations come from `npc_check.citation_parts(sentence)`; when a sentence has none, it inherits `citation_parts(line)` and sets `inherited=True`. `claim` is the sentence with `npc_check.BRACKET_RE` removed.
+- [X] T007 In `pipelines/summary_native/noise.py`, add `tokens(claim) -> list[Token]` per research R3 and R4:
   - comma-grouped numbers `\d{1,3}(?:,\d{3})+` are one cardinal;
   - `\d+(st|nd|rd|th)` and ordinal words are ordinals;
   - a spelled-cardinal parser covers units, teens, tens, hyphenated tens, hundred/thousand/million and the article forms "a hundred" and "a thousand". A phrase it cannot fully convert gets `value=None` and keeps its surface;
@@ -52,14 +52,14 @@ description: "Task list for 041 NPC review noise resolution (#621)"
   - idiom detection against `load_ordinal_idioms()`: an exact phrase containing the token.
 
   Only the token attached to a label word is a label.
-- [ ] T008 In `pipelines/summary_native/noise.py`, define:
+- [X] T008 In `pipelines/summary_native/noise.py`, define:
   - `CLASSES = ("label", "idiom", "negated-status", "spelled-number", "synonym", "other-citation")`, in precedence order;
   - `legacy_code(noise_class) -> "noise-<class>"`;
   - frozen dataclasses `NoiseRecord` and `CheckAccounting` as in data-model.md. `CheckAccounting` has `examined`, `supported`, `noise` (a dict over all six classes, zero-filled) and `findings`, and a `check()` method asserting `examined == supported + sum(noise.values()) + findings`;
   - `to_dict()` and `from_dict()` on both.
-- [ ] T009 [P] Add `CLASSIFIED_NOISE = "classified_noise"` to `FindingCategory` in `pipelines/summary_native/review/models.py`. It is additive only: no existing member changes, and no `SCHEMA_VERSION` bump (research R8).
-- [ ] T010 [P] Add `"noise"` to the AST-guarded no-LLM module set in `tests/test_summary_native_no_llm.py`, both in the list and in the asserted set.
-- [ ] T011 Write `tests/test_summary_native_noise.py`, covering T005–T008:
+- [X] T009 [P] Add `CLASSIFIED_NOISE = "classified_noise"` to `FindingCategory` in `pipelines/summary_native/review/models.py`. It is additive only: no existing member changes, and no `SCHEMA_VERSION` bump (research R8).
+- [X] T010 [P] Add `"noise"` to the AST-guarded no-LLM module set in `tests/test_summary_native_no_llm.py`, both in the list and in the asserted set.
+- [X] T011 Write `tests/test_summary_native_noise.py`, covering T005–T008:
   - the loaders reject a malformed or missing table;
   - sentence splitting edge cases: abbreviations, brackets, a line with one trailing citation;
   - tokens: "5,000" is one token; "5, 6 and 7" is three; "five"=5, "a thousand"=1000, "twenty-five"=25; "three hundred and twelve" either converts to 312 or has `value=None`, never silently 3;
@@ -202,14 +202,14 @@ description: "Task list for 041 NPC review noise resolution (#621)"
 
 **Goal**: the GM's actual review page shows one card per noise class, and one verdict becomes a decision per occurrence on read-back (GM ruling, plan.md XI). All paths are relative to the MT worktree.
 
-- [ ] T030 [P] [US4] In `dotfiles/claude/skills/_shared/review-artifact/tests/test_npc_review_items.py`, add tests:
+- [X] T030 [P] [US4] In `dotfiles/claude/skills/_shared/review-artifact/tests/test_npc_review_items.py`, add tests:
   - noise items (legacy_code `noise-*`) render one card per class, with card id `noise-class:<class>`, a body listing every occurrence (NPC, token, sentence, cited scenes, resolved_by) and the count;
   - classes the review has already fully decided (for example by policy) render no card;
   - non-noise items render exactly as before.
-- [ ] T031 [P] [US4] Create `dotfiles/claude/skills/_shared/review-artifact/tests/test_read_decisions.py`, or extend the existing kit tests. A saved page with Approve on `noise-class:label` must produce one decision per member item id, each carrying the card note. Undecided or Discuss on a class card must produce no decision for any member. A page whose class membership differs from the items file must exit 2, the same stale-page rule as today.
-- [ ] T032 [US4] Edit `dotfiles/claude/skills/_shared/review-artifact/npc_review_items.py` to group `noise-*` items into class cards placed in their own "Classified noise" group, ahead of the per-NPC groups. The card text says: "One verdict here applies to every listed occurrence; each gets its own decision record." Record the member item ids on the card in the items JSON.
-- [ ] T033 [US4] Edit `dotfiles/claude/skills/_shared/review-artifact/read_decisions.py` to expand a class-card verdict into the member item ids from the items file. It never infers a verdict for any item not on a decided card.
-- [ ] T034 [US4] Update `dotfiles/claude/skills/_shared/review-artifact/CONTRACT.md` with the class-card shape and the expansion rule. Run the kit test suite, and record the result in CG's `specs/041-npc-review-noise-resolution/validation.md`.
+- [X] T031 [P] [US4] Create `dotfiles/claude/skills/_shared/review-artifact/tests/test_read_decisions.py`, or extend the existing kit tests. A saved page with Approve on `noise-class:label` must produce one decision per member item id, each carrying the card note. Undecided or Discuss on a class card must produce no decision for any member. A page whose class membership differs from the items file must exit 2, the same stale-page rule as today.
+- [X] T032 [US4] Edit `dotfiles/claude/skills/_shared/review-artifact/npc_review_items.py` to group `noise-*` items into class cards placed in their own "Classified noise" group, ahead of the per-NPC groups. The card text says: "One verdict here applies to every listed occurrence; each gets its own decision record." Record the member item ids on the card in the items JSON.
+- [X] T033 [US4] Edit `dotfiles/claude/skills/_shared/review-artifact/read_decisions.py` to expand a class-card verdict into the member item ids from the items file. It never infers a verdict for any item not on a decided card.
+- [X] T034 [US4] Update `dotfiles/claude/skills/_shared/review-artifact/CONTRACT.md` with the class-card shape and the expansion rule. Run the kit test suite, and record the result in CG's `specs/041-npc-review-noise-resolution/validation.md`.
 
 ---
 

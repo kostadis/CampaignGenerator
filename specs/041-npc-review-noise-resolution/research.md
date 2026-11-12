@@ -27,6 +27,10 @@ Every decision below was taken from reading the code in this worktree at `e6c13a
 A spelled phrase the parser cannot fully convert is checked **as written**. It is never silently passed (spec Edge Cases). Two tokens match when kind and value are equal. A draft cardinal never matches an evidence ordinal, and vice versa.
 **Rationale**: FR-004 and FR-005. Value comparison makes "five" = "5" and "a thousand" = "1,000" symmetric.
 
+### R3a — The bare word "one" (orchestrator ruling during implementation, 2026-11-12)
+
+The old checker (`_MARKER_RE`) never examined spelled cardinals. In prose, "one" is overwhelmingly a pronoun or determiner ("no one", "one of them", "the one"). So **draft-side "one" is not examined.** That is the same as today, so no baseline true positive can be lost. Every other spelled cardinal *is* examined: "five gold pieces" with no 5 in the cited scenes becomes a new true positive. Evidence-side "one" still counts as 1 for matching. The baseline replay (T036) measures whether newly examined spelled cardinals threaten SC-001.
+
 ## R4 — Labels
 
 **Decision**: a numeric token is a **label** when:

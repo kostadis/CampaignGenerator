@@ -80,7 +80,7 @@ def test_adapter_preserves_every_diagnostic_and_maps_all_seven_categories():
         "knowledge-leak", "verifier-timeout", "typography-normalised",
         "status-claim-unsupported",
     }
-    assert {category for item in items for category in item.categories} == set(FindingCategory)
+    assert {category for item in items for category in item.categories} == set(FindingCategory) - {FindingCategory.CLASSIFIED_NOISE}  # noise items arrive in spec 041 US2
 
     mismatch = next(item for item in items if item.diagnostics[0].legacy_code == "citation-mismatch")
     assert mismatch.claim_text == 'She described the "third simulacrum".'

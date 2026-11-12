@@ -30,6 +30,8 @@ GUARDED = [
     "thread_attach", "thread_check",
     # spec 034 US4: checking a model's arc-score candidates is code; the calls are made in `synth`.
     "arc_check",
+    # spec 041: noise classification of the NPC number/status checks is code.
+    "noise",
 ]
 FORBIDDEN_MODULES = ("anthropic", "campaignlib.api", "openai", "pipelines.ensemble")
 FORBIDDEN_CALLS = ("make_client", "stream_api", "call_api", "client_from_args")
@@ -44,6 +46,7 @@ def test_guard_covers_the_modules_that_exist():
     assert {"parse", "validate", "corpus", "select", "context", "compare"} <= names
     # Modules from spec 032 that exist are checked; those still to come are skipped by name.
     assert {"npc_slug", "npc_authored", "freshness", "npc_check", "npc_chunked", "npc_config", "npc_verify"} <= names
+    assert "noise" in names  # spec 041
     assert "npc_draft" not in GUARDED  # the model step, deliberately not guarded
     # Spec 033: every deterministic module of the chunked state documents exists and is checked.
     assert {"notes", "state_sections", "key_npcs", "annotate", "audit_select"} <= names
