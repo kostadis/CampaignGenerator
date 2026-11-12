@@ -13,3 +13,19 @@
 | tests/test_summary_native_review_item_custody.py | 26 passed |
 | tests/test_summary_native_no_llm.py | 34 passed |
 | **Total** | **127 passed** |
+
+## T005 gate (full suite after T004) — FAILED, STOPPED, not marked done
+
+`tests/ -q`: 17 failed, 9866 passed, 388 skipped, 31 errors in 18m10s. After fixing an unrelated-to-R4
+packaging mistake of mine (a directory `force-include` of `review/schemas` duplicated `.gitkeep` and
+broke every `uv build` wheel test; removed), 32 tests remain (16 failed, 16 errors). All 32 pass on
+baseline 27cad6b, so all are caused by T004's fail-closed rule (`no decisions are declared for action X`).
+
+Actions involved (neither is produced by any pipeline code; grep of pipelines/ and server/ finds neither):
+
+- `accept_no_change_or_correct` — the default `proposed_action` of the test item helpers in
+  test_summary_native_review_{decisions,delegated,refresh,http}.py (pairs recorded: approve/accept_no_change,
+  plus approve/merge-style pairs in findings_547). Test artifact.
+- `correct_reviewed_layer` — test_summary_native_review_corrections.py:182 (pair approve/source_correction). Test artifact.
+
+Per R4 the table was not widened and no test was edited. Awaiting a GM ruling.
