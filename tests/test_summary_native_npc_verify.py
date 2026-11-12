@@ -395,6 +395,21 @@ def test_npc_verify_exits_2_with_no_drafts_or_an_unknown_name(tmp_path, drafted)
     assert rc == 2 and "no draft dossiers" in err
 
 
+def test_two_verify_runs_in_the_same_second_get_distinct_dirs(drafted, monkeypatch):
+    from datetime import datetime, timezone
+
+    root, _ = drafted
+    monkeypatch.setattr(synth, "_utcnow", lambda: datetime(2026, 1, 2, 3, 4, 5, tzinfo=timezone.utc))
+    assert run_cli(_args(root, "npc-verify", "--name", "Jimjar"))[0] == 0
+    first = root / OUT / "verify_runs" / "verify-20260102T030405Z"
+    first_record = (first / "record.json").read_text()
+    assert run_cli(_args(root, "npc-verify", "--name", "Jimjar"))[0] == 0
+    second = root / OUT / "verify_runs" / "verify-20260102T030405Z-1"
+    assert json.loads(first_record)["run_id"] == first.name
+    assert json.loads((second / "record.json").read_text())["run_id"] == second.name
+    assert (first / "record.json").read_text() == first_record
+
+
 def test_verify_writes_a_stable_local_journal_and_explicit_resume_accepts_it(drafted):
     root, _ = drafted
     assert run_cli(_args(root, "npc-verify", "--name", "Jimjar"))[0] == 0
