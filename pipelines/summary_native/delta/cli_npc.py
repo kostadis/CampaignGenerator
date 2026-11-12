@@ -7,6 +7,7 @@ import json
 import sys
 from pathlib import Path
 
+from .client import client_options
 from . import associations, attest as attest_mod, census as census_mod
 from .cli import DELTA_HANDLERS
 from .errors import EXIT_OK, EXIT_USAGE, DeltaRefusal
@@ -71,7 +72,8 @@ def _associate_propose(args) -> int:
              for e in c.entries if e.disposition == "unresolved"]
     backend = args.backend or plan.models.generation.backend
     model = args.model or plan.models.generation.model
-    store = associations.propose(root, plan, names, backend=backend, model=model)
+    store = associations.propose(root, plan, names, backend=backend, model=model,
+                                  client_options=client_options(args))
     rec = {"plan_id": plan.plan_id, "path": str(associations.store_path(root, plan.plan_id)),
            "associations": [a.model_dump(mode="json") for a in store.associations],
            "dropped": store.dropped}

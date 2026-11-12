@@ -333,7 +333,7 @@ def test_propose_sends_only_the_affected_lines_diffs_and_annotations_and_approve
             {"line_id": lines[1]["line_id"], "after_text": "two\nlines", "reason": "bad shape"}]})
 
     monkeypatch.setattr(rebase_propose, "stream_api", fake_stream)
-    monkeypatch.setattr(rebase_propose, "client_from_args", lambda *a, **k: object())
+    monkeypatch.setattr(rebase_propose, "delta_client", lambda *a, **k: object())
     data = run(capsys, fx.root, "rebase", "propose", "--plan", plan_id)["data"]
     assert seen["calls"] == 1 and data["model_calls"] == 1 and data["call_counts"]["model"] == 1
     assert data["status"] == "draft" and data["approved"] == 0 and len(data["proposals"]) == 1

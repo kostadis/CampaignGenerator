@@ -25,7 +25,8 @@ from typing import Mapping
 
 from pydantic import BaseModel, ConfigDict, Field, model_serializer
 
-from campaignlib import make_client, stream_api
+from campaignlib import stream_api
+from pipelines.summary_native.delta.client import delta_client
 
 from .errors import EXIT_REFUSAL, EXIT_STALE, EXIT_USAGE, DeltaRefusal
 from .plan import DELTA_ROOT_REL
@@ -503,12 +504,12 @@ def parse_model_output(text: str) -> dict:
 
 def propose_edits(docs: Mapping[str, bytes], source_texts: Mapping[str, str], *, plan_id: str,
                   baseline_ref: str, backend: str | None = None, model: str, client=None,
-                  max_tokens: int = 16000) -> ProposalSet:
+                  max_tokens: int = 16000, client_options: dict | None = None) -> ProposalSet:
     """The only model call here.  Returns DRAFT proposals; nothing is applied or approved."""
     if not source_texts:
         raise DeltaRefusal("no sources selected; nothing to propose from.", EXIT_USAGE)
     if client is None:
-        client = make_client(backend=backend, model_override=model)
+        client = delta_client(backend, model, client_options)
     raw = stream_api(client, SYSTEM_PROMPT, build_prompt(docs, source_texts), model,
                      max_tokens=max_tokens, silent=True)
     value = parse_model_output(raw)

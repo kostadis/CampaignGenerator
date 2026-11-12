@@ -8,6 +8,7 @@ import json
 import sys
 from pathlib import Path
 
+from .client import client_options
 from . import npc_update
 from .cli import DELTA_HANDLERS
 from .errors import EXIT_OK, EXIT_PARTIAL, EXIT_REFUSAL, EXIT_USAGE, DeltaRefusal
@@ -48,7 +49,7 @@ def _npc_draft(args) -> int:
         npc_update.allow_historical_parse(root, "--allow-historical-parse given to `delta npc draft`")
     # run_draft narrates progress on stdout; under --json stdout carries exactly one object.
     with contextlib.redirect_stdout(sys.stderr if args.json else sys.stdout):
-        out = npc_update.draft(root, plan, backend=args.backend, model=args.model,
+        out = npc_update.draft(root, plan, backend=args.backend, model=args.model, client_options=client_options(args),
                                audience=getattr(args, "audience", "gm") or "gm", force=args.force)
     rec = {"plan_id": plan.plan_id, "range": npc_update.range_name(out.since, out.until),
            "members": out.members, "verify": out.verify, "read_counts": out.reads, "exit_code": out.exit_code}

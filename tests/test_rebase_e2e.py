@@ -172,7 +172,7 @@ def consistency_standin(world, calls):
                                          "detail": f"the corrected chapter 5 holds three prisoners, but: {found[0]}"}]
                            if found else []})
     world.mp.setattr(grounding_check, "stream_api", fake)
-    world.mp.setattr(grounding_check, "make_client", lambda **k: object())
+    world.mp.setattr(grounding_check, "delta_client", lambda *a, **k: object())
 
 
 def test_rebind_resume_and_publish_the_pending_chapter(world):
@@ -230,7 +230,7 @@ def test_rebind_resume_and_publish_the_pending_chapter(world):
             "after_text": line + "\nThe prisoners were marched to the far marker. [ch 006 / 006.01]",
             "rationale": "the count is no longer asserted here; chapter 5 holds it"}]})
     world.mp.setattr(grounding_edits, "stream_api", fake_propose)
-    world.mp.setattr(grounding_edits, "make_client", lambda **k: object())
+    world.mp.setattr(grounding_edits, "delta_client", lambda *a, **k: object())
     proposed = world.call("grounding", "propose", "--plan", pending)
     world.call("grounding", "decide", proposed["proposals"][0]["proposal_id"], "--plan", pending,
                "--decision", "approve", "--reviewer", "gm")

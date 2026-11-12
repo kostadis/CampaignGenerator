@@ -16,7 +16,9 @@ import argparse
 import sys
 from typing import Callable
 
+from campaignlib import add_backend_args
 from campaignlib.selection import BACKENDS
+from campaignlib.api.client import resolve_cli_model
 
 PRODUCTS = ("grounding", "npc")
 STOP_STAGES = ("plan", "prepare", "propose", "verify", "review", "preview", "apply")
@@ -60,8 +62,8 @@ def _plan_id(p: argparse.ArgumentParser) -> None:
 
 def _model(p: argparse.ArgumentParser) -> None:
     _plan_id(p)
-    p.add_argument("--backend", choices=BACKENDS, default=None)
     p.add_argument("--model", default=None)
+    add_backend_args(p, default_backend=None)  # no parser default: flag > plan > grounding.yaml > schema
 
 
 def _decide(p: argparse.ArgumentParser, positional: str) -> None:
@@ -74,6 +76,7 @@ def _extras(leaf: str, p: argparse.ArgumentParser) -> None:
     if leaf == "plan":
         p.add_argument("--product", action="append", choices=PRODUCTS, default=None)
         p.add_argument("--stop", choices=STOP_STAGES, default=None)
+        # `plan` makes no model call (it only records the choice), so it takes no endpoint/effort flags.
         p.add_argument("--backend", choices=BACKENDS, default=None)
         p.add_argument("--model", default=None)
     elif leaf.startswith("rebase ") or leaf == "rebind":
@@ -209,4 +212,12 @@ def load_handlers() -> None:
 
 def run(args: argparse.Namespace) -> int:
     load_handlers()
+    if hasattr(args, "model") and hasattr(args, "backend"):
+        # Omission stays None (the plan / grounding.yaml / schema precedence fills it later); an empty
+        # --model is omission, and an explicit Claude id on codex-cli is refused before any client exists.
+        try:
+            args.model = resolve_cli_model(args, legacy_default=None).effective_model
+        except ValueError as exc:
+            print(f"Error: {exc}", file=sys.stderr)
+            return 2
     return DELTA_HANDLERS.get(args.delta_leaf, _not_implemented)(args)

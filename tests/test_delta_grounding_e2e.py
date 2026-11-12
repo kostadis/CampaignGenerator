@@ -56,7 +56,7 @@ def fake_model(monkeypatch, target, line, after_text, support=SUPPORT):
 
     for module in (grounding_edits, grounding_check):
         monkeypatch.setattr(module, "stream_api", fake_stream)
-        monkeypatch.setattr(module, "make_client", lambda **k: object())
+        monkeypatch.setattr(module, "delta_client", lambda *a, **k: object())
 
 
 def prepare(capsys, root, source, monkeypatch, after_text, support=SUPPORT, products=("grounding",)):

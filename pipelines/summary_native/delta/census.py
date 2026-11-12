@@ -36,6 +36,7 @@ import yaml
 from pydantic import BaseModel, ConfigDict, Field
 
 import campaignlib
+from pipelines.summary_native.delta.client import delta_client
 from campaignlib.players_config import load_players_config
 from campaignlib.registry import find_registry, load_registry
 from pipelines.summary_native import npc_forms, npc_slug, parse
@@ -335,7 +336,7 @@ def run_census(campaign_dir: Path | str, plan: DeltaPlan, **kw) -> tuple[Census,
 
 
 def propose_triage_hints(census: Census, *, backend: str | None = None, model: str | None = None,
-                         client=None, caller=None) -> list[dict]:
+                         client=None, caller=None, client_options: dict | None = None) -> list[dict]:
     """Ask a model what each ``unresolved`` name might be. Returns ``[{name, hint, ...}]``.
 
     The census is not modified and no disposition is assigned: the GM rules via the rulings file
@@ -346,7 +347,7 @@ def propose_triage_hints(census: Census, *, backend: str | None = None, model: s
     if not names:
         return hints
     if caller is None:
-        client = client or campaignlib.make_client(backend=backend)
+        client = client or delta_client(backend, None, client_options)
         caller = campaignlib.call_api
     for e in names:
         ev = "\n".join(f"- ch{s.chapter} {s.id}: {s.text}" for s in e.evidence[:3])
