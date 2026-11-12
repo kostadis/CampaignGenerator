@@ -124,4 +124,3 @@ packages = ["campaignlib", "session_doc", "server", "pipelines", "entity_registr
 "pipelines/summary_native/review/web/viewer.html" = "pipelines/summary_native/review/web/viewer.html"
 "pipelines/summary_native/review/web/viewer.js" = "pipelines/summary_native/review/web/viewer.js"
 "pipelines/summary_native/review/web/viewer.css" = "pipelines/summary_native/review/web/viewer.css"
-"pipelines/summary_native/review/schemas" = "pipelines/summary_native/review/schemas"
