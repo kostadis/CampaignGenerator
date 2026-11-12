@@ -8,6 +8,7 @@
           "type": "string"
         },
         "body": {
+          "description": "Plain text. Render as text, never as HTML. A sign-off card's body is byte-identical to its draft.",
           "title": "Body",
           "type": "string"
         },
@@ -75,6 +76,7 @@
             }
           ],
           "default": null,
+          "description": "Plain text, display only: 'Previously discussed by <reviewer>: <note>' when the item's current decision is a Discuss.",
           "title": "Previousdiscussion"
         },
         "rejectMeans": {

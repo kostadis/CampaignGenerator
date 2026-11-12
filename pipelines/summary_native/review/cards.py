@@ -79,13 +79,14 @@ class Card(_Strict):
     kind: Literal["finding", "noise_class", "signoff"]
     npc: str | None = None
     title: str
-    body: str
+    body: str = Field(description="Plain text. Render as text, never as HTML. A sign-off card's body is byte-identical to its draft.")
     approve_means: str
     reject_means: str
     evidence: tuple[EvidenceRow, ...] = ()
     members: tuple[Member, ...] = Field(min_length=1)
     draft_sha256: str | None = None
-    previous_discussion: str | None = None
+    previous_discussion: str | None = Field(
+        default=None, description="Plain text, display only: 'Previously discussed by <reviewer>: <note>' when the item's current decision is a Discuss.")
 
 
 class CardPacket(_Strict):

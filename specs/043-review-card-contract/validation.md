@@ -107,3 +107,18 @@ in `previousDiscussion` for finding and sign-off cards (in `body` per occurrence
 
 Run (pinned PYTHONPATH, basetemp pytest-043b): cards + action_table + delegated + noise_cli + decisions + no_llm +
 item_custody = **158 passed** (cards file alone: 41 passed).
+
+## Phase 6 (T025-T027), verbatim fix and launcher check
+
+Determinism: `tests/_custody_fixture.build(..., deterministic=True)` patches `uuid.uuid4` to a counter for the
+duration of the build (the campaign id and review id are the only random inputs to item digests and the packet
+id), so two builds in different temp dirs give a byte-identical packet. No absolute path appears in the packet;
+`build_packet` needed no change. Goldens in `tests/fixtures/review_cards/` (`packet.v1.json`, `decisions.v1.json`,
+`decisions.bad-version.json`, `decisions.extra-key.json`); the schema `body` and `previousDiscussion` descriptions say plain text.
+
+Launcher: `ReviewLauncher.vue` read the plan correctly except that an unmarked card has `members: []` (the
+Unmarked list now shows the card id only); Vitest fixtures are now a trimmed real `review cards decide --json`
+envelope (state `applied`, refused members category `refused`, `saved` a list of `{request_id, events}`).
+
+Counts (pinned PYTHONPATH, basetemp pytest-043): cards 42, cards_contract 6, action_table 21, delegated 13,
+noise_cli 14, decisions 9, no_llm 34, item_custody 26, routes 47 = **212 passed**. Frontend: `npm test` 67 passed, `npm run build` clean.

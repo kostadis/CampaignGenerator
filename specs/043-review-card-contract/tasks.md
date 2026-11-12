@@ -193,18 +193,18 @@ description: "Task list for 043 review card contract (#643 slice 1, #655)"
 
 **Independent Test**: a deliberate model change that is not reflected in the schema fails a test.
 
-- [ ] T025 [P] [US4] Create the golden fixtures in `tests/fixtures/review_cards/`:
+- [X] T025 [P] [US4] Create the golden fixtures in `tests/fixtures/review_cards/`:
   - `packet.v1.json`, a packet exported from a **deterministic** `_custody_fixture` build. Replace machine-specific absolute paths with relative ones if any appear; if the packet holds any, fix `build_packet` to carry campaign-relative paths only.
   - `decisions.v1.json` (approve, reject, discuss, and a sign-off with an echo).
   - `decisions.bad-version.json` and `decisions.extra-key.json`.
-- [ ] T026 [US4] Write `tests/test_summary_native_review_cards_contract.py`:
+- [X] T026 [US4] Write `tests/test_summary_native_review_cards_contract.py`:
   - `test_us4_s1_goldens_validate_and_round_trip`: `jsonschema.validate` each golden against the checked-in schema, and assert that model parse then dump (by alias, canonical) equals the golden's canonical bytes.
   - `test_us4_s1_every_exported_packet_validates`: export from `_custody_fixture` and from the noise review, then validate.
   - `test_schemas_are_current`: regenerate via `cards.model_json_schema` into tmp and compare with the checked-in files. This is SC-005's tripwire, and its failure message is `run cards.write_schemas()`.
   - `test_us4_s2_unknown_major_version_refused_naming_accepted`.
   - `test_us4_s3_markup_carried_as_text`: put `<script>alert(1)</script>` and `<b>x</b>` into a fixture NPC's draft and claim text. The exported packet contains those exact characters, unescaped and unaltered, in `body`, and the schema's `body` description says plain text.
   - `test_golden_packet_matches_fresh_export`: a fresh deterministic export equals `packet.v1.json`, so the golden cannot rot.
-- [ ] T027 [US4] Add `assert "cards.py" in names  # spec 043` to `test_review_package_makes_no_model_call` in `tests/test_summary_native_no_llm.py`.
+- [X] T027 [US4] Add `assert "cards.py" in names  # spec 043` to `test_review_package_makes_no_model_call` in `tests/test_summary_native_no_llm.py`.
 
 ---
 
