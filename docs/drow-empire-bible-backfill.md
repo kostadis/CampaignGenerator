@@ -6,7 +6,7 @@ In three days (2026-11-11 to 11-13), one hand-written campaign bible became a fu
 
 The campaign is *Drow Empire* (the bible is `docs/Drow Conspiracy.md`, about 111,000 words), played through the 21 Dan Hass Drow Campaign books. It had no recordings, so the bible was the only source. The process is the reusable `/gm-bible-backfill` skill (`../gm-assistant/skills/gm-bible-backfill/SKILL.md`), first run on Storm King's Thunder and then on Curse of Strahd.
 
-All paths below are relative to `drow-empire/` in the campaigns repo. Each stage shipped as its own pull request, PRs #686 to #704 in the campaigns repo.
+All paths below are relative to `drow-empire/` in the campaigns repo. Each stage shipped as its own pull request, PRs #686 to #705 in the campaigns repo.
 
 ## At a glance
 
@@ -18,8 +18,8 @@ Eleven stages, each closed by a GM ruling and its own pull request:
   GM: headings      GM: 138 cards    GM: 151 cards  re-split = same    GM: 39 cards   GM: 94 cards
 
 6–7 Calendar    → 8 Typos, names → 9 Publish     → 10 Players       → Shipped
-  ruled dates       365 fixes        docs/summaries   calendar page      14 PRs
-  GM: 57 cards      GM: 162 cards    GM: dry run      GM: 61 cards       #686–#704
+  ruled dates       365 fixes        docs/summaries   calendar page      15 PRs
+  GM: 57 cards      GM: 162 cards    GM: dry run      GM: 61 cards       #686–#705
 
 Every stage: Claude drafts → GM review page → count-guarded apply → verifier → PR, merged on "ship"
 ```
@@ -52,7 +52,7 @@ Each row is one stage: what it produced, the GM's checkpoint, and where the reco
 | 6–7. Calendar | Story-order renumber (52 chapters, two draft chapters added); `docs/arcs/calendar.md`, Greyhawk, 3 Flocktime 595 to 15 Fireseek 596 CY; bible date lines rewritten to match | 19 date conflicts (K1–K19) ruled; 38 date-line cards | `summaries/chapter_enhance_review/calendar/`, `renumber/renumber_map.json` | #700 |
 | 8. Typos and names | 365 typo fixes; numbered extras ("Drow-1", "Human-2") given names | 144-card typo page (362 approve, 5 reject); 18-card names page; hobgoblin names in chat | `summaries/chapter_enhance_review/typos/typos_applied.md`, `notes/unnamed_characters.md` | #701 |
 | 9. Publish | `docs/summaries/`, the reformatted, scene-numbered copies | Dry run first | `../scripts/publish_sumamries/` | #702 |
-| 10. Players' calendar | `notes/handouts/player_calendar.*`; Ch 26–51 date lines as realm days | 34 event cards; 27 date-line cards; layout ruled in chat | `summaries/chapter_enhance_review/player_calendar/`, `calendar/realms/` | #703, #704 |
+| 10. Players' calendar | `notes/handouts/player_calendar.*`; Ch 26–51 date lines as realm days | 34 event cards; 27 date-line cards; layout and two empty days ruled in chat | `summaries/chapter_enhance_review/player_calendar/`, `calendar/realms/` | #703, #704, #705 |
 
 ## What was new on this campaign
 
@@ -79,7 +79,7 @@ About 700 review cards across 12 review pages, plus rulings in chat, every one m
 | Typo fixes (Stage 8) | 365 bible edits (372 occurrences) |
 | Calendar conflicts ruled | 19 |
 | Extras given names | 27, added to the registry |
-| Pull requests | 14 (#686–#704), each merged on the GM's "ship" |
+| Pull requests | 15 (#686–#705), each merged on the GM's "ship" |
 
 ## Where to look
 
