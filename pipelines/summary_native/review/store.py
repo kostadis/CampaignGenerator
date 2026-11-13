@@ -470,12 +470,16 @@ def history(
     return [event for event in events if item_id is None or event.get("item_id") == item_id]
 
 
-def read_review_state(campaign_dir: Path, review_id: str, *, _already_locked: bool = False):
-    """Read manifest, items, history and semantic staleness under one lock."""
+def read_review_state(campaign_dir: Path, review_id: str, *, _already_locked: bool = False, with_custody: bool = False):
+    """Read manifest, items, history and semantic staleness under one lock.
+
+    ``with_custody=True`` appends the source-custody generation from the SAME read, so a caller that
+    needs it (``cards decide``) never takes a second snapshot (spec 043 T046).
+    """
     root=Path(campaign_dir).resolve()
     lock = contextlib.nullcontext() if _already_locked else authority_lock(root, exclusive=False, create=False)
     with lock:
-        require_no_pending_transaction(root); manifest,_,items=read_snapshot(root,review_id,_already_locked=True); events=_events(root,review_id)
+        require_no_pending_transaction(root); manifest,custody_generation,items=read_snapshot(root,review_id,_already_locked=True); events=_events(root,review_id)
     stale:set[str]=set()
     for event in events:
         if event.get("kind") in {"rebind", "stage"}:
@@ -485,46 +489,56 @@ def read_review_state(campaign_dir: Path, review_id: str, *, _already_locked: bo
         # item's semantic-stale marker immediately.
         elif event.get("item_id") and event.get("decision_revision") is not None and event.get("kind") != "withdrawal":
             stale.discard(event["item_id"])
+    if with_custody:
+        return manifest,items,events,stale,custody_generation
     return manifest,items,events,stale
+
+
+_FINDING_PAIRS = frozenset({("approve", "accept_no_change"), ("reject", "reject_action"), ("discuss", "defer")})
+_SIGNOFF_PAIRS = frozenset({("approve", "document_signoff"), ("reject", "reject_action"), ("discuss", "defer")})
+
+#: The review-card finding actions: each takes exactly the finding pairs (spec 043 R4).
+FINDING_ACTIONS: tuple[str, ...] = (
+    "review_claim_against_evidence", "review_presentation", "review_classified_noise",
+    "rerun_selected_check", "repair_or_recheck_pointer", "review_supersession",
+    "review_audience_and_knowledge", "acknowledge_claim_coverage",
+)
+
+#: THE action table: proposed action -> the (verdict, disposition) pairs it may record.  Every action
+#: the code produces declares its decisions (#655); an action with no row is refused, so a new action
+#: must be added here, not waived.  ``_validate_action_decision`` and the review-card contract
+#: (``review/cards.py``) both read this one table (spec 043 T046).
+ACTION_DECISIONS: dict[str, frozenset[tuple[str, str]]] = {
+    # An NPC draft sign-off records the same exact-bytes approval as a document sign-off
+    # (review/cli.py npc sign); npc_publish requires that disposition.
+    "signoff_document": _SIGNOFF_PAIRS,
+    "signoff_npc_draft": _SIGNOFF_PAIRS,
+    "confirm_claim_mapping": _FINDING_PAIRS,
+    "resolve_claim_finding": frozenset({("reject", "reject_action"), ("discuss", "defer")}),
+    "dismiss_claim_finding": _FINDING_PAIRS,
+    "accept_claim_uncertainty": _FINDING_PAIRS,
+    "prepare_claim_source_correction": frozenset({
+        ("approve", "source_correction"), ("reject", "reject_action"), ("discuss", "defer")}),
+    "adjudicate_identity": frozenset({
+        ("approve", "merge"), ("approve", "distinct"), ("reject", "reject_action"), ("discuss", "defer")}),
+    **{finding_action: _FINDING_PAIRS for finding_action in FINDING_ACTIONS},
+}
 
 
 def _validate_action_decision(item: ReviewItem, *, verdict: str, disposition: str) -> None:
     """Enforce item-specific meaning at every decision ingestion boundary."""
     action = item.proposed_action.action
-    # An NPC draft sign-off records the same exact-bytes approval as a document
-    # sign-off (review/cli.py npc sign); npc_publish requires that disposition.
-    if action in {"signoff_document", "signoff_npc_draft"}:
-        allowed = {
-            ("approve", "document_signoff"),
-            ("reject", "reject_action"),
-            ("discuss", "defer"),
-        }
-    else:
-        if disposition == "document_signoff":
-            raise ReviewStoreError(
-                "REVIEW_ACTION_MISMATCH: only a document sign-off item accepts document_signoff",
-                "REVIEW_ACTION_MISMATCH",
-            )
-        allowed_by_action = {
-            "confirm_claim_mapping": {
-                ("approve", "accept_no_change"), ("reject", "reject_action"), ("discuss", "defer"),
-            },
-            "resolve_claim_finding": {
-                ("reject", "reject_action"), ("discuss", "defer"),
-            },
-            "dismiss_claim_finding": {
-                ("approve", "accept_no_change"), ("reject", "reject_action"), ("discuss", "defer"),
-            },
-            "accept_claim_uncertainty": {
-                ("approve", "accept_no_change"), ("reject", "reject_action"), ("discuss", "defer"),
-            },
-            "prepare_claim_source_correction": {
-                ("approve", "source_correction"), ("reject", "reject_action"), ("discuss", "defer"),
-            },
-        }
-        allowed = allowed_by_action.get(action)
-        if allowed is None:
-            return
+    if disposition == "document_signoff" and action not in {"signoff_document", "signoff_npc_draft"}:
+        raise ReviewStoreError(
+            "REVIEW_ACTION_MISMATCH: only a document sign-off item accepts document_signoff",
+            "REVIEW_ACTION_MISMATCH",
+        )
+    allowed = ACTION_DECISIONS.get(action)
+    if allowed is None:
+        raise ReviewStoreError(
+            f"REVIEW_ACTION_MISMATCH: no decisions are declared for action {action}",
+            "REVIEW_ACTION_MISMATCH",
+        )
     if (verdict, disposition) not in allowed:
         raise ReviewStoreError(
             "REVIEW_ACTION_MISMATCH: review action and disposition are incompatible",

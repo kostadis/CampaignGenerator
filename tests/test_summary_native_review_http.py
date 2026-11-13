@@ -77,7 +77,7 @@ def _make_review(
         severity="needs_judgment",
         assignment_basis="advisory_candidate",
         rationale="The citation resolves but meaning is unassessed.",
-        proposed_action={"action": "accept_no_change_or_correct"},
+        proposed_action={"action": "review_claim_against_evidence"},
         scope={"kind": "evidence", "value": item_id},
         rule_versions=({"rule_id": "entailment", "version": "1"},),
         input_bindings=(

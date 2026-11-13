@@ -253,8 +253,8 @@ The six `noise-*` codes (`noise-label`, `noise-idiom`, `noise-negated-status`,
 `noise-spelled-number`, `noise-synonym`, `noise-other-citation`) are a public
 contract, because policy files key on them.
 
-**On the review page.** Unless a policy covers it, the review-artifact kit shows
-one card per class listing every occurrence with its token, sentence, cited scenes
+**On the review page.** Unless a policy covers it, a page built on the card contract
+(see "Card packets" below) shows one card per class listing every occurrence with its token, sentence, cited scenes
 and resolving evidence. One verdict on the card expands to one decision per
 occurrence, each carrying the provenance note above. A card left unmarked leaves
 every occurrence undecided. The app exposes the same two commands as
@@ -262,6 +262,185 @@ every occurrence undecided. The app exposes the same two commands as
 `POST /{review_id}/noise/decide` with body
 `{noise_class, verdict, reviewer, note, write}` (runs `review noise decide`). The
 routes only build argv and shell out.
+
+## Card packets: `review cards export` and `review cards decide`
+
+A review page (the review-artifact kit, or any page that follows the contract) does not read
+or write the review store. It renders a **packet** and hands back a **decisions file**; these
+two commands are the only door in and out. Only an explicit verdict on a card records
+anything, an unmarked card stays unmarked, and the packet carries no verdict, guess or
+recommendation.
+
+### Export
+
+```sh
+summary_native review cards export REVIEW --campaign-dir CAMPAIGN [--item ID]... [--action NAME]... [--out FILE]
+```
+
+```text
+packet packet-6fd2ef8a7a07f677da29: 6 cards (6 members) for review npc-review-000000000000
+```
+
+It builds one packet from an `npc_verification` review's **undecided** items (a decided item
+gets no card) and stores it at `docs/reviews/REVIEW/packets/<packetId>.json`. The packet id is
+a hash of the content, so exporting again with nothing changed stores nothing new and answers
+`REVIEW_CARDS_EXPORTED` with `reused: true`. `--out FILE` also writes a byte-identical copy for
+the page; the stored copy stays the authority.
+
+Cards are of three kinds. A **finding** card is one verification finding. A **noise-class**
+card is one class of classified noise listing every occurrence (see the noise section above).
+A **signoff** card is an NPC's draft: its `body` is exactly the draft bytes, and it carries the
+draft's `draftSha256`.
+
+**Skipped sign-offs.** An NPC whose draft cannot be signed today (a mechanical blocker, a stale
+draft, a symlinked draft path `REVIEW_PATH`, a draft that is not UTF-8 `REVIEW_CARDS_DRAFT_NOT_UTF8`) gets no card. Each is printed after the packet line, one per line, and listed in
+`data.skippedSignoffs` as `{itemId, npc, code, message}`. Fix what the blocker names and export
+a new packet; the page is never offered a card it could not honour.
+
+| Code | Meaning | What to do |
+|---|---|---|
+| `REVIEW_CARDS_NOTHING_TO_EXPORT` | Nothing undecided is left. `data.skippedSignoffs` may say why a sign-off was left out. | Nothing, or clear the blocker named for a skipped sign-off. |
+| `REVIEW_CARDS_KIND` | The review is not an `npc_verification` review. | Use the review's own commands. |
+| `REVIEW_CARDS_ACTION_UNKNOWN` | An undecided item's action has no verdict mapping. The **whole** export is refused and no packet is written; the message names the item and the action. | A new action was added without a card mapping. Report it; do not hand-edit the review. |
+| `REVIEW_CARDS_PACKET_CONFLICT` (exit 5) | A different packet already exists under that id. | Never overwrite it; report it. |
+| `REVIEW_CARDS_DUPLICATE_MEMBER` | One item would be in two cards (defensive). | Report it. |
+
+### Decide: plan first, then write
+
+```sh
+summary_native review cards decide REVIEW --campaign-dir CAMPAIGN \
+  --decisions decisions.json --reviewer GM
+```
+
+```text
+Plan for packet packet-6fd2ef8a7a07f677da29: 2 record, 0 supersede, 0 noop, 4 unmarked card(s), 0 refused. Nothing was written.
+discuss npc-c15262fd8bd54d563f5302d5 → 1 record, 0 supersede, 0 noop
+approve npc-signoff-f2d9a8ff74a448b132d5 → 1 record, 0 supersede, 0 noop
+plan 1fc8a9a05418519d47491e6f4d6fddffdb01c23bf138625355556bb08a997974
+to record it: summary_native review cards decide npc-review-000000000000 --decisions decisions.json --reviewer GM --write --plan-sha256 1fc8a9a05418519d47491e6f4d6fddffdb01c23bf138625355556bb08a997974
+```
+
+The default is a dry run (`REVIEW_CARDS_PLAN`). To record it, run the printed command: `--write`
+with the plan's hash. `--write` with no hash is `REVIEW_CARDS_PLAN_REQUIRED`. A hash that no
+longer matches the rebuilt plan is `REVIEW_CARDS_PLAN_CHANGED` (exit 5). The reviewer is part of the plan hash, so
+writing with a different `--reviewer` than the one you planned is also `REVIEW_CARDS_PLAN_CHANGED` and prints the new plan,
+so you can confirm that one instead:
+
+```text
+REVIEW_CARDS_PLAN_CHANGED: the plan differs from the one confirmed (the review changed after the dry run, or a different --reviewer was given); run the dry run again and confirm the new plan
+```
+
+Success is `REVIEW_CARDS_SAVED`:
+
+```text
+Recorded 2 and superseded 0 decision(s) from packet packet-6fd2ef8a7a07f677da29.
+```
+
+Decide expands each verdict from the **stored packet**, never from the decisions file; the
+file's `members` and `draftSha256` are echoes that are compared and never trusted. The stored
+note is `GM card verdict [<cardId>]: <your note>`, and each request id is
+`cards-<packetId>-<hash>`, so `review history` shows which decisions came from which packet.
+**Approval is yes with the no** (GM ruling 2026-11-12). Rejecting a finding does not block the
+sign-off of the same draft. When a file approves a sign-off and the same draft has rejected
+findings (rejected in this file, or already in the store; linked by the draft path, exactly),
+the sign-off is still recorded and its note carries them: `GM card verdict [<cardId>]: <your
+note>; with rejected finding(s): <item id> L<line>, ...`. The plan shows it, and so does the
+launcher:
+
+```text
+approve npc-signoff-f2d9a8ff74a448b132d5 → 1 record, 0 supersede, 0 noop
+  approved with 1 rejected finding(s): npc-c15262fd8bd54d563f5302d5 L16
+```
+
+A finding whose draft cannot be determined is not linked. If the composed note exceeds
+`max_note_chars` that sign-off card alone is refused with `REVIEW_CARDS_NOTE_TOO_LONG` (shorten
+your note); nothing is truncated.
+
+Approve on a sign-off records `document_signoff`; approve on a finding records
+`accept_no_change`; reject is `reject_action` and discuss is `defer` for every card.
+
+**Refusals that record nothing.** The review tree is byte-identical afterwards.
+
+| Code | Cause | What to do |
+|---|---|---|
+| `REVIEW_CARDS_SCHEMA` | Unknown `schemaVersion`; the message says `accepted: [1]`. | Use a page that writes a listed version. |
+| `REVIEW_CARDS_INVALID` | A key outside the schema, or malformed JSON. | The page is out of contract; do not hand-edit the file to pass. |
+| `REVIEW_CARDS_PACKET_UNKNOWN` | No stored packet has that id. | Export again and re-mark. |
+| `REVIEW_CARDS_PACKET_ALTERED` | The stored packet's bytes no longer match its id. | Never edit packets; export a new one. |
+| `REVIEW_CARDS_REVIEW_MISMATCH` | The file is for another review. | Pass the right `REVIEW`. |
+| `REVIEW_CARDS_PACKET_STALE` (exit 3) | The review moved on since the export (a new generation). | `summary_native review cards export REVIEW`, then mark again on the new packet. |
+| `REVIEW_CARDS_UNKNOWN_CARD` | A card id not in the packet; `data.cards` lists them. | Re-export; page and packet disagree. |
+| `REVIEW_CARDS_MEMBER_MISMATCH` | The echoed `members` differ from the packet's; `data.cards` lists them. | Re-export. |
+| `REVIEW_CARDS_FINGERPRINT_MISMATCH` | A sign-off's echoed `draftSha256` differs (or a non-sign-off sent one); `data.cards` lists them. | Re-export; you were looking at a different draft. |
+| `REVIEW_CARDS_NOTE_TOO_LONG` | A note, once prefixed, is over the review's `max_note_chars`. | Shorten it. |
+| `REVIEW_INVALID_BATCH` | Blank `--reviewer`. | Pass a name. |
+
+**Refusals that cost one card only.** These appear in the plan under `state: refused` (the
+card's members are listed with category `refused`), and the rest of the file proceeds: the
+sign-off blocker codes on an Approve of a sign-off (for example a draft that changed since the
+export, naming the draft path), `REVIEW_CARDS_MEMBER_STALE` (the item itself moved) and
+`REVIEW_STALE_CUSTODY` (the spec 042 detail of what changed). Fix the cause, export, and mark
+that card again.
+
+A large file is saved in batches of 100. If a later batch fails after earlier ones committed,
+the code is the inner failure (for example `REVIEW_STALE_DECISION`) and `data` is
+`{recorded, not_recorded, cause}`. Re-run the same file: what was recorded is a noop.
+
+### Saving again: noop and supersede
+
+Each member is compared with its current, fresh decision (same verdict, disposition and note):
+
+- **noop**: identical. Saving the same file again, or the same verdict and note from a later
+  packet, records nothing; `--write` answers `REVIEW_CARDS_SAVED` with `saved: []`.
+- **supersede**: a fresh decision that differs. It is recorded as a new revision, never
+  silently, and the plan lists each one:
+
+```text
+approve npc-c15262fd8bd54d563f5302d5 → 0 record, 1 supersede, 0 noop
+  item npc-c15262fd8bd54d563f5302d5: discuss/defer → approve/accept_no_change
+```
+
+A CLI decision on the same finding with any other note is likewise a listed supersede.
+
+### What a re-offered Discuss shows
+
+A finding or sign-off the GM marked Discuss is still undecided for approval, so it reappears on
+the next export with a `previousDiscussion` line, rendered as plain text beside the card:
+
+```text
+Previously discussed by GM: check the quote
+```
+
+A sign-off card's `body` stays byte-identical to the draft (read once as bytes, shown with no newline translation, so CRLF is kept; `draftSha256` is the hash of those same bytes); the line is a separate field. On a
+noise-class card the line sits per occurrence inside `body` and `previousDiscussion` is null. It
+is display only, and decide ignores it.
+
+### The action table (#655)
+
+Every path into the store (`review decide`, `review npc sign`, the delegated commands, the
+routes, `cards decide`) validates one table. An action with no row is refused with
+`REVIEW_ACTION_MISMATCH: no decisions are declared for action <a>`; a new action must be added
+to the table.
+
+| Action | Allowed verdict/disposition pairs |
+|---|---|
+| `review_claim_against_evidence`, `review_presentation`, `review_classified_noise`, `rerun_selected_check`, `repair_or_recheck_pointer`, `review_supersession`, `review_audience_and_knowledge`, `acknowledge_claim_coverage`, `confirm_claim_mapping`, `dismiss_claim_finding`, `accept_claim_uncertainty` | approve/accept_no_change, reject/reject_action, discuss/defer |
+| `resolve_claim_finding` | reject/reject_action, discuss/defer |
+| `adjudicate_identity` | approve/merge, approve/distinct, reject/reject_action, discuss/defer |
+| `prepare_claim_source_correction` | approve/source_correction, reject/reject_action, discuss/defer |
+| `signoff_npc_draft`, `signoff_document` | approve/document_signoff, reject/reject_action, discuss/defer |
+
+`document_signoff` is accepted only by a sign-off item. `dismiss_claim_finding` and
+`accept_claim_uncertainty` also need bound evidence and rationale digests, and a `mechanical` or
+`gm_confirmed` blocker can never be approved as `accept_no_change`.
+
+### The page contract
+
+A page author's rules (render text as text, start unmarked, echo `members` and `draftSha256`
+back, send nothing else, show `previousDiscussion`, one verdict vocabulary, the version rule)
+are in `specs/043-review-card-contract/contracts/card-files.md`. The schemas are checked in at
+`pipelines/summary_native/review/schemas/card-packet.v1.schema.json` and
+`card-decisions.v1.schema.json`, with golden examples in `tests/fixtures/review_cards/`.
 
 ## Per-item custody: what a decision depends on
 
@@ -343,7 +522,8 @@ that is not current, which is exactly the total of `stale_item_count` across
 that wanted the old meaning must read the new key; a reader that only wanted "how
 many items are stale" now gets the right number from `counts.stale`. In the
 repo, only `review status` output carries this key; the Shared review page's own
-`show` counts and the review-artifact kit do not read it.
+`show` counts and the review-artifact kit (which goes through
+`review cards export|decide`, not the store) do not read it.
 
 `counts` is not a partition: an approved item whose files changed is counted in both `approved` and the live `stale`, and `pending` counts only items marked at the last refresh. Publish still refuses such an item.
 

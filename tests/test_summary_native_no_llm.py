@@ -123,6 +123,7 @@ def test_review_package_makes_no_model_call():
     """Review records human decisions; nothing in it may ask a model (spec 036)."""
     paths = sorted((PKG / "review").rglob("*.py"))
     assert {"store.py", "cli.py", "identity.py", "app.py", "custody.py"} <= {path.name for path in paths}
+    assert "cards.py" in {path.name for path in paths}  # spec 043
     for path in paths:
         tree = ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
         for node in ast.walk(tree):

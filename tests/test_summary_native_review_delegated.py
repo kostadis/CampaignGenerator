@@ -54,7 +54,7 @@ def _item(campaign_id: UUID, review_id: str, item_id: str, *, claim: str = None,
         ),
         categories={"citation_non_entailment"}, severity="needs_judgment", assignment_basis="advisory_candidate",
         rationale="A valid citation does not establish entailment.",
-        proposed_action=action or {"action": "accept_no_change_or_correct"},
+        proposed_action=action or {"action": "review_claim_against_evidence"},
         scope={"kind": "evidence", "value": item_id},
         rule_versions=({"rule_id": "citation-entailment", "version": "1"},),
         input_bindings=({"source_id": "summary-1", "path": SUMMARY, "custody_sha256": summary_sha, "semantic_sha256": "c" * 64},),
@@ -334,3 +334,51 @@ def test_submit_decisions_keeps_custody_detail(campaign):
     assert caught.value.code == "REVIEW_STALE_CUSTODY"
     assert caught.value.detail["operation"] == "decide"
     assert [e["item_id"] for e in caught.value.detail["stale_items"]] == ["detail-1"]
+
+
+def test_partial_save_reports_recorded_and_not_recorded(campaign, monkeypatch):
+    """spec 043 R9: a failure after the first batch names what is on disk and what is not."""
+    from pipelines.summary_native.review import delegated
+    from pipelines.summary_native.review.store import ReviewStoreError
+
+    root, cid, summary_sha, _draft_sha, sources = campaign
+    (root / "config" / "review.yaml").write_text("max_batch_decisions: 1\n", encoding="utf-8")
+    items = [_item(cid, "partial-review", f"p-{n}", summary_sha=summary_sha) for n in range(3)]
+    _create(root, cid, "partial-review", items, sources)
+    decisions = [{"item_id": i.item_id, "item_revision": i.revision, "review_digest": i.review_digest,
+                  "expected_decision_revision": 0, "verdict": "approve", "disposition": "accept_no_change",
+                  "note": "GM reviewed."} for i in items]
+    real = delegated.save_decisions
+    calls = {"n": 0}
+
+    def flaky(*args, **kwargs):
+        calls["n"] += 1
+        if calls["n"] == 2:
+            raise ReviewStoreError("REVIEW_STALE_REVISION: boom", "REVIEW_STALE_REVISION")
+        return real(*args, **kwargs)
+
+    monkeypatch.setattr(delegated, "save_decisions", flaky)
+    with pytest.raises(ReviewStoreError) as caught:
+        delegated.submit_decisions(root, "partial-review", generation=1, reviewer="GM",
+                                   decisions=decisions, prefix="t")
+    assert caught.value.code == "REVIEW_STALE_REVISION"
+    assert caught.value.detail["recorded"] == ["p-0"]
+    assert caught.value.detail["not_recorded"] == ["p-1", "p-2"]
+    assert caught.value.detail["cause"] is None
+    assert [e["item_id"] for e in _events(root, "partial-review")] == ["p-0"]
+
+
+def test_submit_decisions_explicit_batches_over_cap_refused(campaign):
+    from pipelines.summary_native.review import delegated
+    from pipelines.summary_native.review.store import ReviewStoreError
+
+    root, cid, summary_sha, _d, sources = campaign
+    item = _item(cid, "cap-review", "c-1", summary_sha=summary_sha)
+    _create(root, cid, "cap-review", [item], sources)
+    (root / "config" / "review.yaml").write_text("max_batch_decisions: 1\n", encoding="utf-8")
+    d = {"item_id": "c-1", "item_revision": 1, "review_digest": item.review_digest,
+         "expected_decision_revision": 0, "verdict": "approve", "disposition": "accept_no_change", "note": "x"}
+    with pytest.raises(ReviewStoreError) as caught:
+        delegated.submit_decisions(root, "cap-review", generation=1, reviewer="GM", decisions=[],
+                                   prefix="t", batches=[[d, d]])
+    assert caught.value.code == "REVIEW_INVALID_BATCH"

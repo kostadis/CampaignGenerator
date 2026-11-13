@@ -72,7 +72,7 @@ def _item(campaign_id: UUID, number: int, source_sha256: str) -> ReviewItem:
         severity="needs_judgment",
         assignment_basis="advisory_candidate",
         rationale="A valid citation does not establish entailment.",
-        proposed_action={"action": "accept_no_change_or_correct"},
+        proposed_action={"action": "review_claim_against_evidence"},
         scope={"kind": "evidence", "value": f"scene-{number}"},
         rule_versions=({"rule_id": "citation-entailment", "version": "1"},),
         input_bindings=(

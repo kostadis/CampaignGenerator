@@ -142,6 +142,19 @@ class NoiseDecideRequest(StrictRequest):
     write: bool = False
 
 
+class CardsExportRequest(StrictRequest):
+    items: list[str] = Field(default_factory=list)
+    actions: list[str] = Field(default_factory=list)
+
+
+class CardsDecideRequest(StrictRequest):
+    decisions_path: str = Field(min_length=1)
+    reviewer: str = Field(min_length=1, max_length=256)
+    write: bool = False
+    # Not checked here: --write without it is refused by the CLI (REVIEW_CARDS_PLAN_REQUIRED).
+    plan_sha256: str | None = None
+
+
 class RefreshRequest(StrictRequest): expected_generation:int=Field(ge=1)
 class RerunPreviewRequest(StrictRequest): selection:str=Field(min_length=1); mode:Literal["unresolved","selected"]
 class RerunRunRequest(StrictRequest): selection_sha256:str=Field(pattern=r"^[0-9a-f]{64}$")
@@ -232,6 +245,8 @@ _EXACT_STATUS = {
     "REVIEW_NOISE_NOTHING_TO_DECIDE": 409,
     "REVIEW_NOISE_NOTE_REQUIRED": 400,
     "REVIEW_NOISE_NOTE_TOO_LONG": 400,
+    "REVIEW_CARDS_PACKET_UNKNOWN": 404,
+    "REVIEW_CARDS_PLAN_CHANGED": 409,
 }
 
 
@@ -340,6 +355,28 @@ async def noise_decide(request: Request, review_id: str, payload: NoiseDecideReq
     if payload.write:
         arguments.append("--write")
     return await _run(_root(request), *arguments)
+
+
+@router.post("/{review_id}/cards/export")
+async def cards_export(request: Request, review_id: str, payload: CardsExportRequest):
+    arguments = ["cards", "export", review_id]
+    for item in payload.items:
+        arguments += ["--item", item]
+    for action in payload.actions:
+        arguments += ["--action", action]
+    return await _run(_root(request), *arguments)
+
+
+@router.post("/{review_id}/cards/decide")
+async def cards_decide(request: Request, review_id: str, payload: CardsDecideRequest):
+    root = _root(request)
+    decisions = _contained_file(root, payload.decisions_path, "decisions_path")
+    arguments = ["cards", "decide", review_id, "--decisions", decisions, "--reviewer", payload.reviewer]
+    if payload.write:
+        arguments.append("--write")
+    if payload.plan_sha256 is not None:
+        arguments += ["--plan-sha256", payload.plan_sha256]
+    return await _run(root, *arguments)
 
 
 @router.post("/{review_id}/decisions")

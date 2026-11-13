@@ -104,6 +104,7 @@ scabard_sync = "scabard_sdk.scabard_sync:main"
 [project.optional-dependencies]
 test = [
     "pytest",
+    "jsonschema>=4",
 ]
 openrouter = [
     "openai",

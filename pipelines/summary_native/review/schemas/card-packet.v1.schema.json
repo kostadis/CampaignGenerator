@@ -1,0 +1,243 @@
+{
+  "$defs": {
+    "Card": {
+      "additionalProperties": false,
+      "properties": {
+        "approveMeans": {
+          "title": "Approvemeans",
+          "type": "string"
+        },
+        "body": {
+          "description": "Plain text. Render as text, never as HTML. A sign-off card's body is byte-identical to its draft.",
+          "title": "Body",
+          "type": "string"
+        },
+        "draftSha256": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Draftsha256"
+        },
+        "evidence": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/EvidenceRow"
+          },
+          "title": "Evidence",
+          "type": "array"
+        },
+        "id": {
+          "pattern": "^[A-Za-z0-9_.:-]{1,128}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "finding",
+            "noise_class",
+            "signoff"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "members": {
+          "items": {
+            "$ref": "#/$defs/Member"
+          },
+          "minItems": 1,
+          "title": "Members",
+          "type": "array"
+        },
+        "npc": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Npc"
+        },
+        "previousDiscussion": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Plain text, display only: 'Previously discussed by <reviewer>: <note>' when the item's current decision is a Discuss.",
+          "title": "Previousdiscussion"
+        },
+        "rejectMeans": {
+          "title": "Rejectmeans",
+          "type": "string"
+        },
+        "title": {
+          "title": "Title",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "kind",
+        "title",
+        "body",
+        "approveMeans",
+        "rejectMeans",
+        "members"
+      ],
+      "title": "Card",
+      "type": "object"
+    },
+    "EvidenceRow": {
+      "additionalProperties": false,
+      "description": "Plain-text evidence for a card.  Never HTML.",
+      "properties": {
+        "anchor": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Anchor"
+        },
+        "excerpt": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Excerpt"
+        },
+        "missingReason": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Missingreason"
+        },
+        "source": {
+          "title": "Source",
+          "type": "string"
+        }
+      },
+      "required": [
+        "source"
+      ],
+      "title": "EvidenceRow",
+      "type": "object"
+    },
+    "Member": {
+      "additionalProperties": false,
+      "properties": {
+        "action": {
+          "title": "Action",
+          "type": "string"
+        },
+        "expectedDecisionRevision": {
+          "title": "Expecteddecisionrevision",
+          "type": "integer"
+        },
+        "itemId": {
+          "title": "Itemid",
+          "type": "string"
+        },
+        "itemRevision": {
+          "title": "Itemrevision",
+          "type": "integer"
+        },
+        "line": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Line"
+        },
+        "reviewDigest": {
+          "title": "Reviewdigest",
+          "type": "string"
+        }
+      },
+      "required": [
+        "itemId",
+        "action",
+        "itemRevision",
+        "reviewDigest",
+        "expectedDecisionRevision"
+      ],
+      "title": "Member",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "cards": {
+      "items": {
+        "$ref": "#/$defs/Card"
+      },
+      "minItems": 1,
+      "title": "Cards",
+      "type": "array"
+    },
+    "generation": {
+      "title": "Generation",
+      "type": "integer"
+    },
+    "packetId": {
+      "pattern": "^packet-[0-9a-f]{20}$",
+      "title": "Packetid",
+      "type": "string"
+    },
+    "reviewId": {
+      "title": "Reviewid",
+      "type": "string"
+    },
+    "reviewKind": {
+      "title": "Reviewkind",
+      "type": "string"
+    },
+    "schemaVersion": {
+      "title": "Schemaversion",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "packetId",
+    "reviewId",
+    "reviewKind",
+    "generation",
+    "cards"
+  ],
+  "title": "CardPacket",
+  "type": "object"
+}
