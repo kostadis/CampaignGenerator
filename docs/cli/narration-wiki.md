@@ -1,5 +1,9 @@
 # Narration Wiki CLI
 
+For a button-by-button browser walkthrough, terminology, Codex companion
+prompts, and troubleshooting, see the
+[Narration Wiki browser how-to](narration_wiki_howto.md).
+
 `narration_wiki` turns one explicitly selected session into deterministic
 evidence, human-reviewed durable patterns, and one-at-a-time guidance
 proposals. Mechanical measurements are evidence only: Gate 1 and Gate 2 are
