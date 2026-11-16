@@ -423,6 +423,21 @@ def test_real_delta_publishes_inherited_legacy_document_shape(tmp_path, capsys, 
     publish_delta(capsys, root, source, monkeypatch, 4, "legacy-shape-review", "{line}\n" + NEW_LINE)
     assert "# Retained legacy world_state" in (root / "docs/world_state.md").read_text()
     assert NEW_LINE in (root / "docs/world_state.md").read_text()
+    # A second real publication inherits the legacy shape through a published
+    # delta generation, whose manifest kind is "published", not "delta".
+    first = bl.bind(root)
+    source5 = root / "docs/summaries/005-the-far-marker.md"
+    source5.write_text(CHAPTER_5, encoding="utf-8")
+    publish_delta(capsys, root, source5, monkeypatch, 5, "legacy-shape-review-2",
+                  "{line}\n" + NEW_LINE_5,
+                  support="Warden Hale walked the Lantern Road past the eastern marker")
+    assert bl.bind(root).generation_id != first.generation_id
+    for name in FACTORY.DOCUMENTS:
+        text = (root / f"docs/{name}.md").read_text()
+        assert f"# Retained legacy {name}" in text
+        assert "## Legacy snapshot\nHistorical context." in text
+    text = (root / "docs/world_state.md").read_text()
+    assert NEW_LINE in text and NEW_LINE_5 in text
 
 
 def test_preserved_contract_still_checks_required_sections_order_and_tables():
@@ -503,3 +518,22 @@ def test_legacy_pointer_fallback_never_replaces_an_existing_contract(tmp_path, c
         config_path=root / "config/grounding.yaml")
     path = root / next(x.path for x in bundle.documents if x.document_id.value == "world_state")
     assert legacy_delta_paths(root, bundle, "world_state", path) is None
+
+
+def test_legacy_lineage_requires_verified_delta_parent(tmp_path, monkeypatch):
+    from types import SimpleNamespace
+    from pipelines.summary_native.delta import outline_contract as oc
+    from pipelines.summary_native.delta.errors import DeltaRefusal
+
+    manifest = SimpleNamespace(generation_id="published", kind=SimpleNamespace(value="published"),
+                               manifest_sha256="sealed")
+    monkeypatch.setattr(oc, "canonical_digest", lambda *a, **kw: "sealed")
+    monkeypatch.setattr(bl, "_delta_parent", lambda *a: None)
+    assert not oc._has_legacy_lineage(tmp_path, manifest)  # ordinary synthesis
+    monkeypatch.setattr(bl, "_delta_parent", lambda *a: manifest)
+    assert not oc._has_legacy_lineage(tmp_path, manifest)  # cycle
+    def stale(*a):
+        raise DeltaRefusal("retained lineage changed", 3)
+    monkeypatch.setattr(bl, "_delta_parent", stale)
+    with pytest.raises(DeltaRefusal):
+        oc._has_legacy_lineage(tmp_path, manifest)
