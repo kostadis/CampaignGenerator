@@ -10,6 +10,7 @@ from pipelines.summary_native.outline import check_outline, load_outline
 from pipelines.summary_native.promotion.models import GenerationManifest
 from pipelines.summary_native.review.models import canonical_digest
 from .grounding_check import check_headings, check_tables
+from .errors import DeltaRefusal
 from .grounding_edits import edits_dir
 from .lineage import DeltaLineageRecord, delta_record_problems
 
@@ -44,6 +45,31 @@ def preserved_outline_problems(document: str, baseline: bytes, candidate: bytes)
     if order(baseline.decode()) != order(normalized):
         problems.append("required headings changed from the inherited baseline order")
     return problems
+
+
+def _has_legacy_lineage(root: Path, manifest: GenerationManifest) -> bool:
+    """Accept published deltas only through a sealed, acyclic chain to legacy adoption.
+
+    A normal published synthesis is not a legacy-format exception. Retained delta
+    records and every parent manifest remain subject to native custody validation.
+    """
+    from .baseline import _delta_parent
+
+    seen: set[str] = set()
+    while True:
+        if manifest.generation_id in seen:
+            return False
+        seen.add(manifest.generation_id)
+        if canonical_digest(manifest, exclude_fields=frozenset({"manifest_sha256"})) != manifest.manifest_sha256:
+            return False
+        if manifest.kind.value == "legacy_adoption":
+            return True
+        if manifest.kind.value != "published":
+            return False
+        parent = _delta_parent(root, manifest)
+        if parent is None:
+            return False
+        manifest = parent
 
 
 def _legacy_candidate(root: Path, bundle, document: str, text: str) -> tuple[bytes, bytes, str] | None:
@@ -86,14 +112,14 @@ def _legacy_candidate(root: Path, bundle, document: str, text: str) -> tuple[byt
                     != parsed_manifest.manifest_sha256):
                 continue
             manifest = json.loads(manifest_bytes)
-            if manifest.get("kind") not in {"legacy_adoption", "delta"}:
+            if not _has_legacy_lineage(root, parsed_manifest):
                 continue
             baseline = _read(root, (generation / "published" / f"{document}.md").relative_to(root).as_posix())
             bound = next(m for m in manifest["members"] if m["path"] == f"{document}.md")
             if _sha(baseline) != bound["sha256"]:
                 continue
             return baseline, candidate, lineage.plan_ref
-        except (OSError, ValueError, KeyError, TypeError, StopIteration):
+        except (OSError, ValueError, KeyError, TypeError, StopIteration, DeltaRefusal):
             continue
     return None
 
