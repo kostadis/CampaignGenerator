@@ -1,134 +1,67 @@
-"""library {select,fetch,render,mine,search}. No LLM calls."""
+"""``library`` CLI. No LLM calls; all palace access via mempalace_client.
+
+Subcommands wired so far: build, search. (refresh / status / verify-citation: later tasks.)
+"""
 
 from __future__ import annotations
 
 import argparse
 import json
-import os
-import subprocess
 import sys
-import time
-from pathlib import Path
 
-from pipelines.library.envcfg import hypostasis_env
-from pipelines.library.guard import PalaceGuardError, mine_command, require_pilot_palace
-
-DEFAULT_DB = Path("~/src/mytools/rpg-lib/rpg_library.db")
-DEFAULT_SOURCE = Path("/mnt/g/My Drive/DriveThru/Dungeon Masters Guild")
-DEFAULT_WORKDIR = Path("~/rpglib-palace")
-DEFAULT_CACHE = Path("~/rpglib-cache/dmsguild")
+from pipelines.library import ExitCode, LibraryError
+from pipelines.library.config import load_library_config
 
 
-def _dir_bytes(p: Path) -> int:
-    return sum(f.stat().st_size for f in p.rglob("*") if f.is_file()) if p.exists() else 0
+def _client(config):
+    from pipelines.rlm.mempalace_client import LibraryPalaceClient
+
+    return LibraryPalaceClient(config.palace, config.env)
 
 
 def _parser() -> argparse.ArgumentParser:
     ap = argparse.ArgumentParser(prog="library")
-    ap.add_argument("--workdir", default=str(DEFAULT_WORKDIR))
     sub = ap.add_subparsers(dest="cmd", required=True)
-    s = sub.add_parser("select")
-    s.add_argument("--db", default=str(DEFAULT_DB))
-    s.add_argument("--source-root", default=str(DEFAULT_SOURCE))
-    s.add_argument("--limit", type=int, default=50)
-    f = sub.add_parser("fetch")
-    f.add_argument("--cache-dir", default=str(DEFAULT_CACHE))
-    r = sub.add_parser("render")
-    r.add_argument("--merge-fragments", action="store_true")
-    r.add_argument("--min-chars", type=int, default=300)
-    r.add_argument("--out", default=None)
-    sub.add_parser("mine")
-    q = sub.add_parser("search")
-    q.add_argument("text")
-    q.add_argument("--per-book", type=int, default=2)
-    q.add_argument("--fetch", type=int, default=50)
-    q.add_argument("--top", type=int, default=10)
-    q.add_argument("--json", action="store_true")
+    b = sub.add_parser("build", help="full build from the declared selection")
+    b.add_argument("--json", action="store_true")
+    s = sub.add_parser("search", help="whole-section search")
+    s.add_argument("text")
+    s.add_argument("--limit", type=int, default=10)
+    s.add_argument("--per-book", type=int, default=2)
+    s.add_argument("--json", action="store_true")
     return ap
 
 
 def main(argv=None) -> int:
-    args = _parser().parse_args(argv)
-    work = Path(args.workdir).expanduser()
-    manifest, fetched, rendered = work / "manifest.json", work / "fetched.json", work / "rendered"
+    try:
+        args = _parser().parse_args(argv)
+    except SystemExit as e:
+        return int(e.code or 0) and ExitCode.USAGE
+    try:
+        config = load_library_config()
+        if args.cmd == "build":
+            from pipelines.library.build import build
 
-    if args.cmd == "select":
-        from pipelines.library.select import select_books, write_manifest
+            rep = build(config, client=_client(config)).to_dict()
+            print(json.dumps(rep, indent=2) if args.json else
+                  f"built: {rep['indexed']}/{rep['selected']} books, {rep['passages']} passages, "
+                  f"{len(rep['skipped'])} skipped, {len(rep['failed'])} failed, {rep['elapsed_s']}s")
+            return ExitCode.OK
+        if args.cmd == "search":
+            from pipelines.library.search import format_human, search_library
 
-        books = select_books(
-            Path(args.db).expanduser(), Path(args.source_root), limit=args.limit
-        )
-        write_manifest(books, manifest)
-        print(f"selected {len(books)} books -> {manifest}")
-        return 0
-
-    if args.cmd == "fetch":
-        from pipelines.library.fetch import fetch_all
-        from pipelines.library.select import read_manifest
-
-        res = fetch_all(read_manifest(manifest)["books"], Path(args.cache_dir).expanduser())
-        fetched.parent.mkdir(parents=True, exist_ok=True)
-        fetched.write_text(json.dumps({"books": res}, indent=2), encoding="utf-8")
-        counts: dict[str, int] = {}
-        for r in res:
-            counts[r["status"]] = counts.get(r["status"], 0) + 1
-        print(f"fetched: {counts} -> {fetched}")
-        return 0
-
-    if args.cmd == "render":
-        if args.out:
-            rendered = Path(args.out).expanduser()
-        from pipelines.library.render import render_book, write_palace_layout
-        from pipelines.library.select import read_manifest
-
-        books = [b for b in read_manifest(fetched)["books"] if b["status"] != "missing"]
-        records, laid_out = [], []
-        for b in books:
-            bj = json.loads(Path(b["cache_path"]).read_text(encoding="utf-8"))
-            recs = render_book(
-                b, bj, rendered, merge_fragments=args.merge_fragments, min_chars=args.min_chars
+            out = search_library(
+                config, args.text, limit=args.limit, per_book=args.per_book, client=_client(config)
             )
-            if recs:
-                records += recs
-                laid_out.append(b)
-            else:
-                print(f"skipped (no sections): book {b['book_id']} {b['title']}", file=sys.stderr)
-        write_palace_layout(
-            rendered,
-            records,
-            laid_out,
-            render_meta={"merge_fragments": args.merge_fragments, "min_chars": args.min_chars},
-        )
-        print(f"rendered {len(records)} sections from {len(laid_out)} books -> {rendered}")
-        return 0
-
-    if args.cmd == "mine":
-        try:
-            palace = require_pilot_palace()
-        except PalaceGuardError as e:
-            print(f"library: {e}", file=sys.stderr)
-            raise SystemExit(2)
-        t0 = time.time()
-        subprocess.run(mine_command(rendered, palace), env=hypostasis_env(), check=True)
-        print(f"mine elapsed: {time.time() - t0:.1f}s; palace bytes: {_dir_bytes(palace)}")
-        return 0
-
-    if args.cmd == "search":
-        from pipelines.library.search import format_human, search_library
-
-        os.environ.update(hypostasis_env())
-
-        try:
-            palace = require_pilot_palace()
-        except PalaceGuardError as e:
-            print(f"library: {e}", file=sys.stderr)
-            raise SystemExit(2)
-        out = search_library(
-            args.text, palace, rendered, fetch=args.fetch, per_book=args.per_book, top=args.top
-        )
-        print(json.dumps(out, indent=2) if args.json else format_human(out))
-        return 0
-    return 1
+            print(json.dumps(out.to_dict(), indent=2) if args.json else format_human(out))
+            return ExitCode.OK
+    except LibraryError as e:
+        print(f"library: {e}", file=sys.stderr)
+        return int(e.exit_code)
+    except Exception as e:
+        print(f"library: failed: {e}", file=sys.stderr)
+        return int(ExitCode.FAILED)
+    return int(ExitCode.USAGE)
 
 
 if __name__ == "__main__":

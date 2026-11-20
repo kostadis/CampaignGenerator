@@ -1,18 +1,17 @@
-"""Query the pilot palace: expand hits to whole sections, cap per book.
+"""Search the library: expand hits to whole sections, cap per book (FR-007..010).
 
-``mempalace.searcher.search_memories`` returns a dict::
+All palace access is through the injected ``client`` (a
+``mempalace_client.LibraryPalaceClient``); this module imports no mempalace.
 
-    {"query", "filters", "total_before_filter", "primary", "results" (alias of
-     primary), "themes", ["error" on failure]}
+The client's ``search`` returns the MCP ``mempalace_search`` dict::
 
-and each hit in ``results`` is::
+    {"query", "filters", "total_before_filter", "primary", "results" (alias),
+     "themes", ["error" on failure]}
 
-    {"drawer_id", "text" (chunk), "wing", "room",
-     "source_file" (BASENAME only), "source_path" (full stored path),
-     "similarity", "distance", ...date fields}
-
-Basenames are only unique within a book (``001-intro.md`` exists in every
-book), so hits are mapped through ``source_path`` (fallback: room + basename).
+each hit: ``drawer_id``, ``text`` (chunk), ``wing``, ``room``, ``source_file``
+(BASENAME only), ``source_path`` (full stored path), ``similarity``. Basenames
+are only unique within a book, so hits map through ``source_path`` (fallback:
+room + basename).
 """
 
 from __future__ import annotations
@@ -20,17 +19,34 @@ from __future__ import annotations
 import json
 import re
 import time
+from dataclasses import dataclass, field
 from pathlib import Path
 
-from pipelines.library.guard import ENV_VAR, WING, require_pilot_palace
+from pipelines.library.config import LibraryConfig
+from pipelines.library.guard import WING, require_library_palace
+from pipelines.library.state import rendered_root, require_built, require_embedder_match
 
 _COMMENT = re.compile(r"^<!-- book_id=.*-->\n?", re.M)
 
 
-def _default_search(text, palace, fetch):
-    from mempalace.searcher import search_memories
+@dataclass
+class SearchResultSet:
+    query: str
+    results: list = field(default_factory=list)
+    distinct_books: int = 0
+    cap_fired: int = 0
+    unmapped: list = field(default_factory=list)
+    latency_s: float = 0.0
 
-    return search_memories(text, palace_path=str(palace), wing=WING, n_results=fetch)
+    def to_dict(self) -> dict:
+        return {
+            "query": self.query,
+            "results": self.results,
+            "distinct_books": self.distinct_books,
+            "cap_fired": self.cap_fired,
+            "unmapped": self.unmapped,
+            "latency_s": self.latency_s,
+        }
 
 
 def _lookup(hit: dict, root: Path, sections: dict):
@@ -51,21 +67,16 @@ def _lookup(hit: dict, root: Path, sections: dict):
 
 
 def search_library(
-    text,
-    palace: Path,
-    render_root: Path,
-    search_fn=None,
-    fetch=50,
-    per_book=2,
-    top=10,
-    home: Path | None = None,
-) -> dict:
-    palace = require_pilot_palace({ENV_VAR: str(palace)}, home)
-    root = Path(render_root).resolve()
+    config: LibraryConfig, query: str, *, limit: int = 10, per_book: int = 2, client
+) -> SearchResultSet:
+    require_library_palace(config.palace)
+    stamp = require_built(config)
+    require_embedder_match(config, stamp)
+    root = rendered_root(config).resolve()
     sections = json.loads((root / "sections.json").read_text(encoding="utf-8"))
-    search_fn = search_fn or (lambda t, p, n: _default_search(t, p, n))
+
     t0 = time.time()
-    raw = search_fn(text, palace, fetch)
+    raw = client.search(query, wing=WING, limit=min(100, max(50, limit * 5)))
     if raw.get("error"):
         raise RuntimeError(raw["error"])
     hits = raw.get("results") or raw.get("primary") or []
@@ -108,19 +119,20 @@ def search_library(
                 "text": body,
             }
         )
-    results = results[:top]
-    return {
-        "results": results,
-        "distinct_books": len({r["book_id"] for r in results}),
-        "cap_fired": cap_fired,
-        "unmapped": unmapped,
-        "latency_s": round(time.time() - t0, 3),
-    }
+    results = results[:limit]
+    return SearchResultSet(
+        query=query,
+        results=results,
+        distinct_books=len({r["book_id"] for r in results}),
+        cap_fired=cap_fired,
+        unmapped=unmapped,
+        latency_s=round(time.time() - t0, 3),
+    )
 
 
-def format_human(out: dict) -> str:
+def format_human(out: SearchResultSet) -> str:
     lines: list[str] = []
-    for n, r in enumerate(out["results"], 1):
+    for n, r in enumerate(out.results, 1):
         page = f"p.{r['page']}" if r["page"] is not None else "p.?"
         lines.append(
             f"[{n}] {r['title']} (book {r['book_id']}) — {' > '.join(r['section_path'])}, {page}"
@@ -128,7 +140,7 @@ def format_human(out: dict) -> str:
         lines.append(r["text"][:600])
         lines.append("")
     lines.append(
-        f"--- distinct books: {out['distinct_books']}, cap fired: {out['cap_fired']}, "
-        f"unmapped: {len(out['unmapped'])}, latency: {out['latency_s']}s"
+        f"--- distinct books: {out.distinct_books}, cap fired: {out.cap_fired}, "
+        f"unmapped: {len(out.unmapped)}, latency: {out.latency_s}s"
     )
     return "\n".join(lines)

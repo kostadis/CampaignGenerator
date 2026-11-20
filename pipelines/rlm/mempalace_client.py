@@ -533,7 +533,29 @@ def search(
         client.close()
 
 
+class LibraryPalaceClient:
+    """The object ``pipelines/library`` is handed: one palace, one env.
+
+    Thin binding of :func:`mine` / :func:`delete_room` / :func:`search` so the
+    library layer never touches mempalace itself (Principle V).
+    """
+
+    def __init__(self, palace, env: dict | None = None):
+        self.palace = palace
+        self.env = env
+
+    def mine(self, render_root, *, wing: str, files: Iterable[str] | None = None) -> str:
+        return mine(render_root, palace=self.palace, wing=wing, env=self.env, files=files)
+
+    def delete_room(self, wing: str, room: str) -> int:
+        return delete_room(self.palace, wing, room, env=self.env)
+
+    def search(self, query: str, *, wing: str | None = None, limit: int = 50) -> dict:
+        return search(query, palace=self.palace, wing=wing, limit=limit, env=self.env)
+
+
 __all__ = [
+    "LibraryPalaceClient",
     "mine",
     "delete_room",
     "search",

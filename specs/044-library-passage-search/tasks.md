@@ -50,34 +50,34 @@ description: "Task list for Library Passage Search"
 - [X] T007 **First**, decide research R10: probe the mempalace MCP tool list for delete-by-room or delete-by-source, record the answer in research.md R10, and stop and tell the GM if only the rebuild fallback exists. Then implement `mine()`, `delete_room()` (or the R10 fallback) and explicit-palace search in pipelines/rlm/mempalace_client.py.
   - Check the real MCP search hit shape for `source_path`, `room` and `source_file`, and record the finding in a docstring.
   - If no delete-by-room tool exists, implement the R5 fallback and note which one was used.
-- [ ] T008 Remove every `mempalace` import and `mempalace` subprocess call from pipelines/library/ and route them through `mempalace_client`. Add tests/test_library_seam.py, an AST check that fails if `pipelines/library/*.py` imports `mempalace` or calls `subprocess` with `mempalace`.
+- [X] T008 Remove every `mempalace` import and `mempalace` subprocess call from pipelines/library/ and route them through `mempalace_client`. Add tests/test_library_seam.py, an AST check that fails if `pipelines/library/*.py` imports `mempalace` or calls `subprocess` with `mempalace`.
 
 **Selection and dedupe (FR-002, FR-003)**
 
-- [ ] T009 [P] Add tests to tests/test_library_select.py:
+- [X] T009 [P] Add tests to tests/test_library_select.py:
   - each of `product_types`, `book_ids` and `all_converted` selects the right books;
   - `exclude_book_ids` is honoured;
   - print-friendly twins are deduped in favour of the non-print-friendly title, with `is_printer_friendly` as the tiebreaker;
   - an explicit `book_ids` entry bypasses dedupe.
-- [ ] T010 Implement `select_books(config: LibraryConfig) -> list[LibraryBook]` in pipelines/library/select.py, using the rules in research R4.
+- [X] T010 Implement `select_books(config: LibraryConfig) -> list[LibraryBook]` in pipelines/library/select.py, using the rules in research R4.
 
 **Build engine and state (FR-004, FR-005, FR-007, FR-015)**
 
-- [ ] T011 [P] Write tests in tests/test_library_build.py for `build(config, *, client)`:
+- [X] T011 [P] Write tests in tests/test_library_build.py for `build(config, *, client)`:
   - it writes `manifest.json`, `library_ledger.json`, `rendered/`, `sections.json` and `embedder.json` under `work_dir`;
   - books whose sidecar is missing or unreadable are skipped with a reason, and the other books still build;
   - an unreadable `source_root` raises `SourceUnavailable`, and no empty library is written;
   - the returned BuildReport has the fields from data-model.md.
   Use a fake client.
-- [ ] T012 Implement `build()` in pipelines/library/build.py, reusing fetch.py and render.py. Write the EmbedderStamp from config env. Define the exit-code enum `ExitCode` (0, 1, 2, 3, 4, 5, 6 per contracts/cli.md) in pipelines/library/__init__.py.
+- [X] T012 Implement `build()` in pipelines/library/build.py, reusing fetch.py and render.py. Write the EmbedderStamp from config env. Define the exit-code enum `ExitCode` (0, 1, 2, 3, 4, 5, 6 per contracts/cli.md) in pipelines/library/__init__.py.
 
 **Search engine with the embedder check (FR-007 to FR-010)**
 
-- [ ] T013 [P] Add tests to tests/test_library_search.py:
+- [X] T013 [P] Add tests to tests/test_library_search.py:
   - a library that was never built raises `NotBuilt`;
   - a stamp/config mismatch raises `EmbedderMismatch` with a message naming both models;
   - when search runs through the fake `mempalace_client`, expansion, dedupe, the per-book cap and the unmapped list still pass.
-- [ ] T014 Update `search_library(config, query, *, limit=10, per_book=2, client) -> SearchResultSet` in pipelines/library/search.py so it uses the client and the stamp check.
+- [X] T014 Update `search_library(config, query, *, limit=10, per_book=2, client) -> SearchResultSet` in pipelines/library/search.py so it uses the client and the stamp check.
 
 **Checkpoint**: the engine builds and searches entirely through the client.
 
