@@ -1,6 +1,6 @@
 # Contract: keys read from `~/.config/hypostasis/hypostasis.yaml`
 
-CG only reads this file. Hypostasis seeds and owns it (local_machine#1).
+CG only reads this file (the `library` CLI reads a different path when given `--config PATH`; the default is this file). Hypostasis seeds and owns it (local_machine#1).
 
 ```yaml
 env:                                   # existing block; merged into the mine/search env, never overriding vars already set

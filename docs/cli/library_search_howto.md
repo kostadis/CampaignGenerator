@@ -36,7 +36,7 @@ It is not:
 ## The config: `~/.config/hypostasis/hypostasis.yaml`
 
 CG reads two blocks, plus one value under `data_roots`, from this file (`pipelines/library/config.py`).
-Hypostasis seeds and owns it. The path is fixed; there is no `--config` flag.
+Hypostasis seeds and owns it. The default path is fixed; every `library` subcommand accepts `--config PATH` (`-c`) to read another file.
 
 ```yaml
 data_roots:
@@ -117,7 +117,7 @@ One bad book never sinks a build. Exit is 0 even with skips and failures; read t
 You edited a book's sidecar (or added or removed a book in the selection):
 
 ```
-library status           # "stale: N" tells you how many sidecars changed since the build
+library status           # "stale: N (added A, removed R)": changed sidecars plus selection changes since the build
 library refresh
 ```
 
@@ -167,7 +167,9 @@ library status --json
 
 Prints `configured: yes, built: yes, books: 612, stale: 0, embedder match: True, palace: ..., index bytes: ...`
 and fails when appropriate (exit 4 not built, exit 5 embedder mismatch). `stale` counts books whose
-sidecar size/mtime differs from the ledger (or whose sidecar is gone); the fix is `library refresh`.
+sidecar size/mtime differs from the ledger (or whose sidecar is gone), plus books newly selected but not
+indexed (`added`) and indexed books no longer selected (`removed`); `--json` lists them as `stale`,
+`added` and `removed`. The fix is `library refresh`.
 `status` never touches the palace and calls no model.
 
 ## Task: verify a quotation
