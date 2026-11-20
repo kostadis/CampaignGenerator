@@ -70,7 +70,7 @@ The Technical Context left no NEEDS CLARIFICATION items. The pilot (`experiments
 - **Rationale**: Library passages are already-converted, ready-to-read text, so they rank above anything that still needs ingesting. They are not curated into a campaign palace, so they rank below campaign drawers. No scores are normalized across sources, which keeps RLM's existing rule.
 - **Alternatives considered**: merging passages into the drawer tier (it blurs "curated for this campaign" with "somewhere in the library").
 
-## R7. UI face (Principle XI)
+## R7. UI face (Principle XI) — SUPERSEDED: the GM ruled "no ui" (2026-11-20)
 
 - **Decision**: A panel on the Prep page, `LibrarySearch.vue`, with a query box, a per-book cap, and results showing book, section path and an expandable full passage. It also shows library status: configured, built, book count, stale books, and the embedder match.
   - Build and refresh are **not** buttons. The panel shows their state and the exact command, because hypostasis drives them and they run for minutes. This follows the pattern of the existing "show the copyable command" behaviour.

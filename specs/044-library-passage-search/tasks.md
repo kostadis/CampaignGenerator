@@ -13,7 +13,7 @@ description: "Task list for Library Passage Search"
 **Organization**: Tasks are grouped by user story.
 - Search, build and config are shared engine pieces, so they sit in Foundational.
 - The stories add their surfaces on top: agent (US1), CLI (US2), RLM tier (US3), refresh (US4).
-- The UI face (Principle XI) goes in Polish.
+- No UI: the GM exempted this feature from Principle XI on 2026-11-20.
 
 **Execution rule (GM)**:
 - All tasks run in the single worktree `~/src/CampaignGenerator-rpglib-palace`, branch `044-library-passage-search`.
@@ -140,16 +140,9 @@ description: "Task list for Library Passage Search"
 
 ## Phase 7: Polish & Cross-Cutting
 
-- [ ] T025 [P] Add `GET /api/library/status` and `POST /api/library/search` in server/routers/library_routes.py and register the router. Write tests in tests/test_library_routes.py.
-- [ ] T026 [P] Build the Library Search panel in frontend/src/views/prep/LibrarySearch.vue (Principle XI):
-  - a status block;
-  - a query box with a per-book control;
-  - results with expandable full text;
-  - build and refresh shown as copyable commands, not buttons.
-  Link it from SessionPrep. Add a Vitest test in frontend/src/views/prep/LibrarySearch.test.ts.
 - [ ] T027 [P] Write the operator how-to in docs/cli/library_search_howto.md: the authority keys, every exit code and refusal, the agent workflow, and refresh after fixing a book's JSON. Add it to the CLAUDE.md doc table and docs/README.md. Add a passage-tier note to docs/rlm/rlm_pipeline.md.
 - [ ] T028 Install the package into the server venv with `uv pip install -e . --python ~/.venv/bin/python` (the CLAUDE.md rule), then confirm `library --help` resolves.
-- [ ] T029 Run quickstart.md scenarios 1–7 and 9 against a scratch `library:` config of about 50 books.
+- [ ] T029 Run quickstart.md scenarios 1–7 against a scratch `library:` config of about 50 books.
   - Record the time, size and latency, and confirm the live palaces are unchanged (SC-006).
   - Scenario 8 (the agent test) is run by the GM.
 - [ ] T030 Run one `/code-review` pass on the branch. Fix confirmed findings, and file the rest, plus any deferred gaps, as sub-issues of #664.
@@ -158,7 +151,7 @@ description: "Task list for Library Passage Search"
 
 - **Order**: Setup (T001–T002), then Foundational (T003–T014), then the stories.
   - US1 (T015–T017), US2 (T018–T019), US3 (T020–T022) and US4 (T023–T024) depend only on Foundational, so they can proceed in parallel.
-  - Polish T025 and T026 need T019. T029 needs everything. T030 comes last.
+  - T029 needs everything. T030 comes last.
 - **Within Foundational**:
   - T003 → T004 → (T005, T006 → T007 → T008).
   - T009 → T010.
@@ -172,10 +165,10 @@ description: "Task list for Library Passage Search"
 
 - **Foundational tests**: T003, T005, T006 and T009 together (different files).
 - **After Foundational**: T015 [US1], T018 [US2], T020 [US3] and T023 [US4] tests together.
-- **Polish**: T025, T026 and T027 together.
+
 
 ## Implementation Strategy
 
 1. **MVP**: Setup, then Foundational, then US1 (the agent tool). This delivers the use case the pilot proved.
 2. Add US2 (the CLI surface the hypostasis contract relies on), then US3 (RLM integration), then US4 (refresh).
-3. Polish brings the UI face (XI), docs and the end-to-end quickstart. Stop and validate after each story with its Independent Test.
+3. Polish brings docs, install and the end-to-end quickstart. Stop and validate after each story with its Independent Test.

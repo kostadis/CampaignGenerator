@@ -23,14 +23,9 @@
    - a book with passages does not also appear as an expensive candidate.
    Then run with `--no-library`. Expected: the same output as before this feature.
 8. **Agent** (Story 1). In a Claude session with the campaign MCP server, ask: "use the library to find me a statblock for a tavern keeper". Expected: the answer cites `title (book id) — section`, and every quoted detail appears in that passage.
-9. **UI** (XI). Open Prep and then Library Search. Expected:
-   - the status panel matches `library status`;
-   - a search shows whole passages;
-   - build and refresh show their command, not a run button.
 
 ## Automated
 
 ```bash
 python -m pytest tests/test_library_*.py tests/test_rpg_retriever*.py tests/test_retrieve_render_isolation.py
-cd frontend && npm test -- LibrarySearch
 ```

@@ -11,13 +11,12 @@ This plan turns the 50-book pilot (`pipelines/rpglib_palace/`, #664) into a firs
 The library is wired into the rest of RLM in three places:
 - `rpg_retriever` returns library passages as `kind="passage"`, in a documented tier.
 - A new MCP tool lets an agent run repeated searches and read whole passages.
-- A Prep panel is the UI face.
 
 Bringing the library up on a machine is out of scope (local_machine#1).
 
 ## Technical Context
 
-**Language/Version**: Python 3.12+ (repo standard). Vue 3 + TypeScript for the UI face.
+**Language/Version**: Python 3.12+ (repo standard). No UI (GM exemption).
 
 **Primary Dependencies**:
 - mempalace, reached **only** through `pipelines/rlm/mempalace_client.py` (Principle V)
@@ -28,11 +27,11 @@ Bringing the library up on a machine is out of scope (local_machine#1).
 
 **Storage**: An isolated mempalace palace, using the turbovec backend and the Ollama `qwen3-embedding:0.6b` embedder (both per hypostasis). Alongside it on disk: a book manifest, a per-book ledger, a section map and an embedder stamp (see data-model.md).
 
-**Testing**: pytest with tmp paths and fakes; tests never touch a live palace or the Drive mount. Vitest for the UI panel.
+**Testing**: pytest with tmp paths and fakes; tests never touch a live palace or the Drive mount.
 
 **Target Platform**: The GM's Linux machines, through hypostasis.
 
-**Project Type**: CLI + module + MCP tool + web UI panel inside the CampaignGenerator monorepo.
+**Project Type**: CLI + module + MCP tool inside the CampaignGenerator monorepo.
 
 **Performance Goals**:
 - Search in under 3 s on about 667 books (SC-003).
@@ -63,7 +62,7 @@ Bringing the library up on a machine is out of scope (local_machine#1).
 | VIII. State discoverable | PASS | `library status` reads its state from disk. "Not built" and "not configured" are explicit states with their own exit codes (FR-018). |
 | IX. UI mechanizes | PASS | The panel runs a search and shows the results. Judgement stays in chat or at the CLI. |
 | X. Selection explicit | PASS | A build refuses without a declared selection, and "all converted" must be written out (FR-002). |
-| XI. Every CLI capability has a face | **ACTION** | The GM has not exempted a UI, so a Library Search panel ships with this feature. It covers `search` and `status`, and shows `build`/`refresh` state together with the exact command to run (R7). |
+| XI. Every CLI capability has a face | **EXEMPT** | The GM explicitly asked for no UI ("no ui", 2026-11-20). Principle XI allows this exemption. The surfaces are the CLI and the MCP tool. |
 | XII. One spelling per option | PASS | Reuses RLM's `--limit` and `--json`. `--per-book` is new and documented once. The library location is not a CLI flag. |
 | XIII. Breaking state migrates | N/A | This adds a new store and changes no existing state. The pilot's `~/rpglib-palace` is scratch and needs no migration. |
 
@@ -104,8 +103,6 @@ pipelines/rlm/
 ├── mempalace_client.py   # + mine(), delete-by-room, search on an explicit palace path
 ├── rpg_retriever.py      # + passage tier; covered books are never expensive candidates
 └── mcp_server.py         # + library_search; rpg_search gains include_library/k_library
-server/routers/library_routes.py           # GET /api/library/status, POST /api/library/search
-frontend/src/views/prep/LibrarySearch.vue  # UI face (XI)
 docs/cli/library_search_howto.md
 tests/test_library_*.py                    # moved from the pilot's tests and extended
 ```
@@ -116,15 +113,15 @@ tests/test_library_*.py                    # moved from the pilot's tests and ex
 
 | Item | Why needed | Simpler alternative rejected because |
 |---|---|---|
-| A UI panel for a feature used mostly through the CLI and agents | Principle XI; the GM has not asked for no UI | Omitting it would be an unstated exemption. If the GM rules "no UI", drop the UI tasks and record the ruling here. |
 | Mining routed through `mempalace_client` (as a subprocess, not MCP) | Principle V: one seam to MemPalace | A `subprocess.run(["mempalace","mine"…])` call in `pipelines/library` would be a second seam. |
 
 ## Decided
 
+- **No UI (GM, 2026-11-20).** This is a Principle XI exemption. No routes and no Vue panel. Research R7 is superseded.
 - **Build ownership (GM, 2026-11-20): option A.** CG owns `library build` and `library refresh`. Hypostasis decides when to run them: `setup` runs `library build` when no library exists, and `status` runs `library status`. The GM runs `library refresh` directly after fixing a book's JSON.
 
 ## Post-design Constitution re-check
 
 - **V**: All palace access goes through `mempalace_client` (contracts/cli.md, R2). PASS.
-- **XI**: LibrarySearch.vue covers search and status. Build and refresh are shown, not run (R7). PASS, unless the GM rules otherwise.
+- **XI**: Exempt by explicit GM ruling ("no ui", 2026-11-20).
 - **III**: Passages stay behind the proposal flow, and `library_search` returns data only. PASS.
