@@ -9,7 +9,8 @@ BASE = """env:
   MEMPALACE_BACKEND: turbovec
   MEMPALACE_EMBEDDING_MODEL: qwen3-embedding:0.6b
   OTHER: ignored
-rpg_library_db: ~/lib/rpg_library.db
+data_roots:
+  rpg_library_db: ~/lib/rpg_library.db
 library:
   palace: {palace}
   work_dir: {work}
@@ -71,7 +72,7 @@ def test_missing_file(tmp_path):
 
 def test_missing_block(tmp_path):
     with pytest.raises(NotConfigured, match="library:"):
-        load(tmp_path, text="env:\n  MEMPALACE_BACKEND: turbovec\nrpg_library_db: x\n")
+        load(tmp_path, text="env:\n  MEMPALACE_BACKEND: turbovec\ndata_roots:\n  rpg_library_db: x\n")
 
 
 @pytest.mark.parametrize("sel", ["", "    product_types: []\n", "    all_converted: false\n"])
@@ -110,3 +111,12 @@ def test_live_palace_refused(tmp_path):
 def test_exit_codes():
     assert [e.value for e in ExitCode] == [0, 1, 2, 3, 4, 5, 6]
     assert NotConfigured.exit_code == ExitCode.NOT_CONFIGURED == 3
+
+
+def test_top_level_rpg_library_db_not_accepted(tmp_path):
+    text = BASE.format(
+        palace=tmp_path / "lib/palace", work=tmp_path / "lib", src=tmp_path / "src",
+        selection="    all_converted: true\n",
+    ).replace("data_roots:\n  rpg_library_db:", "rpg_library_db:")
+    with pytest.raises(NotConfigured, match=r"data_roots\.rpg_library_db"):
+        load(tmp_path, text=text)

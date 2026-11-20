@@ -35,11 +35,12 @@ It is not:
 
 ## The config: `~/.config/hypostasis/hypostasis.yaml`
 
-CG reads two blocks, plus one top-level key, from this file (`pipelines/library/config.py`).
+CG reads two blocks, plus one value under `data_roots`, from this file (`pipelines/library/config.py`).
 Hypostasis seeds and owns it. The path is fixed; there is no `--config` flag.
 
 ```yaml
-rpg_library_db: ~/path/to/rpg_library.sqlite   # top-level; the books table is read from it, read-only
+data_roots:
+  rpg_library_db: ~/path/to/rpg_library.sqlite   # the books table is read from it, read-only
 
 env:                                            # merged into the mine/search environment
   MEMPALACE_BACKEND: turbovec                   # REQUIRED
@@ -199,7 +200,7 @@ and "not set up" so it can pass them through.
 | 3 | Not configured | `hypostasis config not found: <path>; run hypostasis setup` | Run hypostasis setup, or create the file. |
 | 3 | | `<path> has no library: block; add one` | Add the `library:` block (see above). |
 | 3 | | `<path> library.palace\|work_dir\|source_root is not set` | Set that key. |
-| 3 | | `<path> has no top-level rpg_library_db key` | Add `rpg_library_db`. |
+| 3 | | `<path> has no data_roots.rpg_library_db key` | Add `rpg_library_db` under `data_roots:`. |
 | 3 | | `library.selection is missing` / `is empty; set exactly one of product_types / book_ids / all_converted under library.selection` | Declare one selection form. |
 | 3 | | `library.selection uses more than one form (a, b); ...` | Keep exactly one form. |
 | 3 | | `library.selection.<form> must be a list` / `all_converted must be true` | Fix the value's type. |

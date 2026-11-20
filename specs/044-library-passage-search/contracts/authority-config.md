@@ -26,5 +26,5 @@ library:                               # new block
 - A missing `library:` block, or a missing `selection`, gives exit 3.
 - A `selection` that uses more than one form also gives exit 3, with a message naming the forms found.
 - Paths are expanded with `~` and resolved before the live-palace guard checks them.
-- `rpg_library_db` is read from the file's existing top-level key of that name.
+- `rpg_library_db` is read from `data_roots.rpg_library_db` in the file (one home; no top-level fallback).
 - The default locations shown above are a suggestion for hypostasis to adopt. CG has no defaults of its own and never falls back to them.

@@ -80,8 +80,10 @@ def load_library_config(
     for key in ("palace", "work_dir", "source_root"):
         if not lib.get(key):
             raise NotConfigured(f"{p} library.{key} is not set")
-    if not cfg.get("rpg_library_db"):
-        raise NotConfigured(f"{p} has no top-level rpg_library_db key")
+    roots = cfg.get("data_roots")
+    db = roots.get("rpg_library_db") if isinstance(roots, dict) else None
+    if not db:
+        raise NotConfigured(f"{p} has no data_roots.rpg_library_db key")
     selection = _selection(lib.get("selection"))
 
     yenv = cfg.get("env") or {}
@@ -106,7 +108,7 @@ def load_library_config(
         work_dir=work,
         cache_dir=cache,
         selection=selection,
-        rpg_library_db=_path(cfg["rpg_library_db"]),
+        rpg_library_db=_path(db),
         exclude_book_ids=[int(x) for x in (lib.get("exclude_book_ids") or [])],
         env=env,
     )

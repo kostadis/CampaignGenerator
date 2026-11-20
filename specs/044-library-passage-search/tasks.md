@@ -37,7 +37,7 @@ description: "Task list for Library Passage Search"
   - the `env:` merge never overrides variables already set;
   - a missing block, a missing selection, and a selection using more than one form each raise `NotConfigured`;
   - `~` paths are expanded;
-  - `rpg_library_db` is read from the top-level key.
+  - `rpg_library_db` is read from `data_roots.rpg_library_db`.
 - [X] T004 Implement `load_library_config(path=~/.config/hypostasis/hypostasis.yaml, environ) -> LibraryConfig` in pipelines/library/config.py, following contracts/authority-config.md and data-model.md LibraryConfig. Delete `pipelines/library/envcfg.py` and move its tests into tests/test_library_config.py.
 - [X] T005 [P] Extend the guard tests in tests/test_library_guard.py: `~/.mempalace/palaces/x`, a campaign palace, and a symlink into either all raise `PalaceRefused`. Exit code 6 is mapped in T012.
 
