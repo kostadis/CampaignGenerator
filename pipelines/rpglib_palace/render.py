@@ -129,6 +129,8 @@ def write_palace_layout(out_root: Path, records: list[dict], books: list[dict]) 
     out_root.mkdir(parents=True, exist_ok=True)
     cfg = {
         "wing": WING,
+        # sections.json is our own manifest; keep it out of the palace.
+        "exclude_patterns": ["sections.json"],
         "rooms": [
             {"name": f"b{b['book_id']}", "description": b["title"], "keywords": [f"b{b['book_id']}"]}
             for b in books

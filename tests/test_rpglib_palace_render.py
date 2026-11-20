@@ -88,6 +88,7 @@ def test_layout_files(tmp_path):
     cfg = yaml.safe_load((tmp_path / "mempalace.yaml").read_text())
     assert cfg["wing"] == "wing_dmsguild"
     assert [r["name"] for r in cfg["rooms"]] == ["b7"]
+    assert "sections.json" in cfg["exclude_patterns"]
     sections = json.loads((tmp_path / "sections.json").read_text())
     written = {p.relative_to(tmp_path).as_posix() for p in tmp_path.glob("b7/*.md")}
     assert set(sections) == written
