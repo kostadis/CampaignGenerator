@@ -700,6 +700,71 @@ def _resolve_fivetools_data_root() -> Path | None:
     return None
 
 
+def _library_context():
+    """(LibraryConfig, LibraryPalaceClient) from the authority file. Test seam."""
+    from pipelines.library.config import load_library_config
+    from .mempalace_client import LibraryPalaceClient
+
+    config = load_library_config()
+    return config, LibraryPalaceClient(config.palace, config.env)
+
+
+@mcp.tool()
+def library_search(query: str, limit: int = 10, per_book: int = 2) -> str:
+    """Search the DMsGuild library; return whole passages as JSON.
+
+    Read-only. Returns results with each passage's FULL text, so you can
+    quote it verbatim. How to use it:
+
+      1. Try two or three different wordings of the query before giving up.
+      2. Read the passage text before recommending anything; do not
+         recommend from the title alone.
+      3. Cite every recommendation as
+         `title (book <id>) — <section path>`.
+      4. Say plainly when nothing matches; do not invent a source.
+      5. Before presenting any quote, run library_verify_citation(file, quote)
+         on it and drop or flag any quote that fails.
+
+    On failure returns {"error": <code>, "message": ...} with code one of
+    not_configured, not_built, embedder_mismatch, refused, failed.
+    """
+    import json
+
+    from pipelines.library import LibraryError
+    from pipelines.library.search import search_library
+
+    try:
+        config, client = _library_context()
+        out = search_library(config, query, limit=limit, per_book=per_book, client=client)
+    except LibraryError as exc:
+        return json.dumps({"error": exc.code, "message": str(exc)})
+    except Exception as exc:
+        return json.dumps({"error": "failed", "message": str(exc)})
+    return json.dumps(out.to_dict(), indent=2, default=str)
+
+
+@mcp.tool()
+def library_verify_citation(file: str, quote: str) -> str:
+    """Check that `quote` appears verbatim in the library passage `file`.
+
+    `file` is the result's `file` field from library_search. Whitespace is
+    normalised; nothing else is. Returns {"file", "found", "offset"}.
+    """
+    import json
+
+    from pipelines.library import LibraryError
+    from pipelines.library.verify import verify_citation
+
+    try:
+        config, _ = _library_context()
+        out = verify_citation(config.work_dir, file, quote)
+    except LibraryError as exc:
+        return json.dumps({"error": exc.code, "message": str(exc)})
+    except Exception as exc:
+        return json.dumps({"error": "failed", "message": str(exc)})
+    return json.dumps(out)
+
+
 @mcp.tool()
 def rpg_search(
     query: str = "",
@@ -717,11 +782,16 @@ def rpg_search(
     palace: str = "",
     max_depth: int = 2,
     full_library: bool = False,
+    include_library: bool = True,
+    k_library: int = 10,
 ) -> str:
     """Search MemPalace + 5etools-canonical + rpg-library; return tiered hits.
 
     Tiered retrieval result:
       * drawer / statblock — already-ingested MemPalace content.
+      * passage — whole sections from the DMsGuild library (truncated
+        preview; fetch the full text with library_search). Ranked after
+        drawers, before candidates.
       * candidate (cost: cheap)     — 5etools JSON on disk; one-line
         ingest via fivetools_ingest.py.
       * candidate (cost: expensive) — rpg-library PDF needing
@@ -750,6 +820,8 @@ def rpg_search(
       file_path         — Mode C cheap pin: 5etools JSON to ingest.
       pin_filter        — Mode C cheap pin: filter spec
                           ("name=X[,source=Y]" or "chapter=N").
+      include_library   — set False to suppress the library passage tier.
+      k_library         — max library passages emitted.
       palace            — override the active campaign palace name.
       max_depth         — 0 = wings only, 1 = wings+rooms, 2 = full descent.
       full_library      — set True to search the ENTIRE canonical 5etools
@@ -787,6 +859,8 @@ def rpg_search(
             file_path=file_path or None,
             pin_filter=pin_filter or None,
             max_depth=max_depth,
+            include_library=include_library,
+            k_library=k_library,
         )
     except Exception as exc:
         return f"Error: rpg_search failed: {exc}"
@@ -804,6 +878,8 @@ def propose_dossier(
     include_expensive: bool = True,
     overwrite: bool = True,
     full_library: bool = False,
+    include_library: bool = True,
+    k_library: int = 10,
 ) -> str:
     """Run rpg_search and write the slotted result to docs/dossier_proposal.md.
 
@@ -814,6 +890,8 @@ def propose_dossier(
     k_expensive        — max expensive candidates (rpg-library PDFs)
     include_cheap      — set False to suppress cheap candidates
     include_expensive  — set False to suppress expensive candidates
+    include_library    — set False to suppress library passages
+    k_library          — max library passages (rendered as `passage` slot)
     overwrite          — replace an existing proposal; False refuses if present
     full_library       — set True to search the ENTIRE canonical 5etools
                          corpus, ignoring this campaign's refs.yaml scope.
@@ -844,6 +922,8 @@ def propose_dossier(
             include_cheap=include_cheap,
             include_expensive=include_expensive,
             scope=None if full_library else _campaign_scope,
+            include_library=include_library,
+            k_library=k_library,
             retriever=retrieve_scoped,
         )
     except Exception as exc:

@@ -200,3 +200,19 @@ def no_model_sleep(monkeypatch):
     import time
 
     monkeypatch.setattr(time, "sleep", lambda _seconds: None)
+
+
+@pytest.fixture(autouse=True)
+def _no_real_library(monkeypatch):
+    """Retrieval tests must never read ~/.config/hypostasis or a real library
+    palace: default the passage tier to 'not configured'. Tests that exercise
+    the tier patch ``_fetch_library`` themselves (their patch wins)."""
+    try:
+        import pipelines.rlm.rpg_retriever as rpgr
+    except Exception:  # pragma: no cover
+        return
+    monkeypatch.setattr(
+        rpgr, "_fetch_library",
+        lambda query, k_library: {"status": "not_configured", "reason": "stubbed in tests", "results": []},
+        raising=False,
+    )

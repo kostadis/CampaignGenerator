@@ -234,6 +234,7 @@ def classify(hit: dict) -> str:
       1. kind=="candidate" + cost=="cheap"      → ingest_cheap
       2. kind=="candidate" + cost=="expensive"  → ingest_expensive
       3. kind=="statblock"                      → statblock
+      (kind=="passage" — a library passage — → passage, checked first)
       4. encounter verbs                        → encounter
       5. NPC hint / named                       → npc
       6. location keywords                      → location
@@ -251,6 +252,8 @@ def classify(hit: dict) -> str:
         if cost == "expensive":
             return "ingest_expensive"
         return "ingest_expensive"  # legacy fall-through
+    if kind == "passage":
+        return "passage"
     if kind == "statblock":
         return "statblock"
     if _looks_like_encounter(hit):
@@ -275,7 +278,23 @@ def _slot_label(hit: dict, slot: str) -> str:
     return text.strip() or f"unnamed {slot}"
 
 
+def _passage_as_drawer_like(hit: dict) -> dict:
+    """View a library passage hit through the drawer-shaped fields the
+    candidate builder reads (section_path list -> string, preview -> text)."""
+    path = hit.get("section_path")
+    return {
+        **hit,
+        "section_path": " / ".join(path) if isinstance(path, list) else path,
+        "drawer_text": hit.get("preview") or "",
+        "similarity": hit.get("score"),
+        "drawer_id": None,
+    }
+
+
 def build_candidate(hit: dict) -> Candidate:
+    if hit.get("kind") == "passage":
+        hit = _passage_as_drawer_like(hit)
+        hit["kind"] = "passage"
     slot = classify(hit)
     label = _slot_label(hit, slot)
     excerpt = _excerpt(hit.get("drawer_text"))
@@ -339,6 +358,7 @@ def group_candidates(hits: list[dict]) -> dict[str, list[Candidate]]:
         "lore": [],
         "ingest_cheap": [],
         "ingest_expensive": [],
+        "passage": [],
     }
     for hit in hits:
         cand = build_candidate(hit)
@@ -355,6 +375,7 @@ _SLOT_HEADERS = [
     ("encounter", "Encounters"),
     ("statblock", "Stat Blocks"),
     ("lore", "Lore & Background"),
+    ("passage", "Library Passages (DMsGuild library; read in full with library_search)"),
     ("ingest_cheap", "Cheap Ingest Candidates (5etools-canonical JSON on disk)"),
     ("ingest_expensive", "Expensive Ingest Candidates (rpg-library PDFs needing conversion)"),
 ]
@@ -452,7 +473,8 @@ def render(proposal: Proposal) -> str:
             out.append("")
         out.append("")
 
-    empty_slots = [h for k, h in _SLOT_HEADERS if not proposal.slots.get(k)]
+    # "passage" is an optional tier: absence is not worth listing as an empty slot.
+    empty_slots = [h for k, h in _SLOT_HEADERS if k != "passage" and not proposal.slots.get(k)]
     if empty_slots:
         out.append("---")
         out.append("")
@@ -508,6 +530,8 @@ def propose(
     include_cheap: bool = True,
     include_expensive: bool = True,
     scope: "rr.ResolvedScope | None" = None,
+    include_library: bool = True,
+    k_library: int = 10,
     retriever=retrieve,
     **retriever_kwargs: Any,
 ) -> Proposal:
@@ -533,6 +557,12 @@ def propose(
         )
     if scope is not None:
         retriever_kwargs["scope"] = scope
+    # Passed only when non-default so a retriever without the library tier
+    # (a custom/fake one) never receives an unexpected kwarg.
+    if not include_library:
+        retriever_kwargs["include_library"] = False
+    if k_library != 10:
+        retriever_kwargs["k_library"] = k_library
     retriever_result = retriever(
         query,
         palace=palace,
@@ -603,6 +633,10 @@ def _parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument(
         "--no-expensive", dest="include_expensive", action="store_false", default=True,
     )
+    parser.add_argument("--k-library", type=int, default=10)
+    parser.add_argument(
+        "--no-library", dest="include_library", action="store_false", default=True,
+    )
     parser.add_argument("--force", action="store_true")
     parser.add_argument(
         "--print",
@@ -640,6 +674,8 @@ def main(argv: list[str] | None = None) -> int:
         k_expensive=args.k_expensive,
         include_cheap=args.include_cheap,
         include_expensive=args.include_expensive,
+        include_library=args.include_library,
+        k_library=args.k_library,
     )
     markdown = render(proposal)
     if args.print:

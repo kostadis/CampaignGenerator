@@ -236,6 +236,10 @@ class RetrievalResult:
     fallback: bool = False
     fallback_reason: str | None = None
     expensive_fallback_reason: str | None = None
+    # Library passage tier (spec 044). None = tier not attempted (output is
+    # then identical to the pre-feature output).
+    library_status: str | None = None
+    library_reason: str | None = None
 
     def to_dict(self) -> dict[str, Any]:
         out = {
@@ -255,6 +259,10 @@ class RetrievalResult:
             out["fallback_reason"] = self.fallback_reason
         if self.expensive_fallback_reason:
             out["expensive_fallback_reason"] = self.expensive_fallback_reason
+        if self.library_status is not None:
+            out["library_status"] = self.library_status
+            if self.library_reason:
+                out["library_reason"] = self.library_reason
         return out
 
 
@@ -362,6 +370,54 @@ def _shape_expensive_candidate(book: dict, *, palace: str | None) -> dict:
 # ── Reconciliation (pure function) ───────────────────────────────────────
 
 
+_PASSAGE_PREVIEW_CHARS = 600
+
+
+def _shape_passage(r: dict) -> dict:
+    text = r.get("text") or ""
+    return {
+        "kind": "passage",
+        "book_id": r.get("book_id"),
+        "title": r.get("title"),
+        "publisher": r.get("publisher"),
+        "section_path": r.get("section_path") or [],
+        "page": r.get("page"),
+        "score": r.get("score"),
+        "preview": text[:_PASSAGE_PREVIEW_CHARS] + ("…" if len(text) > _PASSAGE_PREVIEW_CHARS else ""),
+        "library_file": r.get("file"),
+    }
+
+
+def _fetch_library(query: str, k_library: int) -> dict:
+    """Passage-tier fetch. Module-level seam (tests stub it)."""
+    return _fetch_library_impl(query, k_library)
+
+
+def _fetch_library_impl(query: str, k_library: int) -> dict:
+    """Search the DMsGuild library; never raises.
+
+    Returns ``{"status", "reason", "results"}``; status is one of ok,
+    not_configured, not_built, embedder_mismatch, unavailable.
+    """
+    try:
+        from pipelines.library import LibraryError
+        from pipelines.library.config import load_library_config
+        from pipelines.library.search import search_library
+        from .mempalace_client import LibraryPalaceClient
+
+        try:
+            config = load_library_config()
+            client = LibraryPalaceClient(config.palace, config.env)
+            out = search_library(config, query, limit=k_library, client=client)
+        except LibraryError as exc:
+            status = exc.code if exc.code in ("not_configured", "not_built", "embedder_mismatch") else "unavailable"
+            return {"status": status, "reason": str(exc), "results": []}
+        return {"status": "ok", "reason": None, "results": out.results}
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("library search failed: %s", exc)
+        return {"status": "unavailable", "reason": str(exc), "results": []}
+
+
 def reconcile(
     query: str,
     *,
@@ -374,9 +430,14 @@ def reconcile(
     k_expensive: int = 10,
     palace: str | None = None,
     expensive_fallback_reason: str | None = None,
+    library_result: dict | None = None,
+    k_library: int = 10,
 ) -> RetrievalResult:
-    """Merge MemPalace hits + cheap + expensive candidates into the tiered
-    retrieval result. Pure function — no I/O.
+    """Merge MemPalace hits + library passages + cheap + expensive candidates
+    into the tiered retrieval result. Pure function — no I/O.
+
+    Tier order: drawer/statblock, passage, cheap, expensive. ``library_result``
+    is ``{"status", "reason", "results"}`` (``None`` = tier not attempted).
     """
     rpglib_index = {
         int(b["id"]): b
@@ -415,13 +476,23 @@ def reconcile(
         if book_id is not None:
             covered_book_ids.add(book_id)
 
-    # ── Tier 2: cheap candidates (5etools-canonical) ─────────────────────
+    # ── Tier 2: library passages (spec 044) ──────────────────────────────
+    if library_result is not None:
+        result.library_status = library_result.get("status")
+        result.library_reason = library_result.get("reason")
+        for r in (library_result.get("results") or [])[:k_library]:
+            result.hits.append(_shape_passage(r))
+            bid = _coerce_int(r.get("book_id"))
+            if bid is not None:
+                covered_book_ids.add(bid)
+
+    # ── Tier 3: cheap candidates (5etools-canonical) ─────────────────────
     if include_cheap:
         for cand in fivetools_list[:k_cheap]:
             result.hits.append(_shape_cheap_candidate(cand, palace=palace))
             result.candidates_cheap_emitted += 1
 
-    # ── Tier 3: expensive candidates (rpg-library PDFs) ──────────────────
+    # ── Tier 4: expensive candidates (rpg-library PDFs) ──────────────────
     if include_expensive and k_expensive > 0:
         emitted = 0
         for bid, book in rpglib_index.items():
@@ -509,6 +580,8 @@ def retrieve_scoped(
     pin_filter: str | None = None,
     mp_client: MempalaceClient | None = None,
     max_depth: int = 2,
+    include_library: bool = True,
+    k_library: int = 10,
 ) -> dict:
     """Run one tiered retrieval, scope-aware. Returns the result as a dict.
 
@@ -595,6 +668,11 @@ def retrieve_scoped(
                 return []
         return []
 
+    def run_library() -> dict | None:
+        if include_library and query:
+            return _fetch_library(query, k_library)
+        return None
+
     def run_mempalace() -> dict:
         client = mp_client
         owns = client is None
@@ -625,14 +703,16 @@ def retrieve_scoped(
         return res
 
     # ── Run queries concurrently ──────────────────────────────────────────
-    with ThreadPoolExecutor(max_workers=3) as executor:
+    with ThreadPoolExecutor(max_workers=4) as executor:
         future_rpglib = executor.submit(run_rpglib)
         future_fivetools = executor.submit(run_fivetools)
         future_mempalace = executor.submit(run_mempalace)
+        future_library = executor.submit(run_library)
 
         rpglib_books = future_rpglib.result()
         cheap_candidates = future_fivetools.result()
         mempalace_result = future_mempalace.result()
+        library_result = future_library.result()
 
     reconciled = reconcile(
         query,
@@ -645,6 +725,8 @@ def retrieve_scoped(
         k_expensive=k_expensive,
         palace=active_palace,
         expensive_fallback_reason=expensive_fallback_reason,
+        library_result=library_result,
+        k_library=k_library,
     )
     return reconciled.to_dict()
 
@@ -669,6 +751,8 @@ def retrieve(
     pin_filter: str | None = None,
     mp_client: MempalaceClient | None = None,
     max_depth: int = 2,
+    include_library: bool = True,
+    k_library: int = 10,
 ) -> dict:
     """Run one tiered retrieval. Returns the result as a dict.
 
@@ -697,6 +781,8 @@ def retrieve(
         pin_filter=pin_filter,
         mp_client=mp_client,
         max_depth=max_depth,
+        include_library=include_library,
+        k_library=k_library,
     )
 
 
@@ -780,6 +866,11 @@ def _parse_args(argv: list[str] | None = None) -> argparse.Namespace:
                         help="Mode C cheap pin: pin to a specific 5etools JSON file.")
     parser.add_argument("--filter", dest="pin_filter", default=None,
                         help="Mode C cheap pin: filter spec for fivetools_ingest.")
+    parser.add_argument(
+        "--no-library", dest="include_library", action="store_false", default=True,
+        help="Suppress the library passage tier.",
+    )
+    parser.add_argument("--k-library", type=int, default=10)
     parser.add_argument("--max-depth", type=int, default=2, choices=[0, 1, 2])
     parser.add_argument("-v", "--verbose", action="store_true")
     return parser.parse_args(argv)
@@ -844,6 +935,8 @@ def main(argv: list[str] | None = None) -> int:
         file_path=args.file_path,
         pin_filter=args.pin_filter,
         max_depth=args.max_depth,
+        include_library=args.include_library,
+        k_library=args.k_library,
     )
     print(json.dumps(out, indent=2, default=str))
     return 0
