@@ -782,11 +782,16 @@ def rpg_search(
     palace: str = "",
     max_depth: int = 2,
     full_library: bool = False,
+    include_library: bool = True,
+    k_library: int = 10,
 ) -> str:
     """Search MemPalace + 5etools-canonical + rpg-library; return tiered hits.
 
     Tiered retrieval result:
       * drawer / statblock — already-ingested MemPalace content.
+      * passage — whole sections from the DMsGuild library (truncated
+        preview; fetch the full text with library_search). Ranked after
+        drawers, before candidates.
       * candidate (cost: cheap)     — 5etools JSON on disk; one-line
         ingest via fivetools_ingest.py.
       * candidate (cost: expensive) — rpg-library PDF needing
@@ -815,6 +820,8 @@ def rpg_search(
       file_path         — Mode C cheap pin: 5etools JSON to ingest.
       pin_filter        — Mode C cheap pin: filter spec
                           ("name=X[,source=Y]" or "chapter=N").
+      include_library   — set False to suppress the library passage tier.
+      k_library         — max library passages emitted.
       palace            — override the active campaign palace name.
       max_depth         — 0 = wings only, 1 = wings+rooms, 2 = full descent.
       full_library      — set True to search the ENTIRE canonical 5etools
@@ -852,6 +859,8 @@ def rpg_search(
             file_path=file_path or None,
             pin_filter=pin_filter or None,
             max_depth=max_depth,
+            include_library=include_library,
+            k_library=k_library,
         )
     except Exception as exc:
         return f"Error: rpg_search failed: {exc}"
@@ -869,6 +878,8 @@ def propose_dossier(
     include_expensive: bool = True,
     overwrite: bool = True,
     full_library: bool = False,
+    include_library: bool = True,
+    k_library: int = 10,
 ) -> str:
     """Run rpg_search and write the slotted result to docs/dossier_proposal.md.
 
@@ -879,6 +890,8 @@ def propose_dossier(
     k_expensive        — max expensive candidates (rpg-library PDFs)
     include_cheap      — set False to suppress cheap candidates
     include_expensive  — set False to suppress expensive candidates
+    include_library    — set False to suppress library passages
+    k_library          — max library passages (rendered as `passage` slot)
     overwrite          — replace an existing proposal; False refuses if present
     full_library       — set True to search the ENTIRE canonical 5etools
                          corpus, ignoring this campaign's refs.yaml scope.
@@ -909,6 +922,8 @@ def propose_dossier(
             include_cheap=include_cheap,
             include_expensive=include_expensive,
             scope=None if full_library else _campaign_scope,
+            include_library=include_library,
+            k_library=k_library,
             retriever=retrieve_scoped,
         )
     except Exception as exc:

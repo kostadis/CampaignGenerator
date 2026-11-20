@@ -444,3 +444,39 @@ def test_grounded_search_empty_canon_says_so(monkeypatch):
     assert searches == [["chronicle", "camp"]]  # canon search not attempted
     assert "No canon wings are declared" in out
     assert "No narrative results" not in out
+
+
+class TestLibraryPassagePassThrough:
+    def test_rpg_search_forwards_library_params(self, monkeypatch: pytest.MonkeyPatch):
+        captured: dict = {}
+
+        def fake(query, **kwargs):
+            captured.update(kwargs)
+            return {"hits": []}
+
+        monkeypatch.setattr(rpg_retriever_module, "retrieve_scoped", fake)
+        mcp_server.rpg_search("q", include_library=False, k_library=3)
+        assert captured["include_library"] is False and captured["k_library"] == 3
+        captured.clear()
+        mcp_server.rpg_search("q")
+        assert captured["include_library"] is True and captured["k_library"] == 10
+
+    def test_propose_dossier_forwards_and_renders_passages(
+        self, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+    ):
+        seen: dict = {}
+
+        def fake_retrieve_scoped(query, **kwargs):
+            seen.update(kwargs)
+            return {"hits": [{
+                "kind": "passage", "book_id": 8, "title": "Cottage", "publisher": "P",
+                "section_path": ["The Setup", "Hook"], "page": 3, "score": 0.71,
+                "preview": "A gruff tavern keeper polishes mugs.", "library_file": "b8/001.md"}]}
+
+        monkeypatch.setattr(rpg_retriever_module, "retrieve_scoped", fake_retrieve_scoped)
+        out = tmp_path / "p.md"
+        res = mcp_server.propose_dossier("tavern", output=str(out), k_library=4)
+        assert not res.startswith("Error"), res
+        assert seen["k_library"] == 4
+        md = out.read_text()
+        assert "Library Passages" in md and "Cottage" in md and "gruff tavern keeper" in md
