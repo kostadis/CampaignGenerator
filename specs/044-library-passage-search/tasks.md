@@ -87,12 +87,12 @@ description: "Task list for Library Passage Search"
 
 **Independent Test**: In a Claude session with the campaign MCP server, ask "use the library to find me a statblock for a tavern keeper". The answer cites `title (book id) — section`, and every quoted detail appears in that passage.
 
-- [ ] T015 [P] [US1] Write tests in tests/test_mcp_library_search.py:
+- [X] T015 [P] [US1] Write tests in tests/test_mcp_library_search.py:
   - `library_search` returns SearchResultSet JSON with full passage text;
   - NotConfigured, NotBuilt, EmbedderMismatch and Refused each come back as `{"error": code, "message": ...}`, and nothing raises;
   - the docstring contains the four guidance points from contracts/mcp-tool.md.
-- [ ] T016 [US1] In pipelines/rlm/mcp_server.py, add the `library_search(query, limit=10, per_book=2)` MCP tool, calling `search_library`, and the `library_verify_citation(file, quote)` tool (contracts/mcp-tool.md "Companion tool"). The `library_search` docstring requires the agent to verify every quote (SC-002). It depends on T018a's `verify_citation`.
-- [ ] T017 [US1] Run tests/test_retrieve_render_isolation.py and confirm `library_search` and pipelines/library never mix retrieval with render calls.
+- [X] T016 [US1] In pipelines/rlm/mcp_server.py, add the `library_search(query, limit=10, per_book=2)` MCP tool, calling `search_library`, and the `library_verify_citation(file, quote)` tool (contracts/mcp-tool.md "Companion tool"). The `library_search` docstring requires the agent to verify every quote (SC-002). It depends on T018a's `verify_citation`.
+- [X] T017 [US1] Run tests/test_retrieve_render_isolation.py and confirm `library_search` and pipelines/library never mix retrieval with render calls.
 
 ## Phase 4: User Story 2 — Command-line search (P2)
 
@@ -105,7 +105,7 @@ description: "Task list for Library Passage Search"
   - exit codes are 3 when not configured, 4 when not built, 5 on an embedder mismatch, and 6 when refused;
   - each refusal message names its fix, and exit 4 names the hypostasis step;
   - `library status --json` produces the fields listed in contracts/cli.md.
-- [ ] T018a [P] [US2] Write tests in tests/test_library_verify.py for `verify_citation(work_dir, file, quote)`:
+- [X] T018a [P] [US2] Write tests in tests/test_library_verify.py for `verify_citation(work_dir, file, quote)`:
   - an exact span is found and its offset is returned;
   - a span that differs only in whitespace is found;
   - a single changed word is not found;

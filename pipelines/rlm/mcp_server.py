@@ -700,6 +700,71 @@ def _resolve_fivetools_data_root() -> Path | None:
     return None
 
 
+def _library_context():
+    """(LibraryConfig, LibraryPalaceClient) from the authority file. Test seam."""
+    from pipelines.library.config import load_library_config
+    from .mempalace_client import LibraryPalaceClient
+
+    config = load_library_config()
+    return config, LibraryPalaceClient(config.palace, config.env)
+
+
+@mcp.tool()
+def library_search(query: str, limit: int = 10, per_book: int = 2) -> str:
+    """Search the DMsGuild library; return whole passages as JSON.
+
+    Read-only. Returns results with each passage's FULL text, so you can
+    quote it verbatim. How to use it:
+
+      1. Try two or three different wordings of the query before giving up.
+      2. Read the passage text before recommending anything; do not
+         recommend from the title alone.
+      3. Cite every recommendation as
+         `title (book <id>) — <section path>`.
+      4. Say plainly when nothing matches; do not invent a source.
+      5. Before presenting any quote, run library_verify_citation(file, quote)
+         on it and drop or flag any quote that fails.
+
+    On failure returns {"error": <code>, "message": ...} with code one of
+    not_configured, not_built, embedder_mismatch, refused, failed.
+    """
+    import json
+
+    from pipelines.library import LibraryError
+    from pipelines.library.search import search_library
+
+    try:
+        config, client = _library_context()
+        out = search_library(config, query, limit=limit, per_book=per_book, client=client)
+    except LibraryError as exc:
+        return json.dumps({"error": exc.code, "message": str(exc)})
+    except Exception as exc:
+        return json.dumps({"error": "failed", "message": str(exc)})
+    return json.dumps(out.to_dict(), indent=2, default=str)
+
+
+@mcp.tool()
+def library_verify_citation(file: str, quote: str) -> str:
+    """Check that `quote` appears verbatim in the library passage `file`.
+
+    `file` is the result's `file` field from library_search. Whitespace is
+    normalised; nothing else is. Returns {"file", "found", "offset"}.
+    """
+    import json
+
+    from pipelines.library import LibraryError
+    from pipelines.library.verify import verify_citation
+
+    try:
+        config, _ = _library_context()
+        out = verify_citation(config.work_dir, file, quote)
+    except LibraryError as exc:
+        return json.dumps({"error": exc.code, "message": str(exc)})
+    except Exception as exc:
+        return json.dumps({"error": "failed", "message": str(exc)})
+    return json.dumps(out)
+
+
 @mcp.tool()
 def rpg_search(
     query: str = "",
