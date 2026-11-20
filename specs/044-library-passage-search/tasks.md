@@ -147,17 +147,17 @@ description: "Task list for Library Passage Search"
 ## Phase 7: Polish & Cross-Cutting
 
 - [X] T027 [P] Write the operator how-to in docs/cli/library_search_howto.md: the authority keys, every exit code and refusal, the agent workflow, and refresh after fixing a book's JSON. Add it to the CLAUDE.md doc table and docs/README.md. Add a passage-tier note to docs/rlm/rlm_pipeline.md.
-- [ ] T028 Install the package into the server venv with `uv pip install -e . --python ~/.venv/bin/python` (the CLAUDE.md rule), then confirm `library --help` resolves.
-- [ ] T029a Run the scale check (SC-003, SC-005):
+- [ ] T028 (DEFERRED by GM 2026-11-20, see #669) Install the package into the server venv with `uv pip install -e . --python ~/.venv/bin/python` (the CLAUDE.md rule), then confirm `library --help` resolves.
+- [ ] T029a (DEFERRED by GM 2026-11-20, see #669) Run the scale check (SC-003, SC-005):
   - Build a scratch library with `selection: {all_converted: true}`; that is 667 books today.
   - Record the build time, the drawer count and the index size, and note any chunk-cap skips.
   - Measure search latency (median and maximum over 10 queries) and the time to refresh one book.
   - Record the results in experiments/20261120-rpglib-palace-pilot/FINDINGS.md.
   - If SC-003 or SC-005 is missed, tell the GM. Do not change the targets.
-- [ ] T029 Run quickstart.md scenarios 1–7 against a scratch `library:` config of about 50 books.
+- [ ] T029 (DEFERRED by GM 2026-11-20, see #669) Run quickstart.md scenarios 1–7 against a scratch `library:` config of about 50 books.
   - Record the time, size and latency, and confirm the live palaces are unchanged (SC-006).
   - Scenario 8 (the agent test) is run by the GM.
-- [ ] T030 Run one `/code-review` pass on the branch. Fix confirmed findings, and file the rest, plus any deferred gaps, as sub-issues of #664.
+- [X] T030 Run one `/code-review` pass on the branch. Fix confirmed findings, and file the rest, plus any deferred gaps, as sub-issues of #664.
 
 ## Dependencies & Execution Order
 
