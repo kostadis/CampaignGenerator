@@ -611,3 +611,129 @@ class TestLoadCatalogSilentlyThreading:
         result = rpgr._load_catalog_silently(tmp_path)
         assert result == "sentinel-catalog"
         assert captured["kwargs"] == {"in_scope": None}
+
+
+# ── Library passage tier (spec 044, T020) ────────────────────────────────
+
+
+def _lib_result(*pairs, status="ok", reason=None):
+    return {
+        "status": status,
+        "reason": reason,
+        "results": [
+            {"book_id": bid, "title": f"Book{bid}", "publisher": "P", "section_path": ["S", str(n)],
+             "page": 3, "score": 0.7, "file": f"b{bid}/00{n}.md", "text": "x" * 900}
+            for n, bid in enumerate(pairs, 1)
+        ],
+    }
+
+
+def _reconcile_inputs():
+    mp = {"results": [{"wing": "w", "room": "r", "text": "drawer text", "book_id": 5,
+                       "similarity": 0.9, "source_file": "f.md"}]}
+    books = [{"id": 5, "pdf_title": "Five", "filepath": "/m/5.pdf"},
+             {"id": 8, "pdf_title": "Eight", "filepath": "/m/8.pdf"},
+             {"id": 9, "pdf_title": "Nine", "filepath": "/m/9.pdf"}]
+    from pipelines.rlm.fivetools_catalog import Candidate as FC
+    cheap = [FC(entity_type="monster", name="Goblin", source="MM", file_path="/d/m.json",
+                wrapper_key="monster", score=80)]
+    return mp, books, cheap
+
+
+def test_reconcile_passage_tier_order_and_coverage():
+    mp, books, _ = _reconcile_inputs()
+    out = rpgr.reconcile("q", rpglib_books=books, mempalace_result=mp,
+                         library_result=_lib_result(8, 8, 7), k_library=2)
+    kinds = [h["kind"] for h in out.hits]
+    assert kinds[0] in ("drawer", "statblock")
+    assert kinds[1:3] == ["passage", "passage"]
+    assert kinds.count("passage") == 2  # truncated to k_library, search order
+    p = out.hits[1]
+    assert p["book_id"] == 8 and p["library_file"] == "b8/001.md"
+    assert p["preview"].startswith("x") and len(p["preview"]) <= 604
+    assert "text" not in p
+    # book 8 has passages: not offered as expensive. 5 is drawer-covered. 9 remains.
+    exp = [h for h in out.hits if h["kind"] == "candidate" and h["cost"] == "expensive"]
+    assert [h["book_id"] for h in exp] == [9]
+    assert out.library_status == "ok"
+
+
+def test_reconcile_passages_before_cheap():
+    mp, books, cheap = _reconcile_inputs()
+    out = rpgr.reconcile("q", rpglib_books=books, fivetools_candidates=cheap, mempalace_result=mp,
+                         library_result=_lib_result(8), k_library=5)
+    kinds = [(h["kind"], h.get("cost")) for h in out.hits]
+    assert kinds.index(("passage", None)) < kinds.index(("candidate", "cheap"))
+
+
+@pytest.mark.parametrize("status", ["not_configured", "not_built", "embedder_mismatch"])
+def test_reconcile_library_status_empty_tier(status):
+    mp, books, _ = _reconcile_inputs()
+    out = rpgr.reconcile("q", rpglib_books=books, mempalace_result=mp,
+                         library_result={"status": status, "reason": "why", "results": []})
+    assert out.library_status == status
+    d = out.to_dict()
+    assert d["library_status"] == status and d["library_reason"] == "why"
+    assert not [h for h in out.hits if h["kind"] == "passage"]
+
+
+def test_reconcile_without_library_result_equals_pre_feature():
+    mp, books, cheap = _reconcile_inputs()
+    a = rpgr.reconcile("q", rpglib_books=books, fivetools_candidates=cheap, mempalace_result=mp).to_dict()
+    assert "library_status" not in a and "library_reason" not in a
+
+
+def test_retrieve_include_library_false_equals_pre_feature(monkeypatch):
+    def boom(*a, **k):
+        raise AssertionError("library must not be queried")
+    monkeypatch.setattr(rpgr, "_fetch_library", boom)
+    fake_mp = FakeMempalaceClient(responses={
+        "mempalace_search_hierarchical": lambda **kw: {
+            "query": kw["query"], "path": {}, "results": [], "total_before_filter": 0, "fallback": False},
+    })
+    out = rpgr.retrieve("q", rpg_library_url=None, mp_client=fake_mp, include_library=False,
+                        include_cheap=False, include_expensive=False)
+    assert "library_status" not in out
+
+
+def test_retrieve_includes_passages_and_passes_k_library(monkeypatch):
+    seen = {}
+
+    def fake(query, k_library):
+        seen.update(query=query, k=k_library)
+        return _lib_result(3)
+    monkeypatch.setattr(rpgr, "_fetch_library", fake)
+    fake_mp = FakeMempalaceClient(responses={
+        "mempalace_search_hierarchical": lambda **kw: {
+            "query": kw["query"], "path": {}, "results": [], "total_before_filter": 0, "fallback": False},
+    })
+    out = rpgr.retrieve("tavern", rpg_library_url=None, mp_client=fake_mp, k_library=4,
+                        include_cheap=False, include_expensive=False)
+    assert seen == {"query": "tavern", "k": 4}
+    assert [h["kind"] for h in out["hits"]] == ["passage"]
+    assert out["library_status"] == "ok"
+
+
+def test_cli_flags():
+    a = rpgr._parse_args(["q", "--no-library", "--k-library", "3"])
+    assert a.include_library is False and a.k_library == 3
+    b = rpgr._parse_args(["q"])
+    assert b.include_library is True and b.k_library == 10
+
+
+def test_fetch_library_maps_errors(monkeypatch):
+    import pipelines.library.config as lc
+    from pipelines.library import NotBuilt, NotConfigured
+
+    real = rpgr._fetch_library_impl  # the conftest stub replaces only _fetch_library
+
+    def nc():
+        raise NotConfigured("nope")
+    monkeypatch.setattr(lc, "load_library_config", nc)
+    r = real("q", 5)
+    assert r["status"] == "not_configured" and r["results"] == [] and "nope" in r["reason"]
+
+    def nb():
+        raise NotBuilt("build it")
+    monkeypatch.setattr(lc, "load_library_config", nb)
+    assert real("q", 5)["status"] == "not_built"
