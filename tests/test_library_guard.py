@@ -1,54 +1,40 @@
-import subprocess
-
 import pytest
 
-from pipelines.library import cli
-from pipelines.library.guard import PalaceGuardError, mine_command, require_pilot_palace
-
-E = "MEMPALACE_PALACE_PATH"
+from pipelines.library import ExitCode, PalaceRefused
+from pipelines.library.guard import require_library_palace
 
 
-def test_guard_unset(tmp_path):
-    with pytest.raises(PalaceGuardError):
-        require_pilot_palace({}, tmp_path)
-    with pytest.raises(PalaceGuardError):
-        require_pilot_palace({E: ""}, tmp_path)
+def test_default_palace_refused(tmp_path):
+    with pytest.raises(PalaceRefused):
+        require_library_palace(tmp_path / ".mempalace/palaces/x", tmp_path)
 
 
-def test_guard_default_palace(tmp_path):
-    with pytest.raises(PalaceGuardError):
-        require_pilot_palace({E: str(tmp_path / ".mempalace/palace")}, tmp_path)
+def test_mempalace_root_itself_refused(tmp_path):
+    with pytest.raises(PalaceRefused):
+        require_library_palace(tmp_path / ".mempalace", tmp_path)
 
 
-def test_guard_campaign_palace(tmp_path):
-    with pytest.raises(PalaceGuardError):
-        require_pilot_palace({E: str(tmp_path / "src/campaigns/x/.mempalace")}, tmp_path)
+def test_campaign_palace_refused(tmp_path):
+    with pytest.raises(PalaceRefused):
+        require_library_palace(tmp_path / "src/campaigns/x/.mempalace", tmp_path)
 
 
-def test_guard_resolves_symlink(tmp_path):
-    (tmp_path / ".mempalace").mkdir()
+@pytest.mark.parametrize("target", [".mempalace/palaces", "src/campaigns/c"])
+def test_symlink_into_live_refused(tmp_path, target):
+    (tmp_path / target).mkdir(parents=True)
     link = tmp_path / "innocent"
-    link.symlink_to(tmp_path / ".mempalace")
-    with pytest.raises(PalaceGuardError):
-        require_pilot_palace({E: str(link)}, tmp_path)
+    link.symlink_to(tmp_path / target)
+    with pytest.raises(PalaceRefused):
+        require_library_palace(link, tmp_path)
 
 
-def test_guard_ok(tmp_path):
-    p = tmp_path / "rpglib-palace/palace"
-    assert require_pilot_palace({E: str(p)}, tmp_path) == p.resolve()
+def test_ok_resolves(tmp_path):
+    p = tmp_path / "lib/palace"
+    assert require_library_palace(p, tmp_path) == p.resolve()
 
 
-def test_mine_command_direct(tmp_path):
-    cmd = mine_command(tmp_path, tmp_path / "p")
-    assert "--direct" in cmd and cmd[cmd.index("--wing") + 1] == "wing_dmsguild"
-
-
-def test_cli_mine_refuses_without_env(monkeypatch, tmp_path):
-    monkeypatch.delenv(E, raising=False)
-    monkeypatch.setenv("HOME", str(tmp_path))
-    called = []
-    monkeypatch.setattr(subprocess, "run", lambda *a, **k: called.append(a))
-    with pytest.raises(SystemExit) as ei:
-        cli.main(["mine"])
-    assert ei.value.code != 0
-    assert not called
+def test_refusal_names_fix_and_exit_code(tmp_path):
+    with pytest.raises(PalaceRefused) as ei:
+        require_library_palace(tmp_path / ".mempalace/x", tmp_path)
+    assert "library.palace" in str(ei.value)
+    assert PalaceRefused.exit_code == ExitCode.REFUSED == 6

@@ -32,22 +32,22 @@ description: "Task list for Library Passage Search"
 
 **Config and guard (FR-001, FR-017)**
 
-- [ ] T003 [P] Write tests in tests/test_library_config.py for each of the following:
+- [X] T003 [P] Write tests in tests/test_library_config.py for each of the following:
   - a `library:` block is read correctly;
   - the `env:` merge never overrides variables already set;
   - a missing block, a missing selection, and a selection using more than one form each raise `NotConfigured`;
   - `~` paths are expanded;
   - `rpg_library_db` is read from the top-level key.
-- [ ] T004 Implement `load_library_config(path=~/.config/hypostasis/hypostasis.yaml, environ) -> LibraryConfig` in pipelines/library/config.py, following contracts/authority-config.md and data-model.md LibraryConfig. Delete `pipelines/library/envcfg.py` and move its tests into tests/test_library_config.py.
-- [ ] T005 [P] Extend the guard tests in tests/test_library_guard.py: `~/.mempalace/palaces/x`, a campaign palace, and a symlink into either all raise `PalaceRefused`. Exit code 6 is mapped in T012.
+- [X] T004 Implement `load_library_config(path=~/.config/hypostasis/hypostasis.yaml, environ) -> LibraryConfig` in pipelines/library/config.py, following contracts/authority-config.md and data-model.md LibraryConfig. Delete `pipelines/library/envcfg.py` and move its tests into tests/test_library_config.py.
+- [X] T005 [P] Extend the guard tests in tests/test_library_guard.py: `~/.mempalace/palaces/x`, a campaign palace, and a symlink into either all raise `PalaceRefused`. Exit code 6 is mapped in T012.
 
 **Mempalace seam (Principle V, research R2)**
 
-- [ ] T006 [P] Write tests in tests/test_mempalace_client_library.py:
+- [X] T006 [P] Write tests in tests/test_mempalace_client_library.py:
   - `mine(render_root, palace, wing, env)` builds `mempalace mine <root> --direct --wing <wing>`, passes the merged env, and raises `MempalaceProcessError` on a non-zero exit (with subprocess mocked);
   - `delete_room(palace, wing, room)` calls the MCP delete path (fake transport);
   - `search(..., palace=<path>)` passes `--palace <path>`.
-- [ ] T007 **First**, decide research R10: probe the mempalace MCP tool list for delete-by-room or delete-by-source, record the answer in research.md R10, and stop and tell the GM if only the rebuild fallback exists. Then implement `mine()`, `delete_room()` (or the R10 fallback) and explicit-palace search in pipelines/rlm/mempalace_client.py.
+- [X] T007 **First**, decide research R10: probe the mempalace MCP tool list for delete-by-room or delete-by-source, record the answer in research.md R10, and stop and tell the GM if only the rebuild fallback exists. Then implement `mine()`, `delete_room()` (or the R10 fallback) and explicit-palace search in pipelines/rlm/mempalace_client.py.
   - Check the real MCP search hit shape for `source_path`, `room` and `source_file`, and record the finding in a docstring.
   - If no delete-by-room tool exists, implement the R5 fallback and note which one was used.
 - [ ] T008 Remove every `mempalace` import and `mempalace` subprocess call from pipelines/library/ and route them through `mempalace_client`. Add tests/test_library_seam.py, an AST check that fails if `pipelines/library/*.py` imports `mempalace` or calls `subprocess` with `mempalace`.

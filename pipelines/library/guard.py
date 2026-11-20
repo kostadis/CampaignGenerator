@@ -1,41 +1,26 @@
-"""Refuse to run mine/query against anything but the pilot palace."""
+"""Refuse to use a palace path that resolves into a live palace (FR-001)."""
 
 from __future__ import annotations
 
-import os
 from pathlib import Path
-from typing import Mapping
 
-ENV_VAR = "MEMPALACE_PALACE_PATH"
+from pipelines.library import PalaceRefused
+
 WING = "wing_dmsguild"
-
-
-class PalaceGuardError(RuntimeError):
-    pass
 
 
 def _under(path: Path, parent: Path) -> bool:
     return path == parent or parent in path.parents
 
 
-def require_pilot_palace(env: Mapping[str, str] = os.environ, home: Path | None = None) -> Path:
+def require_library_palace(palace: Path, home: Path | None = None) -> Path:
     home = Path(home) if home is not None else Path.home()
-    raw = env.get(ENV_VAR, "")
-    if not raw.strip():
-        raise PalaceGuardError(
-            f"{ENV_VAR} is not set; refusing to run. Set it to the pilot palace "
-            f"(e.g. {home}/rpglib-palace/palace)."
-        )
-    path = Path(raw).expanduser().resolve()
-    live_roots = [(home / ".mempalace").resolve(), (home / "src" / "campaigns").resolve()]
-    for root in live_roots:
+    path = Path(palace).expanduser().resolve()
+    for root in ((home / ".mempalace").resolve(), (home / "src" / "campaigns").resolve()):
         if _under(path, root):
-            raise PalaceGuardError(
-                f"{ENV_VAR}={raw} resolves to {path}, inside live location {root}; refusing."
+            raise PalaceRefused(
+                f"library.palace {palace} resolves to {path}, inside live location {root}; "
+                "refusing. Set library.palace in ~/.config/hypostasis/hypostasis.yaml to an "
+                "isolated path."
             )
     return path
-
-
-def mine_command(render_root: Path, palace: Path) -> list[str]:
-    # --direct: the shared daemon could be serving a live palace.
-    return ["mempalace", "mine", str(render_root), "--direct", "--wing", WING]

@@ -416,7 +416,127 @@ class FakeMempalaceClient:
         return self.call_tool("mempalace_reconnect")
 
 
+# ── Library-facing seam (spec 044) ─────────────────────────────────────
+#
+# pipelines/library never imports mempalace or shells to it; it calls these.
+#
+# MCP ``mempalace_search`` hit shape (verified against ~/src/Mempalace
+# mcp_server/tools_read.py + searcher/*.py, 2026-11-20). ``search`` returns
+#
+#     {"query", "filters", "total_before_filter", "primary", "results" (alias),
+#      "themes", ["error": str]}
+#
+# and each hit in ``results`` carries ``drawer_id``, ``text`` (the chunk),
+# ``wing``, ``room``, ``source_file`` (BASENAME only), ``source_path`` (the
+# FULL stored path) and ``similarity``/``distance``. So both ``source_path``
+# and ``room`` are present: section mapping by source_path (fallback
+# room + basename) works unchanged over MCP. ``limit`` is capped at 100.
+#
+# R10 (delete on refresh): the MCP surface has NO delete-by-room tool, but it
+# has ``mempalace_delete_by_source`` (exact source_file, bulk, also purges
+# closets) and ``mempalace_list_drawers`` (wing/room filter, drawers carry
+# ``metadata.source_file``). ``delete_room`` composes them: list the room,
+# delete each distinct source. No rebuild fallback is needed.
+
+import tempfile
+from pathlib import Path
+
+_LIST_PAGE = 100
+
+
+def mine(
+    render_root,
+    *,
+    palace,
+    wing: str,
+    env: dict | None = None,
+    files: Iterable[str] | None = None,
+) -> str:
+    """Run ``mempalace mine <root> --direct --wing <wing>`` against ``palace``.
+
+    ``--direct``: the shared daemon could be serving a live palace. ``files``
+    (relative to ``render_root``) limits the run to exactly those files via
+    ``--files-from``. ``env`` is passed through; the caller's dict is not
+    mutated. Raises :class:`MempalaceProcessError` on a non-zero exit.
+    """
+    run_env = dict(env if env is not None else os.environ)
+    run_env["MEMPALACE_PALACE_PATH"] = str(palace)
+    cmd = ["mempalace", "--palace", str(palace), "mine", str(render_root), "--direct", "--wing", wing]
+    tmp = None
+    try:
+        if files is not None:
+            tmp = tempfile.NamedTemporaryFile("w", suffix=".txt", delete=False, encoding="utf-8")
+            tmp.write("\n".join(files))
+            tmp.close()
+            cmd += ["--files-from", tmp.name]
+        proc = subprocess.run(cmd, env=run_env, capture_output=True, text=True)
+    finally:
+        if tmp is not None:
+            Path(tmp.name).unlink(missing_ok=True)
+    if proc.returncode != 0:
+        raise MempalaceProcessError(
+            f"mempalace mine exited {proc.returncode}: {(proc.stderr or proc.stdout or '').strip()[-500:]}"
+        )
+    return proc.stdout or ""
+
+
+def delete_room(palace, wing: str, room: str, *, client=None, env: dict | None = None) -> int:
+    """Delete every drawer in ``wing``/``room``; return distinct sources removed."""
+    own = client is None
+    client = client or MempalaceClient(palace=str(palace), env=env)
+    try:
+        sources: set[str] = set()
+        orphans: list[str] = []
+        offset = 0
+        while True:
+            page = client.call_tool(
+                "mempalace_list_drawers", wing=wing, room=room, limit=_LIST_PAGE, offset=offset
+            )
+            drawers = page.get("drawers") or []
+            for d in drawers:
+                src = (d.get("metadata") or {}).get("source_file")
+                if src:
+                    sources.add(src)
+                elif d.get("drawer_id"):
+                    orphans.append(d["drawer_id"])
+            offset += len(drawers)
+            if not drawers or offset >= int(page.get("total") or 0):
+                break
+        for src in sorted(sources):
+            client.call_tool("mempalace_delete_by_source", source_file=src, dry_run=False)
+        for did in orphans:
+            client.call_tool("mempalace_delete_drawer", drawer_id=did)
+        return len(sources) + len(orphans)
+    finally:
+        if own:
+            client.close()
+
+
+def search(
+    query: str,
+    *,
+    palace,
+    wing: str | None = None,
+    limit: int = 50,
+    env: dict | None = None,
+    client_factory=None,
+) -> dict:
+    """Search an explicit palace path (passes ``--palace`` to the server)."""
+    factory = client_factory or MempalaceClient
+    client = factory(palace=str(palace), env=env)
+    try:
+        kwargs: dict = {"limit": limit}
+        if wing:
+            kwargs["wing"] = wing
+        return client.search(query, **kwargs)
+    finally:
+        client.close()
+
+
 __all__ = [
+    "mine",
+    "delete_room",
+    "search",
     "MempalaceClient",
     "FakeMempalaceClient",
     "MempalaceError",

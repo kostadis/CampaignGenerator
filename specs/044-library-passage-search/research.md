@@ -92,6 +92,18 @@ The Technical Context left no NEEDS CLARIFICATION items. The pilot (`experiments
 - **Consequence**: if the fallback is the one used, SC-005 (refresh under 5% of a build) cannot be met. T007 records which path was taken, and the GM is told before T023.
 - **Guard test**: after a refresh of a changed book, no drawer in the palace has a `source_path` that is absent from the new `sections.json`.
 
+### R10 finding (T007, 2026-11-20): the rebuild fallback is NOT needed
+
+Read-only inspection of `~/src/Mempalace/mempalace/mcp_server/schemas.py` and `tools_write.py`:
+
+- There is **no delete-by-room tool**. There is no filter argument on `mempalace_delete_drawer` (it takes one `drawer_id`).
+- There **is** `mempalace_delete_by_source(source_file, dry_run=True)`: an exact-match bulk delete on the stored full `source_file` path that also purges the matching closets. `dry_run` defaults to true, so a caller must pass `dry_run=false`.
+- There **is** `mempalace_list_drawers(wing, room, limit<=100, offset)`; each drawer carries `metadata.source_file`.
+- **Chosen path**: `mempalace_client.delete_room(palace, wing, room)` lists the room, collects the distinct `source_file` values, and calls `delete_by_source(dry_run=False)` on each (a drawer with no `source_file` falls back to `delete_drawer`). Refresh therefore meets SC-005; no palace rebuild is needed.
+- Mining only a changed book uses `mempalace mine --files-from`, which accepts a newline-separated file list relative to the render root.
+- MCP `search` hit shape: each hit carries `source_path` (full stored path), `source_file` (basename) and `room`, so section mapping by `source_path` (fallback room + basename) is unchanged over MCP. `limit` is capped at 100. Recorded in the `mempalace_client` docstring.
+- Caveat to verify against a real scratch palace in T029: that `--files-from` assigns rooms from `mempalace.yaml` the same way a full-directory mine does.
+
 ## R9. Not repaired
 
 - **Decision**: No structural repair of dirty JSON. `render --merge-fragments` stays an option, off by default. Page numbers are shown only when present.
