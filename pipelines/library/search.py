@@ -26,6 +26,7 @@ from pipelines.library.config import LibraryConfig
 from pipelines.library.guard import WING, require_library_palace
 from pipelines.library.state import rendered_root, require_built, require_embedder_match
 
+RAW_CAP = 100
 _COMMENT = re.compile(r"^<!-- book_id=.*-->\n?", re.M)
 
 
@@ -37,6 +38,9 @@ class SearchResultSet:
     cap_fired: int = 0
     unmapped: list = field(default_factory=list)
     latency_s: float = 0.0
+    raw_hits: int = 0
+    raw_cap: int = RAW_CAP
+    shortfall: int = 0
 
     def to_dict(self) -> dict:
         return {
@@ -46,6 +50,9 @@ class SearchResultSet:
             "cap_fired": self.cap_fired,
             "unmapped": self.unmapped,
             "latency_s": self.latency_s,
+            "raw_hits": self.raw_hits,
+            "raw_cap": self.raw_cap,
+            "shortfall": self.shortfall,
         }
 
 
@@ -76,7 +83,7 @@ def search_library(
     sections = json.loads((root / "sections.json").read_text(encoding="utf-8"))
 
     t0 = time.time()
-    raw = client.search(query, wing=WING, limit=min(100, max(50, limit * 5)))
+    raw = client.search(query, wing=WING, limit=min(RAW_CAP, max(50, limit * 5)))
     if raw.get("error"):
         raise RuntimeError(raw["error"])
     hits = raw.get("results") or raw.get("primary") or []
@@ -120,6 +127,7 @@ def search_library(
             }
         )
     results = results[:limit]
+    shortfall = limit - len(results) if len(hits) >= RAW_CAP else 0
     return SearchResultSet(
         query=query,
         results=results,
@@ -127,6 +135,9 @@ def search_library(
         cap_fired=cap_fired,
         unmapped=unmapped,
         latency_s=round(time.time() - t0, 3),
+        raw_hits=len(hits),
+        raw_cap=RAW_CAP,
+        shortfall=max(0, shortfall),
     )
 
 
@@ -143,4 +154,10 @@ def format_human(out: SearchResultSet) -> str:
         f"--- distinct books: {out.distinct_books}, cap fired: {out.cap_fired}, "
         f"unmapped: {len(out.unmapped)}, latency: {out.latency_s}s"
     )
+    if out.shortfall > 0:
+        lines.append(
+            f"note: shortfall {out.shortfall} — the palace returned its cap of {out.raw_cap} "
+            f"raw hits and per-book/dedupe trimming left fewer than the requested limit; "
+            f"refine the query or raise --per-book"
+        )
     return "\n".join(lines)

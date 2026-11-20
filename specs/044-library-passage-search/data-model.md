@@ -73,12 +73,14 @@ Optional `exclude_book_ids: [int]`.
 
 ```
 { query, results: [{book_id, title, publisher, section_path, page, score, file, text}],
-  distinct_books, cap_fired, unmapped: [str], latency_s }
+  distinct_books, cap_fired, unmapped: [str], latency_s,
+  raw_hits, raw_cap (100), shortfall }
 ```
 
 **Invariants**:
 - At most `per_book` results per `book_id` (FR-009).
 - Each `file` appears at most once (FR-008).
+- `shortfall` = `limit - len(results)` when the raw request returned `raw_cap` hits, else 0; reported, never silent (#668).
 - No hit is dropped silently; a hit that cannot be traced to a book goes into `unmapped` (FR-010).
 
 ## BuildReport

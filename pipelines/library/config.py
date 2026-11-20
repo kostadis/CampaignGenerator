@@ -96,10 +96,12 @@ def load_library_config(
 
     work = _path(lib["work_dir"])
     cache = _path(lib["cache_dir"]) if lib.get("cache_dir") else work / "cache"
-    require_isolated_dir(work, "library.work_dir", home)
-    require_isolated_dir(cache, "library.cache_dir", home)
+    pm = (cfg.get("paths") or {}).get("mempalace")
+    extra = (pm,) if pm else ()
+    require_isolated_dir(work, "library.work_dir", home, environ, extra)
+    require_isolated_dir(cache, "library.cache_dir", home, environ, extra)
     return LibraryConfig(
-        palace=require_library_palace(_path(lib["palace"]), home),
+        palace=require_library_palace(_path(lib["palace"]), home, environ, extra),
         source_root=_path(lib["source_root"]),
         work_dir=work,
         cache_dir=cache,

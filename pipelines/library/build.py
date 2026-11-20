@@ -14,7 +14,7 @@ from pathlib import Path
 from pipelines.library import SourceUnavailable
 from pipelines.library.config import LibraryConfig
 from pipelines.library.fetch import fetch_all
-from pipelines.library.guard import WING, require_library_palace
+from pipelines.library.guard import WING, mark_library_palace, require_library_palace
 from pipelines.library.render import render_book, write_palace_layout
 from pipelines.library.select import select_books_report, write_manifest
 
@@ -144,6 +144,7 @@ def _failed_entry(old: dict | None, reason: str) -> dict:
 def build(config: LibraryConfig, *, client) -> BuildReport:
     t0 = time.time()
     require_library_palace(config.palace)
+    mark_library_palace(config.palace)  # fresh/empty dir accepted above; claim it
     check_source_root(config)
     work = Path(config.work_dir)
     rendered = work / RENDERED
@@ -194,6 +195,7 @@ def build(config: LibraryConfig, *, client) -> BuildReport:
     if laid_out:
         try:
             client.mine(rendered, wing=WING)
+            mark_library_palace(config.palace)
         except Exception as e:
             for b in laid_out:
                 ledger[str(b["book_id"])] = _failed_entry(
@@ -298,6 +300,7 @@ def refresh(config: LibraryConfig, *, client) -> BuildReport:
     if new_files:
         try:
             client.mine(rendered, wing=WING, files=new_files)
+            mark_library_palace(config.palace)
         except Exception as e:
             for k, entry in new_entries.items():
                 prior[k] = _failed_entry(entry, f"mine failed: {e}")

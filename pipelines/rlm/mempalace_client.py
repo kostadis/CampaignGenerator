@@ -30,12 +30,31 @@ import os
 import shutil
 import subprocess
 import threading
+from pathlib import Path
 from typing import Any, Iterable
 
 logger = logging.getLogger(__name__)
 
 
 _DEFAULT_PROTOCOL_VERSION = "2025-06-18"
+
+
+def known_palaces(config_dir=None, environ=os.environ) -> list[Path]:
+    """Palace paths registered in mempalace's config.json (pure file read).
+
+    ``config_dir``: default $MEMPALACE_CONFIG_DIR, else ~/.mempalace. A missing
+    or invalid file yields ``[]``.
+    """
+    if config_dir is None:
+        config_dir = environ.get("MEMPALACE_CONFIG_DIR") or "~/.mempalace"
+    try:
+        data = json.loads((Path(config_dir).expanduser() / "config.json").read_text("utf-8"))
+        if not isinstance(data, dict):
+            return []
+        vals = list((data.get("palaces") or {}).values()) + [data.get("palace_path")]
+        return [Path(v).expanduser() for v in vals if isinstance(v, str) and v]
+    except (OSError, ValueError, AttributeError):
+        return []
 
 
 class MempalaceError(RuntimeError):

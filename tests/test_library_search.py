@@ -153,6 +153,24 @@ def test_to_dict_and_format_human(tmp_path):
     cfg, root = _setup(tmp_path, {"b1/001-a.md": (1, "x")})
     out = run(cfg, root, [_hit(root, "b1/001-a.md", 0.9)])
     d = out.to_dict()
-    assert set(d) == {"query", "results", "distinct_books", "cap_fired", "unmapped", "latency_s"}
+    assert set(d) == {"query", "results", "distinct_books", "cap_fired", "unmapped", "latency_s",
+                 "raw_hits", "raw_cap", "shortfall"}
     s = format_human(out)
     assert "[1] Book1 (book 1)" in s and "p.4" in s and "distinct books: 1" in s
+
+
+def test_shortfall_reported_when_raw_cap_hit(tmp_path):
+    files = {f"b{1 + i % 2}/{i:03d}-a.md": (1 + i % 2, "x") for i in range(100)}
+    cfg, root = _setup(tmp_path, files)
+    out = run(cfg, root, [_hit(root, k, 0.9) for k in files], limit=10)
+    assert len(out.results) == 4 and out.raw_hits == 100 and out.raw_cap == 100
+    assert out.shortfall == 6 and out.to_dict()["shortfall"] == 6
+    assert "shortfall" in format_human(out) and "6" in format_human(out)
+
+
+def test_no_shortfall_below_cap(tmp_path):
+    files = {f"b1/00{i}-a.md": (1, "x") for i in range(5)}
+    cfg, root = _setup(tmp_path, files)
+    out = run(cfg, root, [_hit(root, k, 0.9) for k in files], limit=10)
+    assert out.raw_hits == 5 and out.shortfall == 0
+    assert "shortfall" not in format_human(out)

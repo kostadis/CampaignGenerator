@@ -206,7 +206,8 @@ and "not set up" so it can pass them through.
 | 3 | | `<path> has no env.MEMPALACE_BACKEND; refusing to use a default backend` | Set `env.MEMPALACE_BACKEND` in the file (or the shell). |
 | 4 | Not built | `the library at <work_dir> has not been built; run \`library build\` (hypostasis setup builds it when no library exists)` | `library build`. Also what `search` and `refresh` say before the first build; `status` prints `library: not built; ...` after its output. |
 | 5 | Embedder mismatch | `the library was built with A/B/C but the current config uses X/Y/Z; searching would return garbage. Restore the embedder in hypostasis.yaml env: or rebuild with \`library build\`.` | Restore the old `env:` values, or `library build` with the new embedder. `status` prints a shorter `library: embedder mismatch; ...`. |
-| 6 | Refused | `library.palace <p> resolves to <q>, inside live location <root>; refusing. Set library.palace ... to an isolated path.` | Point `library.palace` somewhere that is not under `~/.mempalace` or `~/src/campaigns` (symlinks are resolved first). |
+| 6 | Refused | `library.palace <p> resolves to <q>, inside live location <root>; refusing. Set library.palace ... to an isolated path.` | Point `library.palace` somewhere isolated. The guard refuses a path that equals, is inside, or is an ancestor of any live location: the mempalace config dir (`$MEMPALACE_CONFIG_DIR`, else `~/.mempalace`), every palace in that dir's `config.json` (`palaces` map and `palace_path`), hypostasis `paths.mempalace`, or `~/src/campaigns` (symlinks resolved first; so `~` and `~/src` are refused). The message names which live location matched and how. |
+| 6 | Refused | `... an unmarked existing palace (non-empty, no .library-palace marker)` | `library.palace` already holds files that `build` did not create (an unregistered palace). Pick an empty/new path. `build` writes a `.library-palace` marker into the palace dir (and `refresh` rewrites it after a mine); a palace built before this check needs `touch <palace>/.library-palace` once. Applies to the palace only, not `work_dir`. |
 
 Through MCP the same conditions come back as `{"error": "<code>", "message": ...}` with code
 `not_configured`, `not_built`, `embedder_mismatch`, `refused` or `failed`.
@@ -280,3 +281,11 @@ It is on by default:
 - `--help` exits 0, not 2.
 - The tier's `library_status` and `library_reason` are an addition not described by the spec's
   CLI contract; see `specs/044-library-passage-search/contracts/retrieval-kind.md`.
+
+
+## Hit-cap shortfall
+
+The palace search returns at most 100 raw hits. Expanding hits to sections, dropping duplicates and the
+per-book cap can leave fewer than `--limit` results. When the raw request hit the cap and results fell
+short, the human output ends with `note: shortfall N ...`, and `--json` / the MCP tool carry `raw_hits`,
+`raw_cap` and `shortfall` (0 when the cap was not hit). Refine the query or raise `--per-book`.
