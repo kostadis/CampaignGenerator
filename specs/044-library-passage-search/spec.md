@@ -83,19 +83,20 @@ Library passages follow the same tier rules and carry the same book identifiers,
 
 ---
 
-### User Story 4 - Declare, build and refresh the library (Priority: P3)
+### User Story 4 - Declare the library and keep it current (Priority: P3)
 
-The GM declares which converted books belong in the library, for example "these product types", "this list" or "everything converted". Then the GM builds the library. Later, after fixing one book's JSON by hand, the GM refreshes the library. Only the changed books are re-processed.
+The GM declares which converted books belong in the library: by product type, by an explicit list, or by an explicit "all converted". Later, after fixing one book's JSON by hand, the GM refreshes the library, and only the changed books are re-processed. This feature provides the declaration and the build/refresh **commands**. Running them as part of machine bring-up belongs to hypostasis (see Out of Scope).
 
-**Why this priority**: Building the library is a prerequisite for the other stories, but the pilot already shows a build works. The new value here is an explicit selection and a cheap refresh after a book is fixed. The GM's stated approach to messy books is "if I really care about a book, I fix the JSON".
+**Why this priority**: The other stories need a built library, but the pilot already shows a build works. The new value here is an explicit selection and a cheap refresh after a book is fixed. That matches the GM's approach to messy books: "if I really care about a book, I fix the JSON".
 
-**Independent Test**: Declare 50 books and build. Change one book's JSON and refresh. Only that book is re-processed, and a search reflects the change.
+**Independent Test**: Declare 50 books and run the build command. Change one book's JSON and run the refresh. Only that book is re-processed, and a search reflects the change.
 
 **Acceptance Scenarios**:
 
 1. **Given** no selection has been declared, **When** a build is requested, **Then** the build refuses and explains how to declare one. It never defaults silently to "all" (Principle X).
 2. **Given** a built library and one changed book JSON, **When** the GM refreshes, **Then** only that book's passages are replaced and the run reports what changed.
 3. **Given** a selected book whose JSON is missing or unreadable, **When** building, **Then** the build continues with the other books and reports that book by id and reason.
+4. **Given** the library has not been brought up on this machine, **When** a search or RLM retrieval runs, **Then** it reports that the library is unavailable and names the hypostasis step that provides it. It does not try to build the library itself.
 
 ### Edge Cases
 
@@ -137,6 +138,8 @@ The GM declares which converted books belong in the library, for example "these 
 **Operations**
 
 - **FR-015**: The build MUST report books selected, books indexed, books skipped (with id and reason), the number of passages, elapsed time and the size of the index.
+- **FR-017**: The library's location, its selection declaration and the embedding setup MUST be read from hypostasis's central configuration (the authority file), not from per-campaign config or hard-coded defaults. Searches and builds MUST use exactly what that configuration says.
+- **FR-018**: The build/refresh and health-check commands MUST be callable non-interactively and MUST return distinct exit statuses for "ok", "failed", "not configured" and "library not built", so that hypostasis setup, start and status can drive and report them.
 - **FR-016**: The library MUST NOT feed any render pipeline directly. As with all RLM retrieval, a passage reaches campaign documents only through the human-approved proposal flow (Principle III).
 
 ### Key Entities
@@ -158,6 +161,13 @@ The GM declares which converted books belong in the library, for example "these 
 - **SC-005**: Refreshing after one book's JSON changed takes under 5% of the time of a full build.
 - **SC-006**: No build or search ever modifies a campaign palace or the default palace. This is verifiable by comparing them before and after.
 - **SC-007**: Across 10 real prep requests, the GM judges at least 7 answers useful.
+
+## Out of Scope
+
+- **Bringing up the library and making it available on a machine.** This is an extension of hypostasis setup and start in `github.com/kostadis/local_machine` (`local-machine hypostasis setup|start|status`). That covers when the library is built or restored from backup, where it lives, whether it counts as up, and how status reports it. It is tracked separately and is not part of this feature. This feature supplies the commands and the health check that hypostasis calls (FR-017, FR-018).
+- Other publishers and game systems.
+- Re-converting PDFs and adding page data to the conversion.
+- Structural repair of dirty converted JSON.
 
 ## Assumptions
 
