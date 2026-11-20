@@ -1,6 +1,6 @@
 """``library`` CLI. No LLM calls; all palace access via mempalace_client.
 
-Subcommands wired so far: build, search. (refresh / status / verify-citation: later tasks.)
+Subcommands: build, refresh, search, status, verify-citation.
 """
 
 from __future__ import annotations
@@ -29,6 +29,14 @@ def _parser() -> argparse.ArgumentParser:
     s.add_argument("--limit", type=int, default=10)
     s.add_argument("--per-book", type=int, default=2)
     s.add_argument("--json", action="store_true")
+    r = sub.add_parser("refresh", help="re-process only changed/added/removed books")
+    r.add_argument("--json", action="store_true")
+    st = sub.add_parser("status", help="health check")
+    st.add_argument("--json", action="store_true")
+    v = sub.add_parser("verify-citation", help="check a quote appears verbatim in a passage")
+    v.add_argument("file")
+    v.add_argument("quote")
+    v.add_argument("--json", action="store_true")
     return ap
 
 
@@ -55,6 +63,31 @@ def main(argv=None) -> int:
             )
             print(json.dumps(out.to_dict(), indent=2) if args.json else format_human(out))
             return ExitCode.OK
+        if args.cmd == "status":
+            from pipelines.library.status import status
+
+            s = status(config)
+            if args.json:
+                print(json.dumps(s, indent=2))
+            else:
+                print(f"configured: yes, built: {'yes' if s['built'] else 'no'}, books: {s['books']}, "
+                      f"stale: {len(s['stale'])}, embedder match: {s['embedder_match']}, "
+                      f"palace: {s['palace']}, index bytes: {s['index_bytes']}")
+            if not s["built"]:
+                print("library: not built; run `library build` (hypostasis setup builds it)", file=sys.stderr)
+                return int(ExitCode.NOT_BUILT)
+            if s["embedder_match"] is False:
+                print("library: embedder mismatch; restore env: in hypostasis.yaml or `library build`",
+                      file=sys.stderr)
+                return int(ExitCode.EMBEDDER_MISMATCH)
+            return int(ExitCode.OK)
+        if args.cmd == "verify-citation":
+            from pipelines.library.verify import verify_citation
+
+            out = verify_citation(config.work_dir, args.file, args.quote)
+            print(json.dumps(out) if args.json else
+                  (f"found at offset {out['offset']}" if out["found"] else "NOT FOUND"))
+            return int(ExitCode.OK if out["found"] else ExitCode.FAILED)
     except LibraryError as e:
         print(f"library: {e}", file=sys.stderr)
         return int(e.exit_code)

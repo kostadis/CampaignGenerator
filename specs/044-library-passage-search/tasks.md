@@ -100,7 +100,7 @@ description: "Task list for Library Passage Search"
 
 **Independent Test**: `library search "tavern keeper statblock" --json` returns whole sections, no more than 2 per book, with a summary.
 
-- [ ] T018 [P] [US2] Write tests in tests/test_library_cli.py:
+- [X] T018 [P] [US2] Write tests in tests/test_library_cli.py:
   - `library search` produces the human-readable format and the `--json` format;
   - exit codes are 3 when not configured, 4 when not built, 5 on an embedder mismatch, and 6 when refused;
   - each refusal message names its fix, and exit 4 names the hypostasis step;
@@ -110,7 +110,7 @@ description: "Task list for Library Passage Search"
   - a span that differs only in whitespace is found;
   - a single changed word is not found;
   - a file outside `rendered/` is refused.
-- [ ] T019 [US2] Implement `library build | search | status | verify-citation` in pipelines/library/cli.py and `status(config) -> dict` in pipelines/library/status.py, mapping exceptions to `ExitCode`.
+- [X] T019 [US2] Implement `library build | search | status | verify-citation` in pipelines/library/cli.py and `status(config) -> dict` in pipelines/library/status.py, mapping exceptions to `ExitCode`.
 
 ## Phase 5: User Story 3 — Library hits in RLM retrieval (P2)
 
