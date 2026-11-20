@@ -104,3 +104,27 @@ def test_format_human(tmp_path):
     root = _setup(tmp_path, {"b1/001-a.md": (1, "x")})
     s = format_human(run(tmp_path, root, [_hit(root, "b1/001-a.md", 0.9)]))
     assert "[1] Book1 (book 1)" in s and "p.4" in s and "distinct books: 1" in s
+
+
+def test_default_search_imports_from_public_searcher(tmp_path, monkeypatch):
+    import sys
+    import types
+
+    from pipelines.rpglib_palace.guard import ENV_VAR  # noqa: F401
+
+    calls = {}
+    fake = types.ModuleType("mempalace.searcher")
+
+    def search_memories(text, palace_path, wing, n_results):
+        calls.update(text=text, palace_path=palace_path, wing=wing, n_results=n_results)
+        return {"results": []}
+
+    fake.search_memories = search_memories
+    monkeypatch.setitem(sys.modules, "mempalace.searcher", fake)
+    monkeypatch.delitem(sys.modules, "mempalace.searcher.query", raising=False)
+    from pipelines.rpglib_palace.query import _default_search
+
+    _default_search("q", tmp_path, 7)
+    assert calls == {
+        "text": "q", "palace_path": str(tmp_path), "wing": "wing_dmsguild", "n_results": 7,
+    }

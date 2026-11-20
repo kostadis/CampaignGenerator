@@ -10,6 +10,7 @@ import sys
 import time
 from pathlib import Path
 
+from pipelines.rpglib_palace.envcfg import hypostasis_env
 from pipelines.rpglib_palace.guard import PalaceGuardError, mine_command, require_pilot_palace
 
 DEFAULT_DB = Path("~/src/mytools/rpg-lib/rpg_library.db")
@@ -96,12 +97,14 @@ def main(argv=None) -> int:
             print(f"rpglib_palace: {e}", file=sys.stderr)
             raise SystemExit(2)
         t0 = time.time()
-        subprocess.run(mine_command(rendered, palace), env=os.environ, check=True)
+        subprocess.run(mine_command(rendered, palace), env=hypostasis_env(), check=True)
         print(f"mine elapsed: {time.time() - t0:.1f}s; palace bytes: {_dir_bytes(palace)}")
         return 0
 
     if args.cmd == "query":
         from pipelines.rpglib_palace.query import format_human, run_query
+
+        os.environ.update(hypostasis_env())
 
         try:
             palace = require_pilot_palace()

@@ -1,6 +1,6 @@
 """Query the pilot palace: expand hits to whole sections, cap per book.
 
-``mempalace.searcher.query.search_memories`` returns a dict::
+``mempalace.searcher.search_memories`` returns a dict::
 
     {"query", "filters", "total_before_filter", "primary", "results" (alias of
      primary), "themes", ["error" on failure]}
@@ -28,7 +28,7 @@ _COMMENT = re.compile(r"^<!-- book_id=.*-->\n?", re.M)
 
 
 def _default_search(text, palace, fetch):
-    from mempalace.searcher.query import search_memories
+    from mempalace.searcher import search_memories
 
     return search_memories(text, palace_path=str(palace), wing=WING, n_results=fetch)
 
