@@ -119,9 +119,9 @@ tests/test_library_*.py                    # moved from the pilot's tests and ex
 | A UI panel for a feature used mostly through the CLI and agents | Principle XI; the GM has not asked for no UI | Omitting it would be an unstated exemption. If the GM rules "no UI", drop the UI tasks and record the ruling here. |
 | Mining routed through `mempalace_client` (as a subprocess, not MCP) | Principle V: one seam to MemPalace | A `subprocess.run(["mempalace","mine"…])` call in `pipelines/library` would be a second seam. |
 
-## Open (not blocking)
+## Decided
 
-- The GM has not ruled whether **building** belongs to CG (as the spec says) or entirely to hypostasis. This plan follows the spec. If the ruling changes, `build`/`refresh` become an internal API that hypostasis calls, and FR-018 stays as written.
+- **Build ownership (GM, 2026-11-20): option A.** CG owns `library build` and `library refresh`. Hypostasis decides when to run them: `setup` runs `library build` when no library exists, and `status` runs `library status`. The GM runs `library refresh` directly after fixing a book's JSON.
 
 ## Post-design Constitution re-check
 
