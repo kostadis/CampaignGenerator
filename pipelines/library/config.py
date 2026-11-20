@@ -12,7 +12,7 @@ from pathlib import Path
 import yaml
 
 from pipelines.library import NotConfigured
-from pipelines.library.guard import require_library_palace
+from pipelines.library.guard import require_isolated_dir, require_library_palace
 
 DEFAULT_PATH = Path("~/.config/hypostasis/hypostasis.yaml")
 _FORMS = ("product_types", "book_ids", "all_converted")
@@ -95,11 +95,14 @@ def load_library_config(
             env[k] = str(v)
 
     work = _path(lib["work_dir"])
+    cache = _path(lib["cache_dir"]) if lib.get("cache_dir") else work / "cache"
+    require_isolated_dir(work, "library.work_dir", home)
+    require_isolated_dir(cache, "library.cache_dir", home)
     return LibraryConfig(
         palace=require_library_palace(_path(lib["palace"]), home),
         source_root=_path(lib["source_root"]),
         work_dir=work,
-        cache_dir=_path(lib["cache_dir"]) if lib.get("cache_dir") else work / "cache",
+        cache_dir=cache,
         selection=selection,
         rpg_library_db=_path(cfg["rpg_library_db"]),
         exclude_book_ids=[int(x) for x in (lib.get("exclude_book_ids") or [])],

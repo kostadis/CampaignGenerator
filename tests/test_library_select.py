@@ -157,3 +157,49 @@ def test_manifest_roundtrip(tmp_path):
     books = [{"book_id": 1}]
     write_manifest(books, tmp_path / "m.json")
     assert read_manifest(tmp_path / "m.json") == {"books": books}
+
+
+from pipelines.library.select import select_books_report
+
+
+def _reasons(skipped):
+    return {s["book_id"]: s["reason"] for s in skipped}
+
+
+def test_explicit_ids_dropped_are_reported(tmp_path):
+    root = tmp_path / "src"
+    _touch(root / "ok.pdf"); _touch(root / "ok.json")
+    _touch(root / "ex.pdf"); _touch(root / "ex.json")
+    _touch(root / "nosc.pdf")
+    _touch(root / "old.old-001.pdf"); _touch(root / "old.old-001.json")
+    other = tmp_path / "other"
+    _touch(other / "out.pdf"); _touch(other / "out.json")
+    rows = [row(1, root, "ok.pdf"), row(2, root, "ex.pdf"), row(3, root, "nosc.pdf"),
+            row(4, root, "old.old-001.pdf"), row(5, other, "out.pdf"),
+            (6, None, "T6", None, "P", "adventure", 0, 0, 0)]
+    db = _db(tmp_path, rows)
+    c = cfg(tmp_path, db, root, book_ids=[1, 2, 3, 4, 5, 6, 99], exclude_book_ids=[2])
+    books, skipped = select_books_report(c)
+    assert ids(books) == [1]
+    r = _reasons(skipped)
+    assert set(r) == {2, 3, 4, 5, 6, 99}
+    assert all(r.values())
+    assert "exclude" in r[2]
+    assert "not in" in r[99]
+
+
+def test_non_explicit_missing_sidecar_not_reported_but_exclude_is(tmp_path):
+    root = tmp_path / "src"
+    _touch(root / "a.pdf"); _touch(root / "a.json")
+    _touch(root / "b.pdf")  # no sidecar: simply not selected (FR-003)
+    _touch(root / "c.pdf"); _touch(root / "c.json")
+    db = _db(tmp_path, [row(1, root, "a.pdf"), row(2, root, "b.pdf"), row(3, root, "c.pdf")])
+    books, skipped = select_books_report(cfg(tmp_path, db, root, exclude_book_ids=[3]))
+    assert ids(books) == [1]
+    assert list(_reasons(skipped)) == [3]
+
+
+def test_same_title_different_publisher_both_kept(tmp_path):
+    db, root = mk(tmp_path, [(1, "a.pdf", {"dt": "Same", "pub": "Pub A"}),
+                             (2, "b.pdf", {"dt": "Same", "pub": "Pub B"})])
+    assert ids(select_books(cfg(tmp_path, db, root))) == [1, 2]

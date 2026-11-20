@@ -38,3 +38,20 @@ def test_refusal_names_fix_and_exit_code(tmp_path):
         require_library_palace(tmp_path / ".mempalace/x", tmp_path)
     assert "library.palace" in str(ei.value)
     assert PalaceRefused.exit_code == ExitCode.REFUSED == 6
+
+
+def test_work_dir_and_cache_dir_in_live_location_refused(tmp_path):
+    from pipelines.library.config import load_library_config
+
+    base = (
+        "env:\n  MEMPALACE_BACKEND: turbovec\nrpg_library_db: /x.db\nlibrary:\n"
+        f"  palace: {tmp_path / 'p'}\n  source_root: {tmp_path / 's'}\n"
+        "  selection:\n    all_converted: true\n"
+    )
+    for extra in (f"  work_dir: {tmp_path / '.mempalace' / 'w'}\n",
+                  f"  work_dir: {tmp_path / 'w'}\n  cache_dir: {tmp_path / 'src' / 'campaigns' / 'c'}\n"):
+        h = tmp_path / "h.yaml"
+        h.write_text(base + extra)
+        with pytest.raises(PalaceRefused) as ei:
+            load_library_config(h, {}, home=tmp_path)
+        assert ei.value.exit_code == ExitCode.REFUSED

@@ -49,9 +49,9 @@ env:                                            # merged into the mine/search en
 
 library:
   palace: ~/.local/share/hypostasis/library/palace   # REQUIRED; must not be under ~/.mempalace or ~/src/campaigns
-  work_dir: ~/.local/share/hypostasis/library        # REQUIRED; rendered tree, ledger, manifest, embedder stamp
+  work_dir: ~/.local/share/hypostasis/library        # REQUIRED; same live-location refusal (exit 6); rendered tree, ledger, manifest, embedder stamp
   source_root: "/mnt/g/My Drive/DriveThru/Dungeon Masters Guild"   # REQUIRED; a book must live under it
-  cache_dir: ~/.local/share/hypostasis/library/cache # optional; defaults to <work_dir>/cache
+  cache_dir: ~/.local/share/hypostasis/library/cache # optional; defaults to <work_dir>/cache; same refusal as work_dir
   selection:                                         # REQUIRED; exactly ONE of the three forms
     product_types: [adventure, setting, gm_aid]
     # book_ids: [2443, 2475]
@@ -68,7 +68,13 @@ Rules the code enforces:
   explicitly and is the GM's word (old-version and duplicate rows are *not* dropped for it, and
   twin-dedupe is skipped); `all_converted: true` takes every book. For the first and third forms, rows
   flagged `is_old_version` / `is_duplicate` are dropped, files named `*.old-*` are dropped, and
-  printer-friendly twins of the same title are collapsed to one book.
+  printer-friendly twins of the same title *and publisher* are collapsed to one book (two
+  publishers with the same title are both kept).
+- **Explicit ids that are not selected are reported.** A `book_ids` entry that is dropped (id not in
+  the DB, no filepath, outside `source_root`, `.old-` file, no sidecar) and any book hit by
+  `exclude_book_ids` appear in the report's `skipped` list with a reason, and count in `selected`.
+  For `product_types` / `all_converted`, a book with no finished sidecar is simply not selected and
+  is not reported.
 - **A book is selected only if** its `filepath` is under `source_root` **and** the `.json`
   sidecar next to the PDF exists. An unconverted book is silently not selected.
 - **The embedder is stamped at build time** (`<work_dir>/embedder.json`: backend, provider, model,
@@ -100,6 +106,9 @@ Per-book outcomes in the report:
 | `skipped`, reason `no sections` | The JSON parsed but has no `data` (nor `adventureData`/`bookData`) sections. |
 | `failed`, reason `render error: ...` | One book raised during render. It is dropped; the rest of the build continues. |
 
+| `failed`, reason `could not delete old drawers: ...` | The old drawers of a previously built book could not be removed; the book is not re-mined (no mining over stale drawers). The next build/refresh retries it. |
+| `failed`, reason `mine failed: ...` | The mine itself raised. Every book of that run is marked `failed` (never `indexed`), the command exits 1, and (for `build`) the embedder stamp is removed so the library reads as not built. The next `refresh`/`build` retries. |
+
 One bad book never sinks a build. Exit is 0 even with skips and failures; read the counts.
 
 ## Task: refresh after fixing a book's JSON
@@ -115,7 +124,9 @@ Refresh compares each selected book's sidecar **size and mtime** against the led
 (`<work_dir>/library_ledger.json`). Changed, newly selected or previously non-indexed books are
 re-rendered; books that left the selection are dropped. For each changed or removed book it
 **deletes that book's drawers first**, then mines only the new files, so stale text never
-survives next to fixed text. Unchanged books are not touched. Output:
+survives next to fixed text. Unchanged books are not touched. A book is marked `indexed` (and its new size/mtime saved) only
+after its mine succeeds; a failed mine or failed delete leaves it `failed`, so the next refresh retries it.
+Output:
 `refreshed: changed [2443], removed [], 612 books / 41210 passages, 0 skipped, 0 failed, 18.2s`.
 
 Refresh requires a built library and a matching embedder (exits 4 and 5, below). If you

@@ -129,3 +129,50 @@ def test_refresh_refuses_embedder_mismatch(tmp_path):
     cfg.env["MEMPALACE_EMBEDDING_MODEL"] = "other"
     with pytest.raises(EmbedderMismatch):
         refresh(cfg, client=c)
+
+
+class FailingMine(PalaceClient):
+    fail = True
+
+    def mine(self, render_root, *, wing, files=None):
+        if self.fail:
+            raise RuntimeError("mine exploded")
+        return super().mine(render_root, wing=wing, files=files)
+
+
+def test_refresh_failed_mine_marks_failed_then_retries(tmp_path):
+    cfg, c = _built(tmp_path, {1: ("A",), 2: ("B",)})
+    _touch_change(cfg, 1, ("A", "A2"))
+    bad = FailingMine()
+    bad.drawers = dict(c.drawers)
+    with pytest.raises(RuntimeError, match="mine exploded"):
+        refresh(cfg, client=bad)
+    ledger = json.loads((cfg.work_dir / "library_ledger.json").read_text())
+    assert ledger["1"]["status"] == "failed" and "mine exploded" in ledger["1"]["reason"]
+    assert ledger["2"]["status"] == "indexed"
+    bad.fail = False
+    bad.calls.clear()
+    rep = refresh(cfg, client=bad)
+    assert 1 in rep.changed
+    assert ("mine", ["b1/001-a.md", "b1/002-a2.md"]) in bad.calls
+    ledger = json.loads((cfg.work_dir / "library_ledger.json").read_text())
+    assert ledger["1"]["status"] == "indexed"
+
+
+def test_refresh_failed_delete_marks_failed_and_does_not_mine_it(tmp_path):
+    from pipelines.rlm.mempalace_client import MempalaceError
+
+    cfg, c = _built(tmp_path, {1: ("A",), 2: ("B",)})
+    _touch_change(cfg, 1, ("A", "A2"))
+
+    class BadDelete(PalaceClient):
+        def delete_room(self, wing, room):
+            raise MempalaceError("delete failed")
+
+    bd = BadDelete()
+    bd.drawers = dict(c.drawers)
+    rep = refresh(cfg, client=bd)
+    assert [f["book_id"] for f in rep.failed] == [1]
+    assert not any(call[0] == "mine" for call in bd.calls)
+    ledger = json.loads((cfg.work_dir / "library_ledger.json").read_text())
+    assert ledger["1"]["status"] == "failed"

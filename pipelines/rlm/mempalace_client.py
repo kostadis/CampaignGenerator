@@ -480,6 +480,14 @@ def mine(
     return proc.stdout or ""
 
 
+def _check_result(result, what: str) -> None:
+    """Raise MempalaceError for an error / unsuccessful tool result."""
+    if not isinstance(result, dict):
+        return
+    if result.get("error") or result.get("success") is False:
+        raise MempalaceError(f"mempalace could not {what}: {result.get('error') or result}")
+
+
 def delete_room(palace, wing: str, room: str, *, client=None, env: dict | None = None) -> int:
     """Delete every drawer in ``wing``/``room``; return distinct sources removed."""
     own = client is None
@@ -492,6 +500,7 @@ def delete_room(palace, wing: str, room: str, *, client=None, env: dict | None =
             page = client.call_tool(
                 "mempalace_list_drawers", wing=wing, room=room, limit=_LIST_PAGE, offset=offset
             )
+            _check_result(page, f"list drawers {wing}/{room}")
             drawers = page.get("drawers") or []
             for d in drawers:
                 src = (d.get("metadata") or {}).get("source_file")
@@ -503,9 +512,15 @@ def delete_room(palace, wing: str, room: str, *, client=None, env: dict | None =
             if not drawers or offset >= int(page.get("total") or 0):
                 break
         for src in sorted(sources):
-            client.call_tool("mempalace_delete_by_source", source_file=src, dry_run=False)
+            _check_result(
+                client.call_tool("mempalace_delete_by_source", source_file=src, dry_run=False),
+                f"delete drawers of {src}",
+            )
         for did in orphans:
-            client.call_tool("mempalace_delete_drawer", drawer_id=did)
+            _check_result(
+                client.call_tool("mempalace_delete_drawer", drawer_id=did),
+                f"delete drawer {did}",
+            )
         return len(sources) + len(orphans)
     finally:
         if own:

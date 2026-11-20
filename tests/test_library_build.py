@@ -147,3 +147,51 @@ def test_rebuild_deletes_prior_rooms_before_mining(tmp_path):
     kinds = [c[0] for c in client.calls]
     assert kinds == ["delete_room", "delete_room", "mine"]
     assert {c[2] for c in client.calls if c[0] == "delete_room"} == {"b1", "b2"}
+
+
+def test_build_mine_failure_marks_failed_and_not_built(tmp_path):
+    from pipelines.library import NotBuilt
+    from pipelines.library.state import require_built
+
+    cfg = world(tmp_path, {1: ("A",)})
+    build(cfg, client=FakeClient())  # a previous good build leaves embedder.json
+
+    class Boom(FakeClient):
+        def mine(self, *a, **k):
+            raise RuntimeError("mine failed")
+
+    with pytest.raises(RuntimeError):
+        build(cfg, client=Boom())
+    with pytest.raises(NotBuilt):
+        require_built(cfg)
+    ledger = json.loads((cfg.work_dir / "library_ledger.json").read_text())
+    assert ledger["1"]["status"] == "failed"
+
+
+def test_build_failed_delete_marks_book_failed_and_skips_it(tmp_path):
+    from pipelines.rlm.mempalace_client import MempalaceError
+
+    cfg = world(tmp_path, {1: ("A",), 2: ("B",)})
+    build(cfg, client=FakeClient())
+
+    class BadDelete(FakeClient):
+        def delete_room(self, wing, room):
+            if room == "b1":
+                raise MempalaceError("nope")
+            return 1
+
+    c = BadDelete()
+    rep = build(cfg, client=c)
+    assert [f["book_id"] for f in rep.failed] == [1]
+    assert rep.indexed == 1
+    ledger = json.loads((cfg.work_dir / "library_ledger.json").read_text())
+    assert ledger["1"]["status"] == "failed"
+    assert not (cfg.work_dir / "rendered" / "b1").exists()
+
+
+def test_explicit_skipped_ids_flow_into_report(tmp_path):
+    cfg = world(tmp_path, {1: ("A",)})
+    cfg.selection = Selection(book_ids=[1, 99])
+    rep = build(cfg, client=FakeClient())
+    assert rep.selected == 2 and rep.indexed == 1
+    assert [s["book_id"] for s in rep.skipped] == [99]

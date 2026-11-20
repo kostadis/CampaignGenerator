@@ -16,7 +16,7 @@ from pipelines.library.config import LibraryConfig
 from pipelines.library.fetch import fetch_all
 from pipelines.library.guard import WING, require_library_palace
 from pipelines.library.render import render_book, write_palace_layout
-from pipelines.library.select import select_books, write_manifest
+from pipelines.library.select import select_books_report, write_manifest
 
 MANIFEST = "manifest.json"
 LEDGER = "library_ledger.json"
@@ -127,6 +127,20 @@ def process_book(book: dict, fetched: dict, rendered: Path) -> tuple[dict, list[
     return entry, recs
 
 
+def _try_delete(client, bid, failures: dict) -> None:
+    """Delete a book's drawers; record (never swallow) a failure."""
+    try:
+        client.delete_room(WING, f"b{bid}")
+    except Exception as e:
+        failures[int(bid)] = f"could not delete old drawers: {e}"
+
+
+def _failed_entry(old: dict | None, reason: str) -> dict:
+    e = dict(old or {"src_size": 0, "src_mtime": 0.0, "render_hash": "", "files": []})
+    e.update(status="failed", reason=reason, updated_at=now_iso())
+    return e
+
+
 def build(config: LibraryConfig, *, client) -> BuildReport:
     t0 = time.time()
     require_library_palace(config.palace)
@@ -134,25 +148,35 @@ def build(config: LibraryConfig, *, client) -> BuildReport:
     work = Path(config.work_dir)
     rendered = work / RENDERED
 
-    books = [b.to_dict() for b in select_books(config)]
+    selected, sel_skipped = select_books_report(config)
+    books = [b.to_dict() for b in selected]
     write_manifest(books, work / MANIFEST)
+
+    # The stamp is written only after a successful mine; until then the
+    # library must read as not built.
+    (work / STAMP).unlink(missing_ok=True)
 
     prior = read_json(work / LEDGER, {})
     # A rebuild must not leave drawers of the previous build behind.
+    delete_failed: dict[int, str] = {}
     for bid, e in prior.items():
-        if e.get("status") == "indexed":
-            client.delete_room(WING, f"b{bid}")
+        if e.get("status") in ("indexed", "failed"):
+            _try_delete(client, bid, delete_failed)
 
     if rendered.exists():
         shutil.rmtree(rendered)
     rendered.mkdir(parents=True)
-    fetched = {r["book_id"]: r for r in fetch_all(books, config.cache_dir)}
+    todo = [b for b in books if b["book_id"] not in delete_failed]
+    fetched = {r["book_id"]: r for r in fetch_all(todo, config.cache_dir)}
 
-    report = BuildReport(selected=len(books))
+    report = BuildReport(selected=len(books) + len(sel_skipped), skipped=list(sel_skipped))
     ledger: dict[str, dict] = {}
     records: list[dict] = []
     laid_out: list[dict] = []
-    for b in books:
+    for bid, reason in delete_failed.items():
+        ledger[str(bid)] = _failed_entry(prior.get(str(bid)), reason)
+        report.failed.append({"book_id": bid, "reason": reason})
+    for b in todo:
         entry, recs = process_book(b, fetched[b["book_id"]], rendered)
         ledger[str(b["book_id"])] = entry
         if entry["status"] == "indexed":
@@ -167,9 +191,17 @@ def build(config: LibraryConfig, *, client) -> BuildReport:
     report.passages = len(records)
 
     write_palace_layout(rendered, records, laid_out)
-    write_json(work / LEDGER, ledger)
     if laid_out:
-        client.mine(rendered, wing=WING)
+        try:
+            client.mine(rendered, wing=WING)
+        except Exception as e:
+            for b in laid_out:
+                ledger[str(b["book_id"])] = _failed_entry(
+                    ledger[str(b["book_id"])], f"mine failed: {e}"
+                )
+            write_json(work / LEDGER, ledger)
+            raise
+    write_json(work / LEDGER, ledger)
     write_json(work / STAMP, embedder_stamp(config))
     report.index_bytes = dir_bytes(config.palace)
     report.elapsed_s = round(time.time() - t0, 3)
@@ -181,7 +213,8 @@ def refresh(config: LibraryConfig, *, client) -> BuildReport:
 
     Per R10: a changed/removed book's drawers are deleted first
     (``client.delete_room``), then only the changed books' files are mined
-    (``--files-from``). Nothing is ever mined over stale drawers.
+    (``--files-from``). Nothing is ever mined over stale drawers, and a book is
+    marked ``indexed`` (with its new size/mtime) only after its mine succeeded.
     """
     from pipelines.library.state import require_built, require_embedder_match
 
@@ -193,7 +226,8 @@ def refresh(config: LibraryConfig, *, client) -> BuildReport:
     work = Path(config.work_dir)
     rendered = work / RENDERED
 
-    books = [b.to_dict() for b in select_books(config)]
+    selected, sel_skipped = select_books_report(config)
+    books = [b.to_dict() for b in selected]
     write_manifest(books, work / MANIFEST)
     prior: dict[str, dict] = read_json(work / LEDGER, {})
     selected_ids = {str(b["book_id"]) for b in books}
@@ -215,36 +249,66 @@ def refresh(config: LibraryConfig, *, client) -> BuildReport:
     sections: dict[str, dict] = read_json(rendered / SECTIONS, {})
     dropping = set(removed) | {b["book_id"] for b in changed_books}
     # Delete drawers first, then forget their files.
+    delete_failed: dict[int, str] = {}
     for bid in sorted(dropping):
-        if prior.get(str(bid), {}).get("status") == "indexed":
-            client.delete_room(WING, f"b{bid}")
+        if prior.get(str(bid), {}).get("status") in ("indexed", "failed"):
+            _try_delete(client, bid, delete_failed)
         shutil.rmtree(rendered / f"b{bid}", ignore_errors=True)
     sections = {k: v for k, v in sections.items() if v["book_id"] not in dropping}
-    for bid in removed:
-        prior.pop(str(bid), None)
 
-    report = BuildReport(selected=len(books), removed=removed)
+    report = BuildReport(selected=len(books) + len(sel_skipped), skipped=list(sel_skipped))
+    for bid in removed:
+        if bid in delete_failed:  # keep it in the ledger so the next refresh retries
+            prior[str(bid)] = _failed_entry(prior.get(str(bid)), delete_failed[bid])
+            report.failed.append({"book_id": bid, "reason": delete_failed[bid]})
+        else:
+            prior.pop(str(bid), None)
+            report.removed.append(bid)
+
+    new_entries: dict[str, dict] = {}
     new_files: list[str] = []
+    new_sections: dict[str, dict] = {}
     for b in changed_books:
-        entry, recs = process_book(b, fetched[b["book_id"]], rendered)
-        prior[str(b["book_id"])] = entry
+        bid = b["book_id"]
+        if bid in delete_failed:
+            prior[str(bid)] = _failed_entry(prior.get(str(bid)), delete_failed[bid])
+            report.failed.append({"book_id": bid, "reason": delete_failed[bid]})
+            continue
+        entry, recs = process_book(b, fetched[bid], rendered)
         if entry["status"] == "indexed":
             for r in recs:
-                sections[r["file"]] = r
+                new_sections[r["file"]] = r
             new_files += entry["files"]
-            report.changed.append(b["book_id"])
-        elif entry["status"] == "skipped":
-            report.skipped.append({"book_id": b["book_id"], "reason": entry["reason"]})
+            new_entries[str(bid)] = entry
+            report.changed.append(bid)
         else:
-            report.failed.append({"book_id": b["book_id"], "reason": entry["reason"]})
+            prior[str(bid)] = entry
+            bucket = report.skipped if entry["status"] == "skipped" else report.failed
+            bucket.append({"book_id": bid, "reason": entry["reason"]})
 
-    laid_out = [b for b in books if prior.get(str(b["book_id"]), {}).get("status") == "indexed"]
-    write_palace_layout(rendered, list(sections.values()), laid_out)
-    write_json(work / LEDGER, prior)
+    def _laid_out(entries):
+        return [
+            b for b in books
+            if (entries.get(str(b["book_id"])) or prior.get(str(b["book_id"]), {})).get("status")
+            == "indexed"
+        ]
+
+    all_sections = {**sections, **new_sections}
+    write_palace_layout(rendered, list(all_sections.values()), _laid_out(new_entries))
     if new_files:
-        client.mine(rendered, wing=WING, files=new_files)
+        try:
+            client.mine(rendered, wing=WING, files=new_files)
+        except Exception as e:
+            for k, entry in new_entries.items():
+                prior[k] = _failed_entry(entry, f"mine failed: {e}")
+            write_palace_layout(rendered, list(sections.values()), _laid_out({}))
+            write_json(work / LEDGER, prior)
+            raise
+    prior.update(new_entries)
+    write_json(work / LEDGER, prior)
+    laid_out = _laid_out({})
     report.indexed = len(laid_out)
-    report.passages = len(sections)
+    report.passages = len(all_sections)
     report.index_bytes = dir_bytes(config.palace)
     report.elapsed_s = round(time.time() - t0, 3)
     return report

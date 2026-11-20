@@ -31,8 +31,20 @@ def _norm(title: str) -> str:
 
 
 def select_books(config: LibraryConfig) -> list[LibraryBook]:
+    return select_books_report(config)[0]
+
+
+def select_books_report(config: LibraryConfig) -> tuple[list[LibraryBook], list[dict]]:
+    """Return (selected books, skipped entries ``{book_id, reason}``).
+
+    An explicitly listed ``book_ids`` entry is the GM's word, so one that cannot
+    be selected is reported. ``exclude_book_ids`` hits are reported too. For
+    ``product_types`` / ``all_converted``, a book without a finished sidecar is
+    simply not selected (FR-003) and is not reported.
+    """
     root = str(config.source_root).rstrip("/") + "/"
     sel = config.selection
+    explicit = bool(sel.book_ids)
     where, params = ["1=1"], []
     if sel.product_types:
         where.append(f"product_type IN ({','.join('?' for _ in sel.product_types)})")
@@ -56,30 +68,52 @@ def select_books(config: LibraryConfig) -> list[LibraryBook]:
         con.close()
 
     excluded = set(config.exclude_book_ids)
+    skipped: list[dict] = []
+
+    def skip(bid: int, reason: str, always: bool = False) -> None:
+        if explicit or always:
+            skipped.append({"book_id": bid, "reason": reason})
+
+    if explicit:
+        found = {int(r[0]) for r in rows}
+        for bid in sorted({int(i) for i in sel.book_ids} - found):
+            skip(bid, "book id not in the rpg-lib database")
+
     cands: list[tuple[LibraryBook, int]] = []
     for bid, filepath, dt, pt, pub, ptype, pf in rows:
-        if int(bid) in excluded or not filepath or not str(filepath).startswith(root):
+        bid = int(bid)
+        if bid in excluded:
+            skip(bid, "excluded by library.exclude_book_ids", always=True)
+            continue
+        if not filepath:
+            skip(bid, "no filepath in the database")
+            continue
+        if not str(filepath).startswith(root):
+            skip(bid, "filepath is outside library.source_root")
             continue
         pdf = Path(filepath)
         if ".old-" in pdf.name:
+            skip(bid, "old-version file (.old-)")
             continue
         sidecar = pdf.with_suffix(".json")
         if not sidecar.is_file():
+            skip(bid, "no finished sidecar (.json) next to the PDF")
             continue
         cands.append(
-            (LibraryBook(int(bid), dt or pt or pdf.stem, pub, ptype, str(pdf), str(sidecar)), int(pf))
+            (LibraryBook(bid, dt or pt or pdf.stem, pub, ptype, str(pdf), str(sidecar)), int(pf))
         )
 
-    if sel.book_ids:  # explicit ids bypass twin dedupe
-        return [b for b, _ in cands]
+    skipped.sort(key=lambda s: s["book_id"])
+    if explicit:  # explicit ids bypass twin dedupe
+        return [b for b, _ in cands], skipped
 
-    best: dict[str, tuple[tuple, LibraryBook]] = {}
+    best: dict[tuple, tuple[tuple, LibraryBook]] = {}
     for b, pf in cands:
         rank = (bool(_PF.search(b.title)), pf, b.book_id)
-        k = _norm(b.title)
+        k = (_norm(b.title), (b.publisher or "").strip().casefold())
         if k not in best or rank < best[k][0]:
             best[k] = (rank, b)
-    return sorted((b for _, b in best.values()), key=lambda b: b.book_id)
+    return sorted((b for _, b in best.values()), key=lambda b: b.book_id), skipped
 
 
 def write_manifest(books, path: Path) -> None:

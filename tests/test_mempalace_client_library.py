@@ -106,3 +106,37 @@ def test_client_command_has_palace_flag(tmp_path):
     c = MempalaceClient(palace=str(tmp_path / "p"), command="mempalace-mcp")
     cmd = c._resolve_command()
     assert cmd[-2:] == ["--palace", str(tmp_path / "p")]
+
+
+from pipelines.rlm.mempalace_client import MempalaceError
+
+
+def _one_source(**over):
+    r = {
+        "mempalace_list_drawers": lambda **kw: dict(
+            _drawers(("d1", "/r/b7/001.md")) if kw["offset"] == 0 else {"drawers": []}, total=1),
+    }
+    r.update(over)
+    return FakeMempalaceClient(r)
+
+
+def test_delete_room_list_error_raises(tmp_path):
+    fake = FakeMempalaceClient({"mempalace_list_drawers": {"error": "boom"}})
+    with pytest.raises(MempalaceError, match="boom"):
+        mc.delete_room(tmp_path / "p", "w", "b7", client=fake)
+
+
+def test_delete_room_delete_by_source_failure_raises(tmp_path):
+    fake = _one_source(mempalace_delete_by_source={"success": False, "error": "nope"})
+    with pytest.raises(MempalaceError):
+        mc.delete_room(tmp_path / "p", "w", "b7", client=fake)
+
+
+def test_delete_room_delete_drawer_failure_raises(tmp_path):
+    fake = FakeMempalaceClient({
+        "mempalace_list_drawers": lambda **kw: dict(
+            _drawers(("d9", None)) if kw["offset"] == 0 else {"drawers": []}, total=1),
+        "mempalace_delete_drawer": {"success": False, "error": "nope"},
+    })
+    with pytest.raises(MempalaceError):
+        mc.delete_room(tmp_path / "p", "w", "b7", client=fake)
