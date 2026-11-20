@@ -1,7 +1,7 @@
 import os
 import shutil
 
-from pipelines.rpglib_palace.fetch import fetch_all
+from pipelines.library.fetch import fetch_all
 
 
 def _book(tmp_path, i, content=b"{}", create=True):

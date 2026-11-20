@@ -1,4 +1,4 @@
-"""rpglib_palace {select,fetch,render,mine,query}. No LLM calls."""
+"""library {select,fetch,render,mine,search}. No LLM calls."""
 
 from __future__ import annotations
 
@@ -10,8 +10,8 @@ import sys
 import time
 from pathlib import Path
 
-from pipelines.rpglib_palace.envcfg import hypostasis_env
-from pipelines.rpglib_palace.guard import PalaceGuardError, mine_command, require_pilot_palace
+from pipelines.library.envcfg import hypostasis_env
+from pipelines.library.guard import PalaceGuardError, mine_command, require_pilot_palace
 
 DEFAULT_DB = Path("~/src/mytools/rpg-lib/rpg_library.db")
 DEFAULT_SOURCE = Path("/mnt/g/My Drive/DriveThru/Dungeon Masters Guild")
@@ -24,7 +24,7 @@ def _dir_bytes(p: Path) -> int:
 
 
 def _parser() -> argparse.ArgumentParser:
-    ap = argparse.ArgumentParser(prog="rpglib_palace")
+    ap = argparse.ArgumentParser(prog="library")
     ap.add_argument("--workdir", default=str(DEFAULT_WORKDIR))
     sub = ap.add_subparsers(dest="cmd", required=True)
     s = sub.add_parser("select")
@@ -38,7 +38,7 @@ def _parser() -> argparse.ArgumentParser:
     r.add_argument("--min-chars", type=int, default=300)
     r.add_argument("--out", default=None)
     sub.add_parser("mine")
-    q = sub.add_parser("query")
+    q = sub.add_parser("search")
     q.add_argument("text")
     q.add_argument("--per-book", type=int, default=2)
     q.add_argument("--fetch", type=int, default=50)
@@ -53,7 +53,7 @@ def main(argv=None) -> int:
     manifest, fetched, rendered = work / "manifest.json", work / "fetched.json", work / "rendered"
 
     if args.cmd == "select":
-        from pipelines.rpglib_palace.select import select_books, write_manifest
+        from pipelines.library.select import select_books, write_manifest
 
         books = select_books(
             Path(args.db).expanduser(), Path(args.source_root), limit=args.limit
@@ -63,8 +63,8 @@ def main(argv=None) -> int:
         return 0
 
     if args.cmd == "fetch":
-        from pipelines.rpglib_palace.fetch import fetch_all
-        from pipelines.rpglib_palace.select import read_manifest
+        from pipelines.library.fetch import fetch_all
+        from pipelines.library.select import read_manifest
 
         res = fetch_all(read_manifest(manifest)["books"], Path(args.cache_dir).expanduser())
         fetched.parent.mkdir(parents=True, exist_ok=True)
@@ -78,8 +78,8 @@ def main(argv=None) -> int:
     if args.cmd == "render":
         if args.out:
             rendered = Path(args.out).expanduser()
-        from pipelines.rpglib_palace.render import render_book, write_palace_layout
-        from pipelines.rpglib_palace.select import read_manifest
+        from pipelines.library.render import render_book, write_palace_layout
+        from pipelines.library.select import read_manifest
 
         books = [b for b in read_manifest(fetched)["books"] if b["status"] != "missing"]
         records, laid_out = [], []
@@ -106,24 +106,24 @@ def main(argv=None) -> int:
         try:
             palace = require_pilot_palace()
         except PalaceGuardError as e:
-            print(f"rpglib_palace: {e}", file=sys.stderr)
+            print(f"library: {e}", file=sys.stderr)
             raise SystemExit(2)
         t0 = time.time()
         subprocess.run(mine_command(rendered, palace), env=hypostasis_env(), check=True)
         print(f"mine elapsed: {time.time() - t0:.1f}s; palace bytes: {_dir_bytes(palace)}")
         return 0
 
-    if args.cmd == "query":
-        from pipelines.rpglib_palace.query import format_human, run_query
+    if args.cmd == "search":
+        from pipelines.library.search import format_human, search_library
 
         os.environ.update(hypostasis_env())
 
         try:
             palace = require_pilot_palace()
         except PalaceGuardError as e:
-            print(f"rpglib_palace: {e}", file=sys.stderr)
+            print(f"library: {e}", file=sys.stderr)
             raise SystemExit(2)
-        out = run_query(
+        out = search_library(
             args.text, palace, rendered, fetch=args.fetch, per_book=args.per_book, top=args.top
         )
         print(json.dumps(out, indent=2) if args.json else format_human(out))

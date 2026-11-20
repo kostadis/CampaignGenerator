@@ -1,8 +1,8 @@
 import sqlite3
 from pathlib import Path
 
-import pipelines.rpglib_palace as pkg
-from pipelines.rpglib_palace.select import read_manifest, select_books, write_manifest
+import pipelines.library as pkg
+from pipelines.library.select import read_manifest, select_books, write_manifest
 
 WORKTREE = Path(__file__).resolve().parent.parent
 

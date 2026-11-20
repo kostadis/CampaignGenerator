@@ -2,8 +2,8 @@ import json
 
 import pytest
 
-from pipelines.rpglib_palace.guard import PalaceGuardError
-from pipelines.rpglib_palace.query import format_human, run_query
+from pipelines.library.guard import PalaceGuardError
+from pipelines.library.search import format_human, search_library
 
 
 def _setup(tmp_path, files):
@@ -43,7 +43,7 @@ PAL = "rpglib-palace/palace"
 
 
 def run(tmp_path, root, hits, **kw):
-    return run_query("q", tmp_path / PAL, root, search_fn=_fake(hits), home=tmp_path, **kw)
+    return search_library("q", tmp_path / PAL, root, search_fn=_fake(hits), home=tmp_path, **kw)
 
 
 def test_expands_to_whole_section(tmp_path):
@@ -89,14 +89,14 @@ def test_unmapped_reported(tmp_path):
 def test_query_refuses_live_palace(tmp_path):
     root = _setup(tmp_path, {"b1/001-a.md": (1, "x")})
     with pytest.raises(PalaceGuardError):
-        run_query("q", tmp_path / ".mempalace/palace", root,
+        search_library("q", tmp_path / ".mempalace/palace", root,
                   search_fn=_fake([]), home=tmp_path)
 
 
 def test_search_error_raises(tmp_path):
     root = _setup(tmp_path, {"b1/001-a.md": (1, "x")})
     with pytest.raises(RuntimeError):
-        run_query("q", tmp_path / PAL, root, home=tmp_path,
+        search_library("q", tmp_path / PAL, root, home=tmp_path,
                   search_fn=lambda *a: {"error": "boom", "results": []})
 
 
@@ -110,7 +110,7 @@ def test_default_search_imports_from_public_searcher(tmp_path, monkeypatch):
     import sys
     import types
 
-    from pipelines.rpglib_palace.guard import ENV_VAR  # noqa: F401
+    from pipelines.library.guard import ENV_VAR  # noqa: F401
 
     calls = {}
     fake = types.ModuleType("mempalace.searcher")
@@ -122,7 +122,7 @@ def test_default_search_imports_from_public_searcher(tmp_path, monkeypatch):
     fake.search_memories = search_memories
     monkeypatch.setitem(sys.modules, "mempalace.searcher", fake)
     monkeypatch.delitem(sys.modules, "mempalace.searcher.query", raising=False)
-    from pipelines.rpglib_palace.query import _default_search
+    from pipelines.library.search import _default_search
 
     _default_search("q", tmp_path, 7)
     assert calls == {

@@ -22,7 +22,7 @@ import re
 import time
 from pathlib import Path
 
-from pipelines.rpglib_palace.guard import ENV_VAR, WING, require_pilot_palace
+from pipelines.library.guard import ENV_VAR, WING, require_pilot_palace
 
 _COMMENT = re.compile(r"^<!-- book_id=.*-->\n?", re.M)
 
@@ -50,7 +50,7 @@ def _lookup(hit: dict, root: Path, sections: dict):
     return None
 
 
-def run_query(
+def search_library(
     text,
     palace: Path,
     render_root: Path,

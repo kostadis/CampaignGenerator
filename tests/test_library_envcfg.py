@@ -1,6 +1,6 @@
 import pytest
 
-from pipelines.rpglib_palace.envcfg import hypostasis_env
+from pipelines.library.envcfg import hypostasis_env
 
 YAML = """env:
   MEMPALACE_BACKEND: turbovec
@@ -38,7 +38,7 @@ def test_missing_backend_errors(tmp_path):
 
 
 def test_mine_passes_merged_env(tmp_path, monkeypatch):
-    from pipelines.rpglib_palace import cli
+    from pipelines.library import cli
 
     merged = {"MEMPALACE_BACKEND": "turbovec", "X": "y"}
     monkeypatch.setattr(cli, "hypostasis_env", lambda *a, **k: merged)

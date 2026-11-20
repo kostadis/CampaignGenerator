@@ -25,8 +25,8 @@ description: "Task list for Library Passage Search"
 
 ## Phase 1: Setup
 
-- [ ] T001 `git mv pipelines/rpglib_palace pipelines/library` and `git mv tests/test_rpglib_palace_*.py tests/test_library_*.py`. Update imports. Run `python -m pytest tests/test_library_*.py` to confirm the 49 pilot tests still pass. Update the worktree-import assertion in tests/test_library_select.py to `pipelines.library`.
-- [ ] T002 Rename the pilot `query.py` to `pipelines/library/search.py` and `run_query` to `search_library`. Change the CLI from `query` to `search`. Replace the `rpglib_palace` entry in `pyproject.toml [project.scripts]` with `library = "pipelines.library.cli:main"`.
+- [X] T001 `git mv pipelines/rpglib_palace pipelines/library` and `git mv tests/test_rpglib_palace_*.py tests/test_library_*.py`. Update imports. Run `python -m pytest tests/test_library_*.py` to confirm the 49 pilot tests still pass. Update the worktree-import assertion in tests/test_library_select.py to `pipelines.library`.
+- [X] T002 Rename the pilot `query.py` to `pipelines/library/search.py` and `run_query` to `search_library`. Change the CLI from `query` to `search`. Replace the `rpglib_palace` entry in `pyproject.toml [project.scripts]` with `library = "pipelines.library.cli:main"`.
 
 ## Phase 2: Foundational (blocks all stories)
 

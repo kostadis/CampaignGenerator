@@ -2,8 +2,8 @@ import json
 
 import yaml
 
-from pipelines.rpglib_palace import render
-from pipelines.rpglib_palace.render import render_book, write_palace_layout
+from pipelines.library import render
+from pipelines.library.render import render_book, write_palace_layout
 
 BOOK = {"book_id": 7, "title": "Book", "publisher": "Pub"}
 

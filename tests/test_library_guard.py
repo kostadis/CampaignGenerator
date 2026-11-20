@@ -2,8 +2,8 @@ import subprocess
 
 import pytest
 
-from pipelines.rpglib_palace import cli
-from pipelines.rpglib_palace.guard import PalaceGuardError, mine_command, require_pilot_palace
+from pipelines.library import cli
+from pipelines.library.guard import PalaceGuardError, mine_command, require_pilot_palace
 
 E = "MEMPALACE_PALACE_PATH"
 
