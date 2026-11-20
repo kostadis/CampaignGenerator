@@ -35,11 +35,12 @@ It is not:
 
 ## The config: `~/.config/hypostasis/hypostasis.yaml`
 
-CG reads two blocks, plus one top-level key, from this file (`pipelines/library/config.py`).
-Hypostasis seeds and owns it. The path is fixed; there is no `--config` flag.
+CG reads two blocks, plus one value under `data_roots`, from this file (`pipelines/library/config.py`).
+Hypostasis seeds and owns it. The default path is fixed; every `library` subcommand accepts `--config PATH` (`-c`) to read another file.
 
 ```yaml
-rpg_library_db: ~/path/to/rpg_library.sqlite   # top-level; the books table is read from it, read-only
+data_roots:
+  rpg_library_db: ~/path/to/rpg_library.sqlite   # the books table is read from it, read-only
 
 env:                                            # merged into the mine/search environment
   MEMPALACE_BACKEND: turbovec                   # REQUIRED
@@ -116,7 +117,7 @@ One bad book never sinks a build. Exit is 0 even with skips and failures; read t
 You edited a book's sidecar (or added or removed a book in the selection):
 
 ```
-library status           # "stale: N" tells you how many sidecars changed since the build
+library status           # "stale: N (added A, removed R)": changed sidecars plus selection changes since the build
 library refresh
 ```
 
@@ -166,7 +167,9 @@ library status --json
 
 Prints `configured: yes, built: yes, books: 612, stale: 0, embedder match: True, palace: ..., index bytes: ...`
 and fails when appropriate (exit 4 not built, exit 5 embedder mismatch). `stale` counts books whose
-sidecar size/mtime differs from the ledger (or whose sidecar is gone); the fix is `library refresh`.
+sidecar size/mtime differs from the ledger (or whose sidecar is gone), plus books newly selected but not
+indexed (`added`) and indexed books no longer selected (`removed`); `--json` lists them as `stale`,
+`added` and `removed`. The fix is `library refresh`.
 `status` never touches the palace and calls no model.
 
 ## Task: verify a quotation
@@ -199,7 +202,7 @@ and "not set up" so it can pass them through.
 | 3 | Not configured | `hypostasis config not found: <path>; run hypostasis setup` | Run hypostasis setup, or create the file. |
 | 3 | | `<path> has no library: block; add one` | Add the `library:` block (see above). |
 | 3 | | `<path> library.palace\|work_dir\|source_root is not set` | Set that key. |
-| 3 | | `<path> has no top-level rpg_library_db key` | Add `rpg_library_db`. |
+| 3 | | `<path> has no data_roots.rpg_library_db key` | Add `rpg_library_db` under `data_roots:`. |
 | 3 | | `library.selection is missing` / `is empty; set exactly one of product_types / book_ids / all_converted under library.selection` | Declare one selection form. |
 | 3 | | `library.selection uses more than one form (a, b); ...` | Keep exactly one form. |
 | 3 | | `library.selection.<form> must be a list` / `all_converted must be true` | Fix the value's type. |

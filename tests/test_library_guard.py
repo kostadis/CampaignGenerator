@@ -45,7 +45,7 @@ def test_work_dir_and_cache_dir_in_live_location_refused(tmp_path):
     from pipelines.library.config import load_library_config
 
     base = (
-        "env:\n  MEMPALACE_BACKEND: turbovec\nrpg_library_db: /x.db\nlibrary:\n"
+        "env:\n  MEMPALACE_BACKEND: turbovec\ndata_roots:\n  rpg_library_db: /x.db\nlibrary:\n"
         f"  palace: {tmp_path / 'p'}\n  source_root: {tmp_path / 's'}\n"
         "  selection:\n    all_converted: true\n"
     )

@@ -1,14 +1,14 @@
 # Contract: `library` CLI
 
-The console script is `library`, registered in `pyproject.toml [project.scripts]`. Every subcommand is non-interactive (FR-018), and every subcommand reads its configuration only from the authority file (see authority-config.md).
+The console script is `library`, registered in `pyproject.toml [project.scripts]`. Every subcommand is non-interactive (FR-018), and every subcommand reads its configuration only from the authority file (see authority-config.md). Every subcommand takes `--config PATH` (short `-c`; `~` is expanded; default `~/.config/hypostasis/hypostasis.yaml`) to read a different authority file; a missing file at that path exits 3 naming the path. The flag goes after the subcommand, e.g. `library status --json --config PATH`.
 
 | Subcommand | Purpose | Output |
 |---|---|---|
-| `library build` | Full build from the declared selection | BuildReport (human-readable; `--json` for machine-readable) |
-| `library refresh` | Re-processes only books that were changed, added or removed | BuildReport, including `changed` and `removed` |
-| `library search "<query>" [--limit 10] [--per-book 2] [--json]` | Whole-section search | SearchResultSet |
-| `library verify-citation <file> "<quote>" [--json]` | Checks that a quoted span appears verbatim in a library passage (SC-002). Whitespace is normalized and nothing else is. | `{file, found: bool, offset}`; exit 0 if found, 1 if not |
-| `library status [--json]` | Health check | `{configured, built, books, stale: [id], embedder_match, palace, index_bytes}` |
+| `library build [--config PATH]` | Full build from the declared selection | BuildReport (human-readable; `--json` for machine-readable) |
+| `library refresh [--config PATH]` | Re-processes only books that were changed, added or removed | BuildReport, including `changed` and `removed` |
+| `library search "<query>" [--limit 10] [--per-book 2] [--json] [--config PATH]` | Whole-section search | SearchResultSet |
+| `library verify-citation <file> "<quote>" [--json] [--config PATH]` | Checks that a quoted span appears verbatim in a library passage (SC-002). Whitespace is normalized and nothing else is. | `{file, found: bool, offset}`; exit 0 if found, 1 if not |
+| `library status [--json] [--config PATH]` | Health check. Counts selection drift as staleness. | `{configured, built, books, stale: [id], added: [id], removed: [id], embedder_match, palace, index_bytes}`. `stale` = changed sources + `added` + `removed`; `added` = selected but not in the ledger; `removed` = in the ledger but no longer selected (the same sets `refresh` adds/removes). Exit codes unchanged: drift alone is exit 0. |
 
 ## Exit codes (shared by every subcommand)
 

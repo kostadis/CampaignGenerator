@@ -8,9 +8,10 @@ from __future__ import annotations
 import argparse
 import json
 import sys
+from pathlib import Path
 
 from pipelines.library import ExitCode, LibraryError
-from pipelines.library.config import load_library_config
+from pipelines.library.config import DEFAULT_PATH, load_library_config
 
 
 def _client(config):
@@ -22,18 +23,22 @@ def _client(config):
 def _parser() -> argparse.ArgumentParser:
     ap = argparse.ArgumentParser(prog="library")
     sub = ap.add_subparsers(dest="cmd", required=True)
-    b = sub.add_parser("build", help="full build from the declared selection")
+    common = argparse.ArgumentParser(add_help=False)
+    common.add_argument(
+        "--config", "-c", default=str(DEFAULT_PATH), metavar="PATH",
+        help="authority file to read (default: %(default)s)")
+    b = sub.add_parser("build", parents=[common], help="full build from the declared selection")
     b.add_argument("--json", action="store_true")
-    s = sub.add_parser("search", help="whole-section search")
+    s = sub.add_parser("search", parents=[common], help="whole-section search")
     s.add_argument("text")
     s.add_argument("--limit", type=int, default=10)
     s.add_argument("--per-book", type=int, default=2)
     s.add_argument("--json", action="store_true")
-    r = sub.add_parser("refresh", help="re-process only changed/added/removed books")
+    r = sub.add_parser("refresh", parents=[common], help="re-process only changed/added/removed books")
     r.add_argument("--json", action="store_true")
-    st = sub.add_parser("status", help="health check")
+    st = sub.add_parser("status", parents=[common], help="health check")
     st.add_argument("--json", action="store_true")
-    v = sub.add_parser("verify-citation", help="check a quote appears verbatim in a passage")
+    v = sub.add_parser("verify-citation", parents=[common], help="check a quote appears verbatim in a passage")
     v.add_argument("file")
     v.add_argument("quote")
     v.add_argument("--json", action="store_true")
@@ -46,7 +51,7 @@ def main(argv=None) -> int:
     except SystemExit as e:
         return int(e.code or 0) and ExitCode.USAGE
     try:
-        config = load_library_config()
+        config = load_library_config(Path(args.config).expanduser())
         if args.cmd == "build":
             from pipelines.library.build import build
 
@@ -80,7 +85,7 @@ def main(argv=None) -> int:
                 print(json.dumps(s, indent=2))
             else:
                 print(f"configured: yes, built: {'yes' if s['built'] else 'no'}, books: {s['books']}, "
-                      f"stale: {len(s['stale'])}, embedder match: {s['embedder_match']}, "
+                      f"stale: {len(s['stale'])} (added {len(s['added'])}, removed {len(s['removed'])}), embedder match: {s['embedder_match']}, "
                       f"palace: {s['palace']}, index bytes: {s['index_bytes']}")
             if not s["built"]:
                 print("library: not built; run `library build` (hypostasis setup builds it)", file=sys.stderr)
