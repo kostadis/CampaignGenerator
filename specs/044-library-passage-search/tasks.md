@@ -118,16 +118,16 @@ description: "Task list for Library Passage Search"
 
 **Independent Test**: `rpg_retriever "tavern keeper"` shows passages after drawers and before candidates. With `--no-library`, the output is identical to before.
 
-- [ ] T020 [P] [US3] Add tests to tests/test_rpg_retriever.py:
+- [X] T020 [P] [US3] Add tests to tests/test_rpg_retriever.py:
   - `reconcile(..., library_result=...)` places passages after drawers and before cheap candidates, in their search order, truncated to `k_library`;
   - books with passages are excluded from the expensive tier;
   - `library_status` is set for ok, not_configured, not_built and embedder_mismatch;
   - with `include_library=False`, the output equals the pre-feature output on the existing fixtures.
-- [ ] T021 [US3] Implement the passage tier in pipelines/rlm/rpg_retriever.py:
+- [X] T021 [US3] Implement the passage tier in pipelines/rlm/rpg_retriever.py:
   - add `library_result` to `reconcile()`;
   - add `include_library` and `k_library` to `retrieve()`, `retrieve_scoped()` and the CLI (`--no-library`, `--k-library`);
   - add `library_status` to `RetrievalResult`, following contracts/retrieval-kind.md.
-- [ ] T022 [US3] Thread `include_library` and `k_library` through `rpg_search` and `propose_dossier` in pipelines/rlm/mcp_server.py. Passages render into `dossier_proposal.md` labelled `passage`. Update tests/test_mcp_server.py.
+- [X] T022 [US3] Thread `include_library` and `k_library` through `rpg_search` and `propose_dossier` in pipelines/rlm/mcp_server.py. Passages render into `dossier_proposal.md` labelled `passage`. Update tests/test_mcp_server.py.
 
 ## Phase 6: User Story 4 — Declare and refresh (P3)
 
@@ -135,14 +135,14 @@ description: "Task list for Library Passage Search"
 
 **Independent Test**: Build; then change one sidecar; then `library refresh`. `changed` lists only that book, and search shows the change.
 
-- [ ] T023 [P] [US4] Write tests in tests/test_library_refresh.py with a fake client (the R10 decision from T007 must already be recorded):
+- [X] T023 [P] [US4] Write tests in tests/test_library_refresh.py with a fake client (the R10 decision from T007 must already be recorded):
   - **no stale drawers**: after refreshing a changed book, no palace `source_path` is missing from the new `sections.json` (R10 guard);
   - for a changed book, the client gets `delete_room(b<id>)` and then a mine of only that book;
   - for a removed book, the client gets `delete_room` and the book's ledger entry is dropped;
   - an unchanged book gets no client call;
   - the ledger is updated;
   - refreshing before any build gives `NotBuilt`.
-- [ ] T024 [US4] Implement `refresh(config, *, client) -> BuildReport` in pipelines/library/build.py, then add `library refresh` to pipelines/library/cli.py.
+- [X] T024 [US4] Implement `refresh(config, *, client) -> BuildReport` in pipelines/library/build.py, then add `library refresh` to pipelines/library/cli.py.
 
 ## Phase 7: Polish & Cross-Cutting
 

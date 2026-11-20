@@ -103,3 +103,19 @@ def test_verify_citation_cli(monkeypatch, tmp_path, capsys):
     assert cli.main(["verify-citation", "b1/001.md", "brave  new", "--json"]) == 0
     assert json.loads(capsys.readouterr().out)["found"] is True
     assert cli.main(["verify-citation", "b1/001.md", "nope"]) == 1
+
+
+def test_refresh_cli(monkeypatch, tmp_path, capsys):
+    cfg, _ = _setup(tmp_path, {})
+    _patch(monkeypatch, cfg)
+    from pipelines.library.build import BuildReport
+    monkeypatch.setattr("pipelines.library.build.refresh",
+                        lambda c, client: BuildReport(selected=1, indexed=1, changed=[7]))
+    assert cli.main(["refresh", "--json"]) == 0
+    assert json.loads(capsys.readouterr().out)["changed"] == [7]
+
+
+def test_refresh_not_built_exit_4(monkeypatch, tmp_path):
+    cfg, _ = _setup(tmp_path, {}, stamp=False)
+    _patch(monkeypatch, cfg)
+    assert cli.main(["refresh"]) == 4

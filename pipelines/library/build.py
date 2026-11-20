@@ -174,3 +174,77 @@ def build(config: LibraryConfig, *, client) -> BuildReport:
     report.index_bytes = dir_bytes(config.palace)
     report.elapsed_s = round(time.time() - t0, 3)
     return report
+
+
+def refresh(config: LibraryConfig, *, client) -> BuildReport:
+    """Re-process only books that changed, were added, or left the selection.
+
+    Per R10: a changed/removed book's drawers are deleted first
+    (``client.delete_room``), then only the changed books' files are mined
+    (``--files-from``). Nothing is ever mined over stale drawers.
+    """
+    from pipelines.library.state import require_built, require_embedder_match
+
+    t0 = time.time()
+    require_library_palace(config.palace)
+    stamp = require_built(config)
+    require_embedder_match(config, stamp)
+    check_source_root(config)
+    work = Path(config.work_dir)
+    rendered = work / RENDERED
+
+    books = [b.to_dict() for b in select_books(config)]
+    write_manifest(books, work / MANIFEST)
+    prior: dict[str, dict] = read_json(work / LEDGER, {})
+    selected_ids = {str(b["book_id"]) for b in books}
+    fetched = {r["book_id"]: r for r in fetch_all(books, config.cache_dir)}
+
+    removed = sorted(int(i) for i in prior if i not in selected_ids)
+    changed_books = []
+    for b in books:
+        e = prior.get(str(b["book_id"]))
+        f = fetched[b["book_id"]]
+        if (
+            e is None
+            or e.get("status") != "indexed"
+            or e.get("src_size") != f.get("bytes")
+            or e.get("src_mtime") != f.get("src_mtime")
+        ):
+            changed_books.append(b)
+
+    sections: dict[str, dict] = read_json(rendered / SECTIONS, {})
+    dropping = set(removed) | {b["book_id"] for b in changed_books}
+    # Delete drawers first, then forget their files.
+    for bid in sorted(dropping):
+        if prior.get(str(bid), {}).get("status") == "indexed":
+            client.delete_room(WING, f"b{bid}")
+        shutil.rmtree(rendered / f"b{bid}", ignore_errors=True)
+    sections = {k: v for k, v in sections.items() if v["book_id"] not in dropping}
+    for bid in removed:
+        prior.pop(str(bid), None)
+
+    report = BuildReport(selected=len(books), removed=removed)
+    new_files: list[str] = []
+    for b in changed_books:
+        entry, recs = process_book(b, fetched[b["book_id"]], rendered)
+        prior[str(b["book_id"])] = entry
+        if entry["status"] == "indexed":
+            for r in recs:
+                sections[r["file"]] = r
+            new_files += entry["files"]
+            report.changed.append(b["book_id"])
+        elif entry["status"] == "skipped":
+            report.skipped.append({"book_id": b["book_id"], "reason": entry["reason"]})
+        else:
+            report.failed.append({"book_id": b["book_id"], "reason": entry["reason"]})
+
+    laid_out = [b for b in books if prior.get(str(b["book_id"]), {}).get("status") == "indexed"]
+    write_palace_layout(rendered, list(sections.values()), laid_out)
+    write_json(work / LEDGER, prior)
+    if new_files:
+        client.mine(rendered, wing=WING, files=new_files)
+    report.indexed = len(laid_out)
+    report.passages = len(sections)
+    report.index_bytes = dir_bytes(config.palace)
+    report.elapsed_s = round(time.time() - t0, 3)
+    return report

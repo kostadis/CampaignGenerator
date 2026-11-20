@@ -55,6 +55,15 @@ def main(argv=None) -> int:
                   f"built: {rep['indexed']}/{rep['selected']} books, {rep['passages']} passages, "
                   f"{len(rep['skipped'])} skipped, {len(rep['failed'])} failed, {rep['elapsed_s']}s")
             return ExitCode.OK
+        if args.cmd == "refresh":
+            from pipelines.library.build import refresh
+
+            rep = refresh(config, client=_client(config)).to_dict()
+            print(json.dumps(rep, indent=2) if args.json else
+                  f"refreshed: changed {rep['changed']}, removed {rep['removed']}, "
+                  f"{rep['indexed']} books / {rep['passages']} passages, "
+                  f"{len(rep['skipped'])} skipped, {len(rep['failed'])} failed, {rep['elapsed_s']}s")
+            return ExitCode.OK
         if args.cmd == "search":
             from pipelines.library.search import format_human, search_library
 
