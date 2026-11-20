@@ -7,6 +7,7 @@ The console script is `library`, registered in `pyproject.toml [project.scripts]
 | `library build` | Full build from the declared selection | BuildReport (human-readable; `--json` for machine-readable) |
 | `library refresh` | Re-processes only books that were changed, added or removed | BuildReport, including `changed` and `removed` |
 | `library search "<query>" [--limit 10] [--per-book 2] [--json]` | Whole-section search | SearchResultSet |
+| `library verify-citation <file> "<quote>" [--json]` | Checks that a quoted span appears verbatim in a library passage (SC-002). Whitespace is normalized and nothing else is. | `{file, found: bool, offset}`; exit 0 if found, 1 if not |
 | `library status [--json]` | Health check | `{configured, built, books, stale: [id], embedder_match, palace, index_bytes}` |
 
 ## Exit codes (shared by every subcommand)

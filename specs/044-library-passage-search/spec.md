@@ -79,7 +79,7 @@ Library passages follow the same tier rules and carry the same book identifiers,
 
 1. **Given** a built library, **When** RLM retrieval runs, **Then** library passages appear as a distinct kind, ranked by the documented tier rule, and existing results are unchanged.
 2. **Given** no library has been built, **When** RLM retrieval runs, **Then** it behaves exactly as before and says that the library is absent.
-3. **Given** a book that the converter has no 5etools JSON for but that is in the library, **When** RLM retrieval runs, **Then** it does not offer that book as an expensive conversion candidate.
+3. **Given** a book that has passages in this retrieval's library results, **When** RLM retrieval runs, **Then** that book is not also offered as an expensive conversion candidate.
 
 ---
 
@@ -131,7 +131,7 @@ The GM declares which converted books belong in the library: by product type, by
 **Surfaces**
 
 - **FR-011**: The search MUST be available from the command line, for humans and scripts, with a machine-readable output option.
-- **FR-012**: The search MUST be available to an AI agent through the same tool surface the RLM feature already exposes, so that an agent can run several searches, read the full passages and form a recommendation.
+- **FR-012**: The search MUST be available to an AI agent through the RLM feature's existing MCP server (as its own tool, and as a hit kind in the existing search tool), so that an agent can run several searches, read the full passages and form a recommendation.
 - **FR-013**: RLM retrieval MUST include library passages as their own kind of hit. That kind MUST have a documented position in the existing tier order, and the existing hit kinds MUST behave unchanged.
 - **FR-014**: When an agent recommends from library results, every passage it cites MUST be identified by book and section, so the GM can check it. The surface MUST return enough text for the agent to quote the passage verbatim.
 
@@ -139,7 +139,7 @@ The GM declares which converted books belong in the library: by product type, by
 
 - **FR-015**: The build MUST report books selected, books indexed, books skipped (with id and reason), the number of passages, elapsed time and the size of the index.
 - **FR-017**: The library's location, its selection declaration and the embedding setup MUST be read from hypostasis's central configuration (the authority file), not from per-campaign config or hard-coded defaults. Searches and builds MUST use exactly what that configuration says.
-- **FR-018**: The build/refresh and health-check commands MUST be callable non-interactively and MUST return distinct exit statuses for "ok", "failed", "not configured" and "library not built", so that hypostasis setup, start and status can drive and report them.
+- **FR-018**: The build/refresh and health-check commands MUST be callable non-interactively and MUST return distinct exit statuses for "ok", "failed", "not configured", "library not built", "embedder mismatch", "refused (live palace)" and "usage error" (the full table is in contracts/cli.md), so that hypostasis setup, start and status can drive and report them.
 - **FR-016**: The library MUST NOT feed any render pipeline directly. As with all RLM retrieval, a passage reaches campaign documents only through the human-approved proposal flow (Principle III).
 
 ### Key Entities

@@ -16,7 +16,7 @@
    - every result is a whole section file;
    - no book appears more than twice;
    - the output contains `distinct_books`, `cap_fired` and `unmapped`.
-5. **Refresh** (FR-006, SC-005). Run `touch` on one selected book's sidecar in the cache source, or edit it. Then run `library refresh`. Expected: `changed` contains exactly that book, and it takes far less time than the build.
+5. **Refresh** (FR-006, SC-005). Edit, or `touch`, one selected book's source sidecar under `library.source_root` (not the cache copy). Then run `library refresh`. Expected: `changed` contains exactly that book, and it takes far less time than the build.
 6. **Embedder mismatch** (FR-007, exit 5). Change `MEMPALACE_EMBEDDING_MODEL` in the shell, then run `library search x`. Expected: exit 5, and the message names both models.
 7. **RLM tier** (FR-013). Run `rpg_retriever "tavern keeper"`. Expected:
    - `kind="passage"` hits appear after drawers and before candidates;

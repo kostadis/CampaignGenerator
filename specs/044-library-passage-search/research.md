@@ -83,6 +83,15 @@ The Technical Context left no NEEDS CLARIFICATION items. The pilot (`experiments
 - **Rationale**: The pilot's value came from an agent iterating and reading. `rpg_search` truncates for list views, so a dedicated tool keeps the full text.
 - **Alternatives considered**: a skill that shells out to the CLI. That is possible later, but the MCP server is CG's outward seam (Principle V).
 
+## R10. Deleting a book's drawers on refresh (decided before T023)
+
+- **Decision**: T007 settles this before any refresh work starts. It checks the mempalace MCP surface for a delete-by-room or delete-by-source tool.
+  - **If one exists**: `delete_room` uses it.
+  - **If none exists**: refresh falls back to deleting the palace and rebuilding it from the existing rendered tree. That needs no re-render and no re-fetch, so only the mine step repeats.
+  - **Either way**: it never re-mines over stale drawers.
+- **Consequence**: if the fallback is the one used, SC-005 (refresh under 5% of a build) cannot be met. T007 records which path was taken, and the GM is told before T023.
+- **Guard test**: after a refresh of a changed book, no drawer in the palace has a `source_path` that is absent from the new `sections.json`.
+
 ## R9. Not repaired
 
 - **Decision**: No structural repair of dirty JSON. `render --merge-fragments` stays an option, off by default. Page numbers are shown only when present.

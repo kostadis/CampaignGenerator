@@ -47,7 +47,7 @@ description: "Task list for Library Passage Search"
   - `mine(render_root, palace, wing, env)` builds `mempalace mine <root> --direct --wing <wing>`, passes the merged env, and raises `MempalaceProcessError` on a non-zero exit (with subprocess mocked);
   - `delete_room(palace, wing, room)` calls the MCP delete path (fake transport);
   - `search(..., palace=<path>)` passes `--palace <path>`.
-- [ ] T007 Implement `mine()`, `delete_room()` and explicit-palace search in pipelines/rlm/mempalace_client.py.
+- [ ] T007 **First**, decide research R10: probe the mempalace MCP tool list for delete-by-room or delete-by-source, record the answer in research.md R10, and stop and tell the GM if only the rebuild fallback exists. Then implement `mine()`, `delete_room()` (or the R10 fallback) and explicit-palace search in pipelines/rlm/mempalace_client.py.
   - Check the real MCP search hit shape for `source_path`, `room` and `source_file`, and record the finding in a docstring.
   - If no delete-by-room tool exists, implement the R5 fallback and note which one was used.
 - [ ] T008 Remove every `mempalace` import and `mempalace` subprocess call from pipelines/library/ and route them through `mempalace_client`. Add tests/test_library_seam.py, an AST check that fails if `pipelines/library/*.py` imports `mempalace` or calls `subprocess` with `mempalace`.
@@ -91,7 +91,7 @@ description: "Task list for Library Passage Search"
   - `library_search` returns SearchResultSet JSON with full passage text;
   - NotConfigured, NotBuilt, EmbedderMismatch and Refused each come back as `{"error": code, "message": ...}`, and nothing raises;
   - the docstring contains the four guidance points from contracts/mcp-tool.md.
-- [ ] T016 [US1] Add the `library_search(query, limit=10, per_book=2)` MCP tool in pipelines/rlm/mcp_server.py, calling `search_library`.
+- [ ] T016 [US1] In pipelines/rlm/mcp_server.py, add the `library_search(query, limit=10, per_book=2)` MCP tool, calling `search_library`, and the `library_verify_citation(file, quote)` tool (contracts/mcp-tool.md "Companion tool"). The `library_search` docstring requires the agent to verify every quote (SC-002). It depends on T018a's `verify_citation`.
 - [ ] T017 [US1] Run tests/test_retrieve_render_isolation.py and confirm `library_search` and pipelines/library never mix retrieval with render calls.
 
 ## Phase 4: User Story 2 — Command-line search (P2)
@@ -105,7 +105,12 @@ description: "Task list for Library Passage Search"
   - exit codes are 3 when not configured, 4 when not built, 5 on an embedder mismatch, and 6 when refused;
   - each refusal message names its fix, and exit 4 names the hypostasis step;
   - `library status --json` produces the fields listed in contracts/cli.md.
-- [ ] T019 [US2] Implement `library build | search | status` in pipelines/library/cli.py and `status(config) -> dict` in pipelines/library/status.py, mapping exceptions to `ExitCode`.
+- [ ] T018a [P] [US2] Write tests in tests/test_library_verify.py for `verify_citation(work_dir, file, quote)`:
+  - an exact span is found and its offset is returned;
+  - a span that differs only in whitespace is found;
+  - a single changed word is not found;
+  - a file outside `rendered/` is refused.
+- [ ] T019 [US2] Implement `library build | search | status | verify-citation` in pipelines/library/cli.py and `status(config) -> dict` in pipelines/library/status.py, mapping exceptions to `ExitCode`.
 
 ## Phase 5: User Story 3 — Library hits in RLM retrieval (P2)
 
@@ -130,7 +135,8 @@ description: "Task list for Library Passage Search"
 
 **Independent Test**: Build; then change one sidecar; then `library refresh`. `changed` lists only that book, and search shows the change.
 
-- [ ] T023 [P] [US4] Write tests in tests/test_library_refresh.py with a fake client:
+- [ ] T023 [P] [US4] Write tests in tests/test_library_refresh.py with a fake client (the R10 decision from T007 must already be recorded):
+  - **no stale drawers**: after refreshing a changed book, no palace `source_path` is missing from the new `sections.json` (R10 guard);
   - for a changed book, the client gets `delete_room(b<id>)` and then a mine of only that book;
   - for a removed book, the client gets `delete_room` and the book's ledger entry is dropped;
   - an unchanged book gets no client call;
@@ -142,6 +148,12 @@ description: "Task list for Library Passage Search"
 
 - [ ] T027 [P] Write the operator how-to in docs/cli/library_search_howto.md: the authority keys, every exit code and refusal, the agent workflow, and refresh after fixing a book's JSON. Add it to the CLAUDE.md doc table and docs/README.md. Add a passage-tier note to docs/rlm/rlm_pipeline.md.
 - [ ] T028 Install the package into the server venv with `uv pip install -e . --python ~/.venv/bin/python` (the CLAUDE.md rule), then confirm `library --help` resolves.
+- [ ] T029a Run the scale check (SC-003, SC-005):
+  - Build a scratch library with `selection: {all_converted: true}`; that is 667 books today.
+  - Record the build time, the drawer count and the index size, and note any chunk-cap skips.
+  - Measure search latency (median and maximum over 10 queries) and the time to refresh one book.
+  - Record the results in experiments/20261120-rpglib-palace-pilot/FINDINGS.md.
+  - If SC-003 or SC-005 is missed, tell the GM. Do not change the targets.
 - [ ] T029 Run quickstart.md scenarios 1–7 against a scratch `library:` config of about 50 books.
   - Record the time, size and latency, and confirm the live palaces are unchanged (SC-006).
   - Scenario 8 (the agent test) is run by the GM.

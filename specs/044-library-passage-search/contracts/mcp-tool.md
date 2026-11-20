@@ -25,6 +25,10 @@ The tool's docstring is part of this contract. It tells the agent to:
 3. cite every recommendation as `title (book <id>) — <section path>`;
 4. say plainly when nothing matches.
 
+## Companion tool
+
+`library_verify_citation(file: str, quote: str) -> str (JSON)` wraps the CLI `verify-citation`. The `library_search` docstring tells the agent to run it on every quote before presenting a recommendation, and to drop or flag any quote that fails (SC-002).
+
 ## Scope
 
 The tool is read-only. It makes no render calls, so the Principle III isolation test applies to it.
