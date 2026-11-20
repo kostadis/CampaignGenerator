@@ -146,7 +146,7 @@ description: "Task list for Library Passage Search"
 
 ## Phase 7: Polish & Cross-Cutting
 
-- [ ] T027 [P] Write the operator how-to in docs/cli/library_search_howto.md: the authority keys, every exit code and refusal, the agent workflow, and refresh after fixing a book's JSON. Add it to the CLAUDE.md doc table and docs/README.md. Add a passage-tier note to docs/rlm/rlm_pipeline.md.
+- [X] T027 [P] Write the operator how-to in docs/cli/library_search_howto.md: the authority keys, every exit code and refusal, the agent workflow, and refresh after fixing a book's JSON. Add it to the CLAUDE.md doc table and docs/README.md. Add a passage-tier note to docs/rlm/rlm_pipeline.md.
 - [ ] T028 Install the package into the server venv with `uv pip install -e . --python ~/.venv/bin/python` (the CLAUDE.md rule), then confirm `library --help` resolves.
 - [ ] T029a Run the scale check (SC-003, SC-005):
   - Build a scratch library with `selection: {all_converted: true}`; that is 667 books today.

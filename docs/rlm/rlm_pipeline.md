@@ -17,7 +17,9 @@ CampaignGenerator integrates with three external tools to give the AI and the GM
 - `kind: "candidate"`, `cost: "cheap"` — entity in the canonical 5etools tree (`fivetools_catalog`) that's not yet in the palace. Carries a `fivetools_ingest --filter` one-liner.
 - `kind: "candidate"`, `cost: "expensive"` — PDF in rpg-library with no canonical-JSON equivalent. Carries a `pdf_to_5etools_v2.py convert` + `fivetools_ingest` command pair plus the `(book_id, relative_path, product_id)` identifier triple.
 
-Hard tier order: drawer/statblock > cheap > expensive. No score normalization across sources. See `rlm_architecture.md` §9 for the canonical contract.
+Hard tier order: drawer/statblock > passage > cheap > expensive. No score normalization across sources. See `rlm_architecture.md` §9 for the canonical contract.
+
+**Passage tier (spec 044).** `kind: "passage"` hits are whole sections of converted DMsGuild books from the separate library palace (`library build`; see `docs/cli/library_search_howto.md`). Each carries `book_id`, `title`, `section_path`, `page` (may be null), `score`, `library_file` and a 600-character `preview` (full text via the `library_search` MCP tool). Controls: `include_library` / `k_library` on `rpg_search`, `--no-library` / `--k-library` on `rpg_retriever` and `dossier_proposer`. The tier never fails a search: when the library is unconfigured, unbuilt or its embedder changed, the result carries `library_status` + `library_reason` and the other tiers return normally. Proposals gain a "Library Passages" slot.
 
 Writes go through **MemPalace's MCP server** (`pipelines/rlm/mempalace_client.py`); reads from rpg-library go through its HTTP API (stdlib `urllib`); reads from the canonical 5etools tree go through `fivetools_catalog` in-process. No CG module opens MemPalace's ChromaDB directly.
 
