@@ -121,7 +121,7 @@ query latency, and anything that broke.
 - Embedder/backend: the existing hypostasis wiring (turbovec + Ollama
   qwen3-embedding:0.6b on the host), "built-in first" (GM, 2026-11-20).
 - Source via the local mount once the GM makes the Drive folder local.
-- All code changes in separate git worktrees, implemented by Sonnet subagents,
+- All code for this effort in ONE dedicated git worktree (not the main checkout), implemented by Sonnet subagents,
   orchestrated and reviewed by Opus; one code-review pass; leftovers become
   sub-issues of the pilot's parent issue.
 
