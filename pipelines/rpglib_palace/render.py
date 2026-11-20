@@ -59,14 +59,29 @@ def _node_parts(node: dict) -> list[tuple[str | None, object, list]]:
     return parts
 
 
+def book_sections(book_json) -> list:
+    """Section list from a 5etools book: top-level `data`, else homebrew
+    `adventureData`/`bookData` entries' `data` lists concatenated in order."""
+    if not isinstance(book_json, dict):
+        return []
+    if isinstance(book_json.get("data"), list):
+        return book_json["data"]
+    out: list = []
+    for key in ("adventureData", "bookData"):
+        for item in book_json.get(key) or []:
+            if isinstance(item, dict) and isinstance(item.get("data"), list):
+                out.extend(item["data"])
+    return out
+
+
 def render_book(book: dict, book_json: dict, out_root: Path) -> list[dict]:
     out_root = Path(out_root)
     book_id = book["book_id"]
     title = book["title"]
     bdir = out_root / f"b{book_id}"
     bdir.mkdir(parents=True, exist_ok=True)
-    data = book_json.get("data") if isinstance(book_json, dict) else None
-    if not isinstance(data, list):
+    data = book_sections(book_json)
+    if not data:
         return []
     records: list[dict] = []
     counter = 0

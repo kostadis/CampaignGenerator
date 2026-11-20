@@ -92,3 +92,22 @@ def test_layout_files(tmp_path):
     sections = json.loads((tmp_path / "sections.json").read_text())
     written = {p.relative_to(tmp_path).as_posix() for p in tmp_path.glob("b7/*.md")}
     assert set(sections) == written
+
+
+def test_homebrew_adventuredata_shape(tmp_path):
+    bj = {
+        "_meta": {},
+        "adventure": [{"name": "A", "id": "A", "source": "S", "contents": []}],
+        "adventureData": [
+            {"id": "A", "source": "S", "data": [_sec("Ch1", ["alpha"]), _sec("Ch2", ["beta"])]},
+            {"id": "B", "source": "S", "data": [_sec("Ch3", ["gamma"])]},
+        ],
+    }
+    recs = render_book(BOOK, bj, tmp_path)
+    assert [r["section_path"] for r in recs] == [["Ch1"], ["Ch2"], ["Ch3"]]
+
+
+def test_homebrew_bookdata_shape(tmp_path):
+    bj = {"book": [{"name": "B"}], "bookData": [{"id": "B", "data": [_sec("Ch1", ["alpha"])]}]}
+    recs = render_book(BOOK, bj, tmp_path)
+    assert [r["section_path"] for r in recs] == [["Ch1"]]

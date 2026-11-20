@@ -84,7 +84,7 @@ def main(argv=None) -> int:
                 records += recs
                 laid_out.append(b)
             else:
-                print(f"skipped (no data list): book {b['book_id']} {b['title']}", file=sys.stderr)
+                print(f"skipped (no sections): book {b['book_id']} {b['title']}", file=sys.stderr)
         write_palace_layout(rendered, records, laid_out)
         print(f"rendered {len(records)} sections from {len(laid_out)} books -> {rendered}")
         return 0
