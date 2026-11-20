@@ -33,7 +33,10 @@ def _parser() -> argparse.ArgumentParser:
     s.add_argument("--limit", type=int, default=50)
     f = sub.add_parser("fetch")
     f.add_argument("--cache-dir", default=str(DEFAULT_CACHE))
-    sub.add_parser("render")
+    r = sub.add_parser("render")
+    r.add_argument("--merge-fragments", action="store_true")
+    r.add_argument("--min-chars", type=int, default=300)
+    r.add_argument("--out", default=None)
     sub.add_parser("mine")
     q = sub.add_parser("query")
     q.add_argument("text")
@@ -73,6 +76,8 @@ def main(argv=None) -> int:
         return 0
 
     if args.cmd == "render":
+        if args.out:
+            rendered = Path(args.out).expanduser()
         from pipelines.rpglib_palace.render import render_book, write_palace_layout
         from pipelines.rpglib_palace.select import read_manifest
 
@@ -80,13 +85,20 @@ def main(argv=None) -> int:
         records, laid_out = [], []
         for b in books:
             bj = json.loads(Path(b["cache_path"]).read_text(encoding="utf-8"))
-            recs = render_book(b, bj, rendered)
+            recs = render_book(
+                b, bj, rendered, merge_fragments=args.merge_fragments, min_chars=args.min_chars
+            )
             if recs:
                 records += recs
                 laid_out.append(b)
             else:
                 print(f"skipped (no sections): book {b['book_id']} {b['title']}", file=sys.stderr)
-        write_palace_layout(rendered, records, laid_out)
+        write_palace_layout(
+            rendered,
+            records,
+            laid_out,
+            render_meta={"merge_fragments": args.merge_fragments, "min_chars": args.min_chars},
+        )
         print(f"rendered {len(records)} sections from {len(laid_out)} books -> {rendered}")
         return 0
 

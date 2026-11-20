@@ -74,7 +74,30 @@ def book_sections(book_json) -> list:
     return out
 
 
-def render_book(book: dict, book_json: dict, out_root: Path) -> list[dict]:
+_PRICE_RE = re.compile(r"^\d+(\.\d+)?\s*[a-z]{2}\b", re.I)
+
+
+def looks_like_fragment(title: str) -> bool:
+    """True when a section title looks like a promoted table cell / wrapped line."""
+    t = strip_tags(title or "").strip()
+    if not t:
+        return True
+    if t[0].isdigit() or t[0] in "/+-":
+        return True
+    if t[0].islower():
+        return True
+    if t[-1] in ".,):":
+        return True
+    return bool(_PRICE_RE.match(t))
+
+
+def render_book(
+    book: dict,
+    book_json: dict,
+    out_root: Path,
+    merge_fragments: bool = False,
+    min_chars: int = 300,
+) -> list[dict]:
     out_root = Path(out_root)
     book_id = book["book_id"]
     title = book["title"]
@@ -86,7 +109,7 @@ def render_book(book: dict, book_json: dict, out_root: Path) -> list[dict]:
     records: list[dict] = []
     counter = 0
 
-    def emit(path: list[str], page, body: str, suffix: str = "") -> None:
+    def emit(path: list[str], page, body: str, suffix: str = "", merged: list[str] | None = None) -> None:
         nonlocal counter
         counter += 1
         name = f"{counter:03d}-{_slug(path[-1] if path else 'section')}{suffix}.md"
@@ -100,21 +123,23 @@ def render_book(book: dict, book_json: dict, out_root: Path) -> list[dict]:
                 "publisher": book.get("publisher"),
                 "section_path": [strip_tags(p) for p in path],
                 "page": page if isinstance(page, int) else None,
+                "merged_titles": list(merged or []),
             }
         )
 
-    def emit_sized(path: list[str], page, body: str) -> None:
+    def emit_sized(path: list[str], page, body: str, merged: list[str] | None = None) -> None:
         head = _head(title, path, book_id, page)
         if _size(head) + _size(body) + 1 <= MAX_FILE_BYTES:
-            emit(path, page, body)
+            emit(path, page, body, merged=merged)
             return
         chunks = _split_paragraphs(head, body, MAX_FILE_BYTES)
         if len(chunks) == 1:
-            emit(path, page, chunks[0])
+            emit(path, page, chunks[0], merged=merged)
             return
         for k, chunk in enumerate(chunks, 1):
-            emit(path, page, chunk, suffix=f"-part{k}")
+            emit(path, page, chunk, suffix=f"-part{k}", merged=merged)
 
+    units: list[dict] = []
     for i, node in enumerate(data, 1):
         if isinstance(node, dict):
             name = node.get("name") or f"Untitled {i}"
@@ -122,8 +147,29 @@ def render_book(book: dict, book_json: dict, out_root: Path) -> list[dict]:
             entries = node.get("entries") or []
         else:
             name, page, entries = f"Untitled {i}", None, [node]
-        path = [str(name)]
-        body = render_entries_block(entries)
+        u = {
+            "node": node,
+            "name": str(name),
+            "page": page,
+            "body": render_entries_block(entries),
+            "raw_name": node.get("name") if isinstance(node, dict) else None,
+            "merged": [],
+        }
+        if merge_fragments and units and (
+            len(u["body"]) < min_chars or looks_like_fragment(u["raw_name"] or "")
+        ):
+            prev = units[-1]
+            prev["body"] = f"{prev['body']}\n\n### {strip_tags(u['name'])}\n\n{u['body']}".rstrip()
+            prev["merged"].append(strip_tags(u["name"]))
+            continue
+        units.append(u)
+
+    for u in units:
+        node, name, page, body = u["node"], u["name"], u["page"], u["body"]
+        path = [name]
+        if u["merged"]:
+            emit_sized(path, page, body, merged=u["merged"])
+            continue
         if _size(_head(title, path, book_id, page)) + _size(body) + 1 <= MAX_FILE_BYTES:
             emit(path, page, body)
             continue
@@ -139,13 +185,15 @@ def render_book(book: dict, book_json: dict, out_root: Path) -> list[dict]:
     return records
 
 
-def write_palace_layout(out_root: Path, records: list[dict], books: list[dict]) -> None:
+def write_palace_layout(
+    out_root: Path, records: list[dict], books: list[dict], render_meta: dict | None = None
+) -> None:
     out_root = Path(out_root)
     out_root.mkdir(parents=True, exist_ok=True)
     cfg = {
         "wing": WING,
         # sections.json is our own manifest; keep it out of the palace.
-        "exclude_patterns": ["sections.json"],
+        "exclude_patterns": ["sections.json", "render_meta.json"],
         "rooms": [
             {"name": f"b{b['book_id']}", "description": b["title"], "keywords": [f"b{b['book_id']}"]}
             for b in books
@@ -154,4 +202,8 @@ def write_palace_layout(out_root: Path, records: list[dict], books: list[dict]) 
     (out_root / "mempalace.yaml").write_text(yaml.safe_dump(cfg, sort_keys=False), encoding="utf-8")
     (out_root / "sections.json").write_text(
         json.dumps({r["file"]: r for r in records}, indent=2), encoding="utf-8"
+    )
+    (out_root / "render_meta.json").write_text(
+        json.dumps(render_meta or {"merge_fragments": False, "min_chars": 300}, indent=2),
+        encoding="utf-8",
     )

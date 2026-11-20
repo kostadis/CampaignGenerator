@@ -111,3 +111,68 @@ def test_homebrew_bookdata_shape(tmp_path):
     bj = {"book": [{"name": "B"}], "bookData": [{"id": "B", "data": [_sec("Ch1", ["alpha"])]}]}
     recs = render_book(BOOK, bj, tmp_path)
     assert [r["section_path"] for r in recs] == [["Ch1"]]
+
+
+def _messy():
+    return {
+        "data": [
+            _sec("Real Chapter", ["real body " + "text " * 80], 4),
+            _sec("5 gp", ["cell-one"], 5),
+            _sec("Another Real", ["another body " + "word " * 80], 6),
+            _sec("hit points.", ["frag-two"], 7),
+        ]
+    }
+
+
+def test_merge_default_off(tmp_path):
+    recs = render_book(BOOK, _messy(), tmp_path)
+    assert len(recs) == 4
+    assert all(r["merged_titles"] == [] for r in recs)
+
+
+def test_merge_on_folds_fragments(tmp_path):
+    recs = render_book(BOOK, _messy(), tmp_path, merge_fragments=True)
+    assert [r["section_path"] for r in recs] == [["Real Chapter"], ["Another Real"]]
+    assert recs[0]["merged_titles"] == ["5 gp"] and recs[0]["page"] == 4
+    assert recs[1]["merged_titles"] == ["hit points."]
+
+
+def test_merge_preserves_titles_and_text(tmp_path):
+    recs = render_book(BOOK, _messy(), tmp_path, merge_fragments=True)
+    texts = [(tmp_path / r["file"]).read_text() for r in recs]
+    assert "### 5 gp" in texts[0] and "### hit points." in texts[1]
+    for s in ("cell-one", "frag-two", "real body", "another body"):
+        assert sum(s in t for t in texts) == 1
+
+
+def test_merge_fragment_first(tmp_path):
+    bj = {"data": [_sec("1/2", ["lead-frag"]), _sec("Real", ["real " * 100])]}
+    recs = render_book(BOOK, bj, tmp_path, merge_fragments=True)
+    assert [r["section_path"] for r in recs] == [["1/2"], ["Real"]]
+
+
+def test_merge_short_body_min_chars(tmp_path):
+    bj = {"data": [_sec("Real", ["real " * 100]), _sec("Tiny Title", ["short"])]}
+    assert len(render_book(BOOK, bj, tmp_path / "a", merge_fragments=True)) == 1
+    assert len(render_book(BOOK, bj, tmp_path / "b", merge_fragments=True, min_chars=3)) == 2
+
+
+def test_merge_respects_max_file_bytes(tmp_path, monkeypatch):
+    monkeypatch.setattr(render, "MAX_FILE_BYTES", 400)
+    bj = {"data": [_sec("Real", ["a " * 100]), _sec("5 gp", ["b " * 20] * 12)]}
+    recs = render_book(BOOK, bj, tmp_path, merge_fragments=True)
+    assert len(recs) >= 2
+    for r in recs:
+        assert (tmp_path / r["file"]).stat().st_size <= 400
+
+
+def test_render_meta_written_and_excluded(tmp_path):
+    recs = render_book(BOOK, _messy(), tmp_path, merge_fragments=True)
+    write_palace_layout(
+        tmp_path, recs, [BOOK], render_meta={"merge_fragments": True, "min_chars": 300}
+    )
+    meta = json.loads((tmp_path / "render_meta.json").read_text())
+    assert meta == {"merge_fragments": True, "min_chars": 300}
+    cfg = yaml.safe_load((tmp_path / "mempalace.yaml").read_text())
+    assert "render_meta.json" in cfg["exclude_patterns"]
+    assert set(json.loads((tmp_path / "sections.json").read_text())) == {r["file"] for r in recs}
