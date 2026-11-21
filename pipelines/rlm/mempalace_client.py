@@ -29,6 +29,7 @@ import logging
 import os
 import shutil
 import subprocess
+import sys
 import threading
 from pathlib import Path
 from typing import Any, Iterable
@@ -470,6 +471,7 @@ def mine(
     wing: str,
     env: dict | None = None,
     files: Iterable[str] | None = None,
+    stream: bool = True,
 ) -> str:
     """Run ``mempalace mine <root> --direct --wing <wing>`` against ``palace``.
 
@@ -477,9 +479,17 @@ def mine(
     (relative to ``render_root``) limits the run to exactly those files via
     ``--files-from``. ``env`` is passed through; the caller's dict is not
     mutated. Raises :class:`MempalaceProcessError` on a non-zero exit.
+
+    stderr is merged into stdout. With ``stream`` (default) each line is echoed
+    live to *this process's stderr* (so stdout stays clean for JSON); the
+    full output is still collected and returned, and the error message uses
+    its last 500 chars.
     """
     run_env = dict(env if env is not None else os.environ)
     run_env["MEMPALACE_PALACE_PATH"] = str(palace)
+    # A piped child Python block-buffers stdout; without this, per-file progress
+    # arrives in 8 KB bursts instead of live.
+    run_env["PYTHONUNBUFFERED"] = "1"
     cmd = ["mempalace", "--palace", str(palace), "mine", str(render_root), "--direct", "--wing", wing]
     tmp = None
     try:
@@ -488,15 +498,29 @@ def mine(
             tmp.write("\n".join(files))
             tmp.close()
             cmd += ["--files-from", tmp.name]
-        proc = subprocess.run(cmd, env=run_env, capture_output=True, text=True)
+        proc = subprocess.Popen(
+            cmd, env=run_env, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+            text=True, bufsize=1,
+        )
+        chunks: list[str] = []
+        try:
+            for line in proc.stdout:
+                chunks.append(line)
+                if stream:
+                    sys.stderr.write(line if line.endswith("\n") else line + "\n")
+                    sys.stderr.flush()
+        finally:
+            proc.stdout.close()
+            returncode = proc.wait()
     finally:
         if tmp is not None:
             Path(tmp.name).unlink(missing_ok=True)
-    if proc.returncode != 0:
+    out = "".join(chunks)
+    if returncode != 0:
         raise MempalaceProcessError(
-            f"mempalace mine exited {proc.returncode}: {(proc.stderr or proc.stdout or '').strip()[-500:]}"
+            f"mempalace mine exited {returncode}: {out.strip()[-500:]}"
         )
-    return proc.stdout or ""
+    return out
 
 
 def _check_result(result, what: str) -> None:
@@ -578,8 +602,10 @@ class LibraryPalaceClient:
         self.palace = palace
         self.env = env
 
-    def mine(self, render_root, *, wing: str, files: Iterable[str] | None = None) -> str:
-        return mine(render_root, palace=self.palace, wing=wing, env=self.env, files=files)
+    def mine(self, render_root, *, wing: str, files: Iterable[str] | None = None,
+             stream: bool = True) -> str:
+        return mine(render_root, palace=self.palace, wing=wing, env=self.env, files=files,
+                    stream=stream)
 
     def delete_room(self, wing: str, room: str) -> int:
         return delete_room(self.palace, wing, room, env=self.env)

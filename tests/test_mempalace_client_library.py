@@ -13,18 +13,26 @@ from pipelines.rlm.mempalace_client import (
 )
 
 
-def _run_recorder(monkeypatch, returncode=0, stderr=""):
-    seen = {}
-
-    def fake_run(cmd, **kw):
+class _FakePopen:
+    def __init__(self, cmd, out, returncode, seen, **kw):
+        import io
         seen["cmd"], seen["kw"] = cmd, kw
         if "--files-from" in cmd:
             from pathlib import Path
 
             seen["files"] = Path(cmd[cmd.index("--files-from") + 1]).read_text().split("\n")
-        return SimpleNamespace(returncode=returncode, stdout="mined", stderr=stderr)
+        self.stdout = io.StringIO(out)
+        self._rc = returncode
 
-    monkeypatch.setattr(subprocess, "run", fake_run)
+    def wait(self):
+        return self._rc
+
+
+def _run_recorder(monkeypatch, returncode=0, stderr="", out="mined"):
+    seen = {}
+    monkeypatch.setattr(
+        subprocess, "Popen",
+        lambda cmd, **kw: _FakePopen(cmd, stderr or out, returncode, seen, **kw))
     return seen
 
 
@@ -42,6 +50,7 @@ def test_mine_command_and_env(tmp_path, monkeypatch):
     assert seen["kw"]["env"]["MEMPALACE_PALACE_PATH"] == str(tmp_path / "p")
     assert "env" in seen["kw"] and env.get("MEMPALACE_PALACE_PATH") is None  # not mutated
     assert out == "mined"
+    assert seen["kw"]["stderr"] == subprocess.STDOUT
 
 
 def test_mine_files_from(tmp_path, monkeypatch):
@@ -140,3 +149,41 @@ def test_delete_room_delete_drawer_failure_raises(tmp_path):
     })
     with pytest.raises(MempalaceError):
         mc.delete_room(tmp_path / "p", "w", "b7", client=fake)
+
+
+def _real_mine(monkeypatch, tmp_path, script, **kw):
+    """Run mine() against a tiny python child instead of mempalace."""
+    import sys
+    real = subprocess.Popen
+
+    def popen(cmd, **k):
+        return real([sys.executable, "-c", script], **k)
+
+    monkeypatch.setattr(subprocess, "Popen", popen)
+    return mc.mine(tmp_path, palace=tmp_path / "p", wing="w", env={}, **kw)
+
+
+_SCRIPT = "import sys; print('one'); print('two', file=sys.stderr); sys.stdout.flush()"
+
+
+def test_mine_streams_to_stderr_and_returns_output(tmp_path, monkeypatch, capfd):
+    out = _real_mine(monkeypatch, tmp_path, _SCRIPT)
+    cap = capfd.readouterr()
+    assert "one" in cap.err and "two" in cap.err
+    assert cap.out == ""  # stdout stays clean
+    assert "one" in out and "two" in out
+
+
+def test_mine_stream_false_is_silent(tmp_path, monkeypatch, capfd):
+    out = _real_mine(monkeypatch, tmp_path, _SCRIPT, stream=False)
+    cap = capfd.readouterr()
+    assert cap.err == "" and cap.out == ""
+    assert "one" in out
+
+
+def test_mine_nonzero_streams_and_raises_with_tail(tmp_path, monkeypatch, capfd):
+    script = "import sys; print('x'*600); print('the-tail'); sys.exit(3)"
+    with pytest.raises(MempalaceProcessError, match="(?s)exited 3: .*the-tail") as ei:
+        _real_mine(monkeypatch, tmp_path, script)
+    assert len(str(ei.value)) < 560
+    assert "the-tail" in capfd.readouterr().err

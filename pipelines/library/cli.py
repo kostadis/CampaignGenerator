@@ -29,6 +29,7 @@ def _parser() -> argparse.ArgumentParser:
         help="authority file to read (default: %(default)s)")
     b = sub.add_parser("build", parents=[common], help="full build from the declared selection")
     b.add_argument("--json", action="store_true")
+    b.add_argument("--quiet", action="store_true", help="no progress lines on stderr")
     s = sub.add_parser("search", parents=[common], help="whole-section search")
     s.add_argument("text")
     s.add_argument("--limit", type=int, default=10)
@@ -36,6 +37,7 @@ def _parser() -> argparse.ArgumentParser:
     s.add_argument("--json", action="store_true")
     r = sub.add_parser("refresh", parents=[common], help="re-process only changed/added/removed books")
     r.add_argument("--json", action="store_true")
+    r.add_argument("--quiet", action="store_true", help="no progress lines on stderr")
     st = sub.add_parser("status", parents=[common], help="health check")
     st.add_argument("--json", action="store_true")
     v = sub.add_parser("verify-citation", parents=[common], help="check a quote appears verbatim in a passage")
@@ -51,6 +53,9 @@ def main(argv=None) -> int:
     except SystemExit as e:
         return int(e.code or 0) and ExitCode.USAGE
     try:
+        from pipelines.library.progress import set_quiet
+
+        set_quiet(getattr(args, "quiet", False))
         config = load_library_config(Path(args.config).expanduser())
         if args.cmd == "build":
             from pipelines.library.build import build

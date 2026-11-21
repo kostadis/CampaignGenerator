@@ -112,6 +112,16 @@ Per-book outcomes in the report:
 
 One bad book never sinks a build. Exit is 0 even with skips and failures; read the counts.
 
+## Progress
+
+`library build` and `library refresh` print timestamped progress lines to
+**stderr** (`library: HH:MM:SS <message>`): config, selection, the refresh plan,
+`rendering i/N <title>` per book, `mining N files into wing ...` (followed by
+mempalace's own live output), `mined in Xs`, and a final `done:` line. stdout
+carries only the final report, so `--json` is unaffected. Pass `--quiet` to
+silence the progress lines. No lines for a long stretch while mining means
+mempalace itself is quiet; its output is streamed as it is produced.
+
 ## Task: refresh after fixing a book's JSON
 
 You edited a book's sidecar (or added or removed a book in the selection):
