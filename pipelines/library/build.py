@@ -15,6 +15,7 @@ from pipelines.library import SourceUnavailable
 from pipelines.library.config import LibraryConfig
 from pipelines.library.fetch import fetch_all
 from pipelines.library.guard import WING, mark_library_palace, require_library_palace
+from pipelines.library.progress import log
 from pipelines.library.render import render_book, write_palace_layout
 from pipelines.library.select import select_books_report, write_manifest
 
@@ -141,8 +142,26 @@ def _failed_entry(old: dict | None, reason: str) -> dict:
     return e
 
 
+def _log_config(what: str, config: LibraryConfig) -> None:
+    e = config.env
+    log(f"{what}: palace {config.palace}, backend {e.get('MEMPALACE_BACKEND')}, "
+        f"model {e.get('MEMPALACE_EMBEDDING_MODEL')}")
+
+
+def _mine(client, rendered, files) -> None:
+    n = "all" if files is None else len(files)
+    log(f"mining {n} files into wing {WING} (mempalace output follows)")
+    t = time.time()
+    if files is None:
+        client.mine(rendered, wing=WING)
+    else:
+        client.mine(rendered, wing=WING, files=files)
+    log(f"mined in {time.time() - t:.1f}s")
+
+
 def build(config: LibraryConfig, *, client) -> BuildReport:
     t0 = time.time()
+    _log_config("build", config)
     require_library_palace(config.palace)
     mark_library_palace(config.palace)  # fresh/empty dir accepted above; claim it
     check_source_root(config)
@@ -151,6 +170,7 @@ def build(config: LibraryConfig, *, client) -> BuildReport:
 
     selected, sel_skipped = select_books_report(config)
     books = [b.to_dict() for b in selected]
+    log(f"selection: {len(books)} books selected, {len(sel_skipped)} skipped")
     write_manifest(books, work / MANIFEST)
 
     # The stamp is written only after a successful mine; until then the
@@ -168,6 +188,7 @@ def build(config: LibraryConfig, *, client) -> BuildReport:
         shutil.rmtree(rendered)
     rendered.mkdir(parents=True)
     todo = [b for b in books if b["book_id"] not in delete_failed]
+    log(f"fetching {len(todo)} sidecars")
     fetched = {r["book_id"]: r for r in fetch_all(todo, config.cache_dir)}
 
     report = BuildReport(selected=len(books) + len(sel_skipped), skipped=list(sel_skipped))
@@ -177,7 +198,8 @@ def build(config: LibraryConfig, *, client) -> BuildReport:
     for bid, reason in delete_failed.items():
         ledger[str(bid)] = _failed_entry(prior.get(str(bid)), reason)
         report.failed.append({"book_id": bid, "reason": reason})
-    for b in todo:
+    for i, b in enumerate(todo, 1):
+        log(f"rendering {i}/{len(todo)} {b.get('title')}")
         entry, recs = process_book(b, fetched[b["book_id"]], rendered)
         ledger[str(b["book_id"])] = entry
         if entry["status"] == "indexed":
@@ -194,7 +216,7 @@ def build(config: LibraryConfig, *, client) -> BuildReport:
     write_palace_layout(rendered, records, laid_out)
     if laid_out:
         try:
-            client.mine(rendered, wing=WING)
+            _mine(client, rendered, None)
             mark_library_palace(config.palace)
         except Exception as e:
             for b in laid_out:
@@ -207,6 +229,8 @@ def build(config: LibraryConfig, *, client) -> BuildReport:
     write_json(work / STAMP, embedder_stamp(config))
     report.index_bytes = dir_bytes(config.palace)
     report.elapsed_s = round(time.time() - t0, 3)
+    log(f"done: {report.indexed}/{report.selected} books, {report.passages} passages, "
+        f"{len(report.skipped)} skipped, {len(report.failed)} failed, {report.elapsed_s}s")
     return report
 
 
@@ -221,6 +245,7 @@ def refresh(config: LibraryConfig, *, client) -> BuildReport:
     from pipelines.library.state import require_built, require_embedder_match
 
     t0 = time.time()
+    _log_config("refresh", config)
     require_library_palace(config.palace)
     stamp = require_built(config)
     require_embedder_match(config, stamp)
@@ -230,9 +255,11 @@ def refresh(config: LibraryConfig, *, client) -> BuildReport:
 
     selected, sel_skipped = select_books_report(config)
     books = [b.to_dict() for b in selected]
+    log(f"selection: {len(books)} books selected, {len(sel_skipped)} skipped")
     write_manifest(books, work / MANIFEST)
     prior: dict[str, dict] = read_json(work / LEDGER, {})
     selected_ids = {str(b["book_id"]) for b in books}
+    log(f"fetching {len(books)} sidecars")
     fetched = {r["book_id"]: r for r in fetch_all(books, config.cache_dir)}
 
     removed = sorted(int(i) for i in prior if i not in selected_ids)
@@ -248,6 +275,10 @@ def refresh(config: LibraryConfig, *, client) -> BuildReport:
         ):
             changed_books.append(b)
 
+    prior_ids = set(prior)
+    n_added = sum(1 for b in changed_books if str(b["book_id"]) not in prior_ids)
+    log(f"plan: {len(changed_books)} to process ({n_added} added, "
+        f"{len(changed_books) - n_added} changed), {len(removed)} removed")
     sections: dict[str, dict] = read_json(rendered / SECTIONS, {})
     dropping = set(removed) | {b["book_id"] for b in changed_books}
     # Delete drawers first, then forget their files.
@@ -270,8 +301,9 @@ def refresh(config: LibraryConfig, *, client) -> BuildReport:
     new_entries: dict[str, dict] = {}
     new_files: list[str] = []
     new_sections: dict[str, dict] = {}
-    for b in changed_books:
+    for i, b in enumerate(changed_books, 1):
         bid = b["book_id"]
+        log(f"rendering {i}/{len(changed_books)} {b.get('title')}")
         if bid in delete_failed:
             prior[str(bid)] = _failed_entry(prior.get(str(bid)), delete_failed[bid])
             report.failed.append({"book_id": bid, "reason": delete_failed[bid]})
@@ -299,7 +331,7 @@ def refresh(config: LibraryConfig, *, client) -> BuildReport:
     write_palace_layout(rendered, list(all_sections.values()), _laid_out(new_entries))
     if new_files:
         try:
-            client.mine(rendered, wing=WING, files=new_files)
+            _mine(client, rendered, new_files)
             mark_library_palace(config.palace)
         except Exception as e:
             for k, entry in new_entries.items():
@@ -314,4 +346,7 @@ def refresh(config: LibraryConfig, *, client) -> BuildReport:
     report.passages = len(all_sections)
     report.index_bytes = dir_bytes(config.palace)
     report.elapsed_s = round(time.time() - t0, 3)
+    log(f"done: {report.indexed} books, {report.passages} passages, changed {len(report.changed)}, "
+        f"removed {len(report.removed)}, {len(report.skipped)} skipped, "
+        f"{len(report.failed)} failed, {report.elapsed_s}s")
     return report
