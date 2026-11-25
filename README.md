@@ -233,15 +233,21 @@ kanka_push --campaign 1 --input docs/world_state.md --apply
 
 ### MCP server setup
 
-Three MCP servers can be wired into campaign workspaces so Claude has direct access to campaign data, 5etools, and Kanka:
+Five MCP servers can be wired into campaign workspaces, so Claude can reach campaign data, 5etools, the entity registry, Kanka and provenance search directly. A single script installs them: **`configure_mcp`** (`pipelines/workspace/configure_mcp.py`). It writes each campaign's `.mcp.json`, or merges into the one already there.
 
 | Server | Script | Registered when |
 |---|---|---|
-| `campaign` | `mcp_server.py` (`pipelines/rlm/`) | always (campaign has `config.yaml`) |
+| `campaign` | `mcp_server.py` (`pipelines/rlm/`) | campaign has `config/config.yaml` |
 | `5etools` | `launch_5etools_mcp.py` (`pipelines/rlm/`) | campaign has `refs.yaml` |
+| `registry` | `registry_mcp.py` (`entity_registry/`) | campaign has `docs/entity_registry.yaml` |
 | `kanka` | `kanka_mcp.py` (`pipelines/integrations/kanka/`) | `--kanka-token` is passed |
+| `provenance` | `provenance_mcp.py` (`provenance/`) | the campaigns repo root has `provenance.yaml` (not pinned to one campaign; each call says which campaigns to search) |
 
-Use `configure_mcp` to write `.mcp.json` for all campaign workspaces at once:
+`configure_mcp` does **not** wire **mempalace**; use the `mempalace-campaign` skill for that. [`docs/mcp/mcp_servers.md`](docs/mcp/mcp_servers.md) describes what each server does.
+
+`configure_mcp` and the server commands are console scripts. If your shell can't find them, install the package into your venv with `uv pip install -e .`, or run `python pipelines/workspace/configure_mcp.py` directly.
+
+Examples:
 
 ```bash
 # Preview — show what would be written without changing anything
@@ -260,7 +266,7 @@ configure_mcp ~/src/campaigns/toee
 configure_mcp --force
 ```
 
-By default the script **merges** into any existing `.mcp.json`, so manually added servers are preserved. `5etools` is only added when the campaign directory contains a `refs.yaml`.
+By default the script **merges** into any existing `.mcp.json`, so servers you added by hand are kept. A server whose required file is missing is skipped for that campaign.
 
 ### RPG Library Module (RLM)
 
